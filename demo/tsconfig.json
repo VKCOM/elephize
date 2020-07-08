@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "outDir": "./public/dist/",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "module": "commonjs",
+    "jsx": "react",
+    "target": "es5",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "baseUrl": "./src/",
+    "paths": {
+      "#iso_palette/*": ["components/iso_palette/*"],
+      "#utils/*": ["utils/*"]
+    }
+  },
+  "include": [
+    "src"
+  ]
+}

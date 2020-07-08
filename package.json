@@ -1,0 +1,105 @@
+{
+  "name": "elephize",
+  "version": "0.4.4",
+  "description": "js-php basic transpiler",
+  "main": "src/cli.ts",
+  "bin": {
+    "elephize": "./bin/elephize"
+  },
+  "scripts": {
+    "lint": "eslint . --ext ts,tsx",
+    "test": "jest -i",
+    "test_all": "yarn build && yarn demo_build && yarn test",
+    "sniff": "yarn lint && yarn test_all",
+    "_reactgen": "ts-node src/ts2php/utils/parseReact.ts",
+    "_compile": "tsc -p .",
+    "_copy-base": "cp -R src/server dist/src/",
+    "_copy-ext": "cp -R external dist/",
+    "build": "yarn _reactgen && yarn _compile && yarn _copy-base && yarn _copy-ext",
+    "demo_start": "yarn demo_build && yarn demo_serve",
+    "demo_build": "ln -sf ../node_modules demo/node_modules && yarn demo_genjs && yarn demo_genphp",
+    "demo_serve": "npm-run-all --parallel demo_servejs demo_servephp",
+    "demo_servejs": "cd demo && ts-node -r tsconfig-paths/register src/server.tsx",
+    "demo_servephp": "php -S localhost:8000 -t demo/public/",
+    "demo_genjs": "cd demo && webpack-cli",
+    "demo_genphp": "cd demo && ../bin/elephize -c .elephizerc",
+    "demo_outreact": "cd demo && ts-node -r tsconfig-paths/register src/render.tsx | sed 's/ data-reactroot=\"\"//' | ../external/htmlformat",
+    "demo_outphp": "cd demo/public && php index.php | ../../external/htmlformat"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ctizen/elephize.git"
+  },
+  "keywords": [
+    "js",
+    "php"
+  ],
+  "author": "Oleg Klimenko",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ctizen/elephize/issues"
+  },
+  "homepage": "https://github.com/ctizen/elephize#readme",
+  "dependencies": {
+    "@prettier/plugin-php": "^0.14.0",
+    "chalk": "^4.1.0",
+    "cli": "^1.0.1",
+    "glob": "^7.1.6",
+    "iconv-lite": "^0.5.1",
+    "ncp": "^2.0.0",
+    "prettier": "^2.0.4",
+    "stream-replace": "^1.0.0"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
+    "@types/cli": "^0.11.19",
+    "@types/express": "^4.17.3",
+    "@types/glob": "^7.1.1",
+    "@types/iconv-lite": "^0.0.1",
+    "@types/jest": "^24.0.23",
+    "@types/jest-expect-message": "^1.0.1",
+    "@types/ncp": "^2.0.3",
+    "@types/node": "^12.12.17",
+    "@types/prettier": "^2.0.0",
+    "@types/react": "^16.9.15",
+    "@types/react-dom": "^16.9.0",
+    "@typescript-eslint/eslint-plugin": "^2.10.0",
+    "@typescript-eslint/parser": "^2.10.0",
+    "@vkontakte/eslint-config": "^1.0.1",
+    "eslint": "^6.1.0",
+    "eslint-plugin-react": "^7.17.0",
+    "eslint-plugin-react-hooks": "^2.3.0",
+    "express": "^4.17.1",
+    "jest": "^24.9.0",
+    "jest-expect-message": "^1.0.2",
+    "npm-run-all": "^4.1.5",
+    "object-assign": "^4.1.1",
+    "react": "^16.12.0",
+    "react-dom": "^16.13.0",
+    "source-map-loader": "^0.2.4",
+    "ts-jest": "^24.2.0",
+    "ts-loader": "^6.2.2",
+    "ts-node": "^8.5.4",
+    "tsconfig-paths": "^3.9.0",
+    "typescript": "^3.7.3",
+    "webpack": "^4.42.0",
+    "webpack-cli": "^3.3.11"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}

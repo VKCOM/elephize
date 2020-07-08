@@ -1,0 +1,21 @@
+{
+  "src": "src/components/**/*.iso.tsx",
+  "outDir": "public/build",
+  "output": "bootstrap.php",
+  "quiet": false,
+  "bail": "none",
+  "dump": false,
+  "noZap": false,
+  "verbose": false,
+  "verboseUsage": false,
+  "baseDir": "src/",
+  "tsPaths": {
+    "#iso_palette/*": ["components/iso_palette/*"],
+    "#utils/*": ["utils/*"]
+  },
+  "aliases": {
+    "/components/iso_palette": "/Components/iso",
+    "/components": "/Components",
+    "/utils": "/Utils"
+  }
+}

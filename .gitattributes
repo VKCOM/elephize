@@ -1,0 +1,3 @@
+dist/**/* linguist-generated
+data/domattrs.json linguist-generated
+data/intrinsicElements.json linguist-generated

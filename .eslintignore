@@ -1,0 +1,8 @@
+node_modules/
+.idea/
+vendor/
+dist/
+demo/
+
+src/__tests__/specimens/astTools/flagParentOfType.ts
+src/__tests__/specimens/astTools/synList.ts

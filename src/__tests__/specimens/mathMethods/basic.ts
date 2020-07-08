@@ -1,0 +1,15 @@
+let mSrc = -1.324545234;
+let mAbs = Math.abs(mSrc);
+let mRnd = Math.round(mSrc);
+let mFlr = Math.floor(mSrc);
+let mCl = Math.ceil(mSrc);
+let mRndm = Math.random();
+let mExp = Math.exp(mSrc);
+let mLog = Math.log(mSrc);
+let mMax = Math.max(1, 2, 3, 4);
+let mMin = Math.min(1, 2, 3, 4);
+let mPow = Math.pow(mSrc, mSrc);
+let mSqrt = Math.sqrt(mSrc);
+let mLog2 = Math.log2(mSrc);
+let mLog10 = Math.log10(mSrc);
+console.log(mAbs, mRnd, mFlr, mCl, mRndm, mExp, mLog, mMax, mMin, mPow, mSqrt, mLog2, mLog10);
