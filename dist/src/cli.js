@@ -10,7 +10,7 @@ var configureLogging_1 = require("./ts2php/components/cli/configureLogging");
 var transpile_1 = require("./ts2php/components/cli/transpile");
 var _options = cli.parse({
     config: ['c', 'Configuration file path', 'string', undefined],
-    src: ['s', 'A source file or glob to process', 'string', undefined],
+    src: ['s', 'An entry point (file or glob) to process', 'string', undefined],
     outDir: ['d', 'Directory for generated php files', 'string', undefined],
     output: ['o', 'Name for bootstrap file', 'string', undefined],
     quiet: ['q', 'Do not show error messages from transpiler', 'bool', undefined],

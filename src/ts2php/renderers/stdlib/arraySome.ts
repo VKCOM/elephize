@@ -1,20 +1,19 @@
 import * as ts from 'typescript';
-import { renderSupportedNodes } from '../../utils/renderSupportedNodes';
-import { Declaration, ExpressionHook, NodeInfo } from '../../types';
+import { CallbackType, Declaration, ExpressionHook } from '../../types';
 import { ctx, log, LogSeverity } from '../../utils/log';
 import { propNameIs } from './_propName';
 import { assertArrayType } from './_assert';
 import { Context } from '../../components/context';
 import { getCallExpressionCallbackArg, getCallExpressionLeftSide } from '../../utils/ast';
+import { renderNodes } from '../../components/codegen/renderNodes';
 
 /**
  * Array.prototype.some support
  *
  * @param node
- * @param self
  * @param context
  */
-export const arraySome: ExpressionHook = (node: ts.CallExpression, self: NodeInfo, context: Context<Declaration>) => {
+export const arraySome: ExpressionHook = (node: ts.CallExpression, context: Context<Declaration>) => {
   if (!propNameIs('some', node)) {
     return undefined;
   }
@@ -22,14 +21,15 @@ export const arraySome: ExpressionHook = (node: ts.CallExpression, self: NodeInf
     log('Left-hand expression must have array-like or iterable inferred type', LogSeverity.ERROR, ctx(node));
     return 'null';
   }
-  self.flags.name = 'array_some';
-  const funcNode = getCallExpressionCallbackArg(self);
-  const varNode = getCallExpressionLeftSide(self);
-  let renderedFunc = renderSupportedNodes([funcNode], context);
-  let varName = renderSupportedNodes([varNode], context);
-  if (!self.flags.childCount) {
+
+  const funcNode: CallbackType = getCallExpressionCallbackArg(node) as CallbackType;
+  const funcArgsCount = funcNode?.parameters.length || 0;
+  if (!funcArgsCount) {
     log('Array.prototype.some: can\'t find iterable element in call.', LogSeverity.ERROR, ctx(node));
     return 'null';
   }
+
+  const varNode = getCallExpressionLeftSide(node);
+  let [renderedFunc, varName] = renderNodes([funcNode, varNode], context);
   return `Stdlib::arraySome(${varName}, ${renderedFunc})`;
 };

@@ -26,10 +26,11 @@ function isTopLevel(node, context) {
     return false;
 }
 exports.isTopLevel = isTopLevel;
-function isTopLevelComponent(nodeInfo) {
-    var func = ast_1.getClosestParentOfType(nodeInfo, ts.SyntaxKind.FunctionExpression, true)
-        || ast_1.getClosestParentOfType(nodeInfo, ts.SyntaxKind.ArrowFunction, true)
-        || ast_1.getClosestParentOfType(nodeInfo, ts.SyntaxKind.FunctionDeclaration, true);
-    return func && func.flags.isComponent;
+function isTopLevelComponent(node, nodeFlagStore) {
+    var _a;
+    var func = ast_1.getClosestParentOfType(node, ts.SyntaxKind.FunctionExpression, true)
+        || ast_1.getClosestParentOfType(node, ts.SyntaxKind.ArrowFunction, true)
+        || ast_1.getClosestParentOfType(node, ts.SyntaxKind.FunctionDeclaration, true);
+    return func && ((_a = nodeFlagStore.get(func)) === null || _a === void 0 ? void 0 : _a.isComponent);
 }
 exports.isTopLevelComponent = isTopLevelComponent;

@@ -5,11 +5,13 @@ import { Scope } from './unusedCodeElimination/usageGraph';
 import { BoundNode } from './unusedCodeElimination/usageGraph/node';
 import { log, LogSeverity, shortCtx } from '../utils/log';
 import { NsMap } from '../types';
+import { NodeFlagStore } from './codegen/nodeFlagStore';
 
 export class Context<T> {
   public constructor(
     protected _scope: Scope<T>,
     public checker: ts.TypeChecker,
+    public nodeFlagsStore: NodeFlagStore,
     public readonly compilerOptions: ts.CompilerOptions,
     public moduleDescriptor: CommonjsModule,
     public dryRun: boolean,

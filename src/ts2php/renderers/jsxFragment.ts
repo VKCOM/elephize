@@ -1,12 +1,6 @@
 import * as ts from 'typescript';
-import { Declaration, NodeDescription, NodeInfo } from '../types';
-import { renderSupportedNodes } from '../utils/renderSupportedNodes';
+import { Declaration } from '../types';
 import { Context } from '../components/context';
+import { renderNodes } from '../components/codegen/renderNodes';
 
-export function tJsxFragment(node: ts.JsxFragment): NodeDescription {
-  return {
-    kind: node.kind,
-    supported: true,
-    gen: (self: NodeInfo, context: Context<Declaration>) => '$this->frg([\n' + renderSupportedNodes(self.children, context).join(',\n') + '\n])'
-  };
-}
+export const tJsxFragment = (node: ts.JsxFragment, context: Context<Declaration>) => '$this->frg([\n' + renderNodes([...node.children], context).join(',\n') + '\n])';

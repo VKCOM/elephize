@@ -1,32 +1,30 @@
 import * as ts from 'typescript';
-import { renderSupportedNodes } from '../../utils/renderSupportedNodes';
-import { Declaration, ExpressionHook, NodeInfo } from '../../types';
+import { Declaration, ExpressionHook } from '../../types';
 import { ctx, log, LogSeverity } from '../../utils/log';
 import { propNameIs } from './_propName';
 import { assertArrayType } from './_assert';
 import { Context } from '../../components/context';
-import { getCallExpressionLeftSide, getChildByType } from '../../utils/ast';
+import { getCallExpressionLeftSide } from '../../utils/ast';
+import { renderNode, renderNodes } from '../../components/codegen/renderNodes';
 
 /**
  * String.prototype.indexOf support
  * Array.prototype.indexOf support
  *
  * @param node
- * @param self
  * @param context
  */
-export const arrayStringIndexOf: ExpressionHook = (node: ts.CallExpression, self: NodeInfo, context: Context<Declaration>) => {
+export const arrayStringIndexOf: ExpressionHook = (node: ts.CallExpression, context: Context<Declaration>) => {
   if (!propNameIs('indexOf', node)) {
     return undefined;
   }
   let nd: ts.Node = (node.expression as ts.PropertyAccessExpression).expression;
   let type = context.checker.getTypeAtLocation(nd);
-  const argsNodes = getChildByType(self, ts.SyntaxKind.SyntaxList);
-  const varNameNode = getCallExpressionLeftSide(self);
+  const varNameNode = getCallExpressionLeftSide(node);
 
   if (type.isStringLiteral() || context.checker.typeToString(type, nd, ts.TypeFormatFlags.None) === 'string') {
-    let args = renderSupportedNodes(argsNodes?.children || [], context);
-    let varName = renderSupportedNodes([varNameNode], context);
+    let args = renderNodes([...node.arguments], context);
+    let varName = renderNode(varNameNode, context);
     if (!args || !args[0]) {
       log('String.prototype.indexOf: can\'t find searchable element in call.', LogSeverity.ERROR, ctx(node));
       return 'null';
@@ -37,8 +35,8 @@ export const arrayStringIndexOf: ExpressionHook = (node: ts.CallExpression, self
       log('Left-hand expression must have string, array-like or iterable inferred type', LogSeverity.ERROR, ctx(node));
       return 'null';
     }
-    let args = renderSupportedNodes(argsNodes?.children || [], context);
-    let varName = renderSupportedNodes([varNameNode], context);
+    let args = renderNodes([...node.arguments], context);
+    let varName = renderNode(varNameNode, context);
     if (!args || !args[0]) {
       log('Array.prototype.indexOf: can\'t find searchable element in call.', LogSeverity.ERROR, ctx(node));
       return 'null';

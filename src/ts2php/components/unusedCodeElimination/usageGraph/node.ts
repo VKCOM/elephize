@@ -137,7 +137,12 @@ export class ScopeNode<T extends { [key: string]: any }> {
     }
     this._usageMark = true;
   }
-  public reset() { this._usageMark = false; }
+  public reset() {
+    if (log.verbosity! & LogVerbosity.WITH_USAGE_GRAPH_DUMP) {
+      log('Resetting node usage: ' + this.ident, LogSeverity.INFO);
+    }
+    this._usageMark = false;
+  }
 
   /**
    * Call this method on terminal node to travers and mark all used identifiers in all scopes.

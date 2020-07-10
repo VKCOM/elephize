@@ -1,5 +1,5 @@
 import * as ts from 'typescript';
-import { Declaration, ExpressionHook, NodeInfo } from '../../types';
+import { Declaration, ExpressionHook } from '../../types';
 import { Context } from '../../components/context';
 import { arrayFilter } from './arrayFilter';
 import { arrayFind } from './arrayFind';
@@ -23,9 +23,6 @@ import { stringSplit } from './stringSplit';
 import { stringStartsWith } from './stringStartsWith';
 import { stringSubstr } from './stringSubstr';
 import { stringTrim } from './stringTrim';
-import { funcBind } from './funcBind';
-import { funcCall } from './funcCall';
-import { funcApply } from './funcApply';
 import { arrayIsArray } from './arrayIsArray';
 import { Scope } from '../../components/unusedCodeElimination/usageGraph';
 import { markUsedVars } from '../../components/unusedCodeElimination/varsUsage';
@@ -36,10 +33,10 @@ const stdlibHooks: ExpressionHook[] = [
   arrayPop, arrayPush, arrayReduce, arraySome, arraySplice,
   arrayStringIncludes, arrayStringLastIndexOf, arrayStringIndexOf, arrayStringSlice,
   math, objectKeys, toString, stringSplit, stringStartsWith, stringSubstr, stringTrim,
-  funcBind, funcCall, funcApply, arrayIsArray, typecastConstructors
+  arrayIsArray, typecastConstructors
 ];
 
-export const hookStdlib: ExpressionHook = (node: ts.CallExpression, self: NodeInfo, context: Context<Declaration>) => {
+export const hookStdlib: ExpressionHook = (node: ts.CallExpression, context: Context<Declaration>) => {
   let result = undefined;
 
   let lExp = getLeftExpr(node.expression);
@@ -52,7 +49,7 @@ export const hookStdlib: ExpressionHook = (node: ts.CallExpression, self: NodeIn
   context.scope.addEventListener(Scope.EV_USAGE, onUsage);
   stdlibHooks.some((hook) => {
     usedVars.clear();
-    result = hook(node, self, context);
+    result = hook(node, context);
     if (result !== undefined) {
       return true;
     }

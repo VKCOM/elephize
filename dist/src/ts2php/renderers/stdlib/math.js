@@ -1,17 +1,23 @@
 "use strict";
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var ts = require("typescript");
-var renderSupportedNodes_1 = require("../../utils/renderSupportedNodes");
 var log_1 = require("../../utils/log");
 var ast_1 = require("../../utils/ast");
+var renderNodes_1 = require("../../components/codegen/renderNodes");
 /**
  * Math.* methods and constants
  *
  * @param node
- * @param self
  * @param context
  */
-exports.math = function (node, self, context) {
+exports.math = function (node, context) {
     var toCheck = node.expression.kind === ts.SyntaxKind.PropertyAccessExpression
         && node.expression.expression.getText() === 'Math';
     if (!toCheck) {
@@ -32,20 +38,19 @@ exports.math = function (node, self, context) {
         case 'exp':
         case 'log':
         case 'sqrt':
-            var varName = renderSupportedNodes_1.renderSupportedNodes([ast_1.getCallExpressionArg(self)], context).join('');
+            var varName = renderNodes_1.renderNode(ast_1.getCallExpressionArg(node), context);
             return operation + "(" + varName + ")";
         case 'random':
             return 'mt_rand(0, PHP_INT_MAX) / (float)PHP_INT_MAX';
         case 'pow':
         case 'max':
         case 'min':
-            var args = ast_1.getChildByType(self, ts.SyntaxKind.SyntaxList);
-            var nodes = renderSupportedNodes_1.renderSupportedNodes((args === null || args === void 0 ? void 0 : args.children) || [], context);
+            var nodes = renderNodes_1.renderNodes(__spreadArrays(node.arguments), context);
             return operation + "(" + nodes.join(', ') + ")";
         case 'log2':
-            return "log(" + renderSupportedNodes_1.renderSupportedNodes([ast_1.getCallExpressionArg(self)], context).join('') + ", 2)";
+            return "log(" + renderNodes_1.renderNode(ast_1.getCallExpressionArg(node), context) + ", 2)";
         case 'log10':
-            return "log(" + renderSupportedNodes_1.renderSupportedNodes([ast_1.getCallExpressionArg(self)], context).join('') + ", 10)";
+            return "log(" + renderNodes_1.renderNode(ast_1.getCallExpressionArg(node), context) + ", 10)";
         default:
             log_1.log("Math: unsupported method (" + operation + ")", log_1.LogSeverity.ERROR, log_1.ctx(node));
             return 'null';

@@ -1,14 +1,13 @@
 import * as path from 'path';
 import { resolve as pResolve } from 'path';
-import { translateCode } from '../ts2php/components/codeGenerator';
+import { translateCode } from '../ts2php/components/codegen/translateCode';
 import { spawn } from 'child_process';
 import { readFileSync } from 'fs';
-import { log, LogSeverity, LogVerbosity } from '../ts2php/utils/log';
+import { log, LogSeverity } from '../ts2php/utils/log';
 import { normalizeFileExt } from '../ts2php/utils/pathsAndNames';
 import * as prettier from 'prettier/standalone';
 import { phpPrettierOptions } from '../ts2php/internalConfig/phpPrettierOptions';
 
-log.verbosity = process.env.VERBOSE ? LogVerbosity.ALL : 0;
 const baseDir = path.resolve(__dirname, '..', '..');
 const namespaces = {
   root: 'VK\\Elephize',

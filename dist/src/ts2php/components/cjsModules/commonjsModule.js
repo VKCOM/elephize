@@ -17,7 +17,6 @@ var CommonjsModule = /** @class */ (function () {
         this._specialVars = {};
     }
     // For removing dupes during second pass of codegen
-    // TODO: maybe we can do it some other way than two-pass?
     CommonjsModule.prototype.clearStatements = function () {
         this._constructorStatements = [];
         this._hoistedContent = new Set();

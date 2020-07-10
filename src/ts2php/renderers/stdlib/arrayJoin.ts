@@ -1,20 +1,19 @@
 import * as ts from 'typescript';
-import { renderSupportedNodes } from '../../utils/renderSupportedNodes';
-import { Declaration, ExpressionHook, NodeInfo } from '../../types';
+import { Declaration, ExpressionHook } from '../../types';
 import { propNameIs } from './_propName';
 import { ctx, log, LogSeverity } from '../../utils/log';
 import { assertArrayType } from './_assert';
 import { Context } from '../../components/context';
-import { getCallExpressionLeftSide, getChildByType } from '../../utils/ast';
+import { getCallExpressionLeftSide } from '../../utils/ast';
+import { renderNode, renderNodes } from '../../components/codegen/renderNodes';
 
 /**
  * Array.prototype.join support
  *
  * @param node
- * @param self
  * @param context
  */
-export const arrayJoin: ExpressionHook = (node: ts.CallExpression, self: NodeInfo, context: Context<Declaration>) => {
+export const arrayJoin: ExpressionHook = (node: ts.CallExpression, context: Context<Declaration>) => {
   if (!propNameIs('join', node)) {
     return undefined;
   }
@@ -23,11 +22,10 @@ export const arrayJoin: ExpressionHook = (node: ts.CallExpression, self: NodeInf
     return 'null';
   }
 
-  const argsNodes = getChildByType(self, ts.SyntaxKind.SyntaxList);
-  const varNameNode = getCallExpressionLeftSide(self);
+  const varNameNode = getCallExpressionLeftSide(node);
 
-  let args = renderSupportedNodes(argsNodes?.children || [], context);
-  let varName = renderSupportedNodes([varNameNode], context);
+  let args = renderNodes([...node.arguments], context);
+  let varName = renderNode(varNameNode, context);
   if (!args || !args[0]) {
     return `implode(${varName})`;
   }

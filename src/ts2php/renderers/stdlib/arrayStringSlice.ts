@@ -1,15 +1,15 @@
 import * as ts from 'typescript';
-import { renderSupportedNodes } from '../../utils/renderSupportedNodes';
-import { Declaration, ExpressionHook, NodeInfo } from '../../types';
+import { Declaration, ExpressionHook } from '../../types';
 import { ctx, log, LogSeverity } from '../../utils/log';
 import { propNameIs } from './_propName';
 import { assertArrayType } from './_assert';
 import { Context } from '../../components/context';
 import {
-  flagParentOfType, getCallExpressionLeftSide,
-  getChildByType,
+  flagParentOfType,
+  getCallExpressionLeftSide,
   getLeftExpr
 } from '../../utils/ast';
+import { renderNode, renderNodes } from '../../components/codegen/renderNodes';
 
 function isForcedArrayType(context: Context<Declaration>, node: ts.CallExpression) {
   const left = getLeftExpr(node.expression)?.getText();
@@ -30,20 +30,18 @@ function isForcedArrayType(context: Context<Declaration>, node: ts.CallExpressio
  * Array.prototype.slice support
  *
  * @param node
- * @param self
  * @param context
  */
-export const arrayStringSlice: ExpressionHook = (node: ts.CallExpression, self: NodeInfo, context: Context<Declaration>) => {
+export const arrayStringSlice: ExpressionHook = (node: ts.CallExpression, context: Context<Declaration>) => {
   if (!propNameIs('slice', node)) {
     return undefined;
   }
   let nd: ts.Node = (node.expression as ts.PropertyAccessExpression).expression;
   let type = context.checker.getTypeAtLocation(nd);
-  const argsNodes = getChildByType(self, ts.SyntaxKind.SyntaxList);
-  const varNameNode = getCallExpressionLeftSide(self);
+  const varNameNode = getCallExpressionLeftSide(node);
   if (type.isStringLiteral() || context.checker.typeToString(type, nd, ts.TypeFormatFlags.None) === 'string') {
-    let args = renderSupportedNodes(argsNodes?.children || [], context);
-    let [varName] = renderSupportedNodes([varNameNode], context);
+    let args = renderNodes([...node.arguments], context);
+    let varName = renderNode(varNameNode, context);
     if (!args || !args[0]) {
       return varName;
     }
@@ -61,11 +59,11 @@ export const arrayStringSlice: ExpressionHook = (node: ts.CallExpression, self: 
     }
 
     if (forced) {
-      flagParentOfType(self, [ts.SyntaxKind.VariableDeclarationList], { forceType: 'split' });
+      flagParentOfType(node, [ts.SyntaxKind.VariableDeclarationList], { forceType: 'split' }, context.nodeFlagsStore);
     }
 
-    let args = renderSupportedNodes(argsNodes?.children || [], context);
-    let varName = renderSupportedNodes([varNameNode], context);
+    let args = renderNodes([...node.arguments], context);
+    let varName = renderNode(varNameNode, context);
     if (!args || !args[0]) {
       return `array_slice(${varName}, 0)`;
     }

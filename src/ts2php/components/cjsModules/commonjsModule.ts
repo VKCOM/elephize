@@ -19,7 +19,6 @@ export class CommonjsModule {
   ) {}
 
   // For removing dupes during second pass of codegen
-  // TODO: maybe we can do it some other way than two-pass?
   public clearStatements() {
     this._constructorStatements = [];
     this._hoistedContent = new Set();

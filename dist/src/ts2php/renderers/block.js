@@ -7,16 +7,8 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var renderSupportedNodes_1 = require("../utils/renderSupportedNodes");
-function tBlock(node) {
-    return {
-        kind: node.kind,
-        supported: true,
-        gen: function (self, context) {
-            // Don't support block-scoped vars for now, as we transpile to es3 first.
-            var children = self.children;
-            return __spreadArrays(['{'], renderSupportedNodes_1.renderSupportedNodes(children, context), ['}']).join('\n');
-        }
-    };
+var renderNodes_1 = require("../components/codegen/renderNodes");
+function tBlock(node, context) {
+    return __spreadArrays(['{'], renderNodes_1.renderNodes(__spreadArrays(node.statements), context), ['}']).join('\n');
 }
 exports.tBlock = tBlock;

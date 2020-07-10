@@ -2,9 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var log_1 = require("../utils/log");
 var Context = /** @class */ (function () {
-    function Context(_scope, checker, compilerOptions, moduleDescriptor, dryRun, baseDir, namespaces, registry, customGlobals) {
+    function Context(_scope, checker, nodeFlagsStore, compilerOptions, moduleDescriptor, dryRun, baseDir, namespaces, registry, customGlobals) {
         this._scope = _scope;
         this.checker = checker;
+        this.nodeFlagsStore = nodeFlagsStore;
         this.compilerOptions = compilerOptions;
         this.moduleDescriptor = moduleDescriptor;
         this.dryRun = dryRun;

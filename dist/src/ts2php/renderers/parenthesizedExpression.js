@@ -1,13 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-function tParenthesizedExpression(node) {
-    return {
-        kind: node.kind,
-        supported: true,
-        gen: function (self, context) {
-            var _a = self.children, expr = _a[1];
-            return '(' + expr.node.gen(expr, context) + ')';
-        }
-    };
+var renderNodes_1 = require("../components/codegen/renderNodes");
+function tParenthesizedExpression(node, context) {
+    return '(' + renderNodes_1.renderNode(node.expression, context) + ')';
 }
 exports.tParenthesizedExpression = tParenthesizedExpression;

@@ -1,23 +1,19 @@
 import { Context } from 'src/ts2php/components/context';
-import { Declaration, DeclFlag, NodeInfo } from '../types';
+import { Declaration, DeclFlag } from '../types';
 import * as ts from 'typescript';
-import { renderSupportedNodes } from '../utils/renderSupportedNodes';
-import {
-  getChildByType,
-  getChildOfAnyTypeAfterSelected,
-  getClosestOrigParentOfType,
-  RightHandExpressionLike
-} from '../utils/ast';
+import { fetchAllBindingIdents, getClosestOrigParentOfType } from '../utils/ast';
 import { handleComponent } from './react/reactComponents';
 import { ctx, log, LogSeverity } from '../utils/log';
 import { BoundNode } from './unusedCodeElimination/usageGraph/node';
+import { renderNode, renderNodes } from './codegen/renderNodes';
+type FunctionalDecl = ts.FunctionDeclaration | ts.FunctionExpression | ts.ArrowFunction;
 
 export function getRenderedBlock(
   context: Context<Declaration>,
   nodeIdent: string,
-  nodeOrig: ts.Node | undefined,
-  realParent: NodeInfo | undefined,
-  nodes: [NodeInfo | undefined, NodeInfo | undefined]
+  realParent: ts.Node | undefined,
+  argSynList: ts.NodeArray<ts.ParameterDeclaration>,
+  bodyBlock?: ts.Node // can be many types in arrow func
 ) {
   let node;
   const [, declScope] = context.scope.findByIdent(nodeIdent) || [];
@@ -30,10 +26,17 @@ export function getRenderedBlock(
   }
 
   context.pushScope(nodeIdent);
+
+  // Declare all parameters
+  argSynList.map(fetchAllBindingIdents)
+    .reduce((acc, val) => acc.concat(val), []) // flatten;
+    .forEach((ident) => context.scope.addDeclaration(ident.getText(), [], { terminateLocally: true, dryRun: context.dryRun }));
+
   if (realParent) {
-    realParent.flags.destructuringInfo = {vars: ''}; // Reset destructuring info
+    context.nodeFlagsStore.upsert(realParent, { destructuringInfo: { vars: '' } });
   }
-  let [syntaxList, block] = renderSupportedNodes(nodes, context, false);
+  let [...syntaxList] = renderNodes([...argSynList], context, false);
+  let block = renderNode(bodyBlock, context);
   const idMap = new Map<string, boolean>();
   context.scope.getClosure().forEach((decl, ident) => {
     if ((decl.flags & DeclFlag.External) && decl.propName === '*') {
@@ -50,33 +53,32 @@ export function getRenderedBlock(
 }
 
 type GenParams = {
-  statement: NodeInfo;
-  expr: NodeInfo;
+  expr: ts.FunctionDeclaration | ts.FunctionExpression | ts.ArrowFunction;
   nodeIdent: string;
   context: Context<Declaration>;
   origDecl?: ts.VariableDeclaration;
   origStatement?: ts.Expression;
 };
-export function generateFunctionElements({ statement, expr, nodeIdent, context, origDecl, origStatement }: GenParams) {
+export function generateFunctionElements({ expr, nodeIdent, context, origDecl, origStatement }: GenParams) {
   if (origDecl && origStatement) {
     const parentStmt = getClosestOrigParentOfType(origDecl, ts.SyntaxKind.VariableStatement);
     if (parentStmt) {
-      let handledContent = handleComponent(context, origStatement, expr);
+      let handledContent = handleComponent(context, origStatement);
       if (handledContent) {
         return null; // component is written to different file, so we should not output anything here
       }
     }
   }
 
-  const synListNode = getChildOfAnyTypeAfterSelected(expr, ts.SyntaxKind.OpenParenToken, [ts.SyntaxKind.SyntaxList]);
-  // Fallback value for oneline arrow function cases.
-  const blockNode = getChildByType(expr, ts.SyntaxKind.Block) || getChildOfAnyTypeAfterSelected(expr, ts.SyntaxKind.EqualsGreaterThanToken, RightHandExpressionLike);
+  const params = expr.parameters;
+  const blockNode = expr.body;
+
   let { syntaxList, block } = getRenderedBlock(
     context, nodeIdent, origStatement,
-    statement, [synListNode, blockNode]
+    params, blockNode
   );
   block = unwrapArrowBody(block, blockNode);
-  block = prependDestructuredParams(block, statement);
+  block = prependDestructuredParams(block, expr, context);
   return { syntaxList, block };
 }
 
@@ -104,34 +106,35 @@ export function genClosure(idMap: Map<string, boolean>, context: Context<Declara
   return { closureExpr };
 }
 
-export function prependDestructuredParams(block: string, realParent: NodeInfo) {
-  if (!realParent.flags.destructuringInfo?.vars) {
+export function prependDestructuredParams(block: string, func: FunctionalDecl, context: Context<Declaration>) {
+  const flags = context.nodeFlagsStore.get(func);
+  if (!flags?.destructuringInfo?.vars) {
     return block;
   }
 
-  return block.replace(/^{/, '{\n' + realParent.flags.destructuringInfo.vars);
+  return block.replace(/^{/, '{\n' + flags.destructuringInfo.vars);
 }
 
-export function unwrapArrowBody(block: string, blockNode?: NodeInfo, noReturn = false) {
-  if (blockNode?.node.kind !== ts.SyntaxKind.Block) {
+export function unwrapArrowBody(block: string, blockNode?: ts.Node, noReturn = false) {
+  if (blockNode?.kind !== ts.SyntaxKind.Block) {
     return noReturn ? `{\n${block};\n}` : `{\nreturn ${block};\n}`;
   }
   return block;
 }
 
 type ExprGenOptions = {
-  synListNode?: NodeInfo;
-  blockNode: NodeInfo;
+  synList: ts.NodeArray<ts.ParameterDeclaration>;
+  blockNode?: ts.Node;
 };
-export const functionExpressionGen = (node: ts.Node, ident: string, realParent: NodeInfo) => (opts: ExprGenOptions, context: Context<Declaration>) => {
+export const functionExpressionGen = (node: FunctionalDecl, ident: string) => (opts: ExprGenOptions, context: Context<Declaration>) => {
   // TODO: disallow `this` in expressions
 
   let { syntaxList, block, idMap } = getRenderedBlock(
     context, ident, node,
-    realParent, [opts.synListNode, opts.blockNode]
+    opts.synList, opts.blockNode
   );
   block = unwrapArrowBody(block, opts.blockNode);
-  block = prependDestructuredParams(block, realParent);
+  block = prependDestructuredParams(block, node, context);
 
   const { closureExpr } = genClosure(idMap, context, node);
   return `/* ${ident} */ function (${syntaxList})${closureExpr} ${block}`;

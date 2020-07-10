@@ -1,16 +1,9 @@
 import * as ts from 'typescript';
-import { Declaration, NodeDescription, NodeInfo } from '../types';
-import { renderSupportedNodes } from '../utils/renderSupportedNodes';
+import { Declaration } from '../types';
 import { Context } from '../components/context';
+import { renderNodes } from '../components/codegen/renderNodes';
 
-export function tElementAccessExpression(node: ts.ElementAccessExpression): NodeDescription {
-  return {
-    kind: node.kind,
-    supported: true,
-    gen: (self: NodeInfo, context: Context<Declaration>) => {
-      const children = self.children;
-      let [ident, accessor] = renderSupportedNodes(children, context);
-      return `${ident}[${accessor}]`;
-    }
-  };
+export function tElementAccessExpression(node: ts.ElementAccessExpression, context: Context<Declaration>) {
+  let [ident, accessor] = renderNodes([node.expression, node.argumentExpression], context);
+  return `${ident}[${accessor}]`;
 }

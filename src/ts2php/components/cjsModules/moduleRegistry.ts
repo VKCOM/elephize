@@ -1,5 +1,3 @@
-import * as path from 'path';
-import * as fs from 'fs';
 import { CommonjsModule } from './commonjsModule';
 import { log, LogSeverity } from '../../utils/log';
 import { ReactModule } from './reactModule';
@@ -8,7 +6,7 @@ import {
   capitalize,
   classNameFromPath,
   normalizeBasePath,
-  normalizeFileExt,
+  normalizeFileExt, resolveAliasesAndPaths,
   snakify
 } from '../../utils/pathsAndNames';
 import { NsMap } from '../../types';
@@ -35,7 +33,7 @@ export class ModuleRegistry {
 
   public constructor(
     private readonly _baseDir: string,
-    private readonly _aliases: { [key: string]: string },
+    public readonly _aliases: { [key: string]: string },
     private readonly _tsPaths: { [key: string]: string [] },
     private readonly _namespaces: NsMap
   ) {}
@@ -48,25 +46,43 @@ export class ModuleRegistry {
     this._targetFilenameToModule.forEach(cb);
   }
 
-  public getExportedIdentifier(forModule: CommonjsModule, targetFilename: string, identifier: string, rewriteCase = false): string {
+  public getExportedIdentifier(forModule: CommonjsModule, targetFilename: string | undefined, identifier: string, rewriteCase = false): string {
+    if (!targetFilename) {
+      // Dropped or ignored import
+      log(`Attempt to reach dropped or ignored module: ${identifier} \n\t@ ${forModule.sourceFileName}`, LogSeverity.ERROR);
+      return 'null';
+    }
+
     const instance = this._getInstance(targetFilename, identifier);
     if (!instance) {
-      return '';
+      return 'null';
     }
     forModule.registerRequiredFile(targetFilename, forModule.targetFileName, this._targetFilenameToModule.get(targetFilename));
     return `${instance}->${rewriteCase ? snakify(identifier) : identifier}`;
   }
 
-  public callExportedCallable(forModule: CommonjsModule, targetFilename: string, identifier: string, args: string[]): string {
+  public callExportedCallable(forModule: CommonjsModule, targetFilename: string | undefined, identifier: string, args: string[]): string {
+    if (!targetFilename) {
+      // Dropped or ignored import
+      log(`Attempt to reach dropped or ignored module: ${identifier} \n\t@ ${forModule.sourceFileName}`, LogSeverity.ERROR);
+      return 'null';
+    }
+
     const instance = this._getInstance(targetFilename, identifier);
     if (!instance) {
-      return '';
+      return 'null';
     }
     forModule.registerRequiredFile(targetFilename, forModule.targetFileName, this._targetFilenameToModule.get(targetFilename));
     return `${instance}->${identifier}(${args.join(', ')})`;
   }
 
-  public getExportedComponent(forModule: CommonjsModule, targetFilename: string, identifier: string): string {
+  public getExportedComponent(forModule: CommonjsModule, targetFilename: string | undefined, identifier: string): string {
+    if (!targetFilename) {
+      // Dropped or ignored import
+      log(`Attempt to reach dropped or ignored module: ${identifier} \n\t@ ${forModule.sourceFileName}`, LogSeverity.ERROR);
+      return 'null';
+    }
+
     // component should be in another file, use derived table to determine it
     let derived = this._derivedComponentsPathMap.get(targetFilename);
 
@@ -91,7 +107,7 @@ export class ModuleRegistry {
   }
 
   public registerClass(filepath: string): CommonjsModule | null {
-    const fullyQualifiedSourceFilename = this.resolveAliasesAndPaths(filepath, '', this._baseDir, this._tsPaths);
+    const fullyQualifiedSourceFilename = resolveAliasesAndPaths(filepath, '', this._baseDir, this._tsPaths, this._aliases);
     if (!fullyQualifiedSourceFilename) {
       log(`Failed to lookup file ${filepath} [#1]`, LogSeverity.ERROR);
       return null;
@@ -179,69 +195,6 @@ export class ModuleRegistry {
     }
 
     return undefined;
-  }
-
-  public resolveAliasesAndPaths(targetPath: string, currentDir: string, baseDir: string, tsPaths: { [key: string]: string [] }): string | null {
-    targetPath = targetPath.replace(/\.[jt]sx?$/, '');
-    for (const pathOrig in tsPaths) {
-      if (pathOrig === '*') {
-        throw new Error('Asterisk-only aliases are not supported');
-      }
-
-      const pathToTry = pathOrig.replace(/\*$/g, '');
-
-      if (targetPath.startsWith(pathToTry)) {
-        log('Trying paths for location: ' + pathToTry, LogSeverity.INFO);
-        return this._applyOutputAliases(tsPaths[pathOrig].reduce((acc, name) => {
-          if (acc) {
-            return acc;
-          }
-          const target = targetPath.replace(pathToTry, name.replace(/\*$/g, ''));
-          const tPath = target.startsWith('/')
-            ? target // absolute path, no need to resolve
-            : path.resolve(baseDir, target);
-          log('Trying to locate file: ' + tPath, LogSeverity.INFO);
-          const fn = this._lookupFile(tPath);
-          if (fn) {
-            return fn;
-          }
-          return undefined;
-        }, undefined), baseDir);
-      }
-    }
-
-    log('Trying non-aliased path: ' + targetPath, LogSeverity.INFO);
-    return this._applyOutputAliases(this._lookupFile(path.resolve(currentDir, targetPath)), baseDir);
-  }
-
-  private _lookupFile(path: string) {
-    return [
-      path + '.js',
-      path + '.jsx',
-      path + '.ts',
-      path + '.tsx',
-    ].reduce((acc, name) => {
-      if (acc) {
-        return acc;
-      }
-      if (fs.existsSync(name)) {
-        return name;
-      }
-      return undefined;
-    }, undefined);
-  }
-
-  protected _applyOutputAliases(path = '', baseDir: string): string {
-    if (!path) {
-      return '';
-    }
-
-    return baseDir + Object.keys(this._aliases).reduce((acc, aliasKey) => {
-      if (acc.startsWith(aliasKey)) {
-        return acc.replace(aliasKey, this._aliases[aliasKey]);
-      }
-      return acc;
-    }, path.replace(baseDir, ''));
   }
 
   protected _getInstance(filename: string, identifier: string): string {

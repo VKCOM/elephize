@@ -1,12 +1,6 @@
 import * as ts from 'typescript';
-import { Declaration, NodeDescription, NodeInfo } from '../types';
-import { renderSupportedNodes } from '../utils/renderSupportedNodes';
+import { Declaration } from '../types';
 import { Context } from '../components/context';
+import { renderNodes } from '../components/codegen/renderNodes';
 
-export function tVariableDeclarationList(node: ts.VariableDeclarationList): NodeDescription {
-  return {
-    kind: node.kind,
-    supported: true,
-    gen: (self: NodeInfo, context: Context<Declaration>) => renderSupportedNodes(self.children, context).join(', ')
-  };
-}
+export const tVariableDeclarationList = (node: ts.VariableDeclarationList, context: Context<Declaration>) => renderNodes([...node.declarations], context).join(', ');

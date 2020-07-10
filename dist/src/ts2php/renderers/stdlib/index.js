@@ -22,9 +22,6 @@ var stringSplit_1 = require("./stringSplit");
 var stringStartsWith_1 = require("./stringStartsWith");
 var stringSubstr_1 = require("./stringSubstr");
 var stringTrim_1 = require("./stringTrim");
-var funcBind_1 = require("./funcBind");
-var funcCall_1 = require("./funcCall");
-var funcApply_1 = require("./funcApply");
 var arrayIsArray_1 = require("./arrayIsArray");
 var usageGraph_1 = require("../../components/unusedCodeElimination/usageGraph");
 var varsUsage_1 = require("../../components/unusedCodeElimination/varsUsage");
@@ -34,9 +31,9 @@ var stdlibHooks = [
     arrayPop_1.arrayPop, arrayPush_1.arrayPush, arrayReduce_1.arrayReduce, arraySome_1.arraySome, arraySplice_1.arraySplice,
     arrayStringIncludes_1.arrayStringIncludes, arrayStringLastIndexOf_1.arrayStringLastIndexOf, arrayStringIndexOf_1.arrayStringIndexOf, arrayStringSlice_1.arrayStringSlice,
     math_1.math, objectKeys_1.objectKeys, toString_1.toString, stringSplit_1.stringSplit, stringStartsWith_1.stringStartsWith, stringSubstr_1.stringSubstr, stringTrim_1.stringTrim,
-    funcBind_1.funcBind, funcCall_1.funcCall, funcApply_1.funcApply, arrayIsArray_1.arrayIsArray, typecastConstructors_1.typecastConstructors
+    arrayIsArray_1.arrayIsArray, typecastConstructors_1.typecastConstructors
 ];
-exports.hookStdlib = function (node, self, context) {
+exports.hookStdlib = function (node, context) {
     var result = undefined;
     var lExp = ast_1.getLeftExpr(node.expression);
     if (!lExp) {
@@ -47,7 +44,7 @@ exports.hookStdlib = function (node, self, context) {
     context.scope.addEventListener(usageGraph_1.Scope.EV_USAGE, onUsage);
     stdlibHooks.some(function (hook) {
         usedVars.clear();
-        result = hook(node, self, context);
+        result = hook(node, context);
         if (result !== undefined) {
             return true;
         }

@@ -1,14 +1,8 @@
 import * as ts from 'typescript';
-import { Declaration, NodeDescription, NodeInfo } from '../types';
+import { Declaration } from '../types';
 import { Context } from '../components/context';
+import { renderNode } from '../components/codegen/renderNodes';
 
-export function tParenthesizedExpression(node: ts.ParenthesizedExpression): NodeDescription {
-  return {
-    kind: node.kind,
-    supported: true,
-    gen: (self: NodeInfo, context: Context<Declaration>) => {
-      let [/*bracket*/, expr] = self.children;
-      return '(' + expr.node.gen(expr, context) + ')';
-    }
-  };
+export function tParenthesizedExpression(node: ts.ParenthesizedExpression, context: Context<Declaration>) {
+  return '(' + renderNode(node.expression, context) + ')';
 }

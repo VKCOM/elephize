@@ -1,16 +1,8 @@
 import * as ts from 'typescript';
-import { Declaration, NodeDescription, NodeInfo } from '../types';
-import { renderSupportedNodes } from '../utils/renderSupportedNodes';
+import { Declaration } from '../types';
 import { Context } from '../components/context';
+import { renderNodes } from '../components/codegen/renderNodes';
 
-export function tBlock(node: ts.Block): NodeDescription {
-  return {
-    kind: node.kind,
-    supported: true,
-    gen: (self: NodeInfo, context: Context<Declaration>) => {
-      // Don't support block-scoped vars for now, as we transpile to es3 first.
-      const children = self.children;
-      return ['{', ...renderSupportedNodes(children, context), '}'].join('\n');
-    }
-  };
+export function tBlock(node: ts.Block, context: Context<Declaration>) {
+  return ['{', ...renderNodes([...node.statements], context), '}'].join('\n');
 }

@@ -1,7 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var path = require("path");
-var fs = require("fs");
 var commonjsModule_1 = require("./commonjsModule");
 var log_1 = require("../../utils/log");
 var reactModule_1 = require("./reactModule");
@@ -39,22 +37,37 @@ var ModuleRegistry = /** @class */ (function () {
     };
     ModuleRegistry.prototype.getExportedIdentifier = function (forModule, targetFilename, identifier, rewriteCase) {
         if (rewriteCase === void 0) { rewriteCase = false; }
+        if (!targetFilename) {
+            // Dropped or ignored import
+            log_1.log("Attempt to reach dropped or ignored module: " + identifier + " \n\t@ " + forModule.sourceFileName, log_1.LogSeverity.ERROR);
+            return 'null';
+        }
         var instance = this._getInstance(targetFilename, identifier);
         if (!instance) {
-            return '';
+            return 'null';
         }
         forModule.registerRequiredFile(targetFilename, forModule.targetFileName, this._targetFilenameToModule.get(targetFilename));
         return instance + "->" + (rewriteCase ? pathsAndNames_1.snakify(identifier) : identifier);
     };
     ModuleRegistry.prototype.callExportedCallable = function (forModule, targetFilename, identifier, args) {
+        if (!targetFilename) {
+            // Dropped or ignored import
+            log_1.log("Attempt to reach dropped or ignored module: " + identifier + " \n\t@ " + forModule.sourceFileName, log_1.LogSeverity.ERROR);
+            return 'null';
+        }
         var instance = this._getInstance(targetFilename, identifier);
         if (!instance) {
-            return '';
+            return 'null';
         }
         forModule.registerRequiredFile(targetFilename, forModule.targetFileName, this._targetFilenameToModule.get(targetFilename));
         return instance + "->" + identifier + "(" + args.join(', ') + ")";
     };
     ModuleRegistry.prototype.getExportedComponent = function (forModule, targetFilename, identifier) {
+        if (!targetFilename) {
+            // Dropped or ignored import
+            log_1.log("Attempt to reach dropped or ignored module: " + identifier + " \n\t@ " + forModule.sourceFileName, log_1.LogSeverity.ERROR);
+            return 'null';
+        }
         // component should be in another file, use derived table to determine it
         var derived = this._derivedComponentsPathMap.get(targetFilename);
         var module;
@@ -77,7 +90,7 @@ var ModuleRegistry = /** @class */ (function () {
         return this._getInstance(derived || targetFilename, identifier);
     };
     ModuleRegistry.prototype.registerClass = function (filepath) {
-        var fullyQualifiedSourceFilename = this.resolveAliasesAndPaths(filepath, '', this._baseDir, this._tsPaths);
+        var fullyQualifiedSourceFilename = pathsAndNames_1.resolveAliasesAndPaths(filepath, '', this._baseDir, this._tsPaths, this._aliases);
         if (!fullyQualifiedSourceFilename) {
             log_1.log("Failed to lookup file " + filepath + " [#1]", log_1.LogSeverity.ERROR);
             return null;
@@ -142,71 +155,6 @@ var ModuleRegistry = /** @class */ (function () {
             }
         }
         return undefined;
-    };
-    ModuleRegistry.prototype.resolveAliasesAndPaths = function (targetPath, currentDir, baseDir, tsPaths) {
-        var _this = this;
-        targetPath = targetPath.replace(/\.[jt]sx?$/, '');
-        var _loop_1 = function (pathOrig) {
-            if (pathOrig === '*') {
-                throw new Error('Asterisk-only aliases are not supported');
-            }
-            var pathToTry = pathOrig.replace(/\*$/g, '');
-            if (targetPath.startsWith(pathToTry)) {
-                log_1.log('Trying paths for location: ' + pathToTry, log_1.LogSeverity.INFO);
-                return { value: this_1._applyOutputAliases(tsPaths[pathOrig].reduce(function (acc, name) {
-                        if (acc) {
-                            return acc;
-                        }
-                        var target = targetPath.replace(pathToTry, name.replace(/\*$/g, ''));
-                        var tPath = target.startsWith('/')
-                            ? target // absolute path, no need to resolve
-                            : path.resolve(baseDir, target);
-                        log_1.log('Trying to locate file: ' + tPath, log_1.LogSeverity.INFO);
-                        var fn = _this._lookupFile(tPath);
-                        if (fn) {
-                            return fn;
-                        }
-                        return undefined;
-                    }, undefined), baseDir) };
-            }
-        };
-        var this_1 = this;
-        for (var pathOrig in tsPaths) {
-            var state_1 = _loop_1(pathOrig);
-            if (typeof state_1 === "object")
-                return state_1.value;
-        }
-        log_1.log('Trying non-aliased path: ' + targetPath, log_1.LogSeverity.INFO);
-        return this._applyOutputAliases(this._lookupFile(path.resolve(currentDir, targetPath)), baseDir);
-    };
-    ModuleRegistry.prototype._lookupFile = function (path) {
-        return [
-            path + '.js',
-            path + '.jsx',
-            path + '.ts',
-            path + '.tsx',
-        ].reduce(function (acc, name) {
-            if (acc) {
-                return acc;
-            }
-            if (fs.existsSync(name)) {
-                return name;
-            }
-            return undefined;
-        }, undefined);
-    };
-    ModuleRegistry.prototype._applyOutputAliases = function (path, baseDir) {
-        var _this = this;
-        if (path === void 0) { path = ''; }
-        if (!path) {
-            return '';
-        }
-        return baseDir + Object.keys(this._aliases).reduce(function (acc, aliasKey) {
-            if (acc.startsWith(aliasKey)) {
-                return acc.replace(aliasKey, _this._aliases[aliasKey]);
-            }
-            return acc;
-        }, path.replace(baseDir, ''));
     };
     ModuleRegistry.prototype._getInstance = function (filename, identifier) {
         var _a;
