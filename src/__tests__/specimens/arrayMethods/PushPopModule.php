@@ -14,7 +14,13 @@ class PushPopModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @var array $a_st
+     */
     public $a_st;
+    /**
+     * @var float $b_st
+     */
     public $b_st;
 
     private function __construct() {

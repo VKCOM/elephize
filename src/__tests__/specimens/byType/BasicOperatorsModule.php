@@ -14,37 +14,127 @@ class BasicOperatorsModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @var float $op1
+     */
     public $op1;
+    /**
+     * @var float $op2
+     */
     public $op2;
+    /**
+     * @var string $op3
+     */
     public $op3;
+    /**
+     * @var float $op4
+     */
     public $op4;
+    /**
+     * @var float $op5
+     */
     public $op5;
+    /**
+     * @var float $op6
+     */
     public $op6;
+    /**
+     * @var float $op7
+     */
     public $op7;
+    /**
+     * @var float $op8
+     */
     public $op8;
+    /**
+     * @var float $op10
+     */
     public $op10;
+    /**
+     * @var float $op11
+     */
     public $op11;
+    /**
+     * @var boolean $op12
+     */
     public $op12;
+    /**
+     * @var boolean $op13
+     */
     public $op13;
+    /**
+     * @var boolean $op14
+     */
     public $op14;
+    /**
+     * @var float $op15
+     */
     public $op15;
+    /**
+     * @var float $op16
+     */
     public $op16;
+    /**
+     * @var float $op21
+     */
     public $op21;
+    /**
+     * @var float $op22
+     */
     public $op22;
+    /**
+     * @var float $op23
+     */
     public $op23;
+    /**
+     * @var boolean $op24
+     */
     public $op24;
+    /**
+     * @var boolean $op25
+     */
     public $op25;
     public $op26;
     public $op27;
+    /**
+     * @var array $op28
+     */
     public $op28;
+    /**
+     * @var float|boolean $op29
+     */
     public $op29;
+    /**
+     * @var boolean $op31
+     */
     public $op31;
+    /**
+     * @var boolean $op32
+     */
     public $op32;
+    /**
+     * @var boolean $op33
+     */
     public $op33;
+    /**
+     * @var boolean $op34
+     */
     public $op34;
+    /**
+     * @var boolean $op35
+     */
     public $op35;
+    /**
+     * @var boolean $op36
+     */
     public $op36;
+    /**
+     * @var boolean $op37
+     */
     public $op37;
+    /**
+     * @var boolean $op38
+     */
     public $op38;
 
     private function __construct() {

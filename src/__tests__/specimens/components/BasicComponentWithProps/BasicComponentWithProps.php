@@ -3,14 +3,12 @@ use VK\Elephize\Builtins\RenderableComponent;
 use VK\Elephize\Builtins\IntrinsicElement;
 use VK\Elephize\Builtins\Stdlib;
 
-class BasicComponentWithProps extends RenderableComponent
-{
+class BasicComponentWithProps extends RenderableComponent {
     /**
      * @var BasicComponentWithProps $_mod
      */
     private static $_mod;
-    public static function getInstance(): BasicComponentWithProps
-    {
+    public static function getInstance(): BasicComponentWithProps {
         if (!self::$_mod) {
             self::$_mod = new BasicComponentWithProps();
         }
@@ -25,8 +23,7 @@ class BasicComponentWithProps extends RenderableComponent
      * @param array $children
      * @return string
      */
-    public function render(array $props, array $children)
-    {
+    public function render(array $props, array $children) {
         $_e8afc0c = [$props["count"]];
         $count = $_e8afc0c[0];
         return $this->h(
@@ -36,13 +33,7 @@ class BasicComponentWithProps extends RenderableComponent
                 $this->h(
                     IntrinsicElement::get("p"),
                     [],
-                    [
-                        "You clicked ",
-                        $count,
-                        " times starting at ",
-                        $props["count"],
-                        ".",
-                    ]
+                    ["You clicked ", $count, " times starting at ", $props["count"], "."]
                 ),
                 $this->h(IntrinsicElement::get("button"), [], [" Click me "]),
             ]

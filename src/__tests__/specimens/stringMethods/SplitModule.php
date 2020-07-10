@@ -14,10 +14,25 @@ class SplitModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @var string $aspl
+     */
     public $aspl;
+    /**
+     * @var array $bspl
+     */
     public $bspl;
+    /**
+     * @var array $cspl
+     */
     public $cspl;
+    /**
+     * @var array $dspl
+     */
     public $dspl;
+    /**
+     * @var array $espl
+     */
     public $espl;
 
     private function __construct() {

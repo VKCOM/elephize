@@ -22,13 +22,21 @@ var CommonjsModule = /** @class */ (function () {
         this._hoistedContent = new Set();
         this._specialVars = {};
     };
-    CommonjsModule.prototype.addProperty = function (identifier, visibility) {
+    CommonjsModule.prototype.addProperty = function (identifier, inferredType, visibility) {
         if (visibility === void 0) { visibility = 'public'; }
-        this._hoistedContent.add(visibility + " " + identifier + ";");
+        var doc = inferredType === 'var' ? '' : "/**\n     * @var " + inferredType + " " + identifier + "\n     */";
+        this._hoistedContent.add("" + (doc ? doc + '\n' : '') + visibility + " " + identifier + ";");
     };
-    CommonjsModule.prototype.addMethod = function (identifier, block, args, visibility) {
+    CommonjsModule.prototype.addMethod = function (identifier, block, args, inferredTypes, visibility) {
         if (visibility === void 0) { visibility = 'public'; }
-        this._hoistedContent.add(visibility + " function " + identifier + "(" + args + ") " + block);
+        var phpdoc = '';
+        if (inferredTypes) {
+            var params = Object.keys(inferredTypes.args)
+                .filter(function (arg) { return inferredTypes.args[arg] !== 'var'; })
+                .map(function (arg) { return "     * @param " + inferredTypes.args[arg] + " " + arg; }).join('\n');
+            phpdoc = "/**" + (params ? '\n' + params : '') + "\n     * @return " + inferredTypes.return + "\n     */";
+        }
+        this._hoistedContent.add(phpdoc + "\n    " + visibility + " function " + identifier + "(" + args + ") " + block);
     };
     CommonjsModule.prototype.addStatement = function (statement) {
         this._constructorStatements.push(statement);

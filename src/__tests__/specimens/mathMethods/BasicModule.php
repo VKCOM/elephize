@@ -14,19 +14,61 @@ class BasicModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @var float $m_src
+     */
     public $m_src;
+    /**
+     * @var float $m_abs
+     */
     public $m_abs;
+    /**
+     * @var float $m_rnd
+     */
     public $m_rnd;
+    /**
+     * @var float $m_flr
+     */
     public $m_flr;
+    /**
+     * @var float $m_cl
+     */
     public $m_cl;
+    /**
+     * @var float $m_rndm
+     */
     public $m_rndm;
+    /**
+     * @var float $m_exp
+     */
     public $m_exp;
+    /**
+     * @var float $m_log
+     */
     public $m_log;
+    /**
+     * @var float $m_max
+     */
     public $m_max;
+    /**
+     * @var float $m_min
+     */
     public $m_min;
+    /**
+     * @var float $m_pow
+     */
     public $m_pow;
+    /**
+     * @var float $m_sqrt
+     */
     public $m_sqrt;
+    /**
+     * @var float $m_log2
+     */
     public $m_log2;
+    /**
+     * @var float $m_log10
+     */
     public $m_log10;
 
     private function __construct() {

@@ -14,9 +14,15 @@ class ExportModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @return float
+     */
     public function test() {
         return 1 + 2;
     }
+    /**
+     * @var float $test2
+     */
     public $test2;
 
     private function __construct() {

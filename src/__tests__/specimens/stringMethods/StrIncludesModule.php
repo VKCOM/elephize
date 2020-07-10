@@ -14,8 +14,17 @@ class StrIncludesModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @var string $ainc
+     */
     public $ainc;
+    /**
+     * @var boolean $binc
+     */
     public $binc;
+    /**
+     * @var boolean $cinc
+     */
     public $cinc;
 
     private function __construct() {

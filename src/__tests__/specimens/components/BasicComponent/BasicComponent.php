@@ -3,14 +3,12 @@ use VK\Elephize\Builtins\RenderableComponent;
 use VK\Elephize\Builtins\IntrinsicElement;
 use VK\Elephize\Builtins\Stdlib;
 
-class BasicComponent extends RenderableComponent
-{
+class BasicComponent extends RenderableComponent {
     /**
      * @var BasicComponent $_mod
      */
     private static $_mod;
-    public static function getInstance(): BasicComponent
-    {
+    public static function getInstance(): BasicComponent {
         if (!self::$_mod) {
             self::$_mod = new BasicComponent();
         }
@@ -25,8 +23,7 @@ class BasicComponent extends RenderableComponent
      * @param array $children
      * @return string
      */
-    public function render(array $props, array $children)
-    {
+    public function render(array $props, array $children) {
         $_3b2ed12 = [0];
         $count = $_3b2ed12[0];
         return $this->h(

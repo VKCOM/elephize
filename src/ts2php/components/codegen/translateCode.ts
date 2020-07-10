@@ -16,7 +16,9 @@ export const defaultOptions: ts.CompilerOptions = {
   lib: [
     'lib.d.ts',
     'lib.dom.d.ts',
-    'lib.es5.d.ts'
+    'lib.es5.d.ts',
+    'lib.es2015.d.ts',
+    'lib.es2016.d.ts'
   ],
   moduleResolution: ts.ModuleResolutionKind.NodeJs,
   module: ts.ModuleKind.CommonJS,

@@ -14,15 +14,27 @@ class FilterModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @var array $afl
+     */
     public $afl;
+    /**
+     * @var array $bfl
+     */
     public $bfl;
+    /**
+     * @var array $cfl
+     */
     public $cfl;
 
     private function __construct() {
         $this->afl = [1, 2, 3];
-        $this->bfl = array_filter($this->afl, /* _dbfe777 */ function ($el) {
-            return $el % 2;
-        });
+        $this->bfl = array_filter(
+            $this->afl,
+            /* _dbfe777 */ function ($el) {
+                return $el % 2;
+            }
+        );
         $this->cfl = null;
         \VK\Elephize\Builtins\Console::log($this->bfl, $this->cfl);
     }

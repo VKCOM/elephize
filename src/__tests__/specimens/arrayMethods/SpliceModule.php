@@ -14,10 +14,25 @@ class SpliceModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @var array $a_spl
+     */
     public $a_spl;
+    /**
+     * @var array $b_spl
+     */
     public $b_spl;
+    /**
+     * @var array $c_spl
+     */
     public $c_spl;
+    /**
+     * @var array $d_spl
+     */
     public $d_spl;
+    /**
+     * @var array $e_spl
+     */
     public $e_spl;
 
     private function __construct() {

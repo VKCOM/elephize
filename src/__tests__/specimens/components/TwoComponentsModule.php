@@ -14,15 +14,18 @@ class TwoComponentsModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @var array $default_props
+     */
     public $default_props;
 
     private function __construct() {
         $this->default_props = [
-            "onClick" =>  /* _e8c52de */ function () {
+            "onClick" => /* _e8c52de */ function () {
                 return;
             },
             "initialValue" => "",
-            "count"        => 0,
+            "count" => 0,
         ];
     }
 }

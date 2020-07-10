@@ -10,6 +10,7 @@ import { Scope } from '../components/unusedCodeElimination/usageGraph';
 import { BoundNode } from '../components/unusedCodeElimination/usageGraph/node';
 import { snakify } from '../utils/pathsAndNames';
 import { renderNodes, renderNode } from '../components/codegen/renderNodes';
+import { getPhpPrimitiveType, getPhpPrimitiveTypeForFunc } from './stdlib/_assert';
 
 export function tVariableDeclaration(node: ts.VariableDeclaration, context: Context<Declaration>) {
   const identifierNode = node.name;
@@ -122,7 +123,8 @@ function topStatements(node: ts.VariableDeclaration, initializerNode: ts.Node | 
       const flags = context.nodeFlagsStore.get(node);
 
       if (!context.dryRun && context.scope.checkUsage(node.name.getText()) && !flags?.drop) {
-        context.moduleDescriptor.addMethod(node.name.getText(), block, syntaxList.join(', '), 'public');
+        context.moduleDescriptor.addMethod(node.name.getText(), block, syntaxList.join(', '),
+          getPhpPrimitiveTypeForFunc(node.initializer as ts.FunctionExpression, syntaxList, context.checker), 'public');
       }
     }
   } else {
@@ -139,7 +141,7 @@ function topStatements(node: ts.VariableDeclaration, initializerNode: ts.Node | 
     const ident = snakify(nameIdent.getText());
     const flags = context.nodeFlagsStore.get(node);
     if (!context.dryRun && context.scope.checkUsage(nameIdent.getText()) && !flags?.drop) {
-      context.moduleDescriptor.addProperty('$' + ident, 'public');
+      context.moduleDescriptor.addProperty('$' + ident, getPhpPrimitiveType(nameIdent, context.checker), 'public');
       context.moduleDescriptor.addStatement(`$this->${ident} = ${initializer};`);
     }
   }

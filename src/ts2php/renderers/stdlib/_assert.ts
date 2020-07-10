@@ -1,7 +1,7 @@
 import * as ts from 'typescript';
 import { Context } from '../../components/context';
 import { usedInNestedScope } from '../../components/unusedCodeElimination/usageGraph/nodeData';
-import { Declaration, DeclFlag } from '../../types';
+import { Declaration, DeclFlag, MethodsTypes } from '../../types';
 
 /**
  * Check if node has proper inferred type identified by typeString
@@ -47,7 +47,11 @@ export function assertLocalModification(node: ts.Identifier | null, context: Con
 export function assertArrayType(node: ts.Node, checker: ts.TypeChecker): boolean {
   let nd: ts.Node = (node as ts.PropertyAccessExpression).expression;
   let type = checker.getTypeAtLocation(nd);
-  let typeNode = checker.typeToTypeNode(type);
+  return _assertArrayTypeFromType(type, checker);
+}
+
+function _assertArrayTypeFromType(node: ts.Type, checker: ts.TypeChecker, excludeObjects = true) {
+  let typeNode = checker.typeToTypeNode(node);
   if (!typeNode) {
     return false;
   }
@@ -55,17 +59,110 @@ export function assertArrayType(node: ts.Node, checker: ts.TypeChecker): boolean
   // Support for array-like type aliases and interfaces
   // e.g. type GridChildren = Array<Array<JSX.Element | undefined>>;
   if (typeNode.kind === ts.SyntaxKind.TypeReference) {
-    const type = checker.getTypeAtLocation(nd);
-    const sym = type.symbol || type.aliasSymbol;
+    const sym = node.symbol || node.aliasSymbol;
     const decls = sym.getDeclarations() as ts.Declaration[];
     const [ifaceDecl] = decls.filter((d) => d.kind === ts.SyntaxKind.InterfaceDeclaration);
     if (!ifaceDecl) {
       return false;
     }
-    return (ifaceDecl as ts.InterfaceDeclaration).name.text === 'Array';
+
+    let isObjectType = false;
+    if (!excludeObjects) {
+      isObjectType = (ifaceDecl as ts.InterfaceDeclaration).members.length > 0;
+    }
+    return isObjectType || (ifaceDecl as ts.InterfaceDeclaration).name.text === 'Array';
+  }
+
+  if (!excludeObjects && typeNode.kind === ts.SyntaxKind.TypeLiteral) {
+    return true;
   }
 
   return typeNode.kind === ts.SyntaxKind.ArrayType || typeNode.kind === ts.SyntaxKind.TupleType;
+}
+
+export function getPhpPrimitiveType(node: ts.Node, checker: ts.TypeChecker) {
+  const type = checker.getTypeAtLocation(node);
+  return _getPrimitiveTypeByType(node, type, checker);
+}
+
+function _getPrimitiveTypeByType(node: ts.Node | undefined, type: ts.Type, checker: ts.TypeChecker) {
+  if (_assertArrayTypeFromType(type, checker, false)) {
+    return 'array';
+  }
+
+  const strTypes = checker.typeToString(type, node, ts.TypeFormatFlags.UseFullyQualifiedType)
+    .split('|')
+    .map((t) => t.replace(/^\s+|\s+$/g, ''))
+    .map((strType) => {
+      switch (strType) {
+        case 'number':
+          return 'float'; // TODO: check int possibilities?
+        case 'string':
+          return 'string';
+        case 'boolean':
+        case 'true':
+        case 'false':
+          return 'boolean';
+        default:
+          return 'var';
+      }
+    });
+
+  if (strTypes.includes('var')) {
+    // Check parent types: Number for 1, String for "asd" etc
+    const appType = checker.getApparentType(type);
+    const appStrTypes = checker.typeToString(appType).toLowerCase().split('|')
+      .map((t) => t.replace(/^\s+|\s+$/g, ''))
+      .map((appStrType) => {
+        switch (appStrType) {
+          case 'number':
+            return 'float'; // TODO: check int possibilities?
+          case 'string':
+            return 'string';
+          case 'boolean':
+            return 'boolean';
+          default:
+            return 'var'; // TODO: more specific typing?
+        }
+      });
+
+    if (appStrTypes.includes('var')) {
+      return 'var';
+    }
+
+    return Array.from(new Set((<string[]>[])
+      .concat(strTypes.filter((t) => t !== 'var'))
+      .concat(appStrTypes))).join('|');
+  }
+
+  return Array.from(new Set((<string[]>[])
+    .concat(strTypes))).join('|');
+}
+
+export function getPhpPrimitiveTypeForFunc(node: ts.FunctionExpression | ts.ArrowFunction | ts.FunctionDeclaration, argList: string[], checker: ts.TypeChecker): MethodsTypes | undefined {
+  const signature = checker.getSignatureFromDeclaration(node);
+  if (!signature) {
+    // Not functional type?
+    return;
+  }
+
+  const params: { [key: string]: string } = {};
+  for (let i = 0; i < node.parameters.length; i++) {
+    const param = node.parameters[i].name;
+    if (param.kind === ts.SyntaxKind.Identifier) {
+      params[argList[i]] = getPhpPrimitiveType(param, checker);
+    } else {
+      params[argList[i]] = 'var'; // TODO: more specific typing? (applies for destructured objects too!)
+    }
+  }
+
+  const returnType = checker.getReturnTypeOfSignature(signature);
+  const rettype = _getPrimitiveTypeByType(undefined, returnType, checker);
+
+  return {
+    args: params,
+    return: rettype
+  };
 }
 
 /**

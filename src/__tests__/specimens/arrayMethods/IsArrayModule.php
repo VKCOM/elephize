@@ -14,8 +14,17 @@ class IsArrayModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @var boolean $iaa
+     */
     public $iaa;
+    /**
+     * @var boolean $iab
+     */
     public $iab;
+    /**
+     * @var boolean $iac
+     */
     public $iac;
 
     private function __construct() {

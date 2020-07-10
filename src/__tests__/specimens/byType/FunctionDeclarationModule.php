@@ -14,6 +14,10 @@ class FunctionDeclarationModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @param float $b
+     * @return float
+     */
     public function test1($b) {
         $a = 1 + $b;
         return $a;

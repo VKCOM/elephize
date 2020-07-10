@@ -3,14 +3,12 @@ use VK\Elephize\Builtins\RenderableComponent;
 use VK\Elephize\Builtins\IntrinsicElement;
 use VK\Elephize\Builtins\Stdlib;
 
-class BasicComponentWithViewLogic extends RenderableComponent
-{
+class BasicComponentWithViewLogic extends RenderableComponent {
     /**
      * @var BasicComponentWithViewLogic $_mod
      */
     private static $_mod;
-    public static function getInstance(): BasicComponentWithViewLogic
-    {
+    public static function getInstance(): BasicComponentWithViewLogic {
         if (!self::$_mod) {
             self::$_mod = new BasicComponentWithViewLogic();
         }
@@ -25,8 +23,7 @@ class BasicComponentWithViewLogic extends RenderableComponent
      * @param array $children
      * @return string
      */
-    public function render(array $props, array $children)
-    {
+    public function render(array $props, array $children) {
         $_e8afc0c = [$props["count"]];
         $count = $_e8afc0c[0];
         $sec = $props["timestampInSeconds"] % 60;
@@ -44,13 +41,7 @@ class BasicComponentWithViewLogic extends RenderableComponent
                 $this->h(
                     IntrinsicElement::get("p"),
                     [],
-                    [
-                        "You clicked ",
-                        $count,
-                        " times starting at ",
-                        $props["count"],
-                        ".",
-                    ]
+                    ["You clicked ", $count, " times starting at ", $props["count"], "."]
                 ),
                 $this->h(
                     IntrinsicElement::get("button"),

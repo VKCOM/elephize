@@ -14,18 +14,60 @@ class RestOperatorModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @var array $raa
+     */
     public $raa;
+    /**
+     * @var float $ra1
+     */
     public $ra1;
+    /**
+     * @var array $ra2
+     */
     public $ra2;
+    /**
+     * @var float $ra3
+     */
     public $ra3;
+    /**
+     * @var float $ra5
+     */
     public $ra5;
+    /**
+     * @var array $ra4
+     */
     public $ra4;
+    /**
+     * @var array $rab
+     */
     public $rab;
+    /**
+     * @var float $rb1
+     */
     public $rb1;
+    /**
+     * @var array $rest1
+     */
     public $rest1;
+    /**
+     * @var float $rb2
+     */
     public $rb2;
+    /**
+     * @var float $rb3
+     */
     public $rb3;
+    /**
+     * @var array $rest2
+     */
     public $rest2;
+    /**
+     * @param float $a
+     * @param float $b
+     * @param array ...$c
+     * @return float
+     */
     public function raf($a, $b, ...$c) {
         return $a +
             $b +

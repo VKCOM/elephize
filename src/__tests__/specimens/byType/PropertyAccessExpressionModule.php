@@ -14,10 +14,25 @@ class PropertyAccessExpressionModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @var array $b1
+     */
     public $b1;
+    /**
+     * @var float $d1
+     */
     public $d1;
+    /**
+     * @var float $d2
+     */
     public $d2;
+    /**
+     * @var array $d3
+     */
     public $d3;
+    /**
+     * @var string $d4
+     */
     public $d4;
 
     private function __construct() {

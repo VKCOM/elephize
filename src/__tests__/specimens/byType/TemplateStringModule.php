@@ -14,10 +14,25 @@ class TemplateStringModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @var string $tsa
+     */
     public $tsa;
+    /**
+     * @var string $tsb
+     */
     public $tsb;
+    /**
+     * @var string $tsc
+     */
     public $tsc;
+    /**
+     * @var string $tsd
+     */
     public $tsd;
+    /**
+     * @var string $tse
+     */
     public $tse;
 
     private function __construct() {

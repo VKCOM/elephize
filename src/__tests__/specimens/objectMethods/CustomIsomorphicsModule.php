@@ -14,6 +14,9 @@ class CustomIsomorphicsModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @var array $obj4
+     */
     public $obj4;
 
     private function __construct() {

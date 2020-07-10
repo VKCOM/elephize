@@ -5,14 +5,12 @@ use VK\Elephize\Builtins\Stdlib;
 
 require_once __DIR__ . '/../DummyComponent/DummyComponent.php';
 
-class NestedComponent extends RenderableComponent
-{
+class NestedComponent extends RenderableComponent {
     /**
      * @var NestedComponent $_mod
      */
     private static $_mod;
-    public static function getInstance(): NestedComponent
-    {
+    public static function getInstance(): NestedComponent {
         if (!self::$_mod) {
             self::$_mod = new NestedComponent();
         }
@@ -27,8 +25,7 @@ class NestedComponent extends RenderableComponent
      * @param array $children
      * @return string
      */
-    public function render(array $props, array $children)
-    {
+    public function render(array $props, array $children) {
         $_3b2ed12 = [0];
         $count = $_3b2ed12[0];
         $arr = [1, 2, 3];
@@ -40,11 +37,7 @@ class NestedComponent extends RenderableComponent
                 Stdlib::arrayMap1(
                     $arr,
                     /* _b4f3ee1 */ function ($val) use ($count) {
-                        return $this->h(
-                            DummyComponent::getInstance(),
-                            ["key" => $val, "count" => $count],
-                            []
-                        );
+                        return $this->h(DummyComponent::getInstance(), ["key" => $val, "count" => $count], []);
                     }
                 ),
             ]

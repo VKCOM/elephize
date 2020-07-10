@@ -14,9 +14,21 @@ class SliceModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @var array $a_sl
+     */
     public $a_sl;
+    /**
+     * @var array $b_sl
+     */
     public $b_sl;
+    /**
+     * @var array $c_sl
+     */
     public $c_sl;
+    /**
+     * @var array $d_sl
+     */
     public $d_sl;
 
     private function __construct() {

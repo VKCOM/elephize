@@ -90,3 +90,8 @@ export type SpecialVars = {
   useLayoutEffect?: string;
   useDebugValue?: string;
 };
+
+export type MethodsTypes = {
+  return: string;
+  args: { [key: string]: string };
+};

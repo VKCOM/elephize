@@ -14,9 +14,21 @@ class StrIndexOfModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @var string $aios
+     */
     public $aios;
+    /**
+     * @var float $bios
+     */
     public $bios;
+    /**
+     * @var float $cios
+     */
     public $cios;
+    /**
+     * @var float $dios
+     */
     public $dios;
 
     private function __construct() {

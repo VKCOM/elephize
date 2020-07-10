@@ -10,6 +10,7 @@ var functionScope_1 = require("../components/functionScope");
 var usageGraph_1 = require("../components/unusedCodeElimination/usageGraph");
 var pathsAndNames_1 = require("../utils/pathsAndNames");
 var renderNodes_1 = require("../components/codegen/renderNodes");
+var _assert_1 = require("./stdlib/_assert");
 function tVariableDeclaration(node, context) {
     var _a;
     var identifierNode = node.name;
@@ -98,7 +99,7 @@ function topStatements(node, initializerNode, addIdent, usedIdents, isFuncDeclar
             var syntaxList = els.syntaxList, block = els.block;
             var flags_1 = context.nodeFlagsStore.get(node);
             if (!context.dryRun && context.scope.checkUsage(node.name.getText()) && !(flags_1 === null || flags_1 === void 0 ? void 0 : flags_1.drop)) {
-                context.moduleDescriptor.addMethod(node.name.getText(), block, syntaxList.join(', '), 'public');
+                context.moduleDescriptor.addMethod(node.name.getText(), block, syntaxList.join(', '), _assert_1.getPhpPrimitiveTypeForFunc(node.initializer, syntaxList, context.checker), 'public');
             }
         }
     }
@@ -114,7 +115,7 @@ function topStatements(node, initializerNode, addIdent, usedIdents, isFuncDeclar
         var ident_1 = pathsAndNames_1.snakify(nameIdent.getText());
         var flags_2 = context.nodeFlagsStore.get(node);
         if (!context.dryRun && context.scope.checkUsage(nameIdent.getText()) && !(flags_2 === null || flags_2 === void 0 ? void 0 : flags_2.drop)) {
-            context.moduleDescriptor.addProperty('$' + ident_1, 'public');
+            context.moduleDescriptor.addProperty('$' + ident_1, _assert_1.getPhpPrimitiveType(nameIdent, context.checker), 'public');
             context.moduleDescriptor.addStatement("$this->" + ident_1 + " = " + initializer + ";");
         }
     }

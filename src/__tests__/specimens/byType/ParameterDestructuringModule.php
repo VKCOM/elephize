@@ -14,6 +14,10 @@ class ParameterDestructuringModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @param boolean $param3
+     * @return string
+     */
     public function pdf1($__param_destruct_1, $__param_destruct_2, $param3) {
         $p1 = $__param_destruct_1["param1"];
         $p2 = $__param_destruct_1["param2"];
@@ -28,6 +32,10 @@ class ParameterDestructuringModule extends CJSModule {
             (string) $p3 .
             $p4;
     }
+    /**
+     * @param boolean $param3
+     * @return string
+     */
     public function pdf2($__param_destruct_1, $__param_destruct_2, $param3) {
         $param1 = $__param_destruct_1[0];
         $param2 = $__param_destruct_1[1];

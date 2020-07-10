@@ -14,12 +14,19 @@ class ComplexObjectFuncsModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @param array $names
+     * @return string
+     */
     public function cls($names) {
         return implode(
             " ",
-            array_filter(array_keys($names), /* _e8959da */ function ($name) use ($names) {
-                return $names[$name];
-            })
+            array_filter(
+                array_keys($names),
+                /* _e8959da */ function ($name) use ($names) {
+                    return $names[$name];
+                }
+            )
         );
     }
 

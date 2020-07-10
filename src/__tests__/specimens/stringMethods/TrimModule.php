@@ -14,7 +14,13 @@ class TrimModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @var string $atr
+     */
     public $atr;
+    /**
+     * @var string $btr
+     */
     public $btr;
 
     private function __construct() {

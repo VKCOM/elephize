@@ -14,6 +14,9 @@ class CallExpressionModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @var array $c
+     */
     public $c;
 
     private function __construct() {

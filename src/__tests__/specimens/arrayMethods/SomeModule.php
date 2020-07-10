@@ -14,18 +14,33 @@ class SomeModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @var array $asm
+     */
     public $asm;
+    /**
+     * @var boolean $bsm
+     */
     public $bsm;
+    /**
+     * @var boolean $csm
+     */
     public $csm;
 
     private function __construct() {
         $this->asm = [1, 2, 3];
-        $this->bsm = Stdlib::arraySome($this->asm, /* _d473ed2 */ function ($val) {
-            return $val > 1;
-        });
-        $this->csm = Stdlib::arraySome($this->asm, /* _5e02223 */ function ($val, $idx) {
-            return ($val * $idx) % 2;
-        });
+        $this->bsm = Stdlib::arraySome(
+            $this->asm,
+            /* _d473ed2 */ function ($val) {
+                return $val > 1;
+            }
+        );
+        $this->csm = Stdlib::arraySome(
+            $this->asm,
+            /* _5e02223 */ function ($val, $idx) {
+                return ($val * $idx) % 2;
+            }
+        );
         \VK\Elephize\Builtins\Console::log($this->bsm, $this->csm);
     }
 }
