@@ -1,6 +1,6 @@
 {
   "name": "elephize",
-  "version": "0.4.4",
+  "version": "0.5.0",
   "description": "js-php basic transpiler",
   "main": "src/cli.ts",
   "bin": {
@@ -28,18 +28,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ctizen/elephize.git"
+    "url": "git+https://github.com/VKCOM/elephize.git"
   },
   "keywords": [
     "js",
     "php"
   ],
-  "author": "Oleg Klimenko",
+  "author": "VK",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ctizen/elephize/issues"
+    "url": "https://github.com/VKCOM/elephize/issues"
   },
-  "homepage": "https://github.com/ctizen/elephize#readme",
+  "homepage": "https://github.com/VKCOM/elephize#readme",
   "dependencies": {
     "@prettier/plugin-php": "^0.14.0",
     "chalk": "^4.1.0",

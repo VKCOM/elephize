@@ -2,11 +2,12 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var glob = require("glob");
 var log_1 = require("../../utils/log");
-var codeGenerator_1 = require("../codeGenerator");
+var translateCode_1 = require("../codegen/translateCode");
 var path = require("path");
 var fs = require("fs");
 var iconv = require("iconv-lite");
 var ncp = require("ncp");
+var makeBootstrap_1 = require("../codegen/makeBootstrap");
 var replace = require('stream-replace');
 function transpile(options, baseDir, outDir) {
     var namespaces = {
@@ -23,7 +24,7 @@ function transpile(options, baseDir, outDir) {
             baseUrl: baseDir,
             paths: options.tsPaths || {}
         };
-        codeGenerator_1.translateCode({
+        translateCode_1.translateCode({
             fileNames: matches.map(function (p) { return path.resolve('./', p); }),
             baseDir: baseDir,
             aliases: options.aliases,
@@ -50,7 +51,7 @@ function transpile(options, baseDir, outDir) {
         if ((log_1.log.errCount || 0) + (log_1.log.warnCount || 0) > 0 && options.bail === 'warn') {
             process.exit(1);
         }
-        var bootstrapContent = codeGenerator_1.makeBootstrap(registry, baseDir.endsWith('/') ? baseDir : baseDir + '/', options.aliases);
+        var bootstrapContent = makeBootstrap_1.makeBootstrap(registry, baseDir.endsWith('/') ? baseDir : baseDir + '/', options.aliases);
         if (options.output === '__stdout') {
             console.log(bootstrapContent);
         }

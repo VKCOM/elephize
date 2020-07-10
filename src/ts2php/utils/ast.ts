@@ -1,5 +1,6 @@
 import * as ts from 'typescript';
-import { NodeInfo } from '../types';
+import { NodeFlags } from '../types';
+import { NodeFlagStore } from '../components/codegen/nodeFlagStore';
 
 export function getLeftExpr(exp: ts.Expression, srcFile?: ts.SourceFile): ts.Identifier | null {
   if (!exp) {
@@ -45,83 +46,72 @@ export function fetchAllBindingIdents(binding: ts.BindingName | ts.ParameterDecl
 /**
  * Apply flags to a closest parent of one of types listed in 'kind' parameter. Only one parent is marked!
  *
- * @param info
+ * @param node
  * @param kind
  * @param flags
+ * @param store
  */
-export function flagParentOfType(info: NodeInfo, kind: ts.SyntaxKind[], flags: NodeInfo['flags']): void {
-  while (info) {
-    if (kind.includes(info.node.kind)) {
-      info.flags = {
-        ...info.flags,
-        ...flags
-      };
+export function flagParentOfType(node: ts.Node, kind: ts.SyntaxKind[], flags: NodeFlags, store: NodeFlagStore): void {
+  while (node.kind !== ts.SyntaxKind.SourceFile) {
+    if (kind.includes(node.kind)) {
+      store.upsert(node, flags);
       return;
     }
 
-    info = info.parent!;
+    node = node.parent;
   }
 }
 
-export function getClosestParentOfType(info: NodeInfo, kind: ts.SyntaxKind, includeSelf = false): NodeInfo | null {
+export function getClosestParentOfType(node: ts.Node, kind: ts.SyntaxKind, includeSelf = false): ts.Node | null {
   if (!includeSelf) {
-    info = info.parent!;
+    node = node.parent;
   }
 
-  while (info) {
-    if (kind === info.node.kind) {
-      return info;
+  while (node.kind !== ts.SyntaxKind.SourceFile) {
+    if (kind === node.kind) {
+      return node;
     }
 
-    info = info.parent!;
+    node = node.parent;
   }
 
   return null;
 }
 
-export function getClosestParentOfAnyType(info: NodeInfo, kind: ts.SyntaxKind[], includeSelf = false): NodeInfo | null {
+export function getClosestParentOfAnyType(node: ts.Node, kind: ts.SyntaxKind[], includeSelf = false): ts.Node | null {
   if (!includeSelf) {
-    info = info.parent!;
+    node = node.parent;
   }
 
-  while (info) {
-    if (kind.includes(info.node.kind)) {
-      return info;
+  while (node.kind !== ts.SyntaxKind.SourceFile) {
+    if (kind.includes(node.kind)) {
+      return node;
     }
 
-    info = info.parent!;
+    node = node.parent;
   }
 
   return null;
 }
 
-export function getClosestParentOfTypeWithFlag(info: NodeInfo, kind: ts.SyntaxKind, flags: NodeInfo['flags']): NodeInfo | null {
-  info = info.parent!; // Don't count current node!
+export function getClosestParentOfTypeWithFlag(node: ts.Node, kind: ts.SyntaxKind, flags: NodeFlags, store: NodeFlagStore): ts.Node | null {
+  node = node.parent; // Don't count current node!
 
-  while (info) {
+  while (node.kind !== ts.SyntaxKind.SourceFile) {
+    const nodeFlags = store.get(node);
     if (
-      kind === info.node.kind &&
+      nodeFlags &&
+      kind === node.kind &&
       // this checks that element's flags have values according to all passed flags
-      Object.keys(flags).reduce<boolean>((acc, key: keyof NodeInfo['flags']) => acc && flags[key] === info.flags[key], true)
+      Object.keys(flags).reduce<boolean>((acc, key: keyof NodeFlags) => acc && flags[key] === nodeFlags[key], true)
     ) {
-      return info;
+      return node;
     }
 
-    info = info.parent!;
+    node = node.parent;
   }
 
   return null;
-}
-
-/**
- * Return first child of given type
- *
- * @param node
- * @param type
- * @return NodeInfo | undefined
- */
-export function getChildByType(node: NodeInfo, type: ts.SyntaxKind): NodeInfo | undefined {
-  return node.children.find((c) => c.node.kind === type);
 }
 
 /**
@@ -130,16 +120,16 @@ export function getChildByType(node: NodeInfo, type: ts.SyntaxKind): NodeInfo | 
  * @param node
  * @param types
  */
-export function getChildChainByType(node: NodeInfo, types: Array<ts.SyntaxKind | ts.SyntaxKind[]>): NodeInfo | undefined {
-  let intermediateNode: NodeInfo | undefined = node;
+export function getChildChainByType(node: ts.Node, types: Array<ts.SyntaxKind | ts.SyntaxKind[]>): ts.Node | undefined {
+  let intermediateNode: ts.Node | undefined = node;
 
   for (let typeIndex = 0; typeIndex < types.length; typeIndex++) {
     const t = types[typeIndex];
-    intermediateNode = intermediateNode.children.find((c) => {
+    intermediateNode = intermediateNode.getChildren().find((c) => {
       if (Array.isArray(t)) {
-        return t.includes(c.node.kind);
+        return t.includes(c.kind);
       }
-      return c.node.kind === types[typeIndex];
+      return c.kind === types[typeIndex];
     });
     if (!intermediateNode) {
       return;
@@ -147,101 +137,6 @@ export function getChildChainByType(node: NodeInfo, types: Array<ts.SyntaxKind |
   }
 
   return intermediateNode;
-}
-
-/**
- * Return naive array of children of given types
- *
- * @param node
- * @param types
- * @return Array<NodeInfo>
- */
-export function getChildrenByTypes(node: NodeInfo, types: ts.SyntaxKind[]): NodeInfo[] {
-  let ret: NodeInfo[] = [];
-  let typeIndex = 0;
-
-  for (let i = 0; i < node.children.length; i++) {
-    if (node.children[i].node.kind === types[typeIndex]) {
-      ret.push(node.children[i]);
-      typeIndex++;
-    }
-  }
-
-  return ret;
-}
-
-/**
- * Return child matching one of selected types
- *
- * @param node
- * @param types
- * @return NodeInfo | undefined
- */
-export function getChildByAnyType(node: NodeInfo, types: ts.SyntaxKind[]): NodeInfo | undefined {
-  for (let i = 0; i < node.children.length; i++) {
-    if (types.includes(node.children[i].node.kind)) {
-      return node.children[i];
-    }
-  }
-
-  return undefined;
-}
-
-/**
- * Return child matching one of selected types following the specified type of child
- * @param node
- * @param marker
- * @param types
- * @return NodeInfo | undefined
- */
-export function getChildOfAnyTypeAfterSelected(node: NodeInfo, marker: ts.SyntaxKind, types: ts.SyntaxKind[]): NodeInfo | undefined {
-  for (let i = 0; i < node.children.length; i++) {
-    if (types.includes(node.children[i].node.kind) && (node.children[i - 1] && node.children[i - 1].node.kind === marker)) {
-      return node.children[i];
-    }
-  }
-
-  return undefined;
-}
-
-export type TypeNodeTuple = [ts.SyntaxKind, TypeNodeStruct]; // [0] is current node type, [1] is children description
-export type TypeNodeStruct = Array<ts.SyntaxKind | TypeNodeTuple>;
-export type NodeLeaf = Array<NodeInfo | NodeLeaf>;
-
-/**
- * Get nodes from tree by tree-like selector
- * See example in unit-tests.
- *
- * @param node
- * @param selector
- */
-export function getChildrenByTree(node: NodeInfo, selector: TypeNodeStruct): NodeLeaf {
-  let nextIndexToSeek = 0;
-  let ret: NodeLeaf = [];
-
-  for (let i = 0; i < selector.length; i++) {
-    const t = selector[i];
-    if (Array.isArray(t)) { // tuple, drill down
-      const [childType, nestedSelector] = t;
-      for (let i = nextIndexToSeek; i < node.children.length; i++) {
-        if (node.children[i].node.kind === childType) {
-          ret.push(getChildrenByTree(node.children[i], nestedSelector));
-          nextIndexToSeek = i + 1;
-          break;
-        }
-      }
-    } else {
-      for (let i = nextIndexToSeek; i < node.children.length; i++) {
-        if (node.children[i].node.kind === t) {
-          ret.push(node.children[i]);
-          nextIndexToSeek = i + 1;
-          break;
-        }
-      }
-    }
-  }
-
-  return ret;
 }
 
 export const RightHandExpressionLike = [
@@ -270,22 +165,22 @@ export const RightHandExpressionLike = [
   // TODO: more expressions?
 ];
 
-export function getCallExpressionLeftSide(self: NodeInfo) {
-  return getChildChainByType(self, [
+export function getCallExpressionLeftSide(node: ts.Node) {
+  return getChildChainByType(node, [
     ts.SyntaxKind.PropertyAccessExpression,
     RightHandExpressionLike
   ]);
 }
 
-export function getCallExpressionArg(self: NodeInfo) {
-  return getChildChainByType(self, [
+export function getCallExpressionArg(node: ts.Node) {
+  return getChildChainByType(node, [
     ts.SyntaxKind.SyntaxList,
     RightHandExpressionLike
   ]);
 }
 
-export function getCallExpressionCallbackArg(self: NodeInfo) {
-  return getChildChainByType(self, [
+export function getCallExpressionCallbackArg(node: ts.Node) {
+  return getChildChainByType(node, [
     ts.SyntaxKind.SyntaxList,
     [
       ts.SyntaxKind.FunctionExpression,
@@ -336,19 +231,4 @@ export function isExportedFun(node: ts.Identifier) {
   }
 
   return varStmt.modifiers && varStmt.modifiers.some((m) => m.kind === ts.SyntaxKind.ExportKeyword);
-}
-
-/**
- * Debug only dumper
- *
- * @param node
- * @param index
- * @param level
- */
-export function dumpKindTree(node: NodeInfo, index = -1, level = 1) {
-  if (level === 1) {
-    process.stdout.write('---------' + '\n');
-  }
-  process.stdout.write('> '.repeat(level) + ts.SyntaxKind[node.node.kind] + `[${index || '0'}] \n`);
-  node.children.forEach((child, index) => dumpKindTree(child, index, level + 1));
 }

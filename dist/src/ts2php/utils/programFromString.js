@@ -15,7 +15,7 @@ var typescript_1 = require("typescript");
 var fs_1 = require("fs");
 // internals. Not good thing to import them this way, but it's hard to customize transpileModule the way we want.
 var addRange = require('typescript').addRange;
-function getProgram(filenames, transpileOptions, writeFile) {
+function getProgram(filenames, skippedFiles, transpileOptions, writeFile) {
     var diagnostics = [];
     var options = __assign({}, transpileOptions.compilerOptions || {});
     // mix in default options
@@ -32,6 +32,10 @@ function getProgram(filenames, transpileOptions, writeFile) {
     // Create a compilerHost object to allow the compiler to read and write files
     var compilerHost = {
         getSourceFile: function (fileName) {
+            if (skippedFiles.includes(fileName)) {
+                // Use this hack to prevent typescript resolver from getting into files we don't want to parse.
+                return undefined;
+            }
             if (fileName.endsWith('.d.ts')) {
                 return getDtsSourceFile(fileName, options.target) || undefined;
             }

@@ -1,22 +1,28 @@
 import * as ts from 'typescript';
-import { Declaration, NodeInfo } from '../../types';
-import { renderSupportedNodes } from '../../utils/renderSupportedNodes';
+import { Declaration } from '../../types';
 import { getClosestOrigParentOfType, getClosestParentOfAnyType } from '../../utils/ast';
 import { Context } from '../context';
+import { renderNode, renderNodes } from '../codegen/renderNodes';
 
 /**
  * Top-level functions marked with IC prefix are expected to be functional Isomorphic Components
  *
  * @param context
  * @param node
- * @param self
  */
-export function handleComponent(context: Context<Declaration>, node: ts.Expression | ts.FunctionDeclaration, self: NodeInfo): boolean {
-  const isNestedFunc = getClosestParentOfAnyType(self, [
+export function handleComponent(context: Context<Declaration>, node: ts.Expression | ts.FunctionDeclaration): boolean {
+  const funcNode = getClosestParentOfAnyType(node, [
     ts.SyntaxKind.FunctionDeclaration,
     ts.SyntaxKind.ArrowFunction,
     ts.SyntaxKind.FunctionExpression
-  ]);
+  ], true) as ts.FunctionExpression | ts.FunctionDeclaration | ts.ArrowFunction;
+
+  const isNestedFunc = !!getClosestParentOfAnyType(node, [
+    ts.SyntaxKind.FunctionDeclaration,
+    ts.SyntaxKind.ArrowFunction,
+    ts.SyntaxKind.FunctionExpression
+  ]); // note difference: not including self
+
   const triviaContainer = node.kind === ts.SyntaxKind.FunctionDeclaration
     ? node
     : getClosestOrigParentOfType(node, ts.SyntaxKind.VariableStatement);
@@ -37,24 +43,22 @@ export function handleComponent(context: Context<Declaration>, node: ts.Expressi
 
     const tmpDescriptor = context.moduleDescriptor;
     context.moduleDescriptor = descriptor;
-    self.flags.isComponent = true;
+    context.nodeFlagsStore.upsert(node, { isComponent: true });
 
     const decl = context.scope.addDeclaration(nodeName.getText(), [], { terminateGlobally: true, dryRun: context.dryRun });
 
     context.pushScope(nodeName.getText());
     context.scope.ownerNode!.data.isComponent = true;
-    let [args, block] = renderSupportedNodes([
-      self.children.find((c) => c.node.kind === ts.SyntaxKind.SyntaxList &&
-        c.children.length > 0 && c.children[0].node.kind === ts.SyntaxKind.Parameter),
-      self.children.find((c) => c.node.kind === ts.SyntaxKind.Block)
-    ], context, false);
+
+    let args = renderNodes([...funcNode.parameters], context);
+    let block = renderNode(funcNode.body, context);
 
     if (decl && decl.ownedScope) {
       context.scope.terminateToParentTerminalNode(context.dryRun);
     }
     context.popScope();
 
-    descriptor.setArgs(args);
+    descriptor.setArgs(args.join(', '));
     descriptor.setBlock(block);
     context.moduleDescriptor = tmpDescriptor;
     return true;

@@ -1,20 +1,19 @@
 import * as ts from 'typescript';
-import { renderSupportedNodes } from '../../utils/renderSupportedNodes';
-import { Declaration, ExpressionHook, NodeInfo } from '../../types';
+import { Declaration, ExpressionHook } from '../../types';
 import { propNameIs } from './_propName';
 import { Context } from '../../components/context';
 import { getCallExpressionLeftSide } from '../../utils/ast';
+import { renderNode } from '../../components/codegen/renderNodes';
 
 /**
  * Anything ().toString() support
  *
  * @param node
- * @param self
  * @param context
  */
-export const toString: ExpressionHook = (node: ts.CallExpression, self: NodeInfo, context: Context<Declaration>) => {
+export const toString: ExpressionHook = (node: ts.CallExpression, context: Context<Declaration>) => {
   if (propNameIs('toString', node)) {
-    const varNameNode = getCallExpressionLeftSide(self);
-    return '(string)' + renderSupportedNodes([varNameNode], context).join('');
+    const varNameNode = getCallExpressionLeftSide(node);
+    return '(string)' + renderNode(varNameNode, context);
   }
 };

@@ -1,6 +1,5 @@
 import * as ts from 'typescript';
-import { renderSupportedNodes } from '../../utils/renderSupportedNodes';
-import { Declaration, ExpressionHook, NodeInfo } from '../../types';
+import { CallbackType, Declaration, ExpressionHook } from '../../types';
 import { ctx, log, LogSeverity } from '../../utils/log';
 import { propNameIs } from './_propName';
 import { assertArrayType } from './_assert';
@@ -8,20 +7,19 @@ import { Context } from '../../components/context';
 import {
   flagParentOfType,
   getCallExpressionCallbackArg,
-  getCallExpressionLeftSide,
-  getChildByType
+  getCallExpressionLeftSide
 } from '../../utils/ast';
 import { identifyAnonymousNode } from '../../components/unusedCodeElimination/usageGraph/nodeData';
 import { getRenderedBlock, unwrapArrowBody } from '../../components/functionScope';
+import { renderNodes } from '../../components/codegen/renderNodes';
 
 /**
  * Array.prototype.forEach support
  *
  * @param node
- * @param self
  * @param context
  */
-export const arrayForeach: ExpressionHook = (node: ts.CallExpression, self: NodeInfo, context: Context<Declaration>) => {
+export const arrayForeach: ExpressionHook = (node: ts.CallExpression, context: Context<Declaration>) => {
   if (!propNameIs('forEach', node)) {
     return undefined;
   }
@@ -30,28 +28,39 @@ export const arrayForeach: ExpressionHook = (node: ts.CallExpression, self: Node
     return 'null';
   }
 
-  self.flags.name = 'array_foreach';
-  flagParentOfType(self, [ts.SyntaxKind.ExpressionStatement], { passthrough: true });
+  flagParentOfType(node, [ts.SyntaxKind.ExpressionStatement], { passthrough: true }, context.nodeFlagsStore);
 
-  const funcBlockNode = getCallExpressionCallbackArg(self);
-  const synListNode = funcBlockNode && getChildByType(funcBlockNode, ts.SyntaxKind.SyntaxList);
-  // There may be a lot of expressions in [4]th child of arrow function node...
-  const blockNode = funcBlockNode?.children[4];
+  const funcBlockNode: CallbackType = getCallExpressionCallbackArg(node) as CallbackType;
+  if (!funcBlockNode) {
+    log('Array.prototype.forEach: can\'t find callable argument in call.', LogSeverity.ERROR, ctx(node));
+    return 'null';
+  }
+
+  let cbArgs: ts.NodeArray<ts.ParameterDeclaration> = funcBlockNode.parameters;
+  let cbBlock: ts.Node = funcBlockNode.body;
 
   const nodeIdent = identifyAnonymousNode(node);
-  const { block } = getRenderedBlock(context, nodeIdent, node, undefined, [synListNode, blockNode]);
-  const callArgs = self.flags.rawNodes;
-  const varNameNode = getCallExpressionLeftSide(self);
-  const renderedBlock = unwrapArrowBody(block, blockNode, true);
+  const { block } = getRenderedBlock(context, nodeIdent, node, cbArgs, cbBlock);
+  const varNameNode = getCallExpressionLeftSide(node);
+  const renderedBlock = unwrapArrowBody(block, cbBlock, true);
 
-  let varName = renderSupportedNodes([varNameNode], context).join('');
-  if (!callArgs || !callArgs[0]) {
+  let varName = renderNodes([varNameNode], context).join('');
+  if (!cbArgs || !cbArgs[0]) {
     log('Array.prototype.forEach: can\'t find iterable element in call.', LogSeverity.ERROR, ctx(node));
     return 'null';
   }
-  if (callArgs[1]) {
-    return `foreach (${varName} as $${callArgs[1].getText()} => $${callArgs[0].getText()}) ${renderedBlock}`;
+
+  if (cbArgs[0].name.kind !== ts.SyntaxKind.Identifier) {
+    log('Array.prototype.forEach: parameter destructuring in foreach is not supported.', LogSeverity.ERROR, ctx(node));
+    return 'null';
+  }
+  if (cbArgs[1]) {
+    if (cbArgs[1].name.kind !== ts.SyntaxKind.Identifier) {
+      log('Array.prototype.forEach: parameter destructuring in foreach is not supported.', LogSeverity.ERROR, ctx(node));
+      return 'null';
+    }
+    return `foreach (${varName} as $${cbArgs[1].getText()} => $${cbArgs[0].getText()}) ${renderedBlock}`;
   } else {
-    return `foreach (${varName} as $${callArgs[0].getText()}) ${renderedBlock}`;
+    return `foreach (${varName} as $${cbArgs[0].getText()}) ${renderedBlock}`;
   }
 };

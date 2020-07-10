@@ -1,44 +1,37 @@
 import * as ts from 'typescript';
-import { Declaration, NodeDescription, NodeInfo } from '../types';
-import { renderSupportedNodes } from '../utils/renderSupportedNodes';
+import { Declaration } from '../types';
 import { Context } from '../components/context';
+import { renderNode, renderNodes } from '../components/codegen/renderNodes';
 
-export function tObjectLiteralExpression(node: ts.ObjectLiteralExpression): NodeDescription {
-  return {
-    kind: node.kind,
-    supported: true,
-    gen: (self: NodeInfo, context: Context<Declaration>) => {
-      const [/* brace */, syntaxList] = self.children;
-      if (syntaxList.children.length === 0) {
-        return '[]';
-      }
+export function tObjectLiteralExpression(node: ts.ObjectLiteralExpression, context: Context<Declaration>) {
+  if (node.properties.length === 0) {
+    return '[]';
+  }
 
-      let synList: string[] = [];
-      let toRender: NodeInfo[] = [];
+  let synList: string[] = [];
+  let toRender: ts.Node[] = [];
 
-      for (let i = 0; i < syntaxList.children.length; i++) {
-        if (syntaxList.children[i].node.kind === ts.SyntaxKind.SpreadAssignment) {
-          const nodes = renderSupportedNodes(toRender, context).join(',\n');
-          synList = synList.concat(nodes.length > 0 ? '[\n' + nodes + '\n]' : '[]');
-          toRender = [];
-          synList.push(renderSupportedNodes([syntaxList.children[i]], context)[0]);
-        } else {
-          toRender.push(syntaxList.children[i]);
-        }
-      }
-
-      const nodes = renderSupportedNodes(toRender, context).join(',\n');
+  for (let i = 0; i < node.properties.length; i++) {
+    if (node.properties[i].kind === ts.SyntaxKind.SpreadAssignment) {
+      const nodes = renderNodes(toRender, context).join(',\n');
       synList = synList.concat(nodes.length > 0 ? '[\n' + nodes + '\n]' : '[]');
-
-      if (synList.length === 0) {
-        return '[]';
-      }
-
-      if (synList.length === 1) {
-        return synList[0];
-      }
-
-      return `array_merge(${synList.join(', ')})`;
+      toRender = [];
+      synList.push(renderNode(node.properties[i], context));
+    } else {
+      toRender.push(node.properties[i]);
     }
-  };
+  }
+
+  const nodes = renderNodes(toRender, context).join(',\n');
+  synList = synList.concat(nodes.length > 0 ? '[\n' + nodes + '\n]' : '[]');
+
+  if (synList.length === 0) {
+    return '[]';
+  }
+
+  if (synList.length === 1) {
+    return synList[0];
+  }
+
+  return `array_merge(${synList.join(', ')})`;
 }

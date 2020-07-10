@@ -16,7 +16,7 @@ import { existsSync, readFileSync } from 'fs';
 // internals. Not good thing to import them this way, but it's hard to customize transpileModule the way we want.
 const { addRange } = require('typescript');
 
-export function getProgram(filenames: string[], transpileOptions: TranspileOptions, writeFile: WriteFileCallback): Program {
+export function getProgram(filenames: string[], skippedFiles: string[], transpileOptions: TranspileOptions, writeFile: WriteFileCallback): Program {
   const diagnostics: Diagnostic[] = [];
   const options: CompilerOptions = {...transpileOptions.compilerOptions || {}};
 
@@ -37,6 +37,10 @@ export function getProgram(filenames: string[], transpileOptions: TranspileOptio
   // Create a compilerHost object to allow the compiler to read and write files
   const compilerHost: CompilerHost = {
     getSourceFile: (fileName) => {
+      if (skippedFiles.includes(fileName)) {
+        // Use this hack to prevent typescript resolver from getting into files we don't want to parse.
+        return undefined;
+      }
       if (fileName.endsWith('.d.ts')) {
         return getDtsSourceFile(fileName, options.target) || undefined;
       }

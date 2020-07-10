@@ -41,3 +41,5 @@ Separate commands for debugging are available:
 - `yarn demo_genphp`: compile demo files from js to php
 - `yarn demo_outreact`: print react-server output to stdout (without running server, may be useful for debugging)
 - `yarn demo_outphp`: print php output to stdout (without running server, may be useful for debugging)
+
+Use `VERBOSE=true` environment setting to print out detailed messages from transpiler.

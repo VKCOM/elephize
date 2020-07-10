@@ -1,38 +1,33 @@
 import * as ts from 'typescript';
-import { Declaration, NodeDescription, NodeInfo } from '../types';
-import { renderSupportedNodes } from '../utils/renderSupportedNodes';
+import { Declaration } from '../types';
 import { Context } from '../components/context';
 import { isTopLevel } from '../utils/isTopLevel';
 import { collectVars } from '../components/unusedCodeElimination/varsUsage';
+import { renderNode, renderNodes } from '../components/codegen/renderNodes';
 
-export function tIfStatement(node: ts.IfStatement): NodeDescription {
-  return {
-    kind: node.kind,
-    supported: true,
-    gen: (self: NodeInfo, context: Context<Declaration>) => {
-      let [/* if */, /* paren */, conditionNode, /* paren */, ifTrueNode, /* else */, ifFalseNode] = self.children;
+export function tIfStatement(node: ts.IfStatement, context: Context<Declaration>) {
 
-      let [usedVars, [condition]] = collectVars(() => renderSupportedNodes([conditionNode], context), context);
-      let [ifTrue, ifFalse] = renderSupportedNodes([ifTrueNode, ifFalseNode], context);
-      if (self.flags.drop) {
-        return '';
-      }
+  let [usedVars, condition] = collectVars(() => renderNode(node.expression, context), context);
+  let [ifTrue, ifFalse] = renderNodes([node.thenStatement, node.elseStatement], context);
 
-      for (let ident of Array.from(usedVars)) {
-        context.scope.addUsage(ident, [], { terminateLocally: true, dryRun: context.dryRun });
-      }
+  const flags = context.nodeFlagsStore.get(node);
+  if (flags?.drop) {
+    return '';
+  }
 
-      let expr;
-      if (ifFalse) {
-        expr = `if (${condition}) ${ifTrue} else ${ifFalse}`;
-      } else {
-        expr = `if (${condition}) ${ifTrue}`;
-      }
+  for (let ident of Array.from(usedVars)) {
+    context.scope.addUsage(ident, [], {terminateLocally: true, dryRun: context.dryRun});
+  }
 
-      if (isTopLevel(node, context)) {
-        context.moduleDescriptor.addStatement(expr);
-      }
-      return expr;
-    }
-  };
+  let expr;
+  if (ifFalse) {
+    expr = `if (${condition}) ${ifTrue} else ${ifFalse}`;
+  } else {
+    expr = `if (${condition}) ${ifTrue}`;
+  }
+
+  if (isTopLevel(node, context)) {
+    context.moduleDescriptor.addStatement(expr);
+  }
+  return expr;
 }

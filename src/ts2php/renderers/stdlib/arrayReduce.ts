@@ -1,20 +1,19 @@
 import * as ts from 'typescript';
-import { renderSupportedNodes } from '../../utils/renderSupportedNodes';
-import { Declaration, ExpressionHook, NodeInfo } from '../../types';
+import { CallbackType, Declaration, ExpressionHook } from '../../types';
 import { ctx, log, LogSeverity } from '../../utils/log';
 import { propNameIs } from './_propName';
 import { assertArrayType } from './_assert';
 import { Context } from '../../components/context';
 import { getCallExpressionCallbackArg, getCallExpressionLeftSide, getChildChainByType } from '../../utils/ast';
+import { renderNodes } from '../../components/codegen/renderNodes';
 
 /**
  * Array.prototype.reduce support
  *
  * @param node
- * @param self
  * @param context
  */
-export const arrayReduce: ExpressionHook = (node: ts.CallExpression, self: NodeInfo, context: Context<Declaration>) => {
+export const arrayReduce: ExpressionHook = (node: ts.CallExpression, context: Context<Declaration>) => {
   if (!propNameIs('reduce', node)) {
     return undefined;
   }
@@ -22,11 +21,8 @@ export const arrayReduce: ExpressionHook = (node: ts.CallExpression, self: NodeI
     log('Left-hand expression must have array-like or iterable inferred type', LogSeverity.ERROR, ctx(node));
     return 'null';
   }
-  self.flags.name = 'array_reduce';
 
-  const funcNode = getCallExpressionCallbackArg(self);
-  const varNode = getCallExpressionLeftSide(self);
-  const initialValue = getChildChainByType(self, [
+  const initialValue = getChildChainByType(node, [
     ts.SyntaxKind.SyntaxList,
     [
       ts.SyntaxKind.StringLiteral,
@@ -36,17 +32,20 @@ export const arrayReduce: ExpressionHook = (node: ts.CallExpression, self: NodeI
     ]
   ]);
 
-  let renderedFunction = renderSupportedNodes([funcNode], context).join('');
-  let varName = renderSupportedNodes([varNode], context);
+  const funcNode: CallbackType = getCallExpressionCallbackArg(node) as CallbackType;
+  const funcArgsCount = funcNode?.parameters.length || 0;
+
+  if (funcArgsCount > 2) {
+    log('Array.prototype.reduce with index in callback is not supported', LogSeverity.ERROR, ctx(node));
+    return 'null';
+  }
+
   if (!initialValue) {
     log('Array.prototype.reduce should have initial value of the accumulator', LogSeverity.ERROR, ctx(node));
     return 'null';
   }
-  let accumulator = renderSupportedNodes([initialValue], context);
-  if ((self.flags.childCount || 0) > 2) {
-    log('Array.prototype.reduce with index in callback is not supported', LogSeverity.ERROR, ctx(node));
-    return 'null';
-  } else {
-    return `array_reduce(${varName}, ${renderedFunction}, ${accumulator})`;
-  }
+
+  const varNode = getCallExpressionLeftSide(node);
+  let [accumulator, renderedFunction, varName] = renderNodes([initialValue, funcNode, varNode], context);
+  return `array_reduce(${varName}, ${renderedFunction}, ${accumulator})`;
 };

@@ -147,7 +147,12 @@ var ScopeNode = /** @class */ (function () {
         }
         this._usageMark = true;
     };
-    ScopeNode.prototype.reset = function () { this._usageMark = false; };
+    ScopeNode.prototype.reset = function () {
+        if (log_1.log.verbosity & log_1.LogVerbosity.WITH_USAGE_GRAPH_DUMP) {
+            log_1.log('Resetting node usage: ' + this.ident, log_1.LogSeverity.INFO);
+        }
+        this._usageMark = false;
+    };
     /**
      * Call this method on terminal node to travers and mark all used identifiers in all scopes.
      * Use homeScope.reset() to uncheck usage marks

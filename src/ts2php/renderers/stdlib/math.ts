@@ -1,18 +1,17 @@
 import * as ts from 'typescript';
-import { renderSupportedNodes } from '../../utils/renderSupportedNodes';
-import { Declaration, ExpressionHook, NodeInfo } from '../../types';
+import { Declaration, ExpressionHook } from '../../types';
 import { ctx, log, LogSeverity } from '../../utils/log';
 import { Context } from '../../components/context';
-import { getCallExpressionArg, getChildByType } from '../../utils/ast';
+import { getCallExpressionArg } from '../../utils/ast';
+import { renderNode, renderNodes } from '../../components/codegen/renderNodes';
 
 /**
  * Math.* methods and constants
  *
  * @param node
- * @param self
  * @param context
  */
-export const math: ExpressionHook = (node: ts.CallExpression, self: NodeInfo, context: Context<Declaration>) => {
+export const math: ExpressionHook = (node: ts.CallExpression, context: Context<Declaration>) => {
   const toCheck = node.expression.kind === ts.SyntaxKind.PropertyAccessExpression
     && (node.expression as ts.PropertyAccessExpression).expression.getText() === 'Math';
 
@@ -35,20 +34,19 @@ export const math: ExpressionHook = (node: ts.CallExpression, self: NodeInfo, co
     case 'exp':
     case 'log':
     case 'sqrt':
-      let varName = renderSupportedNodes([getCallExpressionArg(self)], context).join('');
+      let varName = renderNode(getCallExpressionArg(node), context);
       return `${operation}(${varName})`;
     case 'random':
       return 'mt_rand(0, PHP_INT_MAX) / (float)PHP_INT_MAX';
     case 'pow':
     case 'max':
     case 'min':
-      const args = getChildByType(self, ts.SyntaxKind.SyntaxList);
-      let nodes = renderSupportedNodes(args?.children || [], context);
+      let nodes = renderNodes([...node.arguments], context);
       return `${operation}(${nodes.join(', ')})`;
     case 'log2':
-      return `log(${renderSupportedNodes([getCallExpressionArg(self)], context).join('')}, 2)`;
+      return `log(${renderNode(getCallExpressionArg(node), context)}, 2)`;
     case 'log10':
-      return `log(${renderSupportedNodes([getCallExpressionArg(self)], context).join('')}, 10)`;
+      return `log(${renderNode(getCallExpressionArg(node), context)}, 10)`;
     default:
       log(`Math: unsupported method (${operation})`, LogSeverity.ERROR, ctx(node));
       return 'null';

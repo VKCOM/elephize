@@ -1,16 +1,9 @@
 import * as ts from 'typescript';
-import { Declaration, NodeDescription, NodeInfo } from '../types';
-import { renderSupportedNodes } from '../utils/renderSupportedNodes';
+import { Declaration } from '../types';
 import { Context } from '../components/context';
+import { renderNode } from '../components/codegen/renderNodes';
 
-export function tJsxAttribute(node: ts.JsxAttribute): NodeDescription {
-  return {
-    kind: node.kind,
-    supported: true,
-    gen: (self: NodeInfo, context: Context<Declaration>) => {
-      const [/* ident */, /* eq */, exprNode] = self.children;
-      const [expr] = renderSupportedNodes([exprNode], context);
-      return `"${node.name.getText()}" => ${expr}`;
-    }
-  };
+export function tJsxAttribute(node: ts.JsxAttribute, context: Context<Declaration>) {
+  const expr = renderNode(node.initializer, context);
+  return `"${node.name.getText()}" => ${expr}`;
 }

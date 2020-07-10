@@ -1,15 +1,9 @@
 import * as ts from 'typescript';
-import { Declaration, NodeDescription, NodeInfo } from '../types';
-import { renderSupportedNodes } from '../utils/renderSupportedNodes';
+import { Declaration } from '../types';
 import { Context } from '../components/context';
+import { renderNodes } from '../components/codegen/renderNodes';
 
-export function tTernaryOperator(node: ts.ConditionalExpression): NodeDescription {
-  return {
-    kind: node.kind,
-    supported: true,
-    gen: (self: NodeInfo, context: Context<Declaration>) => {
-      let [condition, /* questionMark */, ifTrue, /* colonMark */, ifFalse] = renderSupportedNodes(self.children, context, false);
-      return `${condition} ? ${ifTrue} : ${ifFalse}`;
-    }
-  };
+export function tTernaryOperator(node: ts.ConditionalExpression, context: Context<Declaration>) {
+  let [condition, ifTrue, ifFalse] = renderNodes([node.condition, node.whenTrue, node.whenFalse], context, false);
+  return `${condition} ? ${ifTrue} : ${ifFalse}`;
 }

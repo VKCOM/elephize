@@ -1,18 +1,17 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var renderSupportedNodes_1 = require("../../utils/renderSupportedNodes");
 var _propName_1 = require("./_propName");
 var ast_1 = require("../../utils/ast");
+var renderNodes_1 = require("../../components/codegen/renderNodes");
 /**
  * Anything ().toString() support
  *
  * @param node
- * @param self
  * @param context
  */
-exports.toString = function (node, self, context) {
+exports.toString = function (node, context) {
     if (_propName_1.propNameIs('toString', node)) {
-        var varNameNode = ast_1.getCallExpressionLeftSide(self);
-        return '(string)' + renderSupportedNodes_1.renderSupportedNodes([varNameNode], context).join('');
+        var varNameNode = ast_1.getCallExpressionLeftSide(node);
+        return '(string)' + renderNodes_1.renderNode(varNameNode, context);
     }
 };

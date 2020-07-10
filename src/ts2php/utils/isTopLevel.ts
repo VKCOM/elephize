@@ -1,7 +1,8 @@
 import * as ts from 'typescript';
 import { Context } from '../components/context';
 import { getClosestOrigParentOfType, getClosestParentOfType } from './ast';
-import { Declaration, NodeInfo } from '../types';
+import { Declaration } from '../types';
+import { NodeFlagStore } from '../components/codegen/nodeFlagStore';
 
 export function isTopLevel(node: ts.Node, context: Context<Declaration>) {
   if (!context.scope.isRoot()) {
@@ -33,10 +34,10 @@ export function isTopLevel(node: ts.Node, context: Context<Declaration>) {
   return false;
 }
 
-export function isTopLevelComponent(nodeInfo: NodeInfo) {
-  const func = getClosestParentOfType(nodeInfo, ts.SyntaxKind.FunctionExpression, true)
-    || getClosestParentOfType(nodeInfo, ts.SyntaxKind.ArrowFunction, true)
-    || getClosestParentOfType(nodeInfo, ts.SyntaxKind.FunctionDeclaration, true);
+export function isTopLevelComponent(node: ts.Node, nodeFlagStore: NodeFlagStore) {
+  const func = getClosestParentOfType(node, ts.SyntaxKind.FunctionExpression, true)
+    || getClosestParentOfType(node, ts.SyntaxKind.ArrowFunction, true)
+    || getClosestParentOfType(node, ts.SyntaxKind.FunctionDeclaration, true);
 
-  return func && func.flags.isComponent;
+  return func && nodeFlagStore.get(func)?.isComponent;
 }

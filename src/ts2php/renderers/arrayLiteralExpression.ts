@@ -1,33 +1,26 @@
 import * as ts from 'typescript';
-import { Declaration, NodeDescription, NodeInfo } from '../types';
+import { Declaration } from '../types';
 import { Context } from '../components/context';
-import { renderSupportedNodes } from '../utils/renderSupportedNodes';
+import { renderNode, renderNodes } from '../components/codegen/renderNodes';
 
-export function tArrayLiteralExpression(node: ts.ArrayLiteralExpression): NodeDescription {
-  return {
-    kind: node.kind,
-    supported: true,
-    gen: (self: NodeInfo, context: Context<Declaration>) => {
-      let [/*bracket*/, expr] = self.children;
-      let synList: string[] = [];
-      let toRender: NodeInfo[] = [];
+export function tArrayLiteralExpression(node: ts.ArrayLiteralExpression, context: Context<Declaration>) {
+  let synList: string[] = [];
+  let toRender: ts.Node[] = [];
 
-      for (let i = 0; i < expr.children.length; i++) {
-        if (expr.children[i].node.kind === ts.SyntaxKind.SpreadElement) {
-          synList = synList.concat('[' + renderSupportedNodes(toRender, context).join(', ') + ']');
-          toRender = [];
-          synList.push(renderSupportedNodes([expr.children[i]], context)[0]);
-        } else {
-          toRender.push(expr.children[i]);
-        }
-      }
-      synList = synList.concat('[' + renderSupportedNodes(toRender, context).join(', ') + ']');
-
-      if (synList.length === 1) {
-        return synList[0];
-      }
-
-      return `array_merge(${synList.join(', ')})`;
+  for (let i = 0; i < node.elements.length; i++) {
+    if (node.elements[i].kind === ts.SyntaxKind.SpreadElement) {
+      synList = synList.concat('[' + renderNodes(toRender, context).join(', ') + ']');
+      toRender = [];
+      synList.push(renderNode(node.elements[i], context));
+    } else {
+      toRender.push(node.elements[i]);
     }
-  };
+  }
+  synList = synList.concat('[' + renderNodes(toRender, context).join(', ') + ']');
+
+  if (synList.length === 1) {
+    return synList[0];
+  }
+
+  return `array_merge(${synList.join(', ')})`;
 }

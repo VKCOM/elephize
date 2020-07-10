@@ -1,22 +1,33 @@
 "use strict";
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var ts = require("typescript");
-var renderSupportedNodes_1 = require("../../utils/renderSupportedNodes");
 var ast_1 = require("../../utils/ast");
+var renderNodes_1 = require("../codegen/renderNodes");
 /**
  * Top-level functions marked with IC prefix are expected to be functional Isomorphic Components
  *
  * @param context
  * @param node
- * @param self
  */
-function handleComponent(context, node, self) {
+function handleComponent(context, node) {
     var _a;
-    var isNestedFunc = ast_1.getClosestParentOfAnyType(self, [
+    var funcNode = ast_1.getClosestParentOfAnyType(node, [
         ts.SyntaxKind.FunctionDeclaration,
         ts.SyntaxKind.ArrowFunction,
         ts.SyntaxKind.FunctionExpression
-    ]);
+    ], true);
+    var isNestedFunc = !!ast_1.getClosestParentOfAnyType(node, [
+        ts.SyntaxKind.FunctionDeclaration,
+        ts.SyntaxKind.ArrowFunction,
+        ts.SyntaxKind.FunctionExpression
+    ]); // note difference: not including self
     var triviaContainer = node.kind === ts.SyntaxKind.FunctionDeclaration
         ? node
         : ast_1.getClosestOrigParentOfType(node, ts.SyntaxKind.VariableStatement);
@@ -33,20 +44,17 @@ function handleComponent(context, node, self) {
         }
         var tmpDescriptor = context.moduleDescriptor;
         context.moduleDescriptor = descriptor;
-        self.flags.isComponent = true;
+        context.nodeFlagsStore.upsert(node, { isComponent: true });
         var decl = context.scope.addDeclaration(nodeName.getText(), [], { terminateGlobally: true, dryRun: context.dryRun });
         context.pushScope(nodeName.getText());
         context.scope.ownerNode.data.isComponent = true;
-        var _b = renderSupportedNodes_1.renderSupportedNodes([
-            self.children.find(function (c) { return c.node.kind === ts.SyntaxKind.SyntaxList &&
-                c.children.length > 0 && c.children[0].node.kind === ts.SyntaxKind.Parameter; }),
-            self.children.find(function (c) { return c.node.kind === ts.SyntaxKind.Block; })
-        ], context, false), args = _b[0], block = _b[1];
+        var args = renderNodes_1.renderNodes(__spreadArrays(funcNode.parameters), context);
+        var block = renderNodes_1.renderNode(funcNode.body, context);
         if (decl && decl.ownedScope) {
             context.scope.terminateToParentTerminalNode(context.dryRun);
         }
         context.popScope();
-        descriptor.setArgs(args);
+        descriptor.setArgs(args.join(', '));
         descriptor.setBlock(block);
         context.moduleDescriptor = tmpDescriptor;
         return true;

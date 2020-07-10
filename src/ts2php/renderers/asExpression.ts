@@ -1,14 +1,6 @@
 import * as ts from 'typescript';
-import { Declaration, NodeDescription, NodeInfo } from '../types';
+import { Declaration } from '../types';
 import { Context } from '../components/context';
-import { renderSupportedNodes } from '../utils/renderSupportedNodes';
+import { renderNode } from '../components/codegen/renderNodes';
 
-export function tAsExpression(node: ts.AsExpression): NodeDescription {
-  return {
-    kind: node.kind,
-    supported: true,
-    gen: (self: NodeInfo, context: Context<Declaration>) => {
-      return renderSupportedNodes([self.children[0]], context)[0];
-    }
-  };
-}
+export const tAsExpression = (node: ts.AsExpression, context: Context<Declaration>) => renderNode(node.expression, context);

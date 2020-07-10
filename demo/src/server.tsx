@@ -1,7 +1,7 @@
 import React from 'react';
 import express from 'express';
 import { renderToString } from 'react-dom/server';
-import { App } from './components/App.iso';
+import { App } from './components/App.isoentry';
 import fs from 'fs';
 
 const server = express();

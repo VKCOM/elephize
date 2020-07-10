@@ -1,12 +1,6 @@
 import * as ts from 'typescript';
-import { Declaration, NodeDescription, NodeInfo } from '../types';
-import { renderSupportedNodes } from '../utils/renderSupportedNodes';
+import { Declaration } from '../types';
 import { Context } from '../components/context';
+import { renderNodes } from '../components/codegen/renderNodes';
 
-export function tCaseBlock(node: ts.CaseBlock): NodeDescription {
-  return {
-    kind: node.kind,
-    supported: true,
-    gen: (self: NodeInfo, context: Context<Declaration>) => renderSupportedNodes(self.children, context).join('\n')
-  };
-}
+export const tCaseBlock = (node: ts.CaseBlock, context: Context<Declaration>) => renderNodes([...node.clauses], context).join('\n');

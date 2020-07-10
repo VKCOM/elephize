@@ -1,12 +1,20 @@
 "use strict";
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var types_1 = require("../types");
 var ts = require("typescript");
-var renderSupportedNodes_1 = require("../utils/renderSupportedNodes");
 var ast_1 = require("../utils/ast");
 var reactComponents_1 = require("./react/reactComponents");
 var log_1 = require("../utils/log");
-function getRenderedBlock(context, nodeIdent, nodeOrig, realParent, nodes) {
+var renderNodes_1 = require("./codegen/renderNodes");
+function getRenderedBlock(context, nodeIdent, realParent, argSynList, bodyBlock // can be many types in arrow func
+) {
     var node;
     var _a = context.scope.findByIdent(nodeIdent) || [], declScope = _a[1];
     if (declScope) {
@@ -16,10 +24,15 @@ function getRenderedBlock(context, nodeIdent, nodeOrig, realParent, nodes) {
         context.scope.addDeclaration(nodeIdent, [], { dryRun: context.dryRun });
     }
     context.pushScope(nodeIdent);
+    // Declare all parameters
+    argSynList.map(ast_1.fetchAllBindingIdents)
+        .reduce(function (acc, val) { return acc.concat(val); }, []) // flatten;
+        .forEach(function (ident) { return context.scope.addDeclaration(ident.getText(), [], { terminateLocally: true, dryRun: context.dryRun }); });
     if (realParent) {
-        realParent.flags.destructuringInfo = { vars: '' }; // Reset destructuring info
+        context.nodeFlagsStore.upsert(realParent, { destructuringInfo: { vars: '' } });
     }
-    var _b = renderSupportedNodes_1.renderSupportedNodes(nodes, context, false), syntaxList = _b[0], block = _b[1];
+    var syntaxList = renderNodes_1.renderNodes(__spreadArrays(argSynList), context, false).slice(0);
+    var block = renderNodes_1.renderNode(bodyBlock, context);
     var idMap = new Map();
     context.scope.getClosure().forEach(function (decl, ident) {
         if ((decl.flags & types_1.DeclFlag.External) && decl.propName === '*') {
@@ -35,22 +48,21 @@ function getRenderedBlock(context, nodeIdent, nodeOrig, realParent, nodes) {
 }
 exports.getRenderedBlock = getRenderedBlock;
 function generateFunctionElements(_a) {
-    var statement = _a.statement, expr = _a.expr, nodeIdent = _a.nodeIdent, context = _a.context, origDecl = _a.origDecl, origStatement = _a.origStatement;
+    var expr = _a.expr, nodeIdent = _a.nodeIdent, context = _a.context, origDecl = _a.origDecl, origStatement = _a.origStatement;
     if (origDecl && origStatement) {
         var parentStmt = ast_1.getClosestOrigParentOfType(origDecl, ts.SyntaxKind.VariableStatement);
         if (parentStmt) {
-            var handledContent = reactComponents_1.handleComponent(context, origStatement, expr);
+            var handledContent = reactComponents_1.handleComponent(context, origStatement);
             if (handledContent) {
                 return null; // component is written to different file, so we should not output anything here
             }
         }
     }
-    var synListNode = ast_1.getChildOfAnyTypeAfterSelected(expr, ts.SyntaxKind.OpenParenToken, [ts.SyntaxKind.SyntaxList]);
-    // Fallback value for oneline arrow function cases.
-    var blockNode = ast_1.getChildByType(expr, ts.SyntaxKind.Block) || ast_1.getChildOfAnyTypeAfterSelected(expr, ts.SyntaxKind.EqualsGreaterThanToken, ast_1.RightHandExpressionLike);
-    var _b = getRenderedBlock(context, nodeIdent, origStatement, statement, [synListNode, blockNode]), syntaxList = _b.syntaxList, block = _b.block;
+    var params = expr.parameters;
+    var blockNode = expr.body;
+    var _b = getRenderedBlock(context, nodeIdent, origStatement, params, blockNode), syntaxList = _b.syntaxList, block = _b.block;
     block = unwrapArrowBody(block, blockNode);
-    block = prependDestructuredParams(block, statement);
+    block = prependDestructuredParams(block, expr, context);
     return { syntaxList: syntaxList, block: block };
 }
 exports.generateFunctionElements = generateFunctionElements;
@@ -76,27 +88,28 @@ function genClosure(idMap, context, node) {
     return { closureExpr: closureExpr };
 }
 exports.genClosure = genClosure;
-function prependDestructuredParams(block, realParent) {
+function prependDestructuredParams(block, func, context) {
     var _a;
-    if (!((_a = realParent.flags.destructuringInfo) === null || _a === void 0 ? void 0 : _a.vars)) {
+    var flags = context.nodeFlagsStore.get(func);
+    if (!((_a = flags === null || flags === void 0 ? void 0 : flags.destructuringInfo) === null || _a === void 0 ? void 0 : _a.vars)) {
         return block;
     }
-    return block.replace(/^{/, '{\n' + realParent.flags.destructuringInfo.vars);
+    return block.replace(/^{/, '{\n' + flags.destructuringInfo.vars);
 }
 exports.prependDestructuredParams = prependDestructuredParams;
 function unwrapArrowBody(block, blockNode, noReturn) {
     if (noReturn === void 0) { noReturn = false; }
-    if ((blockNode === null || blockNode === void 0 ? void 0 : blockNode.node.kind) !== ts.SyntaxKind.Block) {
+    if ((blockNode === null || blockNode === void 0 ? void 0 : blockNode.kind) !== ts.SyntaxKind.Block) {
         return noReturn ? "{\n" + block + ";\n}" : "{\nreturn " + block + ";\n}";
     }
     return block;
 }
 exports.unwrapArrowBody = unwrapArrowBody;
-exports.functionExpressionGen = function (node, ident, realParent) { return function (opts, context) {
+exports.functionExpressionGen = function (node, ident) { return function (opts, context) {
     // TODO: disallow `this` in expressions
-    var _a = getRenderedBlock(context, ident, node, realParent, [opts.synListNode, opts.blockNode]), syntaxList = _a.syntaxList, block = _a.block, idMap = _a.idMap;
+    var _a = getRenderedBlock(context, ident, node, opts.synList, opts.blockNode), syntaxList = _a.syntaxList, block = _a.block, idMap = _a.idMap;
     block = unwrapArrowBody(block, opts.blockNode);
-    block = prependDestructuredParams(block, realParent);
+    block = prependDestructuredParams(block, node, context);
     var closureExpr = genClosure(idMap, context, node).closureExpr;
     return "/* " + ident + " */ function (" + syntaxList + ")" + closureExpr + " " + block;
 }; };

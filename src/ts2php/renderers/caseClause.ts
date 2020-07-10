@@ -1,15 +1,9 @@
 import * as ts from 'typescript';
-import { Declaration, NodeDescription, NodeInfo } from '../types';
-import { renderSupportedNodes } from '../utils/renderSupportedNodes';
+import { Declaration } from '../types';
 import { Context } from '../components/context';
+import { renderNodes } from '../components/codegen/renderNodes';
 
-export function tCaseClause(node: ts.CaseClause): NodeDescription {
-  return {
-    kind: node.kind,
-    supported: true,
-    gen: (self: NodeInfo, context: Context<Declaration>) => {
-      let [condition, ...expressions] = renderSupportedNodes(self.children, context);
-      return `case ${condition}:\n${expressions.join('\n')}`;
-    }
-  };
+export function tCaseClause(node: ts.CaseClause, context: Context<Declaration>) {
+  let [condition, ...expressions] = renderNodes([node.expression, ...node.statements], context);
+  return `case ${condition}:\n${expressions.join('\n')}`;
 }

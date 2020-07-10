@@ -1,12 +1,13 @@
 import * as glob from 'glob';
 import { Options } from './types';
 import { log, LogSeverity } from '../../utils/log';
-import { makeBootstrap, translateCode } from '../codeGenerator';
+import { translateCode } from '../codegen/translateCode';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as iconv from 'iconv-lite';
 import { ModuleRegistry } from '../cjsModules/moduleRegistry';
 import ncp = require('ncp');
+import { makeBootstrap } from '../codegen/makeBootstrap';
 const replace = require('stream-replace');
 
 export function transpile(options: Options, baseDir: string, outDir: string) {
