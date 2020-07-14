@@ -2,7 +2,7 @@ import * as ts from 'typescript';
 import { ExpressionHook, Declaration } from '../../types';
 import { ctx, log, LogSeverity } from '../../utils/log';
 import { propNameIs } from './_propName';
-import { assertType } from './_assert';
+import { hasType } from '../../components/typeInference';
 import { Context } from '../../components/context';
 import { renderNode, renderNodes } from '../../components/codegen/renderNodes';
 
@@ -16,7 +16,7 @@ export const stringSplit: ExpressionHook = (node: ts.CallExpression, context: Co
   if (!propNameIs('split', node)) {
     return undefined;
   }
-  if (!assertType(node.expression, context.checker, 'string')) {
+  if (!hasType(node.expression, context.checker, 'string')) {
     log('Left-hand expression must have string inferred type', LogSeverity.ERROR, ctx(node));
     return 'null';
   }

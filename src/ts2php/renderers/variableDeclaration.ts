@@ -10,7 +10,7 @@ import { Scope } from '../components/unusedCodeElimination/usageGraph';
 import { BoundNode } from '../components/unusedCodeElimination/usageGraph/node';
 import { snakify } from '../utils/pathsAndNames';
 import { renderNodes, renderNode } from '../components/codegen/renderNodes';
-import { getPhpPrimitiveType, getPhpPrimitiveTypeForFunc } from './stdlib/_assert';
+import { getPhpPrimitiveType, getPhpPrimitiveTypeForFunc } from '../components/typeInference';
 
 export function tVariableDeclaration(node: ts.VariableDeclaration, context: Context<Declaration>) {
   const identifierNode = node.name;

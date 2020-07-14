@@ -6,6 +6,8 @@ import { handleComponent } from './react/reactComponents';
 import { ctx, log, LogSeverity } from '../utils/log';
 import { BoundNode } from './unusedCodeElimination/usageGraph/node';
 import { renderNode, renderNodes } from './codegen/renderNodes';
+import { usedInNestedScope } from './unusedCodeElimination/usageGraph/nodeData';
+
 type FunctionalDecl = ts.FunctionDeclaration | ts.FunctionExpression | ts.ArrowFunction;
 
 export function getRenderedBlock(
@@ -139,3 +141,27 @@ export const functionExpressionGen = (node: FunctionalDecl, ident: string) => (o
   const { closureExpr } = genClosure(idMap, context, node);
   return `/* ${ident} */ function (${syntaxList})${closureExpr} ${block}`;
 };
+
+/**
+ * If node value looks like modified in current context, add declaration flag.
+ * Return declaration.
+ * @param node
+ * @param context
+ * @return Declaration
+ */
+export function checkModificationInNestedScope(node: ts.Identifier | null, context: Context<Declaration>) {
+  if (!node) {
+    return null;
+  }
+  const nodeText = node.escapedText.toString();
+  const [decl, declScope] = context.scope.findByIdent(nodeText) || [];
+  if (decl && declScope) {
+    const modifiedInLowerScope = usedInNestedScope(decl, declScope, context.scope);
+    if (modifiedInLowerScope && decl) {
+      decl.flags = decl.flags | DeclFlag.ModifiedInLowerScope;
+    }
+    return decl;
+  }
+
+  return null;
+}

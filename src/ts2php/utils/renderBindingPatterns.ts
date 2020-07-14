@@ -3,7 +3,7 @@ import { Context } from '../components/context';
 import { snakify } from './pathsAndNames';
 import { isTopLevel } from './isTopLevel';
 import { Declaration } from '../types';
-import { getPhpPrimitiveType } from '../renderers/stdlib/_assert';
+import { getPhpPrimitiveType } from '../components/typeInference';
 
 export type ElementDefinition = {
   identifier: ts.Identifier;

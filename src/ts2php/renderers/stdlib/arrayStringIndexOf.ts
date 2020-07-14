@@ -2,7 +2,7 @@ import * as ts from 'typescript';
 import { Declaration, ExpressionHook } from '../../types';
 import { ctx, log, LogSeverity } from '../../utils/log';
 import { propNameIs } from './_propName';
-import { assertArrayType } from './_assert';
+import { hasArrayType } from '../../components/typeInference';
 import { Context } from '../../components/context';
 import { getCallExpressionLeftSide } from '../../utils/ast';
 import { renderNode, renderNodes } from '../../components/codegen/renderNodes';
@@ -31,7 +31,7 @@ export const arrayStringIndexOf: ExpressionHook = (node: ts.CallExpression, cont
     }
     return `strpos(${varName}, ${args.join(', ')})`;
   } else {
-    if (!assertArrayType(node.expression, context.checker)) {
+    if (!hasArrayType(node.expression, context.checker)) {
       log('Left-hand expression must have string, array-like or iterable inferred type', LogSeverity.ERROR, ctx(node));
       return 'null';
     }

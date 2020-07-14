@@ -13,7 +13,7 @@ var __assign = (this && this.__assign) || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var pathsAndNames_1 = require("./pathsAndNames");
 var isTopLevel_1 = require("./isTopLevel");
-var _assert_1 = require("../renderers/stdlib/_assert");
+var typeInference_1 = require("../components/typeInference");
 exports.renderPattern = function (placeholder, node, elements, identList, context) { return elements
     .filter(function (el) { return !!el; })
     .map(function (el) {
@@ -23,7 +23,7 @@ exports.renderPattern = function (placeholder, node, elements, identList, contex
     identList.push(el.identifier);
     var ident = pathsAndNames_1.snakify(el.identifier.getText());
     if (isTopLevel_1.isTopLevel(node, context)) { // Top-level declarations transform to properties and construction initializers
-        context.moduleDescriptor.addProperty('$' + ident, _assert_1.getPhpPrimitiveType(el.identifier, context.checker), 'public');
+        context.moduleDescriptor.addProperty('$' + ident, typeInference_1.getPhpPrimitiveType(el.identifier, context.checker), 'public');
         context.moduleDescriptor.addStatement("$this->" + ident + " = " + el.initializer + ";");
         return null;
     }

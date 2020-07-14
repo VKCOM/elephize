@@ -2,9 +2,9 @@ import * as ts from 'typescript';
 import { Declaration } from '../types';
 import { Context } from '../components/context';
 import { getLeftExpr } from '../utils/ast';
-import { assertLocalModification } from './stdlib/_assert';
 import { Scope } from '../components/unusedCodeElimination/usageGraph';
 import { renderNodes } from '../components/codegen/renderNodes';
+import { checkModificationInNestedScope } from '../components/functionScope';
 
 export function tBinaryExpression(node: ts.BinaryExpression, context: Context<Declaration>) {
   // Support for modification of vars inside closure
@@ -18,7 +18,7 @@ export function tBinaryExpression(node: ts.BinaryExpression, context: Context<De
     ts.SyntaxKind.BarEqualsToken,
     ts.SyntaxKind.AmpersandEqualsToken
   ].includes(node.operatorToken.kind)) {
-    assertLocalModification(node.left as ts.Identifier, context);
+    checkModificationInNestedScope(node.left as ts.Identifier, context);
   }
   // Support for modification of properties inside closure
   if ((node.left.kind === ts.SyntaxKind.PropertyAccessExpression || node.left.kind === ts.SyntaxKind.ElementAccessExpression) && [
@@ -31,7 +31,7 @@ export function tBinaryExpression(node: ts.BinaryExpression, context: Context<De
     ts.SyntaxKind.BarEqualsToken,
     ts.SyntaxKind.AmpersandEqualsToken
   ].includes(node.operatorToken.kind)) {
-    assertLocalModification(getLeftExpr(node.left) as ts.Identifier, context);
+    checkModificationInNestedScope(getLeftExpr(node.left) as ts.Identifier, context);
   }
 
   let replaceLiteral: string | null = null;

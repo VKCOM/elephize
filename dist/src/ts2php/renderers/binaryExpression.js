@@ -2,9 +2,9 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var ts = require("typescript");
 var ast_1 = require("../utils/ast");
-var _assert_1 = require("./stdlib/_assert");
 var usageGraph_1 = require("../components/unusedCodeElimination/usageGraph");
 var renderNodes_1 = require("../components/codegen/renderNodes");
+var functionScope_1 = require("../components/functionScope");
 function tBinaryExpression(node, context) {
     var _a, _b, _c, _d, _e, _f;
     // Support for modification of vars inside closure
@@ -18,7 +18,7 @@ function tBinaryExpression(node, context) {
         ts.SyntaxKind.BarEqualsToken,
         ts.SyntaxKind.AmpersandEqualsToken
     ].includes(node.operatorToken.kind)) {
-        _assert_1.assertLocalModification(node.left, context);
+        functionScope_1.checkModificationInNestedScope(node.left, context);
     }
     // Support for modification of properties inside closure
     if ((node.left.kind === ts.SyntaxKind.PropertyAccessExpression || node.left.kind === ts.SyntaxKind.ElementAccessExpression) && [
@@ -31,7 +31,7 @@ function tBinaryExpression(node, context) {
         ts.SyntaxKind.BarEqualsToken,
         ts.SyntaxKind.AmpersandEqualsToken
     ].includes(node.operatorToken.kind)) {
-        _assert_1.assertLocalModification(ast_1.getLeftExpr(node.left), context);
+        functionScope_1.checkModificationInNestedScope(ast_1.getLeftExpr(node.left), context);
     }
     var replaceLiteral = null;
     if (node.operatorToken.kind === ts.SyntaxKind.PlusToken) {
