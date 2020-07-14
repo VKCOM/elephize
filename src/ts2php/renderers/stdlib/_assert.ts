@@ -85,46 +85,33 @@ export function getPhpPrimitiveType(node: ts.Node, checker: ts.TypeChecker) {
   return _getPrimitiveTypeByType(node, type, checker);
 }
 
+const typeMap: {[key: string]: string} = {
+  'number': 'float', // TODO: check int possibilities?
+  'string': 'string',
+  'boolean': 'boolean',
+  'true': 'boolean',
+  'false': 'boolean'
+};
+
 function _getPrimitiveTypeByType(node: ts.Node | undefined, type: ts.Type, checker: ts.TypeChecker) {
   if (_assertArrayTypeFromType(type, checker, false)) {
     return 'array';
   }
 
-  const strTypes = checker.typeToString(type, node, ts.TypeFormatFlags.UseFullyQualifiedType)
+  const strTypes = checker.typeToString(type, node, ts.TypeFormatFlags.None)
     .split('|')
     .map((t) => t.replace(/^\s+|\s+$/g, ''))
-    .map((strType) => {
-      switch (strType) {
-        case 'number':
-          return 'float'; // TODO: check int possibilities?
-        case 'string':
-          return 'string';
-        case 'boolean':
-        case 'true':
-        case 'false':
-          return 'boolean';
-        default:
-          return 'var';
-      }
-    });
+    .map((strType) => typeMap[strType] || 'var');
 
   if (strTypes.includes('var')) {
-    // Check parent types: Number for 1, String for "asd" etc
-    const appType = checker.getApparentType(type);
-    const appStrTypes = checker.typeToString(appType).toLowerCase().split('|')
-      .map((t) => t.replace(/^\s+|\s+$/g, ''))
-      .map((appStrType) => {
-        switch (appStrType) {
-          case 'number':
-            return 'float'; // TODO: check int possibilities?
-          case 'string':
-            return 'string';
-          case 'boolean':
-            return 'boolean';
-          default:
-            return 'var'; // TODO: more specific typing?
-        }
-      });
+    const types = type.isUnionOrIntersection() ? type.types : [type];
+    const appStrTypes = types.map((t) => {
+      // Check parent types: Number for 1, String for "asd" etc
+      const appType = checker.getApparentType(t);
+      const appStrType = checker.typeToString(appType).toLowerCase()
+        .replace(/^\s+|\s+$/g, '');
+      return typeMap[appStrType] || 'var';
+    });
 
     if (appStrTypes.includes('var')) {
       return 'var';
