@@ -22,6 +22,7 @@ test('ts2php.stdlibMethods', () => {
     ['stringMethods', 'trim.ts'],
     ['stringMethods', 'startsWith.ts'],
     ['stringMethods', 'strIncludes.ts'],
+    ['stringMethods', 'parse.ts'],
     ['objectMethods', 'keys.ts'],
     ['misc', 'defaultOperator.ts'],
     ['misc', 'complexObjectFuncs.ts'],

@@ -2,7 +2,7 @@ import * as ts from 'typescript';
 import { Declaration, ExpressionHook } from '../../types';
 import { ctx, log, LogSeverity } from '../../utils/log';
 import { propNameIs } from './_propName';
-import { hasType } from '../../components/typeInference';
+import { hasType } from '../../components/typeInference/basicTypes';
 import { Context } from '../../components/context';
 import { getCallExpressionLeftSide } from '../../utils/ast';
 import { renderNode, renderNodes } from '../../components/codegen/renderNodes';

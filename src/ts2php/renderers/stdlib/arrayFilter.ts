@@ -2,7 +2,7 @@ import * as ts from 'typescript';
 import { CallbackType, Declaration, ExpressionHook } from '../../types';
 import { ctx, log, LogSeverity } from '../../utils/log';
 import { propNameIs } from './_propName';
-import { hasArrayType } from '../../components/typeInference';
+import { hasArrayType } from '../../components/typeInference/basicTypes';
 import { Context } from '../../components/context';
 import { getCallExpressionCallbackArg, getCallExpressionLeftSide } from '../../utils/ast';
 import { renderNodes } from '../../components/codegen/renderNodes';

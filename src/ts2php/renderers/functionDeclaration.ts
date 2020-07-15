@@ -11,7 +11,7 @@ import { identifyAnonymousNode } from '../components/unusedCodeElimination/usage
 import { Scope } from '../components/unusedCodeElimination/usageGraph';
 import { ctx, log, LogSeverity } from '../utils/log';
 import { renderNode } from '../components/codegen/renderNodes';
-import { getPhpPrimitiveTypeForFunc } from '../components/typeInference';
+import { getPhpPrimitiveTypeForFunc } from '../components/typeInference/basicTypes';
 
 export function tFunctionDeclaration(node: ts.FunctionDeclaration, context: Context<Declaration>) {
   const exported = hasExport(node);

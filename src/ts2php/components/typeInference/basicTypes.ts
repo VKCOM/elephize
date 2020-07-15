@@ -1,5 +1,7 @@
 import * as ts from 'typescript';
-import { MethodsTypes } from '../types';
+import { MethodsTypes } from '../../types';
+import { checkCustomTypehints } from './customTypehints';
+import { typeMap } from './basicTypesMap';
 
 /**
  * Check if node has proper inferred type identified by typeString
@@ -23,7 +25,7 @@ export function hasType(node: ts.Node, checker: ts.TypeChecker, typeString: stri
 export function hasArrayType(node: ts.Node, checker: ts.TypeChecker): boolean {
   let nd: ts.Node = (node as ts.PropertyAccessExpression).expression;
   let type = checker.getTypeAtLocation(nd);
-  return _isArrayType(type, checker);
+  return _parseArrayType(type, checker) === 'array';
 }
 
 /**
@@ -70,7 +72,7 @@ export function getPhpPrimitiveTypeForFunc(node: ts.FunctionExpression | ts.Arro
   };
 }
 
-function _isArrayType(node: ts.Type, checker: ts.TypeChecker, excludeObjects = true) {
+function _parseArrayType(node: ts.Type, checker: ts.TypeChecker, excludeObjects = true) {
   let typeNode = checker.typeToTypeNode(node);
   if (!typeNode) {
     return false;
@@ -90,42 +92,55 @@ function _isArrayType(node: ts.Type, checker: ts.TypeChecker, excludeObjects = t
     if (!excludeObjects) {
       isObjectType = (ifaceDecl as ts.InterfaceDeclaration).members.length > 0;
     }
-    return isObjectType || (ifaceDecl as ts.InterfaceDeclaration).name.text === 'Array';
+    if (isObjectType || (ifaceDecl as ts.InterfaceDeclaration).name.text === 'Array') {
+      return 'array';
+    }
   }
 
   if (!excludeObjects && typeNode.kind === ts.SyntaxKind.TypeLiteral) {
-    return true;
+    return 'array';
   }
 
-  return typeNode.kind === ts.SyntaxKind.ArrayType || typeNode.kind === ts.SyntaxKind.TupleType;
+  if (typeNode.kind === ts.SyntaxKind.ArrayType || typeNode.kind === ts.SyntaxKind.TupleType) {
+    return 'array';
+  }
+
+  return false;
 }
 
-const typeMap: {[key: string]: string} = {
-  'number': 'float', // TODO: check int possibilities?
-  'string': 'string',
-  'boolean': 'boolean',
-  'true': 'boolean',
-  'false': 'boolean'
+const _transformTypeName = (type: ts.Type, checker: ts.TypeChecker) => (t: string) => {
+  const arrType = _parseArrayType(type, checker, false);
+  if (arrType) {
+    return arrType;
+  }
+  return typeMap[t] || 'var';
 };
 
 function _describeNodeType(node: ts.Node | undefined, type: ts.Type, checker: ts.TypeChecker) {
-  if (_isArrayType(type, checker, false)) {
-    return 'array';
+  const customTypehints = checkCustomTypehints(type, checker);
+  if (customTypehints) {
+    const types = customTypehints.foundTypes.map((t) => {
+      if (typeof t === 'string') {
+        return t;
+      }
+      // Some of union members may be literal types
+      return _describeAsApparentType(t, checker);
+    }).filter((t) => !customTypehints.typesToDrop.includes(t));
+    return Array.from(new Set((<string[]>[])
+      .concat(types)))
+      .join('|');
   }
 
   const strTypes = checker.typeToString(type, node, ts.TypeFormatFlags.None)
     .split('|')
     .map((t) => t.replace(/^\s+|\s+$/g, ''))
-    .map((strType) => typeMap[strType] || 'var');
+    .map(_transformTypeName(type, checker));
 
   if (strTypes.includes('var')) {
     const types = type.isUnionOrIntersection() ? type.types : [type];
+
     const appStrTypes = types.map((t) => {
-      // Check parent types: Number for 1, String for "asd" etc
-      const appType = checker.getApparentType(t);
-      const appStrType = checker.typeToString(appType).toLowerCase()
-        .replace(/^\s+|\s+$/g, '');
-      return typeMap[appStrType] || 'var';
+      return _describeAsApparentType(t, checker);
     });
 
     if (appStrTypes.includes('var')) {
@@ -134,10 +149,19 @@ function _describeNodeType(node: ts.Node | undefined, type: ts.Type, checker: ts
 
     return Array.from(new Set((<string[]>[])
       .concat(strTypes.filter((t) => t !== 'var'))
-      .concat(appStrTypes))).join('|');
+      .concat(appStrTypes)))
+      .join('|');
   }
 
   return Array.from(new Set((<string[]>[])
-    .concat(strTypes))).join('|');
+    .concat(strTypes)))
+    .join('|');
 }
 
+// Check parent types: Number for 1, String for "asd" etc
+function _describeAsApparentType(t: ts.Type, checker: ts.TypeChecker) {
+  const appType = checker.getApparentType(t);
+  const appStrType = checker.typeToString(appType).toLowerCase()
+    .replace(/^\s+|\s+$/g, '');
+  return _transformTypeName(t, checker)(appStrType);
+}

@@ -23,6 +23,7 @@ var stringStartsWith_1 = require("./stringStartsWith");
 var stringSubstr_1 = require("./stringSubstr");
 var stringTrim_1 = require("./stringTrim");
 var arrayIsArray_1 = require("./arrayIsArray");
+var parse_1 = require("./parse");
 var usageGraph_1 = require("../../components/unusedCodeElimination/usageGraph");
 var varsUsage_1 = require("../../components/unusedCodeElimination/varsUsage");
 var ast_1 = require("../../utils/ast");
@@ -31,7 +32,7 @@ var stdlibHooks = [
     arrayPop_1.arrayPop, arrayPush_1.arrayPush, arrayReduce_1.arrayReduce, arraySome_1.arraySome, arraySplice_1.arraySplice,
     arrayStringIncludes_1.arrayStringIncludes, arrayStringLastIndexOf_1.arrayStringLastIndexOf, arrayStringIndexOf_1.arrayStringIndexOf, arrayStringSlice_1.arrayStringSlice,
     math_1.math, objectKeys_1.objectKeys, toString_1.toString, stringSplit_1.stringSplit, stringStartsWith_1.stringStartsWith, stringSubstr_1.stringSubstr, stringTrim_1.stringTrim,
-    arrayIsArray_1.arrayIsArray, typecastConstructors_1.typecastConstructors
+    arrayIsArray_1.arrayIsArray, typecastConstructors_1.typecastConstructors, parse_1.parse
 ];
 exports.hookStdlib = function (node, context) {
     var result = undefined;
