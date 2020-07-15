@@ -1,6 +1,6 @@
 import * as ts from 'typescript';
-import { Context } from './components/context';
-import { ModuleRegistry } from './components/cjsModules/moduleRegistry';
+import { Context } from '../components/context';
+import { ModuleRegistry } from '../components/cjsModules/moduleRegistry';
 
 export type Dict<T> = { [key: string]: T };
 export type CallbackType = ts.FunctionExpression | ts.ArrowFunction | undefined;

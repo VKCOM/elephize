@@ -10,6 +10,7 @@ import { resolveAliasesAndPaths } from '../../utils/pathsAndNames';
 import { getSkippedFilesPromiseExec } from '../cjsModules/ignore';
 import { renderModule } from './renderModule';
 import { NodeFlagStore } from './nodeFlagStore';
+import * as path from 'path';
 
 export const defaultOptions: ts.CompilerOptions = {
   target: ts.ScriptTarget.ES5,
@@ -18,7 +19,9 @@ export const defaultOptions: ts.CompilerOptions = {
     'lib.dom.d.ts',
     'lib.es5.d.ts',
     'lib.es2015.d.ts',
-    'lib.es2016.d.ts'
+    'lib.es2016.d.ts',
+
+    path.resolve(__dirname, '..', '..', 'types', 'global', 'index.d.ts')
   ],
   moduleResolution: ts.ModuleResolutionKind.NodeJs,
   module: ts.ModuleKind.CommonJS,

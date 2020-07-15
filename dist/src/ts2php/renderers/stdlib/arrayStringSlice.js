@@ -10,7 +10,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var ts = require("typescript");
 var log_1 = require("../../utils/log");
 var _propName_1 = require("./_propName");
-var typeInference_1 = require("../../components/typeInference");
+var basicTypes_1 = require("../../components/typeInference/basicTypes");
 var ast_1 = require("../../utils/ast");
 var renderNodes_1 = require("../../components/codegen/renderNodes");
 function isForcedArrayType(context, node) {
@@ -55,7 +55,7 @@ exports.arrayStringSlice = function (node, context) {
     }
     else {
         var forced = isForcedArrayType(context, node);
-        if (!typeInference_1.hasArrayType(node.expression, context.checker) && !forced) {
+        if (!basicTypes_1.hasArrayType(node.expression, context.checker) && !forced) {
             log_1.log('Left-hand expression must have string, array-like or iterable inferred type', log_1.LogSeverity.ERROR, log_1.ctx(node));
             return 'null';
         }

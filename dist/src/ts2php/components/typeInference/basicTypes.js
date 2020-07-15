@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var ts = require("typescript");
+var customTypehints_1 = require("./customTypehints");
+var basicTypesMap_1 = require("./basicTypesMap");
 /**
  * Check if node has proper inferred type identified by typeString
  *
@@ -23,7 +25,7 @@ exports.hasType = hasType;
 function hasArrayType(node, checker) {
     var nd = node.expression;
     var type = checker.getTypeAtLocation(nd);
-    return _isArrayType(type, checker);
+    return _parseArrayType(type, checker) === 'array';
 }
 exports.hasArrayType = hasArrayType;
 /**
@@ -68,7 +70,7 @@ function getPhpPrimitiveTypeForFunc(node, argList, checker) {
     };
 }
 exports.getPhpPrimitiveTypeForFunc = getPhpPrimitiveTypeForFunc;
-function _isArrayType(node, checker, excludeObjects) {
+function _parseArrayType(node, checker, excludeObjects) {
     if (excludeObjects === void 0) { excludeObjects = true; }
     var typeNode = checker.typeToTypeNode(node);
     if (!typeNode) {
@@ -87,44 +89,64 @@ function _isArrayType(node, checker, excludeObjects) {
         if (!excludeObjects) {
             isObjectType = ifaceDecl.members.length > 0;
         }
-        return isObjectType || ifaceDecl.name.text === 'Array';
+        if (isObjectType || ifaceDecl.name.text === 'Array') {
+            return 'array';
+        }
     }
     if (!excludeObjects && typeNode.kind === ts.SyntaxKind.TypeLiteral) {
-        return true;
-    }
-    return typeNode.kind === ts.SyntaxKind.ArrayType || typeNode.kind === ts.SyntaxKind.TupleType;
-}
-var typeMap = {
-    'number': 'float',
-    'string': 'string',
-    'boolean': 'boolean',
-    'true': 'boolean',
-    'false': 'boolean'
-};
-function _describeNodeType(node, type, checker) {
-    if (_isArrayType(type, checker, false)) {
         return 'array';
+    }
+    if (typeNode.kind === ts.SyntaxKind.ArrayType || typeNode.kind === ts.SyntaxKind.TupleType) {
+        return 'array';
+    }
+    return false;
+}
+var _transformTypeName = function (type, checker) { return function (t) {
+    var arrType = _parseArrayType(type, checker, false);
+    if (arrType) {
+        return arrType;
+    }
+    return basicTypesMap_1.typeMap[t] || 'var';
+}; };
+function _describeNodeType(node, type, checker) {
+    var customTypehints = customTypehints_1.checkCustomTypehints(type, checker);
+    if (customTypehints) {
+        var types = customTypehints.foundTypes.map(function (t) {
+            if (typeof t === 'string') {
+                return t;
+            }
+            // Some of union members may be literal types
+            return _describeAsApparentType(t, checker);
+        }).filter(function (t) { return !customTypehints.typesToDrop.includes(t); });
+        return Array.from(new Set([]
+            .concat(types)))
+            .join('|');
     }
     var strTypes = checker.typeToString(type, node, ts.TypeFormatFlags.None)
         .split('|')
         .map(function (t) { return t.replace(/^\s+|\s+$/g, ''); })
-        .map(function (strType) { return typeMap[strType] || 'var'; });
+        .map(_transformTypeName(type, checker));
     if (strTypes.includes('var')) {
         var types = type.isUnionOrIntersection() ? type.types : [type];
         var appStrTypes = types.map(function (t) {
-            // Check parent types: Number for 1, String for "asd" etc
-            var appType = checker.getApparentType(t);
-            var appStrType = checker.typeToString(appType).toLowerCase()
-                .replace(/^\s+|\s+$/g, '');
-            return typeMap[appStrType] || 'var';
+            return _describeAsApparentType(t, checker);
         });
         if (appStrTypes.includes('var')) {
             return 'var';
         }
         return Array.from(new Set([]
             .concat(strTypes.filter(function (t) { return t !== 'var'; }))
-            .concat(appStrTypes))).join('|');
+            .concat(appStrTypes)))
+            .join('|');
     }
     return Array.from(new Set([]
-        .concat(strTypes))).join('|');
+        .concat(strTypes)))
+        .join('|');
+}
+// Check parent types: Number for 1, String for "asd" etc
+function _describeAsApparentType(t, checker) {
+    var appType = checker.getApparentType(t);
+    var appStrType = checker.typeToString(appType).toLowerCase()
+        .replace(/^\s+|\s+$/g, '');
+    return _transformTypeName(t, checker)(appStrType);
 }

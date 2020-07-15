@@ -3,6 +3,7 @@
   "version": "0.5.0",
   "description": "js-php basic transpiler",
   "main": "src/cli.ts",
+  "types": "src/ts2php/types/global/index.d.ts",
   "bin": {
     "elephize": "./bin/elephize"
   },
@@ -10,11 +11,12 @@
     "lint": "eslint . --ext ts,tsx",
     "test": "jest -i",
     "test_all": "yarn build && yarn demo_build && yarn test",
-    "sniff": "yarn lint && yarn test_all",
+    "sniff": "yarn _clear && yarn lint && yarn test_all",
     "_reactgen": "ts-node src/ts2php/utils/parseReact.ts",
     "_compile": "tsc -p .",
     "_copy-base": "cp -R src/server dist/src/",
     "_copy-ext": "cp -R external dist/",
+    "_clear": "rm -rf dist",
     "build": "yarn _reactgen && yarn _compile && yarn _copy-base && yarn _copy-ext",
     "demo_start": "yarn demo_build && yarn demo_serve",
     "demo_build": "ln -sf ../node_modules demo/node_modules && yarn demo_genjs && yarn demo_genphp",

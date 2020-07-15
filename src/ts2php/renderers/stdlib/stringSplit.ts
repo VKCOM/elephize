@@ -2,7 +2,7 @@ import * as ts from 'typescript';
 import { ExpressionHook, Declaration } from '../../types';
 import { ctx, log, LogSeverity } from '../../utils/log';
 import { propNameIs } from './_propName';
-import { hasType } from '../../components/typeInference';
+import { hasType } from '../../components/typeInference/basicTypes';
 import { Context } from '../../components/context';
 import { renderNode, renderNodes } from '../../components/codegen/renderNodes';
 
