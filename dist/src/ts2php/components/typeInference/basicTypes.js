@@ -101,7 +101,6 @@ function _parseArrayType(node, checker, excludeObjects) {
     }
     return false;
 }
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 var _transformTypeName = function (type, checker) { return function (t) {
     var arrType = _parseArrayType(type, checker, false);
     if (arrType) {

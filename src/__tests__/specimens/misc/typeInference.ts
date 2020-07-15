@@ -6,4 +6,7 @@ const tyid: int = 3;
 const tyie: int|string = '32';
 const tyif = parseInt('123', 10);
 
-console.log(tyia, tyib, tyic, tyid, tyie, tyif);
+// eslint-disable-next-line @typescript-eslint/restrict-plus-operands
+const tyig = parseInt('123') + 456;
+
+console.log(tyia, tyib, tyic, tyid, tyie, tyif, tyig);

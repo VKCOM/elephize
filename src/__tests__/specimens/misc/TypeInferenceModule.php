@@ -31,14 +31,17 @@ class TypeInferenceModule extends CJSModule {
      */
     public $tyid;
     /**
-    * @var string|int $tyie
-    */
-     public $tyie;
-     /**
-      * @var int $tyif
-      */
-     public $tyif;
-
+     * @var string|int $tyie
+     */
+    public $tyie;
+    /**
+     * @var int $tyif
+     */
+    public $tyif;
+    /**
+     * @var float $tyig
+     */
+    public $tyig;
 
     private function __construct() {
         $this->tyia = "123";
@@ -47,13 +50,15 @@ class TypeInferenceModule extends CJSModule {
         $this->tyid = 3;
         $this->tyie = "32";
         $this->tyif = (int)"123";
+        $this->tyig = (int) "123" + 456;
         \VK\Elephize\Builtins\Console::log(
             $this->tyia,
             $this->tyib,
             $this->tyic,
             $this->tyid,
             $this->tyie,
-            $this->tyif
+            $this->tyif,
+            $this->tyig
         );
     }
 }
