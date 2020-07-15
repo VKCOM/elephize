@@ -14,6 +14,9 @@ class ObjectLiteralExpressionModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @var array $e
+     */
     public $e;
 
     private function __construct() {

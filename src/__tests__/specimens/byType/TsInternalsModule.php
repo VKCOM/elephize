@@ -14,15 +14,45 @@ class TsInternalsModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @var array $tia
+     */
     public $tia;
+    /**
+     * @var array $tib
+     */
     public $tib;
+    /**
+     * @var float $tic
+     */
     public $tic;
+    /**
+     * @var float $tie
+     */
     public $tie;
+    /**
+     * @var array $others
+     */
     public $others;
+    /**
+     * @var array $tid
+     */
     public $tid;
+    /**
+     * @var array $tif
+     */
     public $tif;
+    /**
+     * @var float $tig
+     */
     public $tig;
+    /**
+     * @var float $tih
+     */
     public $tih;
+    /**
+     * @var array $others2
+     */
     public $others2;
 
     private function __construct() {

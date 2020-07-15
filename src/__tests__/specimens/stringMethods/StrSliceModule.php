@@ -14,9 +14,21 @@ class StrSliceModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @var string $asls
+     */
     public $asls;
+    /**
+     * @var string $a1sls
+     */
     public $a1sls;
+    /**
+     * @var string $bsls
+     */
     public $bsls;
+    /**
+     * @var string $csls
+     */
     public $csls;
 
     private function __construct() {

@@ -11,6 +11,7 @@ var nodeData_1 = require("../components/unusedCodeElimination/usageGraph/nodeDat
 var usageGraph_1 = require("../components/unusedCodeElimination/usageGraph");
 var log_1 = require("../utils/log");
 var renderNodes_1 = require("../components/codegen/renderNodes");
+var basicTypes_1 = require("../components/typeInference/basicTypes");
 function tFunctionDeclaration(node, context) {
     var exported = hasExport_1.hasExport(node);
     if (exported === null) {
@@ -41,7 +42,7 @@ function tFunctionDeclaration(node, context) {
             if (els) { // should be true for all non-components, this check is only for typescript to be happy
                 var syntaxList = els.syntaxList, block = els.block;
                 if (!context.dryRun && context.scope.checkUsage(node.name.getText())) {
-                    context.moduleDescriptor.addMethod(node.name.getText(), block, syntaxList.join(', '), 'public');
+                    context.moduleDescriptor.addMethod(node.name.getText(), block, syntaxList.join(', '), basicTypes_1.getPhpPrimitiveTypeForFunc(node, syntaxList, context.checker), 'public');
                 }
                 if (ast_1.isExportedFun(node.name)) {
                     context.scope.terminateCall(node.name.getText(), { traceSourceIdent: usageGraph_1.Scope.tNode, dryRun: context.dryRun });

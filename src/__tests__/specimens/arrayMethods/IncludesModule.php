@@ -14,8 +14,17 @@ class IncludesModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @var array $ain
+     */
     public $ain;
+    /**
+     * @var boolean $bin
+     */
     public $bin;
+    /**
+     * @var boolean $cin
+     */
     public $cin;
 
     private function __construct() {

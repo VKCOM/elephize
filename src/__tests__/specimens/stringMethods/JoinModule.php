@@ -14,8 +14,17 @@ class JoinModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @var array $ajn
+     */
     public $ajn;
+    /**
+     * @var string $bjn
+     */
     public $bjn;
+    /**
+     * @var string $cjn
+     */
     public $cjn;
 
     private function __construct() {

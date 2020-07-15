@@ -14,8 +14,11 @@ class ClosuresModule extends CJSModule {
         return self::$_mod;
     }
 
-    public function artest($b)
-    {
+    /**
+     * @param float $b
+     * @return float
+     */
+    public function artest($b) {
         $called = 0;
         $nested = /* nested */ function ($c) use (/* !! MODIFIED INSIDE !! */ $called) {
             $called += $c;
@@ -27,9 +30,7 @@ class ClosuresModule extends CJSModule {
         return $nested($b) + $nested2($b);
     }
 
-    private function __construct()
-    {
+    private function __construct() {
         \VK\Elephize\Builtins\Console::log($this->artest(1));
     }
 }
-

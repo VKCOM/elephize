@@ -14,7 +14,13 @@ class BlockModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @var float $t1
+     */
     public $t1;
+    /**
+     * @return float
+     */
     public function t() {
         $aa = $this->t1 + 2;
         $bb = $aa + 1;

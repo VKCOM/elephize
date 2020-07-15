@@ -5,8 +5,8 @@ import * as attrs from '../../../data/domattrs.json';
 import { getClosestParentOfTypeWithFlag } from '../utils/ast';
 import { intrinsicElements } from '../internalConfig/intrinsicElements';
 import { normalizeVarName, snakify } from '../utils/pathsAndNames';
-import { assertLocalModification } from './stdlib/_assert';
 import { renderNode } from '../components/codegen/renderNodes';
+import { checkModificationInNestedScope } from '../components/functionScope';
 
 export function tShorthandPropertyAssignment(node: ts.ShorthandPropertyAssignment, context: Context<Declaration>) {
   // This check should be strictly before render! Otherwise it won't work well with var reference count / unused vars elimination
@@ -24,7 +24,7 @@ export function tShorthandPropertyAssignment(node: ts.ShorthandPropertyAssignmen
 
   let name = renderNode(node.name, context);
   name = normalizeVarName(name);
-  const decl = assertLocalModification(node.name, context);
+  const decl = checkModificationInNestedScope(node.name, context);
 
   if ((decl?.flags || 0) & DeclFlag.HoistedToModule) {
     return `"${name}" => $this->${snakify(name)}`;

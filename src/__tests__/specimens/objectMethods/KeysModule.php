@@ -14,7 +14,13 @@ class KeysModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @var array $ok
+     */
     public $ok;
+    /**
+     * @var array $okkeys
+     */
     public $okkeys;
 
     private function __construct() {
@@ -27,4 +33,3 @@ class KeysModule extends CJSModule {
         \VK\Elephize\Builtins\Console::log($this->okkeys);
     }
 }
-

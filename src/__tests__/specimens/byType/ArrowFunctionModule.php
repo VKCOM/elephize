@@ -14,10 +14,19 @@ class ArrowFunctionModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @param float $b
+     * @return float
+     */
     public function test2($b) {
         $a = 1 + $b;
         return $a;
     }
+    /**
+     * @param float $a
+     * @param float $b
+     * @return float
+     */
     public function test3($a, $b) {
         return $a + $b;
     }

@@ -14,9 +14,21 @@ class ReduceModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @var array $ar
+     */
     public $ar;
+    /**
+     * @var float $br
+     */
     public $br;
+    /**
+     * @var float $dr
+     */
     public $dr;
+    /**
+     * @var float $cr
+     */
     public $cr;
 
     private function __construct() {

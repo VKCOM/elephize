@@ -14,10 +14,18 @@ class UnusedVarsEliminationModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @var float $uv
+     */
     public $uv;
+    /**
+     * @var float $uvctx
+     */
     public $uvctx;
-    public function uvfun()
-    {
+    /**
+     * @return float
+     */
+    public function uvfun() {
         $a = $this->uvctx;
         $d = $a;
         \VK\Elephize\Builtins\Console::log($d);

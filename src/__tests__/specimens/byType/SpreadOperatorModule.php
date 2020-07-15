@@ -14,18 +14,46 @@ class SpreadOperatorModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @var array $sso
+     */
     public $sso;
+    /**
+     * @var array $ssb
+     */
     public $ssb;
+    /**
+     * @var array $sse
+     */
     public $sse;
+    /**
+     * @var array $ssc
+     */
     public $ssc;
+    /**
+     * @var array $ssd
+     */
     public $ssd;
+    /**
+     * @param array ...$args
+     * @return array
+     */
     public function ssff(...$args) {
         return array_merge([], $args, [
             "ssd" => $this->ssd,
         ]);
     }
+    /**
+     * @var array $ssf
+     */
     public $ssf;
+    /**
+     * @var array $ssg
+     */
     public $ssg;
+    /**
+     * @var array $ssgg
+     */
     public $ssgg;
 
     private function __construct() {
@@ -81,9 +109,14 @@ class SpreadOperatorModule extends CJSModule {
             ...$this->ssff("test")
         );
         \VK\Elephize\Builtins\Console::log(
-            $this->sso, $this->ssb, $this->ssc,
-            $this->ssd, $this->sse, $this->ssf,
-            $this->ssg, $this->ssgg
+            $this->sso,
+            $this->ssb,
+            $this->ssc,
+            $this->ssd,
+            $this->sse,
+            $this->ssf,
+            $this->ssg,
+            $this->ssgg
         );
     }
 }

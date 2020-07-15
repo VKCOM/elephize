@@ -1,6 +1,6 @@
 import * as ts from 'typescript';
 import { ctx, log, LogSeverity } from '../../utils/log';
-import { NsMap, SpecialVars } from '../../types';
+import { MethodsTypes, NsMap, SpecialVars } from '../../types';
 
 export class CommonjsModule {
   public readonly isDerived: boolean = false;
@@ -25,12 +25,25 @@ export class CommonjsModule {
     this._specialVars = {};
   }
 
-  public addProperty(identifier: string, visibility: 'public' | 'private' = 'public') {
-    this._hoistedContent.add(`${visibility} ${identifier};`);
+  public addProperty(identifier: string, inferredType: string, visibility: 'public' | 'private' = 'public') {
+    const doc = inferredType === 'var' ? '' : `/**
+     * @var ${inferredType} ${identifier}
+     */`;
+    this._hoistedContent.add(`${doc ? doc + '\n' : ''}${visibility} ${identifier};`);
   }
 
-  public addMethod(identifier: string, block: string, args: string, visibility: 'public' | 'private' = 'public') {
-    this._hoistedContent.add(`${visibility} function ${identifier}(${args}) ${block}`);
+  public addMethod(identifier: string, block: string, args: string, inferredTypes: MethodsTypes | undefined, visibility: 'public' | 'private' = 'public') {
+    let phpdoc = '';
+    if (inferredTypes) {
+      const params = Object.keys(inferredTypes.args)
+        .filter((arg) => inferredTypes.args[arg] !== 'var')
+        .map((arg) => `     * @param ${inferredTypes.args[arg]} ${arg}`).join('\n');
+      phpdoc = `/**${params ? '\n' + params : ''}
+     * @return ${inferredTypes.return}
+     */`;
+    }
+    this._hoistedContent.add(`${phpdoc}
+    ${visibility} function ${identifier}(${args}) ${block}`);
   }
 
   public addStatement(statement: string) {

@@ -14,7 +14,13 @@ class LoopsModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @var array $obj
+     */
     public $obj;
+    /**
+     * @var array $obj2
+     */
     public $obj2;
 
     private function __construct() {
@@ -46,6 +52,3 @@ class LoopsModule extends CJSModule {
         } while (true);
     }
 }
-
-
-

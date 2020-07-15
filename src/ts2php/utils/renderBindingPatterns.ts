@@ -3,6 +3,7 @@ import { Context } from '../components/context';
 import { snakify } from './pathsAndNames';
 import { isTopLevel } from './isTopLevel';
 import { Declaration } from '../types';
+import { getPhpPrimitiveType } from '../components/typeInference/basicTypes';
 
 export type ElementDefinition = {
   identifier: ts.Identifier;
@@ -27,7 +28,7 @@ export const renderPattern = (
     identList.push(el.identifier);
     const ident = snakify(el.identifier.getText());
     if (isTopLevel(node, context)) { // Top-level declarations transform to properties and construction initializers
-      context.moduleDescriptor.addProperty('$' + ident, 'public');
+      context.moduleDescriptor.addProperty('$' + ident, getPhpPrimitiveType(el.identifier, context.checker), 'public');
       context.moduleDescriptor.addStatement(`$this->${ident} = ${el.initializer};`);
       return null;
     } else {

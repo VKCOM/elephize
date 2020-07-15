@@ -14,7 +14,13 @@ class ElementAccessExpressionModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @var array $b
+     */
     public $b;
+    /**
+     * @var float $d
+     */
     public $d;
 
     private function __construct() {

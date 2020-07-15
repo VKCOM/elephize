@@ -16,6 +16,9 @@ class ImportModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @var float $a
+     */
     public $a;
 
     private function __construct() {

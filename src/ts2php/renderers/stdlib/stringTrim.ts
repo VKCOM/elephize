@@ -2,7 +2,7 @@ import * as ts from 'typescript';
 import { Declaration, ExpressionHook } from '../../types';
 import { propNameIs } from './_propName';
 import { ctx, log, LogSeverity } from '../../utils/log';
-import { assertType } from './_assert';
+import { hasType } from '../../components/typeInference/basicTypes';
 import { Context } from '../../components/context';
 import { getCallExpressionLeftSide } from '../../utils/ast';
 import { renderNode } from '../../components/codegen/renderNodes';
@@ -15,7 +15,7 @@ import { renderNode } from '../../components/codegen/renderNodes';
  */
 export const stringTrim: ExpressionHook = (node: ts.CallExpression, context: Context<Declaration>) => {
   if (propNameIs('trim', node)) {
-    if (!assertType(node.expression, context.checker, 'string')) {
+    if (!hasType(node.expression, context.checker, 'string')) {
       log('Left-hand expression must have string inferred type', LogSeverity.ERROR, ctx(node));
       return 'null';
     }

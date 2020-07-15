@@ -14,8 +14,17 @@ class SubstrModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @var string $asub
+     */
     public $asub;
+    /**
+     * @var string $bsub
+     */
     public $bsub;
+    /**
+     * @var string $csub
+     */
     public $csub;
 
     private function __construct() {

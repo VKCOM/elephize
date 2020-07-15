@@ -3,14 +3,12 @@ use VK\Elephize\Builtins\RenderableComponent;
 use VK\Elephize\Builtins\IntrinsicElement;
 use VK\Elephize\Builtins\Stdlib;
 
-class ReactSupport2 extends RenderableComponent
-{
+class ReactSupport2 extends RenderableComponent {
     /**
      * @var ReactSupport2 $_mod
      */
     private static $_mod;
-    public static function getInstance(): ReactSupport2
-    {
+    public static function getInstance(): ReactSupport2 {
         if (!self::$_mod) {
             self::$_mod = new ReactSupport2();
         }
@@ -25,8 +23,7 @@ class ReactSupport2 extends RenderableComponent
      * @param array $children
      * @return string
      */
-    public function render(array $props, array $children)
-    {
+    public function render(array $props, array $children) {
         $_18b93da = [1];
         $cnt = $_18b93da[0];
         \VK\Elephize\Builtins\Console::log($cnt);

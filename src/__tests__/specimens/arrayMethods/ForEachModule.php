@@ -14,6 +14,9 @@ class ForEachModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @var array $af
+     */
     public $af;
 
     private function __construct() {

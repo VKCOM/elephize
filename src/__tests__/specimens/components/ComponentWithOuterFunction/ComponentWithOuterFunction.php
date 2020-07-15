@@ -5,14 +5,12 @@ use VK\Elephize\Builtins\Stdlib;
 
 require_once __DIR__ . '/../ComponentWithOuterFunctionModule.php';
 
-class ComponentWithOuterFunction extends RenderableComponent
-{
+class ComponentWithOuterFunction extends RenderableComponent {
     /**
      * @var ComponentWithOuterFunction $_mod
      */
     private static $_mod;
-    public static function getInstance(): ComponentWithOuterFunction
-    {
+    public static function getInstance(): ComponentWithOuterFunction {
         if (!self::$_mod) {
             self::$_mod = new ComponentWithOuterFunction();
         }
@@ -27,15 +25,14 @@ class ComponentWithOuterFunction extends RenderableComponent
      * @param array $children
      * @return string
      */
-    public function render(array $props, array $children)
-    {
+    public function render(array $props, array $children) {
         $classes = $props["classes"];
         return $this->h(
             IntrinsicElement::get("div"),
             [
                 "className" => ComponentWithOuterFunctionModule::getInstance()->prepareClasses(
                     ComponentWithOuterFunctionModule::getInstance()->morePrepare($classes)
-                )
+                ),
             ],
             [$children]
         );

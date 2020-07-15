@@ -14,10 +14,25 @@ class IndexOfModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @var array $aio
+     */
     public $aio;
+    /**
+     * @var float $bio
+     */
     public $bio;
+    /**
+     * @var float $cio
+     */
     public $cio;
+    /**
+     * @var float $dio
+     */
     public $dio;
+    /**
+     * @var float $fio
+     */
     public $fio;
 
     private function __construct() {

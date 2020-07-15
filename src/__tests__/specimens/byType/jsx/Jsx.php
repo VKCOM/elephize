@@ -3,22 +3,19 @@ use VK\Elephize\Builtins\RenderableComponent;
 use VK\Elephize\Builtins\IntrinsicElement;
 use VK\Elephize\Builtins\Stdlib;
 
-class Jsx extends RenderableComponent
-{
+class Jsx extends RenderableComponent {
     /**
      * @var Jsx $_mod
      */
     private static $_mod;
-    public static function getInstance(): Jsx
-    {
+    public static function getInstance(): Jsx {
         if (!self::$_mod) {
             self::$_mod = new Jsx();
         }
         return self::$_mod;
     }
 
-    private function __construct()
-    {
+    private function __construct() {
     }
 
     /**
@@ -26,8 +23,7 @@ class Jsx extends RenderableComponent
      * @param array $children
      * @return string
      */
-    public function render(array $props, array $children)
-    {
+    public function render(array $props, array $children) {
         $jsxa = $this->frg([
             $this->h(
                 IntrinsicElement::get("div"),

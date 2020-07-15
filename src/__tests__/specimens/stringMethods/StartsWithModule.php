@@ -14,8 +14,17 @@ class StartsWithModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @var string $astw
+     */
     public $astw;
+    /**
+     * @var boolean $bstw
+     */
     public $bstw;
+    /**
+     * @var boolean $cstw
+     */
     public $cstw;
 
     private function __construct() {

@@ -11,6 +11,7 @@ import { identifyAnonymousNode } from '../components/unusedCodeElimination/usage
 import { Scope } from '../components/unusedCodeElimination/usageGraph';
 import { ctx, log, LogSeverity } from '../utils/log';
 import { renderNode } from '../components/codegen/renderNodes';
+import { getPhpPrimitiveTypeForFunc } from '../components/typeInference/basicTypes';
 
 export function tFunctionDeclaration(node: ts.FunctionDeclaration, context: Context<Declaration>) {
   const exported = hasExport(node);
@@ -48,7 +49,8 @@ export function tFunctionDeclaration(node: ts.FunctionDeclaration, context: Cont
       if (els) { // should be true for all non-components, this check is only for typescript to be happy
         const { syntaxList, block } = els;
         if (!context.dryRun && context.scope.checkUsage(node.name.getText())) {
-          context.moduleDescriptor.addMethod(node.name.getText(), block, syntaxList.join(', '), 'public');
+          context.moduleDescriptor.addMethod(node.name.getText(), block, syntaxList.join(', '),
+            getPhpPrimitiveTypeForFunc(node, syntaxList, context.checker), 'public');
         }
 
         if (isExportedFun(node.name)) {

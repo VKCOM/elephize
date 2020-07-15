@@ -14,9 +14,21 @@ class DefaultOperatorModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @var array $doa
+     */
     public $doa;
+    /**
+     * @var boolean $dob
+     */
     public $dob;
+    /**
+     * @var array $doc
+     */
     public $doc;
+    /**
+     * @var float $dod
+     */
     public $dod;
 
     private function __construct() {

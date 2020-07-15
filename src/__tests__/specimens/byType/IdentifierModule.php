@@ -14,6 +14,9 @@ class IdentifierModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @var float $a1
+     */
     public $a1;
 
     private function __construct() {

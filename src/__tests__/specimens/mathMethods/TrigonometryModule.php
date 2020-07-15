@@ -14,12 +14,33 @@ class TrigonometryModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @var float $mt_src
+     */
     public $mt_src;
+    /**
+     * @var float $mt_sin
+     */
     public $mt_sin;
+    /**
+     * @var float $mt_cos
+     */
     public $mt_cos;
+    /**
+     * @var float $mt_tan
+     */
     public $mt_tan;
+    /**
+     * @var float $mt_asin
+     */
     public $mt_asin;
+    /**
+     * @var float $mt_acos
+     */
     public $mt_acos;
+    /**
+     * @var float $mt_atan
+     */
     public $mt_atan;
 
     private function __construct() {

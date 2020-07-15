@@ -2,7 +2,7 @@ import * as ts from 'typescript';
 import { Declaration, ExpressionHook } from '../../types';
 import { ctx, log, LogSeverity } from '../../utils/log';
 import { propNameIs } from './_propName';
-import { assertType } from './_assert';
+import { hasType } from '../../components/typeInference/basicTypes';
 import { Context } from '../../components/context';
 import { getCallExpressionLeftSide } from '../../utils/ast';
 import { renderNode, renderNodes } from '../../components/codegen/renderNodes';
@@ -17,7 +17,7 @@ export const stringSubstr: ExpressionHook = (node: ts.CallExpression, context: C
   if (!propNameIs('substr', node)) {
     return undefined;
   }
-  if (!assertType(node.expression, context.checker, 'string')) {
+  if (!hasType(node.expression, context.checker, 'string')) {
     log('Left-hand expression must have string inferred type', LogSeverity.ERROR, ctx(node));
     return 'null';
   }

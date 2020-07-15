@@ -13,6 +13,7 @@ var ast_1 = require("../utils/ast");
 var reactComponents_1 = require("./react/reactComponents");
 var log_1 = require("../utils/log");
 var renderNodes_1 = require("./codegen/renderNodes");
+var nodeData_1 = require("./unusedCodeElimination/usageGraph/nodeData");
 function getRenderedBlock(context, nodeIdent, realParent, argSynList, bodyBlock // can be many types in arrow func
 ) {
     var node;
@@ -113,3 +114,26 @@ exports.functionExpressionGen = function (node, ident) { return function (opts, 
     var closureExpr = genClosure(idMap, context, node).closureExpr;
     return "/* " + ident + " */ function (" + syntaxList + ")" + closureExpr + " " + block;
 }; };
+/**
+ * If node value looks like modified in current context, add declaration flag.
+ * Return declaration.
+ * @param node
+ * @param context
+ * @return Declaration
+ */
+function checkModificationInNestedScope(node, context) {
+    if (!node) {
+        return null;
+    }
+    var nodeText = node.escapedText.toString();
+    var _a = context.scope.findByIdent(nodeText) || [], decl = _a[0], declScope = _a[1];
+    if (decl && declScope) {
+        var modifiedInLowerScope = nodeData_1.usedInNestedScope(decl, declScope, context.scope);
+        if (modifiedInLowerScope && decl) {
+            decl.flags = decl.flags | types_1.DeclFlag.ModifiedInLowerScope;
+        }
+        return decl;
+    }
+    return null;
+}
+exports.checkModificationInNestedScope = checkModificationInNestedScope;

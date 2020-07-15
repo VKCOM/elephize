@@ -2,7 +2,7 @@ import * as ts from 'typescript';
 import { Declaration, ExpressionHook } from '../../types';
 import { ctx, log, LogSeverity } from '../../utils/log';
 import { propNameIs } from './_propName';
-import { assertArrayType } from './_assert';
+import { hasArrayType } from '../../components/typeInference/basicTypes';
 import { Context } from '../../components/context';
 import {
   flagParentOfType,
@@ -53,7 +53,7 @@ export const arrayStringSlice: ExpressionHook = (node: ts.CallExpression, contex
     }
   } else {
     const forced = isForcedArrayType(context, node);
-    if (!assertArrayType(node.expression, context.checker) && !forced) {
+    if (!hasArrayType(node.expression, context.checker) && !forced) {
       log('Left-hand expression must have string, array-like or iterable inferred type', LogSeverity.ERROR, ctx(node));
       return 'null';
     }

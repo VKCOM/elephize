@@ -14,8 +14,17 @@ class IfStatementModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @var float $aa
+     */
     public $aa;
+    /**
+     * @var float $ba
+     */
     public $ba;
+    /**
+     * @var array $obj1
+     */
     public $obj1;
 
     private function __construct() {

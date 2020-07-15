@@ -5,14 +5,12 @@ use VK\Elephize\Builtins\Stdlib;
 
 require_once __DIR__ . '/../TwoComponentsModule.php';
 
-class FirstComponent extends RenderableComponent
-{
+class FirstComponent extends RenderableComponent {
     /**
      * @var FirstComponent $_mod
      */
     private static $_mod;
-    public static function getInstance(): FirstComponent
-    {
+    public static function getInstance(): FirstComponent {
         if (!self::$_mod) {
             self::$_mod = new FirstComponent();
         }
@@ -27,19 +25,14 @@ class FirstComponent extends RenderableComponent
      * @param array $children
      * @return string
      */
-    public function render(array $initial_props, array $children)
-    {
+    public function render(array $initial_props, array $children) {
         $props = array_merge([], TwoComponentsModule::getInstance()->default_props, [], $initial_props, []);
         $count = $props["count"];
         return $this->h(
             IntrinsicElement::get("div"),
             [],
             [
-                $this->h(
-                    IntrinsicElement::get("p"),
-                    [],
-                    ["You clicked ", $count, " times"]
-                ),
+                $this->h(IntrinsicElement::get("p"), [], ["You clicked ", $count, " times"]),
                 $this->h(IntrinsicElement::get("button"), [], [" Click me "]),
                 $this->h(IntrinsicElement::get("button"), ["disabled" => true], [" Click me "]),
             ]
