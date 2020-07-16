@@ -17,7 +17,7 @@ Play with lib and demo:
 
 `git clone https://github.com/VKCOM/elephize.git`
 
-`cd elephize && composer install && yarn`
+`cd elephize && yarn`
 
 `yarn demo_start`
 
