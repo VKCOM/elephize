@@ -1,12 +1,12 @@
-dist/
+src/
 
-node_modules/
 .idea/
 demo/node_modules
 demo/public/build
 demo/public/dist
+dist/src/__tests__
 
-/vendor/
+vendor/
 
 # misc
 .DS_Store
