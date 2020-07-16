@@ -1,6 +1,6 @@
 {
   "name": "@vkontakte/elephize",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "js -> php basic transpiler",
   "main": "src/cli.ts",
   "types": "types/global/index.d.ts",
@@ -55,6 +55,9 @@
     "ncp": "^2.0.0",
     "prettier": "^2.0.4",
     "stream-replace": "^1.0.0"
+  },
+  "peerDependencies": {
+    "typescript": "^3.7.3"
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^4.2.4",
