@@ -3,7 +3,7 @@
   "version": "0.6.0",
   "description": "js -> php basic transpiler",
   "main": "src/cli.ts",
-  "types": "src/ts2php/types/global/index.d.ts",
+  "types": "types/global/index.d.ts",
   "bin": {
     "elephize": "./bin/elephize"
   },
@@ -28,6 +28,8 @@
     "demo_outreact": "cd demo && ts-node -r tsconfig-paths/register src/render.tsx | sed 's/ data-reactroot=\"\"//' | ../external/htmlformat",
     "demo_outphp": "cd demo/public && php index.php | ../../external/htmlformat",
 
+    "prepack": "sh external/prepack.sh",
+    "postpack": "sh external/postpack.sh",
     "prepare": "yarn build"
   },
   "repository": {

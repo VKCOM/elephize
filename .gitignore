@@ -6,8 +6,6 @@ demo/node_modules
 demo/public/build
 demo/public/dist
 
-/vendor/
-
 # misc
 .DS_Store
 

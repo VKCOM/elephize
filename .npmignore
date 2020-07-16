@@ -1,12 +1,21 @@
+data/
+external/
 src/
+src/cli.ts
+!dist/src/
+!dist/data/
+tsconfig.json
+package.json.bak
+jest.config.js
+elephizerc.example.json
+.eslintignore
+.eslintrc.js
+.gitattributes
 
 .idea/
-demo/node_modules
-demo/public/build
-demo/public/dist
+demo/
+doc/
 dist/src/__tests__
-
-vendor/
 
 # misc
 .DS_Store
