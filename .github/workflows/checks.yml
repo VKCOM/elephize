@@ -1,0 +1,32 @@
+name: Push checks
+
+on: [push, workflow_dispatch]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: '12.x'
+    - run: yarn install
+    - run: yarn run lint
+  unittest:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js 12.x
+      uses: actions/setup-node@v1
+      with:
+        node-version: '12.x'
+    - name: Use Php 7.4
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '7.4'
+    - run: yarn install
+    - run: yarn run test_all
+
