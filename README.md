@@ -11,7 +11,13 @@ Library and tool for transpiling limited set of React & Typescript constructions
 
 ### Usage
 
-NPM: `coming soon...`
+NPM:
+
+`npm install -D @vkontakte/elephize`
+
+or
+
+`yarn add -D @vkontakte/elephize`
 
 Play with lib and demo: 
 
