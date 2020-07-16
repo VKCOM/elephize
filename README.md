@@ -11,15 +11,15 @@ Library and tool for transpiling limited set of React & Typescript constructions
 
 ### Usage
 
-NPM:
+**NPM**:
 
 `npm install -D @vkontakte/elephize`
-
 or
-
 `yarn add -D @vkontakte/elephize`
 
-Play with lib and demo: 
+Check error messages for peerDependencies errors, as elephize requires typescript to work.
+
+**Play with lib and demo (github)**:
 
 `git clone https://github.com/VKCOM/elephize.git`
 
