@@ -20,10 +20,10 @@ const getFromProcess = (command: string, args: string[]): Promise<string> => {
 
 test('ts2php.SSR', async () => {
   if (!fs.existsSync(path.resolve(__dirname, '..', '..', 'demo', 'public', 'build', 'bootstrap.php'))) {
-    await getFromProcess('yarn', ['--silent', 'demo_build']);
+    await getFromProcess('yon', ['--silent', 'demo_build']);
   }
-  const reactData = await getFromProcess('yarn', ['--silent', 'demo_outreact']);
-  const phpData = await getFromProcess('yarn', ['--silent', 'demo_outphp']);
+  const reactData = await getFromProcess('yon', ['--silent', 'demo_outreact']);
+  const phpData = await getFromProcess('yon', ['--silent', 'demo_outphp']);
   expect(reactData).toBeTruthy();
   expect(phpData).toBeTruthy();
   expect(reactData).toEqual(phpData);
