@@ -19,7 +19,7 @@ const compilerOptions = {
   }
 };
 const customGlobals = {
-  // js    -> php
+  // js -> php
   'getLang': 'CustomIso::getLang'
 };
 

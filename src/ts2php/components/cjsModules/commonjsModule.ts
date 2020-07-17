@@ -108,6 +108,7 @@ export class CommonjsModule {
 
 
     return `<?php
+/* NOTICE: Generated file; Do not edit by hand */
 use ${this._namespaces.builtins}\\Stdlib;
 use ${this._namespaces.builtins}\\CJSModule;
 

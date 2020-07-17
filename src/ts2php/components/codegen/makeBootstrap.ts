@@ -16,6 +16,7 @@ export function makeBootstrap(registry: ModuleRegistry, baseDir: string, aliases
   });
 
   return `<?php
+/* NOTICE: Generated file; Do not edit by hand */
 require_once __DIR__ . "/builtins.php";
 ${deps.join('\n')}
 
