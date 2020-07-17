@@ -1,4 +1,5 @@
 <?php
+/* NOTICE: Generated file; Do not edit by hand */
 use VK\Elephize\Builtins\Stdlib;
 use VK\Elephize\Builtins\CJSModule;
 
@@ -49,7 +50,7 @@ class TypeInferenceModule extends CJSModule {
         $this->tyic = "2";
         $this->tyid = 3;
         $this->tyie = "32";
-        $this->tyif = (int)"123";
+        $this->tyif = (int) "123";
         $this->tyig = (int) "123" + 456;
         \VK\Elephize\Builtins\Console::log(
             $this->tyia,
