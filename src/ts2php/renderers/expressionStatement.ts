@@ -8,7 +8,7 @@ export function tExpressionStatement(node: ts.ExpressionStatement, context: Cont
   const content = renderNode(node.expression, context);
   const flags = context.nodeFlagsStore.get(node);
   if (flags?.drop || content.length === 0) {
-    return '';
+    return flags?.dropReplacement || '';
   }
 
   const additionalExpressions = (flags?.addExpressions || []).join('\n');

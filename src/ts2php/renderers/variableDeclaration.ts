@@ -59,7 +59,7 @@ export function tVariableDeclaration(node: ts.VariableDeclaration, context: Cont
 
   const flags = context.nodeFlagsStore.get(node);
   if (flags?.drop) {
-    return '';
+    return flags?.dropReplacement || '';
   }
 
   let decl: BoundNode<Declaration> | null = null;
@@ -149,7 +149,7 @@ function topStatements(node: ts.VariableDeclaration, initializerNode: ts.Node | 
   const flags = context.nodeFlagsStore.get(node);
   if (flags?.drop) {
     context.scope.removeEventListener(Scope.EV_USAGE, addIdent);
-    return '';
+    return flags?.dropReplacement || '';
   }
 
   let decl: BoundNode<Declaration> | null = null;

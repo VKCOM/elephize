@@ -12,7 +12,7 @@ export function tIfStatement(node: ts.IfStatement, context: Context<Declaration>
 
   const flags = context.nodeFlagsStore.get(node);
   if (flags?.drop) {
-    return '';
+    return flags?.dropReplacement || '';
   }
 
   for (let ident of Array.from(usedVars)) {

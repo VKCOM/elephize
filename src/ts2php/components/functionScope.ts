@@ -129,8 +129,6 @@ type ExprGenOptions = {
   blockNode?: ts.Node;
 };
 export const functionExpressionGen = (node: FunctionalDecl, ident: string) => (opts: ExprGenOptions, context: Context<Declaration>) => {
-  // TODO: disallow `this` in expressions
-
   let { syntaxList, block, idMap } = getRenderedBlock(
     context, ident, node,
     opts.synList, opts.blockNode

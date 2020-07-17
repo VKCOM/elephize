@@ -9,6 +9,7 @@ export type CallbackType = ts.FunctionExpression | ts.ArrowFunction | undefined;
 export type NodeFlags = {
   name?: string; // Mark with name to identify the node
   drop?: boolean; // Set to true will exclude node from rendering
+  dropReplacement?: string; // If var was dropped, this will be output in place.
   passthrough?: boolean; // Set to true will exclude rendering of node specifics in some cases
   validated?: boolean; // Some cases need this flag to be true after arguments of function are checked to be ok
   childCount?: number; // Pass here arguments count or node children count for some cases
