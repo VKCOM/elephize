@@ -21,6 +21,7 @@ class FunctionDeclarationModule extends CJSModule {
      */
     public function test1($b) {
         $a = 1 + $b;
+        /* ERROR: `this` keyword used in expression */
         return $a;
     }
 

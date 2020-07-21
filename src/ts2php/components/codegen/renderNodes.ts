@@ -90,6 +90,7 @@ import { tTypeofExpression } from '../../renderers/typeofExpression';
 import { tShorthandPropertyAssignment } from '../../renderers/shorthandPropertyAssignment';
 import { tAsExpression } from '../../renderers/asExpression';
 import { tTypeAssertionExpression } from '../../renderers/typeAssertionExpression';
+import { tThis } from '../../renderers/this';
 import { Declaration } from '../../types';
 import { Context } from '../context';
 
@@ -184,6 +185,7 @@ function _renderNode(node: ts.Node | undefined, context: Context<Declaration>): 
   if (node.kind === ts.SyntaxKind.NullKeyword) return tNullLiteral();
   if (node.kind === ts.SyntaxKind.UndefinedKeyword) return tUndefinedLiteral();
   if (node.kind === ts.SyntaxKind.EndOfFileToken) return tEndOfFileToken();
+  if (node.kind === ts.SyntaxKind.ThisKeyword) return tThis(node as ts.ThisExpression, context);
 
   if (node.kind === ts.SyntaxKind.CaseBlock) return tCaseBlock(node as ts.CaseBlock, context);
   if (node.kind === ts.SyntaxKind.CaseClause) return tCaseClause(node as ts.CaseClause, context);
