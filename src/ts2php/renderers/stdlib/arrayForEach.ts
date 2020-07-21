@@ -59,8 +59,8 @@ export const arrayForeach: ExpressionHook = (node: ts.CallExpression, context: C
       log('Array.prototype.forEach: parameter destructuring in foreach is not supported.', LogSeverity.ERROR, ctx(node));
       return 'null';
     }
-    return `foreach (${varName} as $${cbArgs[1].getText()} => $${cbArgs[0].getText()}) ${renderedBlock}`;
+    return `foreach (${varName} as $${cbArgs[1].name.getText()} => $${cbArgs[0].name.getText()}) ${renderedBlock}`;
   } else {
-    return `foreach (${varName} as $${cbArgs[0].getText()}) ${renderedBlock}`;
+    return `foreach (${varName} as $${cbArgs[0].name.getText()}) ${renderedBlock}`;
   }
 };

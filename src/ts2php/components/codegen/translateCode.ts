@@ -1,7 +1,7 @@
 import * as ts from 'typescript';
 import { TranslateOptions } from '../../types';
 import { getProgram } from '../../utils/programFromString';
-import { log, LogSeverity, LogVerbosity } from '../../utils/log';
+import { log, LogSeverity } from '../../utils/log';
 import * as prettier from 'prettier/standalone';
 import { phpPrettierOptions } from '../../internalConfig/phpPrettierOptions';
 import { ModuleRegistry } from '../cjsModules/moduleRegistry';
@@ -45,7 +45,6 @@ export function translateCode({
   onFinish = () => undefined
 }: TranslateOptions): NodeFlagStore {
   // Enable more logging using env var
-  log.verbosity = process.env.VERBOSE ? LogVerbosity.ALL : 0;
   const nodeFlagStore = new NodeFlagStore();
 
   // eslint-disable-next-line @typescript-eslint/no-floating-promises

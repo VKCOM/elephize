@@ -29,10 +29,10 @@ test('ts2php.stdlibMethods', () => {
     ['misc', 'unusedVarsElimination.ts'],
     ['misc', 'customIsomorphics.ts'],
     ['misc', 'constructorTypeCast.ts'],
-    ['misc', 'typeInference.ts'],
     ['mathMethods', 'basic.ts'],
     ['mathMethods', 'trigonometry.ts'],
     ['mathMethods', 'constants.ts'],
-    ['functionMethods', 'closures.ts']
+    ['functionMethods', 'closures.ts'],
+    ['misc', 'typeInference.ts']
   ]);
 });

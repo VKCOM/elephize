@@ -6,6 +6,7 @@ export type Options = {
   quiet: boolean;
   verbose: boolean;
   verboseUsage: boolean;
+  verboseTypehints: boolean;
   bail: 'none' | 'warn' | 'error';
   noZap: boolean;
   baseDir: string;

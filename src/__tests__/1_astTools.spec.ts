@@ -2,7 +2,6 @@ import { translateCode, defaultOptions } from '../ts2php/components/codegen/tran
 import * as path from 'path';
 import { getProgram } from '../ts2php/utils/programFromString';
 import * as ts from 'typescript';
-import { log } from '../ts2php/utils/log';
 import {
   flagParentOfType,
   getChildChainByType,
@@ -11,8 +10,6 @@ import {
   getLeftExpr
 } from '../ts2php/utils/ast';
 import { NodeFlagStore } from '../ts2php/components/codegen/nodeFlagStore';
-
-log.verbosity = 0; // remove or set more verbose for debug
 
 function compile(files: string[]): ts.SourceFile | undefined {
   let program = getProgram(files, [],

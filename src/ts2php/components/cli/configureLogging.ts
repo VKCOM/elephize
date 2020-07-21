@@ -9,11 +9,15 @@ export function configureLogging(options: Options) {
   if (options.quiet) {
     log.verbosity = 0;
   } else {
+    log.verbosity = (log.verbosity || (LogVerbosity.ERROR | LogVerbosity.WARN | LogVerbosity.WITH_CONTEXT));
     if (options.verbose) {
-      log.verbosity = (log.verbosity || (LogVerbosity.ERROR | LogVerbosity.WARN | LogVerbosity.WITH_CONTEXT)) | LogVerbosity.INFO;
+      log.verbosity = log.verbosity | LogVerbosity.INFO;
     }
     if (options.verboseUsage) {
-      log.verbosity = (log.verbosity || (LogVerbosity.ERROR | LogVerbosity.WARN | LogVerbosity.WITH_CONTEXT)) | LogVerbosity.WITH_USAGE_GRAPH_DUMP | LogVerbosity.WITH_ELIMINATION_HINTS;
+      log.verbosity = log.verbosity | LogVerbosity.WITH_USAGE_GRAPH_DUMP | LogVerbosity.WITH_ELIMINATION_HINTS;
+    }
+    if (options.verboseTypehints) {
+      log.verbosity = log.verbosity | LogVerbosity.WITH_TYPEHINTS;
     }
   }
 }

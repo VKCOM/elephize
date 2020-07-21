@@ -7,3 +7,8 @@ af.forEach((el, idx) => {
   af[idx] = el * 2;
 });
 af.forEach((el, idx) => af[idx] = el * idx);
+
+const afo: { [key: string]: number } = { 'a': 1, 'b': 2 };
+Object.keys(afo).forEach((val: string) => {
+  console.log(afo[val]);
+});

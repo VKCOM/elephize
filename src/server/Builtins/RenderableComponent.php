@@ -30,6 +30,10 @@ abstract class RenderableComponent extends CJSModule {
         return implode("\n", $rendered_components);
     }
 
+    /**
+     * @param var $array
+     * @return var
+     */
     protected function flatten($array) {
         $flat = [];
 

@@ -5,7 +5,8 @@ export enum LogSeverity {
   INFO,
   WARN,
   ERROR,
-  SPECIAL
+  SPECIAL,
+  TYPEHINT
 }
 
 export enum LogVerbosity {
@@ -15,8 +16,9 @@ export enum LogVerbosity {
   WITH_CONTEXT = 8,
   WITH_ELIMINATION_HINTS = 16,
   WITH_USAGE_GRAPH_DUMP = 32,
+  WITH_TYPEHINTS = 64,
 
-  ALL = 63 // fix this if there is more flags
+  ALL = 127 // fix this if there is more flags
 }
 
 type LogFunc = (message: string, severity: LogSeverity, context?: string) => void;
@@ -44,6 +46,11 @@ export const log: LogObj = (message: string, severity: LogSeverity, context = ''
         printLog(message, severity, log.verbosity! & LogVerbosity.WITH_CONTEXT ? context : '');
       }
       break;
+    case LogSeverity.TYPEHINT:
+      if (log.verbosity! & LogVerbosity.WITH_TYPEHINTS) {
+        printLog(message, severity, log.verbosity! & LogVerbosity.WITH_CONTEXT ? context : '');
+      }
+      break;
     case LogSeverity.WARN:
       log.warnCount = (log.warnCount || 0) + 1;
       if (log.verbosity! & LogVerbosity.WARN) {
@@ -52,7 +59,29 @@ export const log: LogObj = (message: string, severity: LogSeverity, context = ''
       break;
   }
 };
+
+// Default for non-testing env
 log.verbosity = LogVerbosity.ERROR | LogVerbosity.WARN | LogVerbosity.WITH_CONTEXT;
+
+// Default for testing env
+if (typeof jest !== 'undefined') { // unit testing: remove error messages as they are mainly expected...
+  log.verbosity = 0;
+
+  if (process.env.VERBOSE) {
+    log.verbosity = LogVerbosity.ERROR | LogVerbosity.WARN | LogVerbosity.WITH_CONTEXT;
+  }
+}
+
+// Process env vars to make more precise log tuning
+if (process.env.WITH_ELIMINATION_HINTS) {
+  log.verbosity = log.verbosity | LogVerbosity.WITH_ELIMINATION_HINTS;
+}
+if (process.env.WITH_USAGE_GRAPH_DUMP) {
+  log.verbosity = log.verbosity | LogVerbosity.WITH_USAGE_GRAPH_DUMP;
+}
+if (process.env.WITH_TYPEHINTS) {
+  log.verbosity = log.verbosity | LogVerbosity.WITH_TYPEHINTS;
+}
 
 export function ctx(node?: ts.Node): string {
   if (!node) {

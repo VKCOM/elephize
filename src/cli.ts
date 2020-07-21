@@ -15,6 +15,7 @@ let _options = cli.parse({
   quiet: ['q', 'Do not show error messages from transpiler', 'bool', undefined],
   verbose: ['v', 'Show more verbose output from transpiler', 'bool', undefined],
   verboseUsage: ['u', 'Show var usage stats & eliminator verbose output', 'bool', undefined],
+  verboseTypehints: ['t', 'Show type hinting tool verbose output', 'bool', undefined],
   noZap: ['z', 'Do not remove unused variables from resulting code', 'bool', undefined],
   bail: ['e', 'Return error code if any error occurred during transpilation', 'string', undefined],
   baseDir: ['b', 'Base src directory for transpiled code', 'string', undefined],

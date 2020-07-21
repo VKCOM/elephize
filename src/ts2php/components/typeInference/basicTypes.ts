@@ -2,6 +2,8 @@ import * as ts from 'typescript';
 import { MethodsTypes } from '../../types';
 import { checkCustomTypehints } from './customTypehints';
 import { typeMap } from './basicTypesMap';
+import { mixedTypehintId } from './customTypehintsList';
+import { log, LogSeverity } from '../../utils/log';
 
 /**
  * Check if node has proper inferred type identified by typeString
@@ -23,9 +25,12 @@ export function hasType(node: ts.Node, checker: ts.TypeChecker, typeString: stri
  * @param checker
  */
 export function hasArrayType(node: ts.Node, checker: ts.TypeChecker): boolean {
+  const nodeIdentForLog = node.getText();
   let nd: ts.Node = (node as ts.PropertyAccessExpression).expression;
+  log(`Checking array type of node: ${nodeIdentForLog}`, LogSeverity.TYPEHINT);
   let type = checker.getTypeAtLocation(nd);
-  return _parseArrayType(type, checker) === 'array';
+  const foundType = _parseArrayType(type, checker, true, nodeIdentForLog);
+  return foundType === 'array' || foundType === 'mixed' /* for mixed[] or like that */;
 }
 
 /**
@@ -72,9 +77,10 @@ export function getPhpPrimitiveTypeForFunc(node: ts.FunctionExpression | ts.Arro
   };
 }
 
-function _parseArrayType(node: ts.Type, checker: ts.TypeChecker, excludeObjects = true) {
+function _parseArrayType(node: ts.Type, checker: ts.TypeChecker, excludeObjects = true, nodeIdentForLog?: string) {
   let typeNode = checker.typeToTypeNode(node);
   if (!typeNode) {
+    log(`No type node found for symbol: ${nodeIdentForLog}`, LogSeverity.TYPEHINT);
     return false;
   }
 
@@ -85,6 +91,7 @@ function _parseArrayType(node: ts.Type, checker: ts.TypeChecker, excludeObjects 
     const decls = sym.getDeclarations() as ts.Declaration[];
     const [ifaceDecl] = decls.filter((d) => d.kind === ts.SyntaxKind.InterfaceDeclaration);
     if (!ifaceDecl) {
+      log(`No interface declaration found for symbol: ${nodeIdentForLog}`, LogSeverity.TYPEHINT);
       return false;
     }
 
@@ -93,23 +100,64 @@ function _parseArrayType(node: ts.Type, checker: ts.TypeChecker, excludeObjects 
       isObjectType = (ifaceDecl as ts.InterfaceDeclaration).members.length > 0;
     }
     if (isObjectType || (ifaceDecl as ts.InterfaceDeclaration).name.text === 'Array') {
+      log(`Found array-like interface declaration for symbol: ${nodeIdentForLog}`, LogSeverity.TYPEHINT);
       return 'array';
     }
   }
 
   if (!excludeObjects && typeNode.kind === ts.SyntaxKind.TypeLiteral) {
+    log(`Found array literal declaration for symbol: ${nodeIdentForLog}`, LogSeverity.TYPEHINT);
     return 'array';
   }
 
-  if (typeNode.kind === ts.SyntaxKind.ArrayType || typeNode.kind === ts.SyntaxKind.TupleType) {
+  if (typeNode.kind === ts.SyntaxKind.ArrayType) {
+    if (checkArrMixedNode(typeNode)) {
+      log(`Found MIXED in array type declaration for symbol: ${nodeIdentForLog}`, LogSeverity.TYPEHINT);
+      return 'mixed';
+    }
+    log(`Found array type declaration for symbol: ${nodeIdentForLog}`, LogSeverity.TYPEHINT);
+    return 'array';
+  }
+
+  if (typeNode.kind === ts.SyntaxKind.TupleType) {
+    if (checkArrMixedNode(typeNode)) {
+      log(`Found MIXED in tuple type declaration for symbol: ${nodeIdentForLog}`, LogSeverity.TYPEHINT);
+      return 'mixed';
+    }
+    log(`Found tuple type declaration for symbol: ${nodeIdentForLog}`, LogSeverity.TYPEHINT);
     return 'array';
   }
 
   return false;
 }
 
-const _transformTypeName = (type: ts.Type, checker: ts.TypeChecker) => (t: string) => {
-  const arrType = _parseArrayType(type, checker, false);
+// Such kludge, much bugs, wow.
+// Workaround for proper mixed hint recognition.
+const checkArrMixedNode = (typeNode: ts.TypeNode) => {
+  if (typeNode.kind === ts.SyntaxKind.TupleType) {
+    // For [mixed, any]
+    if ((typeNode as ts.TupleTypeNode).elementTypes.some((t: any) => t.typeName?.symbol?.declarations[0].type?.types.some((t: any) => t.typeName?.escapedText === mixedTypehintId))) {
+      return true;
+    }
+  }
+
+  if (typeNode.kind === ts.SyntaxKind.ArrayType) {
+    // for mixed[]
+    if ((typeNode as any)?.elementType?.typeName?.symbol?.declarations[0].type?.types.some((t: any) => t.typeName?.escapedText === mixedTypehintId)) {
+      return true;
+    }
+
+    // for Array<mixed>
+    if ((typeNode as any)?.elementType?.type?.types.some((t: any) => t.typeName?.escapedText === mixedTypehintId)) {
+      return true;
+    }
+  }
+
+  return false;
+};
+
+const _transformTypeName = (type: ts.Type, checker: ts.TypeChecker, nodeIdentForLog?: string) => (t: string) => {
+  const arrType = _parseArrayType(type, checker, false, nodeIdentForLog);
   if (arrType) {
     return arrType;
   }
@@ -117,6 +165,7 @@ const _transformTypeName = (type: ts.Type, checker: ts.TypeChecker) => (t: strin
 };
 
 function _describeNodeType(node: ts.Node | undefined, type: ts.Type, checker: ts.TypeChecker) {
+  const nodeIdentForLog = node?.getText();
   const customTypehints = checkCustomTypehints(type, checker);
   if (customTypehints) {
     const types = customTypehints.foundTypes.map((t) => {
@@ -124,44 +173,53 @@ function _describeNodeType(node: ts.Node | undefined, type: ts.Type, checker: ts
         return t;
       }
       // Some of union members may be literal types
-      return _describeAsApparentType(t, checker);
+      return _describeAsApparentType(t, checker, nodeIdentForLog);
     }).filter((t) => !customTypehints.typesToDrop.includes(t));
-    return Array.from(new Set((<string[]>[])
+    const typehint = Array.from(new Set((<string[]>[])
       .concat(types)))
       .join('|');
+    log(`Inferred type of node: ${nodeIdentForLog} -> ${typehint} [1]`, LogSeverity.TYPEHINT);
+    return typehint;
   }
 
   const strTypes = checker.typeToString(type, node, ts.TypeFormatFlags.None)
     .split('|')
     .map((t) => t.replace(/^\s+|\s+$/g, ''))
-    .map(_transformTypeName(type, checker));
+    .map(_transformTypeName(type, checker, nodeIdentForLog));
 
   if (strTypes.includes('var')) {
     const types = type.isUnionOrIntersection() ? type.types : [type];
 
     const appStrTypes = types.map((t) => {
-      return _describeAsApparentType(t, checker);
+      return _describeAsApparentType(t, checker, nodeIdentForLog);
     });
 
     if (appStrTypes.includes('var')) {
+      log(`Inferred type of node: ${nodeIdentForLog} -> var [2]`, LogSeverity.TYPEHINT);
       return 'var';
     }
 
-    return Array.from(new Set((<string[]>[])
+    const typehint = Array.from(new Set((<string[]>[])
       .concat(strTypes.filter((t) => t !== 'var'))
       .concat(appStrTypes)))
       .join('|');
+
+    log(`Inferred type of node: ${nodeIdentForLog} -> ${typehint} [3]`, LogSeverity.TYPEHINT);
+    return typehint;
   }
 
-  return Array.from(new Set((<string[]>[])
+  const typehint = Array.from(new Set((<string[]>[])
     .concat(strTypes)))
     .join('|');
+  log(`Inferred type of node: ${nodeIdentForLog} -> ${typehint} [4]`, LogSeverity.TYPEHINT);
+  return typehint;
 }
 
 // Check parent types: Number for 1, String for "asd" etc
-function _describeAsApparentType(t: ts.Type, checker: ts.TypeChecker) {
+function _describeAsApparentType(t: ts.Type, checker: ts.TypeChecker, nodeIdentForLog?: string) {
+  log(`Failed to describe node: ${nodeIdentForLog}, checking apparent type`, LogSeverity.TYPEHINT);
   const appType = checker.getApparentType(t);
   const appStrType = checker.typeToString(appType).toLowerCase()
     .replace(/^\s+|\s+$/g, '');
-  return _transformTypeName(t, checker)(appStrType);
+  return _transformTypeName(t, checker, nodeIdentForLog)(appStrType);
 }

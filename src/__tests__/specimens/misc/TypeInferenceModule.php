@@ -43,6 +43,49 @@ class TypeInferenceModule extends CJSModule {
      * @var float $tyig
      */
     public $tyig;
+    /**
+     * @var mixed $tyih
+     */
+    public $tyih;
+    /**
+     * @var mixed $tyij
+     */
+    public $tyij;
+    /**
+     * @var mixed $tyik
+     */
+    public $tyik;
+    /**
+     * @var mixed $tyii
+     */
+    public $tyii;
+    /**
+     * @param mixed ...$args
+     * @return string
+     */
+    public function classNames(...$args) {
+        $result = [];
+        foreach ($args as $item) {
+            if (!$item) {
+                break;
+            }
+            switch (Stdlib::typeof($item)) {
+                case "string":
+                    array_push($result, $item);
+                    break;
+                case "object":
+                    foreach (array_keys($item) as $key) {
+                        if ($item[+$key]) {
+                            array_push($result, $key);
+                        }
+                    }
+                    break;
+                default:
+                    array_push($result, "" . $item);
+            }
+        }
+        return implode(" ", $result);
+    }
 
     private function __construct() {
         $this->tyia = "123";
@@ -52,6 +95,11 @@ class TypeInferenceModule extends CJSModule {
         $this->tyie = "32";
         $this->tyif = (int) "123";
         $this->tyig = (int) "123" + 456;
+        $this->tyih = ["123", 123];
+        $this->tyij = ["123", 123];
+        $this->tyik = ["123", 123];
+        $this->tyii = 123;
+        $this->tyii = "123";
         \VK\Elephize\Builtins\Console::log(
             $this->tyia,
             $this->tyib,
@@ -59,7 +107,11 @@ class TypeInferenceModule extends CJSModule {
             $this->tyid,
             $this->tyie,
             $this->tyif,
-            $this->tyig
+            $this->tyig,
+            $this->tyih,
+            $this->tyii,
+            $this->tyij,
+            $this->tyik
         );
     }
 }
