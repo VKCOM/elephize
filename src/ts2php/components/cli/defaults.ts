@@ -8,6 +8,7 @@ export const defaultOptions: Options = {
   quiet: false,
   verbose: false,
   verboseUsage: false,
+  verboseTypehints: false,
   bail: 'none',
   noZap: false,
   baseDir: '.',

@@ -1,5 +1,5 @@
 import * as ts from 'typescript';
-import { customTypehints } from './customTypehintsList';
+import { customTypehints, mixedTypehintId } from './customTypehintsList';
 
 export function checkCustomTypehints(type: ts.Type, checker: ts.TypeChecker) {
   let typeNode = checker.typeToTypeNode(type);
@@ -10,6 +10,10 @@ export function checkCustomTypehints(type: ts.Type, checker: ts.TypeChecker) {
   let typeRefs = traverseReferences(type, checker);
   if (typeRefs.length === 1 && typeRefs[0] === type) {
     return false;
+  }
+
+  if (typeRefs.some((t) => t.symbol?.escapedName === mixedTypehintId)) {
+    return { foundTypes: ['mixed'], typesToDrop: [] };
   }
 
   let typesToDrop: any[] = [];
@@ -37,10 +41,9 @@ export function checkCustomTypehints(type: ts.Type, checker: ts.TypeChecker) {
   });
 
   return {foundTypes, typesToDrop};
-
 }
 
-function traverseReferences(type: ts.Type, checker: ts.TypeChecker): ts.Type[] {
+export function traverseReferences(type: ts.Type, checker: ts.TypeChecker): ts.Type[] {
   if (!type.isUnionOrIntersection()) {
     return [type];
   }

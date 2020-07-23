@@ -19,6 +19,10 @@ class ForEachModule extends CJSModule {
      * @var array $af
      */
     public $af;
+    /**
+     * @var array $afo
+     */
+    public $afo;
 
     private function __construct() {
         $this->af = [1, 2, 3];
@@ -33,6 +37,13 @@ class ForEachModule extends CJSModule {
         }
         foreach ($this->af as $idx => $el) {
             $this->af[$idx] = $el * $idx;
+        }
+        $this->afo = [
+            "a" => 1,
+            "b" => 2
+        ];
+        foreach (array_keys($this->afo) as $val) {
+            \VK\Elephize\Builtins\Console::log($this->afo[$val]);
         }
     }
 }
