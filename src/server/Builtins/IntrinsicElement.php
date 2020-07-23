@@ -46,7 +46,7 @@ class IntrinsicElement extends RenderableComponent {
     }
 
     /**
-     * @param array $children
+     * @param string[] $children
      * @return array
      */
     protected function separateTextNodes(array $children) {
@@ -66,12 +66,8 @@ class IntrinsicElement extends RenderableComponent {
 
         // Trim first and last child at the beginning and at the end.
         if (!empty($new_children)) {
-            if (is_string($new_children[0])) {
-                $new_children[0] = ltrim($new_children[0]);
-            }
-            if (is_string($new_children[count($new_children) - 1])) {
-                $new_children[count($new_children) - 1] = rtrim($new_children[count($new_children) - 1]);
-            }
+            $new_children[0] = ltrim($new_children[0]);
+            $new_children[count($new_children) - 1] = rtrim($new_children[count($new_children) - 1]);
         }
 
         return $new_children;
