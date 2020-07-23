@@ -31,17 +31,18 @@ abstract class RenderableComponent extends CJSModule {
     }
 
     /**
-     * @param var $array
-     * @return var
+     * @param array $array
+     * @return string[]
      */
     protected function flatten($array) {
+        /** @var string[] $flat */
         $flat = [];
 
         foreach ($array as $item) {
             if (is_array($item)) {
                 $flat = array_merge($flat, $this->flatten($item));
             } else {
-                $flat[] = $item;
+                $flat[] = (string)$item;
             }
         }
 
