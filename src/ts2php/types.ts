@@ -48,7 +48,6 @@ export type Declaration = {
 export type ExpressionHook = (node: ts.CallExpression, context: Context<Declaration>) => string | undefined;
 
 export type TranslateOptions = {
-  fileNames: string[];
   baseDir: string;
   aliases: { [key: string]: string };
   namespaces: NsMap;

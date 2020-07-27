@@ -26,8 +26,7 @@ const customGlobals = {
 export function runBatch(basePath: string[], testSuite: string[][]) {
   let promises: Array<Promise<any>> = [];
 
-  translateCode({
-    fileNames: testSuite.map((path) => pResolve(...basePath, ...path)),
+  translateCode(testSuite.map((path) => pResolve(...basePath, ...path)), {
     baseDir,
     aliases: {},
     namespaces,

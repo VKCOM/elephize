@@ -8,6 +8,9 @@ import * as iconv from 'iconv-lite';
 import { ModuleRegistry } from '../cjsModules/moduleRegistry';
 import ncp = require('ncp');
 import { makeBootstrap } from '../codegen/makeBootstrap';
+import { getWatchProgram } from '../codegen/programUtils/watchProgramFactory';
+import { NodeFlagStore } from '../codegen/nodeFlagStore';
+import { translateProgram } from '../codegen/programUtils/translateProgram';
 const replace = require('stream-replace');
 
 export function transpile(options: Options, baseDir: string, outDir: string) {
@@ -28,16 +31,30 @@ export function transpile(options: Options, baseDir: string, outDir: string) {
       paths: options.tsPaths || {}
     };
 
-    translateCode({
-      fileNames: matches.map((p) => path.resolve('./', p)),
-      baseDir,
-      aliases: options.aliases,
-      namespaces,
-      disableCodeElimination: options.noZap,
-      options: compilerOptions,
-      onData: (filename: string, content: string) => onData(filename, content),
-      onFinish
-    });
+    if (options.watch) {
+      const nodeFlagStore = new NodeFlagStore(); // TODO: check! this may lead to unforeseen consequences in sequential rebuilds
+      getWatchProgram(matches.map((p) => path.resolve('./', p)), compilerOptions, (program) => {
+        translateProgram(program, nodeFlagStore, {
+          baseDir,
+          aliases: options.aliases,
+          namespaces,
+          disableCodeElimination: options.noZap,
+          options: compilerOptions,
+          onData: (filename: string, content: string) => onData(filename, content),
+          onFinish
+        });
+      });
+    } else {
+      translateCode(matches.map((p) => path.resolve('./', p)), {
+        baseDir,
+        aliases: options.aliases,
+        namespaces,
+        disableCodeElimination: options.noZap,
+        options: compilerOptions,
+        onData: (filename: string, content: string) => onData(filename, content),
+        onFinish
+      });
+    }
   });
 
   function onData(filename: string, content: string) {

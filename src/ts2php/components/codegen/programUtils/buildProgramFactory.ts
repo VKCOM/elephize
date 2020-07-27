@@ -1,22 +1,28 @@
 import {
-  TranspileOptions,
-  Program,
-  Diagnostic,
-  CompilerOptions,
-  getDefaultCompilerOptions,
-  createSourceFile,
-  createProgram,
   CompilerHost,
-  WriteFileCallback,
-  SourceFile,
-  ScriptTarget
+  CompilerOptions,
+  createProgram,
+  Diagnostic,
+  getDefaultCompilerOptions,
+  Program,
+  TranspileOptions,
+  WriteFileCallback
 } from 'typescript';
-import { existsSync, readFileSync } from 'fs';
+import { existsSync } from 'fs';
+import { getDtsSourceFile, getSourceFile } from '../sourceFilesHelper';
 
 // internals. Not good thing to import them this way, but it's hard to customize transpileModule the way we want.
 const { addRange } = require('typescript');
 
-export function getProgram(filenames: string[], skippedFiles: string[], transpileOptions: TranspileOptions, writeFile: WriteFileCallback): Program {
+/**
+ * Create typescript `Program` object for one-time build.
+ *
+ * @param filenames
+ * @param skippedFiles
+ * @param transpileOptions
+ * @param writeFile
+ */
+export function getBuildProgram(filenames: string[], skippedFiles: string[], transpileOptions: TranspileOptions, writeFile: WriteFileCallback): Program {
   const diagnostics: Diagnostic[] = [];
   const options: CompilerOptions = {...transpileOptions.compilerOptions || {}};
 
@@ -66,33 +72,4 @@ export function getProgram(filenames: string[], skippedFiles: string[], transpil
   }
 
   return program;
-}
-
-const sourceFiles: { [key: string]: SourceFile | null } = {};
-// Try find d.ts source in typescript folder
-function getDtsSourceFile(name: string, target?: ScriptTarget) {
-  if (sourceFiles[name] === undefined) {
-    let path = name.startsWith('/') ? name : require.resolve('typescript/lib/' + name);
-    if (existsSync(path)) {
-      let input = readFileSync(path, { encoding: 'utf-8' });
-      sourceFiles[name] = createSourceFile(name, input, target!);
-    } else {
-      sourceFiles[name] = null;
-    }
-  }
-
-  return sourceFiles[name];
-}
-
-function getSourceFile(path: string, target?: ScriptTarget) {
-  if (sourceFiles[path] === undefined) {
-    if (existsSync(path)) {
-      let input = readFileSync(path, { encoding: 'utf-8' });
-      sourceFiles[path] = createSourceFile(path, input, target!);
-    } else {
-      sourceFiles[path] = null;
-    }
-  }
-
-  return sourceFiles[path];
 }

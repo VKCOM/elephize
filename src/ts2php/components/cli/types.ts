@@ -15,4 +15,5 @@ export type Options = {
   aliases: { [key: string]: string };
   tsPaths: { [key: string]: string[] };
   rootNs: string;
+  watch: boolean;
 };

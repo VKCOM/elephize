@@ -16,5 +16,6 @@ export const defaultOptions: Options = {
   encoding: 'utf-8',
   aliases: {},
   tsPaths: {},
-  rootNs: 'VK\\Elephize'
+  rootNs: 'VK\\Elephize',
+  watch: false
 };

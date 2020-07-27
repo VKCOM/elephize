@@ -26,6 +26,7 @@
     "demo_servephp": "php -S localhost:8000 -t demo/public/",
     "demo_genjs": "cd demo && webpack-cli",
     "demo_genphp": "cd demo && ../bin/elephize -c .elephizerc",
+    "demo_watchphp": "cd demo && ../bin/elephize -c .elephizerc --watch",
     "demo_outreact": "cd demo && ts-node -r tsconfig-paths/register src/render.tsx | sed 's/ data-reactroot=\"\"//' | ../external/htmlformat",
     "demo_outphp": "cd demo/public && php index.php | ../../external/htmlformat",
     "prepack": "sh external/prepack.sh",
