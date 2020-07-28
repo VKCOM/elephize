@@ -9,7 +9,7 @@ import {
   WriteFileCallback
 } from 'typescript';
 import { existsSync } from 'fs';
-import { getDtsSourceFile, getSourceFile } from '../sourceFilesHelper';
+import { compilerHostSourceGetter } from '../sourceFilesHelper';
 
 // internals. Not good thing to import them this way, but it's hard to customize transpileModule the way we want.
 const { addRange } = require('typescript');
@@ -42,16 +42,7 @@ export function getBuildProgram(filenames: string[], skippedFiles: string[], tra
 
   // Create a compilerHost object to allow the compiler to read and write files
   const compilerHost: CompilerHost = {
-    getSourceFile: (fileName) => {
-      if (skippedFiles.includes(fileName)) {
-        // Use this hack to prevent typescript resolver from getting into files we don't want to parse.
-        return undefined;
-      }
-      if (fileName.endsWith('.d.ts')) {
-        return getDtsSourceFile(fileName, options.target) || undefined;
-      }
-      return getSourceFile(fileName, options.target) || undefined;
-    },
+    getSourceFile: compilerHostSourceGetter(skippedFiles, options.target),
     writeFile,
     getDefaultLibFileName: () => 'lib.d.ts',
     useCaseSensitiveFileNames: () => false,
