@@ -55,7 +55,8 @@ export const translateCodeAndWatch: TranslatorFunc = (fileNames: string[], {
   aliases = {},
   namespaces,
   options = defaultOptions,
-  onFinish = () => undefined
+  onFinish = () => undefined,
+  getCloseHandle
 }: TranslateOptions): NodeFlagStore => {
   // Enable more logging using env var
   const nodeFlagStore = new NodeFlagStore(); // TODO: check! this may lead to unforeseen consequences in sequential rebuilds
@@ -76,11 +77,11 @@ export const translateCodeAndWatch: TranslatorFunc = (fileNames: string[], {
         aliases,
         namespaces,
         disableCodeElimination,
-        options,
-        onData: (filename: string, content: string) => onData(filename, content),
+        options: {...defaultOptions, ...options},
+        onData: (sourceFilename: string, targetFilename: string, content: string) => onData(sourceFilename, targetFilename, content),
         onFinish
       });
-    });
+    }, getCloseHandle);
   });
 
   return nodeFlagStore;

@@ -66,7 +66,7 @@ export function translateProgram(program: ts.Program, nodeFlagStore: NodeFlagSto
       console.log(content);
     }
 
-    onData(mod.targetFileName, content);
+    onData(mod.sourceFileName, mod.targetFileName, content);
   });
 
   if (typeof jest === 'undefined') {

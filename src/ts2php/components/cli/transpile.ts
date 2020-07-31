@@ -35,7 +35,7 @@ export function transpile(options: Options, baseDir: string, outDir: string) {
         namespaces,
         disableCodeElimination: options.noZap,
         options: compilerOptions,
-        onData: (filename: string, content: string) => onData(filename, content),
+        onData: (sourceFilename: string, targetFilename: string, content: string) => onData(targetFilename, content),
         onFinish
       }
     );

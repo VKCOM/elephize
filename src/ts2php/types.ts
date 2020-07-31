@@ -54,9 +54,10 @@ export type TranslateOptions = {
   customGlobals?: { [key: string]: string };
   disableCodeElimination?: boolean;
   options?: ts.CompilerOptions;
-  onData: (filename: string, content: string) => void;
+  onData: (sourceFilename: string, targetFilename: string, content: string) => void;
   onBeforeRender?: (filename: string, rootNode: ts.Node) => void; // mainly for testing purposes...
   onFinish?: (registry: ModuleRegistry) => void;
+  getCloseHandle?: (handle: () => void) => void; // get function which closes watcher when called
 };
 
 export type NsMap = {

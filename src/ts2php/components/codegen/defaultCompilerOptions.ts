@@ -17,6 +17,5 @@ export const defaultOptions: ts.CompilerOptions = {
   jsx: ts.JsxEmit.React,
   allowUnreachableCode: true,
   allowJs: true,
-  isolatedModules: true,
   resolveJsonModule: true,
 };

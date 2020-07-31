@@ -1,0 +1,7 @@
+--- modifyFile.entry.ts
++++ modifyFile.entry.ts
+@@ -4,4 +4,3 @@ const mftest2 = (b: number) => {
+ };
+ const mftest3 = (a: number, b: number) => a + b;
+ console.log(mftest2(1));
+-console.log(mftest3(1, 2));

@@ -38,8 +38,15 @@ const formatHost: ts.FormatDiagnosticsHost = {
  * @param skippedFiles
  * @param compilerOptions
  * @param onProgramReady
+ * @param getCloseHandle
  */
-export function getWatchProgram(filenames: string[], skippedFiles: string[], compilerOptions: ts.CompilerOptions, onProgramReady: (p: ts.Program) => void) {
+export function getWatchProgram(
+  filenames: string[],
+  skippedFiles: string[],
+  compilerOptions: ts.CompilerOptions,
+  onProgramReady: (p: ts.Program) => void,
+  getCloseHandle?: (closeHandle: () => void) => void
+) {
   const options: ts.CompilerOptions = {...compilerOptions || {}};
 
   // mix in default options
@@ -80,16 +87,22 @@ export function getWatchProgram(filenames: string[], skippedFiles: string[], com
   };
   const origPostProgramCreate = host.afterProgramCreate;
 
-  host.readFile = watcherHostSourceGetter(skippedFiles, compilerOptions.target);
+  // TODO: skipped files resolver
+  //host.readFile = watcherHostSourceGetter(skippedFiles, compilerOptions.target);
   host.afterProgramCreate = (program) => {
     console.timeEnd('TS Program created');
-    origPostProgramCreate!(program);
-    onProgramReady(program.getProgram());
+    setTimeout(() => {
+      origPostProgramCreate!(program);
+      onProgramReady(program.getProgram());
+    }, 100);
   };
 
   // `createWatchProgram` creates an initial program, watches files, and updates
   // the program over time.
-  ts.createWatchProgram(host);
+  const opt = ts.createWatchProgram(host);
+  if (getCloseHandle) {
+    getCloseHandle(() => opt.close());
+  }
 }
 
 function reportDiagnostic(diagnostic: ts.Diagnostic) {
@@ -101,5 +114,12 @@ function reportDiagnostic(diagnostic: ts.Diagnostic) {
  * This is mainly for messages like "Starting compilation" or "Compilation completed".
  */
 function reportWatchStatusChanged(diagnostic: ts.Diagnostic) {
-  console.info(ts.formatDiagnostic(diagnostic, formatHost));
+  switch (diagnostic.code) {
+    case 6031: // started compilation in watch mode
+      console.info('Started comp');
+      break;
+    case 6194: // finished compilation
+      console.info('Finished comp');
+      break;
+  }
 }

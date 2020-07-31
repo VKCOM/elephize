@@ -32,7 +32,7 @@ export function runBatch(basePath: string[], testSuite: string[][]) {
     namespaces,
     customGlobals,
     options: compilerOptions,
-    onData: (filename: string, content: string) => onData(basePath, promises, filename, content)
+    onData: (sourceFilename: string, targetFilename: string, content: string) => onData(basePath, promises, targetFilename, content)
   });
 
   return Promise.all(promises)

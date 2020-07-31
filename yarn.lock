@@ -1032,6 +1032,13 @@ anymatch@^2.0.0:
     micromatch "^3.1.4"
     normalize-path "^2.1.1"
 
+apply-patch@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/apply-patch/-/apply-patch-0.1.2.tgz#3514bcfe70cef762d03cceae3f144cbbe9aa5f94"
+  integrity sha1-NRS8/nDO92LQPM6uPxRMu+mqX5Q=
+  dependencies:
+    diff "2.1.1"
+
 aproba@^1.1.1:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/aproba/-/aproba-1.2.0.tgz#6802e6264efd18c790a1b0d517f0f2627bf2c94a"
@@ -1973,6 +1980,11 @@ diff-sequences@^25.2.6:
   version "25.2.6"
   resolved "https://registry.yarnpkg.com/diff-sequences/-/diff-sequences-25.2.6.tgz#5f467c00edd35352b7bca46d7927d60e687a76dd"
   integrity sha512-Hq8o7+6GaZeoFjtpgvRBUknSXNeJiCx7V9Fr94ZMljNiCr9n9L8H8aJqgWOQiDDGdyn29fRNcDdRVJ5fdyihfg==
+
+diff@2.1.1:
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/diff/-/diff-2.1.1.tgz#4716d08e94a9f5ed1a981364dd7e16893bab1153"
+  integrity sha1-RxbQjpSp9e0amBNk3X4WiTurEVM=
 
 diff@^4.0.1:
   version "4.0.2"
