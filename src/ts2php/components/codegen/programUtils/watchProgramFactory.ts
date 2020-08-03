@@ -82,7 +82,6 @@ export function getWatchProgram(
   // doesn't use `this` at all.
   const origCreateProgram = host.createProgram;
   host.createProgram = (rootNames: readonly string[], options, host, oldProgram) => {
-    console.time('TS Program created');
     return origCreateProgram(rootNames, options, host, oldProgram);
   };
   const origPostProgramCreate = host.afterProgramCreate;
@@ -90,7 +89,6 @@ export function getWatchProgram(
   // TODO: skipped files resolver
   //host.readFile = watcherHostSourceGetter(skippedFiles, compilerOptions.target);
   host.afterProgramCreate = (program) => {
-    console.timeEnd('TS Program created');
     setTimeout(() => {
       origPostProgramCreate!(program);
       onProgramReady(program.getProgram());
@@ -116,10 +114,10 @@ function reportDiagnostic(diagnostic: ts.Diagnostic) {
 function reportWatchStatusChanged(diagnostic: ts.Diagnostic) {
   switch (diagnostic.code) {
     case 6031: // started compilation in watch mode
-      console.info('Started comp');
+      // console.info('Started comp');
       break;
     case 6194: // finished compilation
-      console.info('Finished comp');
+      // console.info('Finished comp');
       break;
   }
 }

@@ -17,7 +17,8 @@ test('ts2php.watcher', () => {
     'modifyFile.entry.ts': {
       'description': 'Modify file',
       'diffs': {
-        'modifyFile.1.patch': 'ModifyFileModule.php'
+        'modifyFile.1.patch': ['ModifyFileModule.1.php'],
+        'modifyFile.2.patch': ['ModifyFileModule.2.php'],
       }
     },
     // 'Import new file': {

@@ -1,14 +1,15 @@
 import * as path from 'path';
 import { resolve as pResolve } from 'path';
 import { translateCodeAndWatch } from '../ts2php/components/codegen/translateCode';
-import { readFileSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 import ncp = require('ncp');
-const { applyPatch } = require('apply-patch');
+import * as diff from 'diff';
 
 type WatcherTestEnvConfigEntry = {
   description: string;
   diffs: {
-    [key: string]: string;
+    // Note: file name of specimen must match output file name that elephize suggests. Extension may vary.
+    [key: string]: string[];
   };
 };
 
@@ -61,17 +62,17 @@ export function runWatcherTests(watcherTestConfig: WatcherTestEnvConfig) {
         if (!allFilesCollected) {
           allAffectedFiles.push(sourceFilename);
         } else {
-          verifyLastDiff(sourceFilename, content, watcherTestConfig);
+          const elapsed = verifyLastDiff(sourceFilename, targetFilename, content, watcherTestConfig);
+          if (elapsed === 0) {
+            close();
+            resolve();
+          }
         }
       },
       onFinish: () => {
         if (!allFilesCollected) {
           allFilesCollected = true;
           applyDiffs(allAffectedFiles, watcherTestConfig); // this starts recompilation chain
-        }
-        if (diffsElapsed === 0) {
-          close();
-          resolve();
         }
       }
     });
@@ -80,8 +81,8 @@ export function runWatcherTests(watcherTestConfig: WatcherTestEnvConfig) {
 
 function applyDiffs(affectedFiles: string[], watcherTestConfig: WatcherTestEnvConfig) {
   affectedFiles.forEach((filename) => {
-    lastAppliedDiffs[filename] = 0;
     const file = path.basename(filename);
+    lastAppliedDiffs[file] = 0;
     diffsElapsed += Object.keys(watcherTestConfig[file].diffs).length - 1;
     const firstDiff = pResolve(
       __dirname, 'watchSpecimens.~',
@@ -99,18 +100,32 @@ function applyDiffs(affectedFiles: string[], watcherTestConfig: WatcherTestEnvCo
   });
 }
 
-function verifyLastDiff(sourceFilename: string, content: string, watcherTestConfig: WatcherTestEnvConfig) {
-  const diffToVerify = Object.keys(watcherTestConfig[sourceFilename].diffs)[lastAppliedDiffs[sourceFilename]];
-  const expectedContent = readFileSync(watcherTestConfig[sourceFilename].diffs[diffToVerify], { encoding: 'utf-8' });
-  expect(expectedContent).toEqual(content);
+function verifyLastDiff(sourceFilename: string, targetFilename: string, content: string, watcherTestConfig: WatcherTestEnvConfig) {
+  const name = path.basename(sourceFilename);
+  const diffToVerify = Object.keys(watcherTestConfig[name].diffs)[lastAppliedDiffs[name]];
 
-  const nextDiff = pResolve(
-    __dirname, 'watchSpecimens.~',
-    Object.keys(watcherTestConfig[sourceFilename].diffs)[lastAppliedDiffs[sourceFilename] + 1]
-  );
+  let checkedAtLeastOneFile = false;
+  watcherTestConfig[name].diffs[diffToVerify].forEach((fn) => {
+    if (path.basename(fn).split('.')[0] !== path.basename(targetFilename).split('.')[0]) {
+      return;
+    }
 
+    const expectedContent = readFileSync(
+      pResolve(__dirname, 'watchSpecimens.~', fn),
+      { encoding: 'utf-8' }
+    );
+    expect(expectedContent).toEqual(content);
+    checkedAtLeastOneFile = true;
+  });
+
+  expect(checkedAtLeastOneFile).toEqual(true);
+
+  const nextDiffFn = Object.keys(watcherTestConfig[name].diffs)[lastAppliedDiffs[name] + 1];
+  const nextDiff = nextDiffFn && pResolve(__dirname, 'watchSpecimens.~', nextDiffFn);
+
+  const currentDiffsElapsed = diffsElapsed;
   if (nextDiff) {
-    lastAppliedDiffs[sourceFilename] += 1;
+    lastAppliedDiffs[name] += 1;
     diffsElapsed -= 1;
 
     const cwd = process.cwd();
@@ -118,4 +133,33 @@ function verifyLastDiff(sourceFilename: string, content: string, watcherTestConf
     applyPatch(nextDiff);
     process.chdir(cwd);
   }
+  return currentDiffsElapsed;
+}
+
+function applyPatch(patchFile: string) {
+  let patch = readFileSync(patchFile, { encoding: 'utf8' });
+
+  let sourceFileMatch = /--- ([^ \n\r\t]+).*/.exec(patch);
+  let sourceFile;
+  if (sourceFileMatch && sourceFileMatch[1]) {
+    sourceFile = sourceFileMatch[1];
+  } else {
+    throw Error(`Unable to find source file in '${patchFile}'`);
+  }
+  let destinationFileMatch = /\+\+\+ ([^ \n\r\t]+).*/.exec(patch);
+  let destinationFile;
+  if (destinationFileMatch && destinationFileMatch[1]) {
+    destinationFile = destinationFileMatch[1];
+  } else {
+    throw Error(`Unable to find destination file in '${patchFile}'`);
+  }
+
+  let original = readFileSync(sourceFile, { encoding: 'utf8' });
+  let patched = diff.applyPatch(original, patch);
+
+  if (!patched) {
+    throw Error(`Failed to apply patch '${patchFile}' to '${sourceFile}'`);
+  }
+
+  writeFileSync(destinationFile, patched);
 }
