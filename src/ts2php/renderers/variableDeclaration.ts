@@ -122,7 +122,8 @@ function topStatements(node: ts.VariableDeclaration, initializerNode: ts.Node | 
       const { syntaxList, block } = els;
       const flags = context.nodeFlagsStore.get(node);
 
-      if (!context.dryRun && context.scope.checkUsage(node.name.getText()) && !flags?.drop) {
+      const isExportedFuncExp = !!(node.name.kind === ts.SyntaxKind.Identifier && isExportedVar(node.name));
+      if (!context.dryRun && (context.scope.checkUsage(node.name.getText()) || isExportedFuncExp) && !flags?.drop) {
         context.moduleDescriptor.addMethod(node.name.getText(), block, syntaxList.join(', '),
           getPhpPrimitiveTypeForFunc(node.initializer as ts.FunctionExpression, syntaxList, context.checker), 'public');
       }

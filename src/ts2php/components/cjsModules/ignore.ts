@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as ts from 'typescript';
+import * as path from 'path';
 import { ctx, log, LogSeverity } from '../../utils/log';
 import { resolveAliasesAndPaths } from '../../utils/pathsAndNames';
 
@@ -65,9 +66,12 @@ export const getSkippedFilesPromiseExec = ({ entrypoint, baseDir, tsPaths, alias
       return;
     }
 
+    // Directory where file with import is located
+    const fileBaseDir = path.dirname(ref ? path.resolve(ref.getSourceFile().fileName) : path.resolve(entrypoint));
+
     const fn = resolveAliasesAndPaths(
       filename.replace(/^'|'$/g, ''),
-      '', baseDir, tsPaths, aliases, true
+      fileBaseDir, baseDir, tsPaths, aliases, true
     );
 
     if (!fn) {

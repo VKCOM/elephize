@@ -7,6 +7,7 @@ import * as diff from 'diff';
 
 type WatcherTestEnvConfigEntry = {
   description: string;
+  seeAlso?: string[];
   diffs: {
     // Note: file name of specimen must match output file name that elephize suggests. Extension may vary.
     [key: string]: string[];
@@ -33,9 +34,16 @@ const customGlobals = {
 
 const lastAppliedDiffs: { [key: string]: number } = {};
 let diffsElapsed = 0;
+const seeAlsoMap: { [key: string]: string } = {};
 
 export function runWatcherTests(watcherTestConfig: WatcherTestEnvConfig) {
   jest.setTimeout(10000);
+  Object.keys(watcherTestConfig).forEach((key) => {
+    watcherTestConfig[key].seeAlso?.forEach((val) => {
+      seeAlsoMap[pResolve(__dirname, 'watchSpecimens.~', val)] = pResolve(__dirname, 'watchSpecimens.~', key);
+    });
+  });
+
   return new Promise((resolve) => {
     const bSrc = pResolve(__dirname, 'watchSpecimens');
     const bTgt = pResolve(__dirname, 'watchSpecimens.~');
@@ -101,7 +109,13 @@ function applyDiffs(affectedFiles: string[], watcherTestConfig: WatcherTestEnvCo
 }
 
 function verifyLastDiff(sourceFilename: string, targetFilename: string, content: string, watcherTestConfig: WatcherTestEnvConfig) {
-  const name = path.basename(sourceFilename);
+  let name = path.basename(sourceFilename);
+  if (!watcherTestConfig[name]) {
+    name = path.basename(seeAlsoMap[sourceFilename]);
+    if (!watcherTestConfig[name]) {
+      throw new Error(`Failed to get watcher test config for filename ${name}`);
+    }
+  }
   const diffToVerify = Object.keys(watcherTestConfig[name].diffs)[lastAppliedDiffs[name]];
 
   let checkedAtLeastOneFile = false;
@@ -115,6 +129,7 @@ function verifyLastDiff(sourceFilename: string, targetFilename: string, content:
       { encoding: 'utf-8' }
     );
     expect(expectedContent).toEqual(content);
+    process.stdout.write('[VERIFIED] ' + fn + '\n');
     checkedAtLeastOneFile = true;
   });
 

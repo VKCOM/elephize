@@ -21,6 +21,13 @@ test('ts2php.watcher', () => {
         'modifyFile.2.patch': ['ModifyFileModule.2.php'],
       }
     },
+    'importNewFile.entry.ts': {
+      'description': 'Import new file',
+      'seeAlso': ['importNewFileToImport.ts'],
+      'diffs': {
+        'importNewFile.1.patch': ['ImportNewFileModule.1.php', 'ImportNewFileToImportModule.1.php']
+      }
+    },
     // 'Import new file': {
     //   'startFile': '',
     //   'diffs': {

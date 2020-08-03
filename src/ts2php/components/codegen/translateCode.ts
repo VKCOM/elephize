@@ -25,7 +25,7 @@ export const translateCode: TranslatorFunc = (fileNames: string[], {
 
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
   Promise.all(
-    fileNames.map((fn) => new Promise(getSkippedFilesPromiseExec({entrypoint: fn, baseDir, tsPaths: options.paths || {}, aliases})))
+    fileNames.map((fn) => new Promise(getSkippedFilesPromiseExec({ entrypoint: fn, baseDir, tsPaths: options.paths || {}, aliases })))
   ).then((fileSet) => fileSet
     .reduce((acc, chunk) => acc.concat(chunk), [])
     .map((fn) => resolveAliasesAndPaths(fn, '', baseDir, options.paths || {}, aliases, true))
@@ -78,7 +78,7 @@ export const translateCodeAndWatch: TranslatorFunc = (fileNames: string[], {
         namespaces,
         disableCodeElimination,
         options: {...defaultOptions, ...options},
-        onData: (sourceFilename: string, targetFilename: string, content: string) => onData(sourceFilename, targetFilename, content),
+        onData,
         onFinish
       });
     }, getCloseHandle);

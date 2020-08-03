@@ -1,0 +1,7 @@
+--- importNewFile.entry.ts
++++ importNewFile.entry.ts
+@@ -1,2 +1,4 @@
++import { inftest1 } from './importNewFileToImport';
+ const inftest2 = (b: number) => b + 1;
+ console.log(inftest2(1));
++console.log(inftest1(1));
