@@ -10,24 +10,25 @@ const ctxEx = (fn: string, node?: ts.Node) => node ? ctx(node) : `Entry point: $
 
 type ParseSourceFileOpts = {
   filename: string;
+  baseDir: string;
   onFinish: (result: ts.SourceFile) => void;
   onSkip: (filename: string) => void;
   importReference?: ts.ImportDeclaration;
 };
 
-export function parseSourceFile({ filename, onFinish, onSkip, importReference }: ParseSourceFileOpts) {
+function parseSourceFile({ filename, baseDir, onFinish, onSkip, importReference }: ParseSourceFileOpts) {
   fs.readFile(filename, { encoding: 'utf-8' }, (err, data) => {
     const sourceFile = ts.createSourceFile(filename, data, ts.ScriptTarget.Latest,true);
 
     const trivia = importReference?.getFullText().substr(0, importReference?.getLeadingTriviaWidth());
     if (trivia?.includes('@elephizeIgnore')) {
-      log(`Skipping ignored file: ${filename}`, LogSeverity.INFO, ctxEx(filename, importReference));
+      log(`Skipping ignored file: ${filename}`, LogSeverity.INFO, ctxEx(filename.replace(baseDir, '[base]'), importReference));
       onSkip(filename);
       return;
     }
 
     if (sourceFile.isDeclarationFile) {
-      log(`Skipping declaration file: ${filename}`, LogSeverity.INFO, ctxEx(filename, importReference));
+      log(`Skipping declaration file: ${filename}`, LogSeverity.INFO, ctxEx(filename.replace(baseDir, '[base]'), importReference));
       onSkip(filename);
       return;
     }
@@ -75,12 +76,13 @@ export const getSkippedFilesPromiseExec = ({ entrypoint, baseDir, tsPaths, alias
     );
 
     if (!fn) {
-      log(`Module not found: ${filename}`, LogSeverity.ERROR, ctxEx(filename, ref));
+      log(`Module not found: ${filename.replace(baseDir, '[base]')}`,
+        LogSeverity.ERROR, ctxEx(filename.replace(baseDir, '[base]'), ref));
       return;
     }
 
     semInc();
-    parseSourceFile({ filename: fn, importReference: ref, onSkip: semDec, onFinish: (result) => {
+    parseSourceFile({ filename: fn, baseDir, importReference: ref, onSkip: semDec, onFinish: (result) => {
       const imports = result.statements.filter((c): c is ts.ImportDeclaration => c.kind === ts.SyntaxKind.ImportDeclaration);
       imports.forEach((imp) => {
         parseSourceFileRecursive(imp.moduleSpecifier.getText(result), imp);

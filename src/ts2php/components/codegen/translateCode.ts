@@ -60,29 +60,30 @@ export const translateCodeAndWatch: TranslatorFunc = (fileNames: string[], {
 }: TranslateOptions): NodeFlagStore => {
   // Enable more logging using env var
   const nodeFlagStore = new NodeFlagStore(); // TODO: check! this may lead to unforeseen consequences in sequential rebuilds
-
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
   Promise.all(
     fileNames.map((fn) => new Promise(getSkippedFilesPromiseExec({entrypoint: fn, baseDir, tsPaths: options.paths || {}, aliases})))
-  ).then((fileSet) => fileSet
-    .reduce((acc, chunk) => acc.concat(chunk), [])
-    .map((fn) => resolveAliasesAndPaths(fn, '', baseDir, options.paths || {}, aliases, true))
-    .filter((fn): fn is string => !!fn)
-  ).then((skippedFiles) => {
-    getWatchProgram(fileNames, skippedFiles, {...defaultOptions, ...options}, (program) => {
-      translateProgram(program, nodeFlagStore, {
-        baseDir,
-        onBeforeRender,
-        customGlobals,
-        aliases,
-        namespaces,
-        disableCodeElimination,
-        options: {...defaultOptions, ...options},
-        onData,
-        onFinish
-      });
-    }, getCloseHandle);
-  });
+  ).then((fileSet) => {
+    return fileSet
+      .reduce((acc, chunk) => acc.concat(chunk), [])
+      .map((fn) => resolveAliasesAndPaths(fn, '', baseDir, options.paths || {}, aliases, true))
+      .filter((fn): fn is string => !!fn)
+  })
+    .then((skippedFiles) => {
+      getWatchProgram(fileNames, skippedFiles, {...defaultOptions, ...options}, (program, errcode) => {
+        translateProgram(program, nodeFlagStore, {
+          baseDir,
+          onBeforeRender,
+          customGlobals,
+          aliases,
+          namespaces,
+          disableCodeElimination,
+          options: {...defaultOptions, ...options},
+          onData: (sourceFilename: string, targetFilename: string, content: string) => onData(sourceFilename, targetFilename, content, errcode),
+          onFinish
+        });
+      }, getCloseHandle);
+    });
 
   return nodeFlagStore;
 };

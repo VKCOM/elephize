@@ -2,19 +2,18 @@ import * as path from 'path';
 import { resolve as pResolve } from 'path';
 import { translateCodeAndWatch } from '../ts2php/components/codegen/translateCode';
 import { readFileSync, writeFileSync } from 'fs';
-import ncp = require('ncp');
+import '../ts2php/utils/log';
 import * as diff from 'diff';
+import * as rimraf from 'rimraf';
+import { log, LogSeverity } from '../ts2php/utils/log';
+import ncp = require('ncp');
 
-type WatcherTestEnvConfigEntry = {
-  description: string;
-  seeAlso?: string[];
-  diffs: {
-    // Note: file name of specimen must match output file name that elephize suggests. Extension may vary.
-    [key: string]: string[];
-  };
+export type WatcherTestQueueItem = {
+  entry: string;
+  diff: string;
+  checkFiles: string[][]; // src.ts -> target.php
+  expectError?: number;
 };
-
-type WatcherTestEnvConfig = { [filename: string]: WatcherTestEnvConfigEntry };
 
 const baseDir = path.resolve(__dirname, '..', '..');
 const namespaces = {
@@ -32,126 +31,99 @@ const customGlobals = {
   'getLang': 'CustomIso::getLang'
 };
 
-const lastAppliedDiffs: { [key: string]: number } = {};
-let diffsElapsed = 0;
-const seeAlsoMap: { [key: string]: string } = {};
-
-export function runWatcherTests(watcherTestConfig: WatcherTestEnvConfig) {
-  jest.setTimeout(20000);
-  Object.keys(watcherTestConfig).forEach((key) => {
-    watcherTestConfig[key].seeAlso?.forEach((val) => {
-      seeAlsoMap[pResolve(__dirname, 'watchSpecimens.~', val)] = pResolve(__dirname, 'watchSpecimens.~', key);
-    });
-  });
+let lastDiffApplied = 0;
+export function runWatcherTests(watcherTestConfig: WatcherTestQueueItem[]) {
+  jest.setTimeout(200000);
 
   return new Promise((resolve) => {
     const bSrc = pResolve(__dirname, 'watchSpecimens');
     const bTgt = pResolve(__dirname, 'watchSpecimens.~');
-    ncp(bSrc, bTgt, {}, (err) => {
-      if (!err) {
-        process.stdout.write('Watcher test files successfully prepared');
+    rimraf(bTgt, (err) => {
+      if (err) {
+        throw err;
       }
-    });
 
-    const files = Object.keys(watcherTestConfig).map((entry) => pResolve(__dirname, 'watchSpecimens.~', entry));
-    const allAffectedFiles: string[] = [];
-    let allFilesCollected = false;
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    let close = () => {};
-
-    translateCodeAndWatch(files /* here we should pass a single entrypoint! */, {
-      baseDir,
-      aliases: {},
-      namespaces,
-      customGlobals,
-      options: compilerOptions,
-      getCloseHandle: (handle) => close = handle,
-      onData: (sourceFilename: string, targetFilename: string, content: string) => {
-        if (!allFilesCollected) {
-          allAffectedFiles.push(sourceFilename);
+      ncp(bSrc, bTgt, {}, (err) => {
+        if (!err) {
+          log('Watcher test files successfully prepared', LogSeverity.INFO);
         } else {
-          const elapsed = verifyLastDiff(sourceFilename, targetFilename, content, watcherTestConfig);
-          if (elapsed === 0) {
-            close();
-            resolve();
+          throw err;
+        }
+
+        const files = Array.from(watcherTestConfig.reduce((acc, item) => acc.add(item.entry), new Set<string>()));
+        let allFilesCollected = false;
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        let close = () => {};
+
+        log('Triggering watcher tests for: \n   ' + files.map((f) => f.replace(__dirname, '')).join('\n   '), LogSeverity.INFO);
+        translateCodeAndWatch([pResolve(__dirname, 'watchSpecimens.~', 'index.ts')], {
+          baseDir,
+          aliases: {},
+          namespaces,
+          customGlobals,
+          options: compilerOptions,
+          getCloseHandle: (handle) => close = handle,
+          onData: (sourceFilename: string, targetFilename: string, content: string, error?: number) => {
+            if (allFilesCollected) {
+              verifyDiff(sourceFilename, targetFilename, content, error, watcherTestConfig);
+            }
+          },
+          onFinish: () => {
+            if (!allFilesCollected) {
+              allFilesCollected = true;
+              lastDiffApplied = -1;
+            }
+            lastDiffApplied++;
+            applyNextDiff(watcherTestConfig[lastDiffApplied]);
+
+            if (lastDiffApplied === watcherTestConfig.length) {
+              close();
+              resolve();
+            }
           }
-        }
-      },
-      onFinish: () => {
-        if (!allFilesCollected) {
-          allFilesCollected = true;
-          applyDiffs(allAffectedFiles, watcherTestConfig); // this starts recompilation chain
-        }
-      }
+        });
+      });
     });
   });
 }
 
-function applyDiffs(affectedFiles: string[], watcherTestConfig: WatcherTestEnvConfig) {
-  affectedFiles.forEach((filename) => {
-    const file = path.basename(filename);
-    if (!watcherTestConfig[file]) {
-      return;
-    }
-    lastAppliedDiffs[file] = 0;
-    diffsElapsed += Object.keys(watcherTestConfig[file].diffs).length - 1;
-    const firstDiff = pResolve(
-      __dirname, 'watchSpecimens.~',
-      Object.keys(watcherTestConfig[file].diffs)[0]
-    );
-
-    if (!firstDiff) {
-      return;
-    }
-
-    const cwd = process.cwd();
-    process.chdir(pResolve(__dirname, 'watchSpecimens.~'));
-    applyPatch(firstDiff);
-    process.chdir(cwd);
-  });
+function applyNextDiff(nextDiff: WatcherTestQueueItem) {
+  if (!nextDiff) {
+    return;
+  }
+  log(`Applying diff ${nextDiff.diff} @ ${nextDiff.entry}`, LogSeverity.INFO);
+  const diff = pResolve(__dirname, 'watchSpecimens.~', nextDiff.diff);
+  const cwd = process.cwd();
+  process.chdir(pResolve(__dirname, 'watchSpecimens.~'));
+  applyPatch(diff);
+  process.chdir(cwd);
 }
 
-function verifyLastDiff(sourceFilename: string, targetFilename: string, content: string, watcherTestConfig: WatcherTestEnvConfig) {
-  let name = path.basename(sourceFilename);
-  if (!watcherTestConfig[name]) {
-    name = path.basename(seeAlsoMap[sourceFilename]);
-    if (!watcherTestConfig[name]) {
-      throw new Error(`Failed to get watcher test config for filename ${name}`);
-    }
+function verifyDiff(sourceFilename: string, targetFilename: string, content: string, error: number | undefined, conf: WatcherTestQueueItem[]) {
+  const diff = conf[lastDiffApplied];
+  const checkedFileIndex = diff.checkFiles.findIndex((el) => el[0] === path.basename(sourceFilename));
+  if (checkedFileIndex === -1) {
+    log(`Not found ${path.basename(sourceFilename)} in ${diff.checkFiles.join(', ')}`, LogSeverity.WARN);
+    return;
   }
-  const diffToVerify = Object.keys(watcherTestConfig[name].diffs)[lastAppliedDiffs[name]];
-
-  let checkedAtLeastOneFile = false;
-  watcherTestConfig[name].diffs[diffToVerify].forEach((fn) => {
-    if (path.basename(fn).split('.')[0] !== path.basename(targetFilename).split('.')[0]) {
-      return;
+  const checkedFile = diff.checkFiles[checkedFileIndex];
+  const expectedContent = readFileSync(pResolve(__dirname, 'watchSpecimens.~', checkedFile[1]), { encoding: 'utf-8' });
+  try {
+    expect(content).toEqual(expectedContent);
+    if (diff.expectError) {
+      expect(error).toEqual(diff.expectError);
+    } else {
+      expect(error).toBeFalsy();
     }
-
-    const expectedContent = readFileSync(
-      pResolve(__dirname, 'watchSpecimens.~', fn),
-      { encoding: 'utf-8' }
-    );
-    expect(expectedContent).toEqual(content);
-    process.stdout.write('[VERIFIED] ' + fn + '\n');
-    checkedAtLeastOneFile = true;
-  });
-
-  expect(checkedAtLeastOneFile).toEqual(true);
-
-  const nextDiffFn = Object.keys(watcherTestConfig[name].diffs)[lastAppliedDiffs[name] + 1];
-  const nextDiff = nextDiffFn && pResolve(__dirname, 'watchSpecimens.~', nextDiffFn);
-
-  const currentDiffsElapsed = diffsElapsed;
-  if (nextDiff) {
-    lastAppliedDiffs[name] += 1;
-    diffsElapsed -= 1;
-
-    const cwd = process.cwd();
-    process.chdir(pResolve(__dirname, 'watchSpecimens.~'));
-    applyPatch(nextDiff);
-    process.chdir(cwd);
+    log(`[VERIFIED] ${checkedFile[0]} after ${diff.diff}`, LogSeverity.INFO);
+  } catch (e) {
+    log(`[FAILED] ${checkedFile[0]} after ${diff.diff}`, LogSeverity.ERROR);
+    fail({
+      name: 'Test failed',
+      message: `${checkedFile[0]} after ${diff.diff}\n`,
+      stack: e.stack
+    });
   }
-  return currentDiffsElapsed;
 }
 
 function applyPatch(patchFile: string) {
@@ -162,21 +134,23 @@ function applyPatch(patchFile: string) {
   if (sourceFileMatch && sourceFileMatch[1]) {
     sourceFile = sourceFileMatch[1];
   } else {
-    throw Error(`Unable to find source file in '${patchFile}'`);
+    log(`Unable to find source file in '${patchFile}'`, LogSeverity.ERROR);
+    return;
   }
   let destinationFileMatch = /\+\+\+ ([^ \n\r\t]+).*/.exec(patch);
   let destinationFile;
   if (destinationFileMatch && destinationFileMatch[1]) {
     destinationFile = destinationFileMatch[1];
   } else {
-    throw Error(`Unable to find destination file in '${patchFile}'`);
+    log(`Unable to find destination file in '${patchFile}'`, LogSeverity.ERROR);
+    return;
   }
 
   let original = readFileSync(sourceFile, { encoding: 'utf8' });
   let patched = diff.applyPatch(original, patch);
 
   if (!patched) {
-    throw Error(`Failed to apply patch '${patchFile}' to '${sourceFile}'`);
+    log(`Failed to apply patch '${patchFile}' to '${sourceFile}'`, LogSeverity.ERROR);
   }
 
   writeFileSync(destinationFile, patched);

@@ -3,12 +3,7 @@
 import * as ts from 'typescript';
 import { watcherHostSourceGetter } from '../sourceFilesHelper';
 import { getDefaultCompilerOptions } from 'typescript';
-
-const formatHost: ts.FormatDiagnosticsHost = {
-  getCanonicalFileName: path => path,
-  getCurrentDirectory: ts.sys.getCurrentDirectory,
-  getNewLine: () => ts.sys.newLine
-};
+let lastDiagCode: number | undefined;
 
 // TODO:
 /*
@@ -44,7 +39,7 @@ export function getWatchProgram(
   filenames: string[],
   skippedFiles: string[],
   compilerOptions: ts.CompilerOptions,
-  onProgramReady: (p: ts.Program) => void,
+  onProgramReady: (p: ts.Program, errcode?: number) => void,
   getCloseHandle?: (closeHandle: () => void) => void
 ) {
   const options: ts.CompilerOptions = {...compilerOptions || {}};
@@ -82,6 +77,7 @@ export function getWatchProgram(
   // doesn't use `this` at all.
   const origCreateProgram = host.createProgram;
   host.createProgram = (rootNames: readonly string[], options, host, oldProgram) => {
+    lastDiagCode = undefined;
     return origCreateProgram(rootNames, options, host, oldProgram);
   };
   const origPostProgramCreate = host.afterProgramCreate;
@@ -91,7 +87,8 @@ export function getWatchProgram(
   host.afterProgramCreate = (program) => {
     setTimeout(() => {
       origPostProgramCreate!(program);
-      onProgramReady(program.getProgram());
+      onProgramReady(program.getProgram(), lastDiagCode);
+      lastDiagCode = undefined;
     }, 100);
   };
 
@@ -104,7 +101,7 @@ export function getWatchProgram(
 }
 
 function reportDiagnostic(diagnostic: ts.Diagnostic) {
-  console.error('Error', diagnostic.code, ':', ts.flattenDiagnosticMessageText( diagnostic.messageText, formatHost.getNewLine()));
+  lastDiagCode = diagnostic.code;
 }
 
 /**

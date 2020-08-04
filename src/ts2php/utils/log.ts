@@ -1,5 +1,6 @@
 import * as ts from 'typescript';
 import * as chalk from 'chalk';
+import { writeSync } from 'fs';
 
 export enum LogSeverity {
   INFO,
@@ -68,7 +69,7 @@ if (typeof jest !== 'undefined') { // unit testing: remove error messages as the
   log.verbosity = 0;
 
   if (process.env.VERBOSE) {
-    log.verbosity = LogVerbosity.ERROR | LogVerbosity.WARN | LogVerbosity.WITH_CONTEXT;
+    log.verbosity = LogVerbosity.ERROR | LogVerbosity.WARN | LogVerbosity.WITH_CONTEXT | LogVerbosity.INFO;
   }
 }
 
@@ -125,10 +126,14 @@ function printLog(message: string, severity: LogSeverity, context = '') {
       break;
   }
 
-  const str = `${marker} ${message}${context ? '\n      ' + context : ''}`;
+  const dt = new Date();
+  const pieces = [dt.getHours(), dt.getMinutes(), dt.getSeconds()].map((p) => p.toString().padStart(2, '0'));
+  const timer = chalk.ansi(90)(`[${pieces.join(':')}:${dt.getMilliseconds().toString().padStart(3, '0')}]`);
+
+  const str = `${marker}${timer} ${message}${context ? '\n   ' + context : ''}`;
   if (severity === LogSeverity.ERROR || log.forceStderr) {
-    process.stderr.write(str + '\n');
+    writeSync(2, str + '\n');
   } else {
-    process.stdout.write(str + '\n');
+    writeSync(1, str + '\n');
   }
 }

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "moduleResolution": "node",
-    "lib": ["es2019"],
+    "lib": ["dom", "es6", "scripthost", "dom.iterable", "es2019"],
     "target": "es5",
     "experimentalDecorators": true,
     "jsx": "react",

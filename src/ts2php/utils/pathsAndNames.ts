@@ -100,7 +100,7 @@ export function resolveAliasesAndPaths(
     }
   }
 
-  log('Trying non-aliased path: ' + path.resolve(currentDir, targetPath), LogSeverity.INFO);
+  log('Trying non-aliased path: ' + path.resolve(currentDir, targetPath).replace(baseDir, '[base]'), LogSeverity.INFO);
   return _applyOutputAliases(_lookupFile(path.resolve(currentDir, targetPath)), baseDir, outputAliases, skipOutputAliases);
 }
 
