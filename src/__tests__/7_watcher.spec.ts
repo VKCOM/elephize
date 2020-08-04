@@ -25,16 +25,27 @@ test('ts2php.watcher', () => {
       diff: 'removeImport.1.patch',
       checkFiles: [['removeImport.entry.ts', 'RemoveImportModule.1.php']]
     },
-    {
+    { // crash
       entry: 'brokenTsTyping.entry.ts',
       diff: 'brokenTsTyping.1.patch',
       checkFiles: [['brokenTsTyping.entry.ts', 'BrokenTsTypingModule.1.php']],
       expectError: 2322
     },
-    {
+    { // fix
       entry: 'brokenTsTyping.entry.ts',
       diff: 'brokenTsTyping.2.patch',
       checkFiles: [['brokenTsTyping.entry.ts', 'BrokenTsTypingModule.2.php']]
+    },
+    { // crash
+      entry: 'brokenTsSyntax.entry.ts',
+      diff: 'brokenTsSyntax.1.patch',
+      checkFiles: [['brokenTsSyntax.entry.ts', 'BrokenTsSyntaxModule.1.php']],
+      expectError: 1005
+    },
+    { // fix
+      entry: 'brokenTsSyntax.entry.ts',
+      diff: 'brokenTsSyntax.2.patch',
+      checkFiles: [['brokenTsSyntax.entry.ts', 'BrokenTsSyntaxModule.2.php']]
     }
   ]);
 
@@ -48,12 +59,6 @@ test('ts2php.watcher', () => {
   //   }
   // },
   // 'Delete file (file or entrypoint, used and unused)': {
-  //   'startFile': '',
-  //   'diffs': {
-  //     'diffname': 'expectedFile'
-  //   }
-  // },
-  // 'Broken TS code (typing)': {
   //   'startFile': '',
   //   'diffs': {
   //     'diffname': 'expectedFile'
