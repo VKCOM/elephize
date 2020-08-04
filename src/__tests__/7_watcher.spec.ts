@@ -28,12 +28,13 @@ test('ts2php.watcher', () => {
         'importNewFile.1.patch': ['ImportNewFileModule.1.php', 'ImportNewFileToImportModule.1.php']
       }
     },
-    // 'Import new file': {
-    //   'startFile': '',
-    //   'diffs': {
-    //     'diffname': 'expectedFile'
-    //   }
-    // },
+    'removeImport.entry.ts': {
+      'description': 'Remove import of file',
+      'diffs': {
+        'removeImport.1.patch': ['RemoveImportModule.1.php']
+      }
+    },
+
     // 'Delete import of file': {
     //   'startFile': '',
     //   'diffs': {

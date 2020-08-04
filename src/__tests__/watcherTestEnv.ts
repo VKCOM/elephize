@@ -37,7 +37,7 @@ let diffsElapsed = 0;
 const seeAlsoMap: { [key: string]: string } = {};
 
 export function runWatcherTests(watcherTestConfig: WatcherTestEnvConfig) {
-  jest.setTimeout(10000);
+  jest.setTimeout(20000);
   Object.keys(watcherTestConfig).forEach((key) => {
     watcherTestConfig[key].seeAlso?.forEach((val) => {
       seeAlsoMap[pResolve(__dirname, 'watchSpecimens.~', val)] = pResolve(__dirname, 'watchSpecimens.~', key);
@@ -90,6 +90,9 @@ export function runWatcherTests(watcherTestConfig: WatcherTestEnvConfig) {
 function applyDiffs(affectedFiles: string[], watcherTestConfig: WatcherTestEnvConfig) {
   affectedFiles.forEach((filename) => {
     const file = path.basename(filename);
+    if (!watcherTestConfig[file]) {
+      return;
+    }
     lastAppliedDiffs[file] = 0;
     diffsElapsed += Object.keys(watcherTestConfig[file].diffs).length - 1;
     const firstDiff = pResolve(
