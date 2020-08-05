@@ -46,6 +46,16 @@ test('ts2php.watcher', () => {
       entry: 'brokenTsSyntax.entry.ts',
       diff: 'brokenTsSyntax.2.patch',
       checkFiles: [['brokenTsSyntax.entry.ts', 'BrokenTsSyntaxModule.2.php']]
+    },
+    { // crash
+      entry: 'unusedVariable.entry.ts',
+      diff: 'unusedVariable.1.patch',
+      checkFiles: [['unusedVariable.entry.ts', 'UnusedVariableModule.1.php']]
+    },
+    { // fix
+      entry: 'unusedVariable.entry.ts',
+      diff: 'unusedVariable.2.patch',
+      checkFiles: [['unusedVariable.entry.ts', 'UnusedVariableModule.1.php']]
     }
   ]);
 
@@ -59,24 +69,6 @@ test('ts2php.watcher', () => {
   //   }
   // },
   // 'Delete file (file or entrypoint, used and unused)': {
-  //   'startFile': '',
-  //   'diffs': {
-  //     'diffname': 'expectedFile'
-  //   }
-  // },
-  // 'Broken TS code (syntax)': {
-  //   'startFile': '',
-  //   'diffs': {
-  //     'diffname': 'expectedFile'
-  //   }
-  // },
-  // 'Restored TS code (typing)': {
-  //   'startFile': '',
-  //   'diffs': {
-  //     'diffname': 'expectedFile'
-  //   }
-  // },
-  // 'Restored TS code (syntax)': {
   //   'startFile': '',
   //   'diffs': {
   //     'diffname': 'expectedFile'
