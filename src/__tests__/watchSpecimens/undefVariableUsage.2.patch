@@ -1,0 +1,9 @@
+--- undefVariableUsage.entry.ts
++++ undefVariableUsage.entry.ts
+@@ -1,5 +1,5 @@
+ const uvutest2 = (b: number) => {
+   let a = 1 + b;
+-  return a + c;
++  return a;
+ };
+ console.log(uvutest2(1));

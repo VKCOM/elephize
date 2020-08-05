@@ -66,6 +66,17 @@ test('ts2php.watcher', () => {
       entry: 'variableUsage.entry.ts',
       diff: 'variableUsage.2.patch',
       checkFiles: [['variableUsage.entry.ts', 'VariableUsageModule.2.php']]
+    },
+    { // crash
+      entry: 'undefVariableUsage.entry.ts',
+      diff: 'undefVariableUsage.1.patch',
+      checkFiles: [['undefVariableUsage.entry.ts', 'UndefVariableUsageModule.1.php']],
+      expectError: 2304
+    },
+    { // fix
+      entry: 'undefVariableUsage.entry.ts',
+      diff: 'undefVariableUsage.2.patch',
+      checkFiles: [['undefVariableUsage.entry.ts', 'UndefVariableUsageModule.2.php']]
     }
   ]);
 
@@ -79,12 +90,6 @@ test('ts2php.watcher', () => {
   //   }
   // },
   // 'Delete file (file or entrypoint, used and unused)': {
-  //   'startFile': '',
-  //   'diffs': {
-  //     'diffname': 'expectedFile'
-  //   }
-  // },
-  // 'Added/removed usage of undeclared variable': {
   //   'startFile': '',
   //   'diffs': {
   //     'diffname': 'expectedFile'

@@ -132,8 +132,8 @@ function printLog(message: string, severity: LogSeverity, context = '') {
 
   const str = `${marker}${timer} ${message}${context ? '\n   ' + context : ''}`;
   if (severity === LogSeverity.ERROR || log.forceStderr) {
-    writeSync(2, str + '\n');
+    writeSync(2, str + (str.endsWith('\n') ? '' : '\n'));
   } else {
-    writeSync(1, str + '\n');
+    writeSync(1, str + (str.endsWith('\n') ? '' : '\n'));
   }
 }

@@ -1,8 +1,14 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 
 import * as ts from 'typescript';
-import { watcherHostSourceGetter } from '../sourceFilesHelper';
 import { getDefaultCompilerOptions } from 'typescript';
+import { log, LogSeverity } from '../../../utils/log';
+
+const formatHost: ts.FormatDiagnosticsHost = {
+  getCanonicalFileName: path => path,
+  getCurrentDirectory: ts.sys.getCurrentDirectory,
+  getNewLine: () => ts.sys.newLine
+};
 let lastDiagCode: number | undefined;
 
 // TODO:
@@ -102,6 +108,7 @@ export function getWatchProgram(
 
 function reportDiagnostic(diagnostic: ts.Diagnostic) {
   lastDiagCode = diagnostic.code;
+  log(ts.formatDiagnostic(diagnostic, formatHost), LogSeverity.ERROR);
 }
 
 /**
