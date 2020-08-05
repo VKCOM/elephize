@@ -4,3 +4,4 @@ import './removeImport.entry';
 import './brokenTsTyping.entry';
 import './brokenTsSyntax.entry';
 import './unusedVariable.entry';
+import './variableUsage.entry';

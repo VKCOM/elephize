@@ -1,0 +1,10 @@
+--- variableUsage.entry.ts
++++ variableUsage.entry.ts
+@@ -1,6 +1,6 @@
+ const vutest2 = (b: number) => {
+   let a = 1 + b;
+   const c = b;
+-  return a;
++  return a + c;
+ };
+ console.log(vutest2(1));

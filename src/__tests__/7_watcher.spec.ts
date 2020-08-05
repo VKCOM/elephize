@@ -56,6 +56,16 @@ test('ts2php.watcher', () => {
       entry: 'unusedVariable.entry.ts',
       diff: 'unusedVariable.2.patch',
       checkFiles: [['unusedVariable.entry.ts', 'UnusedVariableModule.1.php']]
+    },
+    { // crash
+      entry: 'variableUsage.entry.ts',
+      diff: 'variableUsage.1.patch',
+      checkFiles: [['variableUsage.entry.ts', 'VariableUsageModule.1.php']]
+    },
+    { // fix
+      entry: 'variableUsage.entry.ts',
+      diff: 'variableUsage.2.patch',
+      checkFiles: [['variableUsage.entry.ts', 'VariableUsageModule.2.php']]
     }
   ]);
 
@@ -69,18 +79,6 @@ test('ts2php.watcher', () => {
   //   }
   // },
   // 'Delete file (file or entrypoint, used and unused)': {
-  //   'startFile': '',
-  //   'diffs': {
-  //     'diffname': 'expectedFile'
-  //   }
-  // },
-  // 'Added/removed unused variable': {
-  //   'startFile': '',
-  //   'diffs': {
-  //     'diffname': 'expectedFile'
-  //   }
-  // },
-  // 'Added/removed usage of variable': {
   //   'startFile': '',
   //   'diffs': {
   //     'diffname': 'expectedFile'
