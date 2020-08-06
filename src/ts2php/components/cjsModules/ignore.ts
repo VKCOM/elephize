@@ -20,13 +20,6 @@ function parseSourceFile({ filename, baseDir, onFinish, onSkip, importReference 
   fs.readFile(filename, { encoding: 'utf-8' }, (err, data) => {
     const sourceFile = ts.createSourceFile(filename, data, ts.ScriptTarget.Latest,true);
 
-    const trivia = importReference?.getFullText().substr(0, importReference?.getLeadingTriviaWidth());
-    if (trivia?.includes('@elephizeIgnore')) {
-      log(`Skipping ignored file: ${filename}`, LogSeverity.INFO, ctxEx(filename.replace(baseDir, '[base]'), importReference));
-      onSkip(filename);
-      return;
-    }
-
     if (sourceFile.isDeclarationFile) {
       log(`Skipping declaration file: ${filename}`, LogSeverity.INFO, ctxEx(filename.replace(baseDir, '[base]'), importReference));
       onSkip(filename);
@@ -60,6 +53,15 @@ export const getSkippedFilesPromiseExec = ({ entrypoint, baseDir, tsPaths, alias
   };
 
   const parseSourceFileRecursive = (filename: string, ref?: ts.ImportDeclaration) => {
+    if (ref) {
+      const trivia = ref?.getFullText().substr(0, ref?.getLeadingTriviaWidth());
+      if (trivia?.includes('@elephizeIgnore')) {
+        log(`Skipping ignored import: ${filename}`, LogSeverity.INFO, ctxEx(filename.replace(baseDir, '[base]'), ref));
+        semDec(filename);
+        return;
+      }
+    }
+
     filename = filename.replace(/^'|'$/g, '');
 
     if (filename.match(/^[a-z_-]+$/) || filename.startsWith('@')) {

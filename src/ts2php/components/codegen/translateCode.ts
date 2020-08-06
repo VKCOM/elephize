@@ -63,12 +63,11 @@ export const translateCodeAndWatch: TranslatorFunc = (fileNames: string[], {
   // eslint-disable-next-line @typescript-eslint/no-floating-promises
   Promise.all(
     fileNames.map((fn) => new Promise(getSkippedFilesPromiseExec({entrypoint: fn, baseDir, tsPaths: options.paths || {}, aliases})))
-  ).then((fileSet) => {
-    return fileSet
-      .reduce((acc, chunk) => acc.concat(chunk), [])
-      .map((fn) => resolveAliasesAndPaths(fn, '', baseDir, options.paths || {}, aliases, true))
-      .filter((fn): fn is string => !!fn)
-  })
+  ).then((fileSet) => fileSet
+    .reduce((acc, chunk) => acc.concat(chunk), [])
+    .map((fn) => resolveAliasesAndPaths(fn, '', baseDir, options.paths || {}, aliases, true))
+    .filter((fn): fn is string => !!fn)
+  )
     .then((skippedFiles) => {
       getWatchProgram(fileNames, skippedFiles, {...defaultOptions, ...options}, (program, errcode) => {
         translateProgram(program, nodeFlagStore, {

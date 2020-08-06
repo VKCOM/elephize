@@ -33,6 +33,7 @@ test('ts2php.stdlibMethods', () => {
     ['mathMethods', 'trigonometry.ts'],
     ['mathMethods', 'constants.ts'],
     ['functionMethods', 'closures.ts'],
-    ['misc', 'typeInference.ts']
+    ['misc', 'typeInference.ts'],
+    // ['misc', 'elephizeIgnore.tsx'] // TODO #491
   ]);
 });

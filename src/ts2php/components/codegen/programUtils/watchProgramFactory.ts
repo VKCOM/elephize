@@ -3,6 +3,7 @@
 import * as ts from 'typescript';
 import { getDefaultCompilerOptions } from 'typescript';
 import { log, LogSeverity } from '../../../utils/log';
+// import { watcherHostSourceGetter } from '../sourceFilesHelper';
 
 const formatHost: ts.FormatDiagnosticsHost = {
   getCanonicalFileName: path => path,
@@ -84,12 +85,16 @@ export function getWatchProgram(
   const origCreateProgram = host.createProgram;
   host.createProgram = (rootNames: readonly string[], options, host, oldProgram) => {
     lastDiagCode = undefined;
+    // if (host) {
+    //   host.getSourceFile = watcherHostSourceGetter(skippedFiles, compilerOptions.target);
+    // }
     return origCreateProgram(rootNames, options, host, oldProgram);
   };
   const origPostProgramCreate = host.afterProgramCreate;
 
-  // TODO: skipped files resolver
-  //host.readFile = watcherHostSourceGetter(skippedFiles, compilerOptions.target);
+  // host.readFile = watcherHostSourceGetter(skippedFiles, compilerOptions.target);
+  // host.fileExists = (path: string) => !!watcherHostSourceGetter(skippedFiles, compilerOptions.target)(path);
+
   host.afterProgramCreate = (program) => {
     setTimeout(() => {
       origPostProgramCreate!(program);

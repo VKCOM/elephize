@@ -48,7 +48,7 @@ export const watcherHostSourceGetter = (skippedFiles: string[], scriptTarget?: S
     return undefined;
   }
   if (fileName.endsWith('.d.ts')) {
-    return getDtsSourceFile(fileName, scriptTarget)?.getText() || undefined;
+    return getDtsSourceFile(fileName, scriptTarget) || undefined;
   }
-  return getSourceFile(fileName, scriptTarget)?.getText() || undefined;
+  return getSourceFile(fileName, scriptTarget) || undefined;
 };

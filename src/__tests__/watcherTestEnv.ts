@@ -56,7 +56,7 @@ export function runWatcherTests(watcherTestConfig: WatcherTestQueueItem[]) {
         let close = () => {};
 
         log('Triggering watcher tests for: \n   ' + files.map((f) => f.replace(__dirname, '')).join('\n   '), LogSeverity.INFO);
-        translateCodeAndWatch([pResolve(__dirname, 'watchSpecimens.~', 'index.ts')], {
+        translateCodeAndWatch(files.map((f) => pResolve(__dirname, 'watchSpecimens.~', f)), {
           baseDir,
           aliases: {},
           namespaces,
@@ -65,7 +65,7 @@ export function runWatcherTests(watcherTestConfig: WatcherTestQueueItem[]) {
           getCloseHandle: (handle) => close = handle,
           onData: (sourceFilename: string, targetFilename: string, content: string, error?: number) => {
             if (allFilesCollected) {
-              verifyDiff(sourceFilename, targetFilename, content, error, watcherTestConfig);
+              verifyDiff(targetFilename, content, error, watcherTestConfig);
             }
           },
           onFinish: () => {
@@ -99,11 +99,11 @@ function applyNextDiff(nextDiff: WatcherTestQueueItem) {
   process.chdir(cwd);
 }
 
-function verifyDiff(sourceFilename: string, targetFilename: string, content: string, error: number | undefined, conf: WatcherTestQueueItem[]) {
+function verifyDiff(targetFilename: string, content: string, error: number | undefined, conf: WatcherTestQueueItem[]) {
   const diff = conf[lastDiffApplied];
-  const checkedFileIndex = diff.checkFiles.findIndex((el) => el[0] === path.basename(sourceFilename));
+  const checkedFileIndex = diff.checkFiles.findIndex((el) => el[0] === path.basename(targetFilename));
   if (checkedFileIndex === -1) {
-    log(`Not found ${path.basename(sourceFilename)} in ${diff.checkFiles.join(', ')}`, LogSeverity.WARN);
+    log(`Not found ${path.basename(targetFilename)} in ${diff.checkFiles.join(', ')}`, LogSeverity.WARN);
     return;
   }
   const checkedFile = diff.checkFiles[checkedFileIndex];
