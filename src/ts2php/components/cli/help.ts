@@ -30,6 +30,9 @@ Options:
    -u / --verboseUsage           Show var usage stats & unused code eliminator
                                  verbose output. May be useful for debug.
                                  Will print out A LOT of everything, be careful.
+   -w / --watch                  Run elephize in watch mode, which recompiles
+                                 whole isomorphic entrypoint on change of any
+                                 file included. 
    
 Config-only options:
    tsPaths: { "shortcut": ["array_of_paths"] }

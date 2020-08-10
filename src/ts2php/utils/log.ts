@@ -102,6 +102,9 @@ export function shortCtx(fn: string): string {
   return `@${filename}`;
 }
 
+const STDERR_FILE_DESCRIPTOR = 2; // should match process.stderr.fd
+const STDOUT_FILE_DESCRIPTOR = 1; // should match process.stdout.fd
+
 function printLog(message: string, severity: LogSeverity, context = '') {
   if (log.baseDir && severity !== LogSeverity.SPECIAL) {
     message = message.replace(log.baseDir, '[base]');
@@ -132,8 +135,8 @@ function printLog(message: string, severity: LogSeverity, context = '') {
 
   const str = `${marker}${timer} ${message}${context ? '\n   ' + context : ''}`;
   if (severity === LogSeverity.ERROR || log.forceStderr) {
-    writeSync(2, str + (str.endsWith('\n') ? '' : '\n'));
+    writeSync(STDERR_FILE_DESCRIPTOR, str + (str.endsWith('\n') ? '' : '\n'));
   } else {
-    writeSync(1, str + (str.endsWith('\n') ? '' : '\n'));
+    writeSync(STDOUT_FILE_DESCRIPTOR, str + (str.endsWith('\n') ? '' : '\n'));
   }
 }
