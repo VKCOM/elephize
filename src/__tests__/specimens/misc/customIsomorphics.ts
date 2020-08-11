@@ -1,3 +1,4 @@
+import { getLang } from './toReplace';
 let obj4 = { a: 1, b: 2 };
 do {
   // @ts-ignore

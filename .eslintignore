@@ -4,7 +4,6 @@ vendor/
 dist/
 demo/
 
-src/__tests__/specimens/astTools/flagParentOfType.ts
-src/__tests__/specimens/astTools/synList.ts
 src/__tests__/watchSpecimens.~/
 src/__tests__/watchSpecimens/
+src/__tests__/specimens/

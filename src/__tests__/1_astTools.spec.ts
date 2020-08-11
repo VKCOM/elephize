@@ -13,7 +13,7 @@ import { NodeFlagStore } from '../ts2php/components/codegen/nodeFlagStore';
 import { defaultOptions } from '../ts2php/components/codegen/defaultCompilerOptions';
 
 function compile(files: string[]): ts.SourceFile | undefined {
-  let program = getBuildProgram(files, [],
+  let [program] = getBuildProgram(files, {}, '', {},
     {
       compilerOptions: defaultOptions
     },
@@ -45,8 +45,8 @@ function findFirstNode(where: ts.Node, type: ts.SyntaxKind) {
   return _traverse(where, type);
 }
 
-function recompile(fileNames: string[], onData: (filename: string, rootNode: ts.Node) => void): NodeFlagStore {
-  return translateCode(fileNames, {
+function recompile(fileNames: string[], onData: (filename: string, rootNode: ts.Node, nodeFlagStore: NodeFlagStore) => void) {
+  return translateCode(fileNames, {}, {}, {
     baseDir: '',
     aliases: {},
     namespaces: { root: '', builtins: '' },
@@ -71,7 +71,7 @@ test('ts2php.AstTools.leftExpr', () => {
 });
 
 test('ts2php.AstTools.flagParentOfType', () => {
-  const store = recompile([path.resolve(__dirname, 'specimens', 'astTools', 'flagParentOfType.ts')], (filename, rootNode) => {
+  recompile([path.resolve(__dirname, 'specimens', 'astTools', 'flagParentOfType.ts')], (filename, rootNode, store) => {
     const stringLiteral = findFirstNode(rootNode, ts.SyntaxKind.StringLiteral);
     if (!stringLiteral) {
       throw new Error('No literal found');
@@ -87,7 +87,7 @@ test('ts2php.AstTools.flagParentOfType', () => {
 });
 
 test('ts2php.AstTools.flagParentOfType.Notfound', () => {
-  const store = recompile([path.resolve(__dirname, 'specimens', 'astTools', 'flagParentOfType.ts')], (filename, rootNode) => {
+  recompile([path.resolve(__dirname, 'specimens', 'astTools', 'flagParentOfType.ts')], (filename, rootNode, store) => {
     const stringLiteral = findFirstNode(rootNode, ts.SyntaxKind.StringLiteral);
     if (!stringLiteral) {
       throw new Error('No literal found');
@@ -119,7 +119,7 @@ test('ts2php.AstTools.getClosestParentOfType', () => {
 });
 
 test('ts2php.AstTools.getClosestParentOfTypeWithFlag', () => {
-  const store = recompile([path.resolve(__dirname, 'specimens', 'astTools', 'flagParentOfType.ts')], (filename, rootNode) => {
+  recompile([path.resolve(__dirname, 'specimens', 'astTools', 'flagParentOfType.ts')], (filename, rootNode, store) => {
     const stringLiteral = findFirstNode(rootNode, ts.SyntaxKind.StringLiteral);
     if (!stringLiteral) {
       throw new Error('No literal found');

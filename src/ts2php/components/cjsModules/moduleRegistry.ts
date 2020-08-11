@@ -9,7 +9,8 @@ import {
   normalizeFileExt, resolveAliasesAndPaths,
   snakify
 } from '../../utils/pathsAndNames';
-import { NsMap } from '../../types';
+import { ImportReplacementRule, NsMap } from '../../types';
+import { CommonjsExternalModule } from './commonjsExternalModule';
 
 export class ModuleRegistry {
   /**
@@ -34,9 +35,12 @@ export class ModuleRegistry {
   public constructor(
     private readonly _baseDir: string,
     public readonly _aliases: { [key: string]: string },
-    private readonly _tsPaths: { [key: string]: string [] },
-    private readonly _namespaces: NsMap
-  ) {}
+    private readonly _tsPaths: { [key: string]: string[] },
+    private readonly _namespaces: NsMap,
+    private readonly _replacements: ImportReplacementRule[]
+  ) {
+    this._replacements.forEach((rule) => this._registerExternalClass(rule));
+  }
 
   public clearClasses() {
     this._registeredModuleClasses = new Set();
@@ -57,7 +61,13 @@ export class ModuleRegistry {
     if (!instance) {
       return 'null';
     }
-    forModule.registerRequiredFile(targetFilename, forModule.targetFileName, this._targetFilenameToModule.get(targetFilename));
+
+    const mod = this._targetFilenameToModule.get(targetFilename);
+    if (mod?.isExternal) {
+      mod.addProperty(identifier, '');
+    }
+
+    forModule.registerRequiredFile(targetFilename, forModule.targetFileName, mod);
     return `${instance}->${rewriteCase ? snakify(identifier) : identifier}`;
   }
 
@@ -72,7 +82,13 @@ export class ModuleRegistry {
     if (!instance) {
       return 'null';
     }
-    forModule.registerRequiredFile(targetFilename, forModule.targetFileName, this._targetFilenameToModule.get(targetFilename));
+
+    const mod = this._targetFilenameToModule.get(targetFilename);
+    if (mod?.isExternal) {
+      mod.addMethod(identifier, '', '', undefined);
+    }
+
+    forModule.registerRequiredFile(targetFilename, forModule.targetFileName, mod);
     return `${instance}->${identifier}(${args.join(', ')})`;
   }
 
@@ -97,6 +113,9 @@ export class ModuleRegistry {
     if (!module) {
       log(`No exported component found for filename ${targetFilename}`, LogSeverity.WARN);
     } else {
+      if (module.isExternal) {
+        log(`Derived components in external module are not supported: ${targetFilename}`, LogSeverity.ERROR);
+      }
       if (!derived) { // if targetFilename contains php module path
         derived = targetFilename;
       }
@@ -104,6 +123,51 @@ export class ModuleRegistry {
     }
 
     return this._getInstance(derived || targetFilename, identifier);
+  }
+
+  protected _registerCommonModule(className: string, fullyQualifiedSourceFilename: string, newFilename: string, external = false, implPath?: string) {
+    let moduleDescriptor;
+    if (external) {
+
+      moduleDescriptor = new CommonjsExternalModule(
+        className,
+        fullyQualifiedSourceFilename,
+        newFilename,
+        this._namespaces
+      );
+
+      if (!implPath) {
+        log(`No implementation path declared for substitution module ${className}`, LogSeverity.ERROR);
+        throw new Error();
+      }
+      moduleDescriptor.useImplementationFromPath(implPath);
+    } else {
+      moduleDescriptor = new CommonjsModule(
+        className,
+        fullyQualifiedSourceFilename,
+        newFilename,
+        this._namespaces
+      );
+    }
+
+    const mods = (this._sourceFilenameToModule.get(fullyQualifiedSourceFilename) || []).concat(moduleDescriptor);
+    this._sourceFilenameToModule.set(fullyQualifiedSourceFilename, mods);
+    this._targetFilenameToModule.set(newFilename, moduleDescriptor);
+    return moduleDescriptor;
+  }
+
+  protected _registerExternalClass(rule: ImportReplacementRule): CommonjsModule | null {
+    const fullyQualifiedSourceFilename = resolveAliasesAndPaths(rule.modulePath, '', this._baseDir, this._tsPaths, this._aliases);
+    if (!fullyQualifiedSourceFilename) {
+      log(`Failed to lookup file ${rule.modulePath} [#1]`, LogSeverity.ERROR);
+      return null;
+    }
+
+    let className = classNameFromPath(fullyQualifiedSourceFilename, true);
+    className = this._makeUniqueClassName(className);
+    const newFilename = this._makeNewFileName(fullyQualifiedSourceFilename, className);
+    this._registeredModuleClasses.add(className);
+    return this._registerCommonModule(rule.implementationClass, rule.modulePath, newFilename, true, rule.implementationPath);
   }
 
   public registerClass(filepath: string): CommonjsModule | null {
@@ -117,18 +181,7 @@ export class ModuleRegistry {
     className = this._makeUniqueClassName(className);
     const newFilename = this._makeNewFileName(fullyQualifiedSourceFilename, className);
     this._registeredModuleClasses.add(className);
-
-    const moduleDescriptor = new CommonjsModule(
-      className,
-      fullyQualifiedSourceFilename,
-      newFilename,
-      this._namespaces
-    );
-
-    const mods = (this._sourceFilenameToModule.get(fullyQualifiedSourceFilename) || []).concat(moduleDescriptor);
-    this._sourceFilenameToModule.set(fullyQualifiedSourceFilename, mods);
-    this._targetFilenameToModule.set(newFilename, moduleDescriptor);
-    return moduleDescriptor;
+    return this._registerCommonModule(className, fullyQualifiedSourceFilename, newFilename);
   }
 
   public isDerivedComponent(sourceFileName: string, varName: string) {

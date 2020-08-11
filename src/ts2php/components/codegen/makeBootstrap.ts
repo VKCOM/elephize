@@ -1,11 +1,12 @@
 import { ModuleRegistry } from '../cjsModules/moduleRegistry';
 import { Dict } from '../../types';
 import { normalizeBasePath, normalizeFileExt } from '../../utils/pathsAndNames';
+import { CommonjsExternalModule } from '../cjsModules/commonjsExternalModule';
 
 export function makeBootstrap(registry: ModuleRegistry, baseDir: string, aliases?: Dict<string>) {
   let names: string[] = [];
   registry.forEachModule((m) => {
-    if (!m.isEmpty()) {
+    if (!m.isEmpty() || m instanceof CommonjsExternalModule) {
       names.push(m.targetFileName);
     }
   });

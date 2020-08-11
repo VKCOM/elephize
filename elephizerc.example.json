@@ -1,20 +1,21 @@
 {
-  "src": "src/**/*.tsx",
-  "outDir": "build",
-  "output": "bootstrap.php",
-  "quiet": false,
-  "bail": "none",
-  "dump": false,
-  "noZap": false,
-  "baseDir": ".",
-  "tsPaths": {
-    "#aliasedFolder/*": ["src/aliased/*"]
-  },
   "aliases": {
     "/components/iso_palette": "Components",
     "/utils": "Utils"
   },
+  "bail": "none",
+  "baseDir": ".",
   "customGlobals": {
     "getLang": "CustomBackendService::getLang"
+  },
+  "noZap": false,
+  "outDir": "build",
+  "output": "bootstrap.php",
+  "quiet": false,
+  "src": "src/**/*.tsx",
+  "tsPaths": {
+    "#aliasedFolder/*": [
+      "src/aliased/*"
+    ]
   }
 }

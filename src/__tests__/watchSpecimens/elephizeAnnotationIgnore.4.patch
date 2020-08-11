@@ -1,5 +1,0 @@
---- elephizeAnnotationIgnoreImported.ts
-+++ elephizeAnnotationIgnoreImported.ts
-@@ -1 +1 @@
--export const eaitest1 = (b: number) => b + 234;
-+export const eaitest1 = (b: number) => b + 678;

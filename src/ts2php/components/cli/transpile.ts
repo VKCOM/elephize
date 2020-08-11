@@ -1,5 +1,4 @@
 import * as glob from 'glob';
-import { Options } from './types';
 import { log, LogSeverity } from '../../utils/log';
 import { translateCode, translateCodeAndWatch } from '../codegen/translateCode';
 import * as path from 'path';
@@ -8,9 +7,11 @@ import * as iconv from 'iconv-lite';
 import { ModuleRegistry } from '../cjsModules/moduleRegistry';
 import ncp = require('ncp');
 import { makeBootstrap } from '../codegen/makeBootstrap';
+import { CliOptions } from '../../types';
+import { resolveRulePaths } from '../cjsModules/resolveModules';
 const replace = require('stream-replace');
 
-export function transpile(options: Options, baseDir: string, outDir: string) {
+export function transpile(options: CliOptions, baseDir: string, outDir: string) {
   const namespaces = {
     root: options.rootNs,
     builtins: options.rootNs + '\\Builtins',
@@ -29,7 +30,7 @@ export function transpile(options: Options, baseDir: string, outDir: string) {
     };
 
     (options.watch ? translateCodeAndWatch : translateCode)(
-      matches.map((p) => path.resolve('./', p)), {
+      matches.map((p) => path.resolve('./', p)), resolveRulePaths(options.importRules, baseDir), options.tsPaths, {
         baseDir,
         aliases: options.aliases,
         namespaces,

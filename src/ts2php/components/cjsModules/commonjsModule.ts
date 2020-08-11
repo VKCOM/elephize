@@ -4,6 +4,7 @@ import { MethodsTypes, NsMap, SpecialVars } from '../../types';
 
 export class CommonjsModule {
   public readonly isDerived: boolean = false;
+  public readonly isExternal: boolean = false;
   protected _hoistedContent: Set<string> = new Set();
   protected _requiredFiles: Map<string, CommonjsModule> = new Map();
   protected _constructorStatements: string[] = [];
@@ -16,7 +17,7 @@ export class CommonjsModule {
     protected readonly _namespaces: NsMap,
     public readonly originalIdentName?: string,
     public readonly ancestorModule?: CommonjsModule
-  ) {}
+  ) { }
 
   // For removing dupes during second pass of codegen
   public clearStatements() {
@@ -64,8 +65,10 @@ export class CommonjsModule {
 
     path = path.replace(/\.[jt]sx?$/, '.php');
     currentModulePath = currentModulePath.replace(/\.[jt]sx?$/, '.php');
+    this._requiredFiles.set(this._normalizeRelativePath(path, currentModulePath), originalModule);
+  }
 
-    // Normalize relative path first
+  protected _normalizeRelativePath(path: string, currentModulePath: string) {
     const piecesTarget = path.split('/');
     const piecesCurrent = currentModulePath.split('/');
 
@@ -82,11 +85,11 @@ export class CommonjsModule {
       relpath = '../'.repeat(piecesCurrent.length - 1) + piecesTarget.join('/');
     }
 
-    this._requiredFiles.set(relpath, originalModule);
+    return relpath;
   }
 
   public checkSpecialVarIdentifier(node: ts.Node | undefined, kind: keyof SpecialVars): boolean {
-    return !!(node && node.kind === ts.SyntaxKind.Identifier && this._specialVars[kind] === node.getText());
+    return !!node && node.kind === ts.SyntaxKind.Identifier && this._specialVars[kind] === node.getText();
   }
 
   public isEmpty() {
@@ -105,8 +108,6 @@ export class CommonjsModule {
   }
 
   public generateContent() {
-
-
     return `<?php
 /* NOTICE: Generated file; Do not edit by hand */
 use ${this._namespaces.builtins}\\Stdlib;
@@ -125,9 +126,9 @@ class ${this.className} extends CJSModule {
         }
         return self::$_mod;
     }
-    
+
     ${Array.from(this._hoistedContent.values()).join('\n')}
-    
+
     private function __construct() {
         ${this._constructorStatements.join('\n')}
     }

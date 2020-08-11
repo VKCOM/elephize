@@ -13,6 +13,16 @@ test('ts2php.watcher', () => {
       checkFiles: [['ModifyFileModule.php', 'ModifyFileModule.2.php']],
     },
     {
+      entry: 'modifyFileTypehints.entry.ts',
+      diff: 'modifyFileTypehints.1.patch',
+      checkFiles: [['ModifyFileTypehintsModule.php', 'ModifyFileTypehintsModule.1.php']],
+    },
+    {
+      entry: 'modifyFileTypehints.entry.ts',
+      diff: 'modifyFileTypehints.2.patch',
+      checkFiles: [['ModifyFileTypehintsModule.php', 'ModifyFileTypehintsModule.2.php']],
+    },
+    {
       entry: 'importNewFile.entry.ts',
       diff: 'importNewFile.1.patch',
       checkFiles: [
@@ -78,42 +88,19 @@ test('ts2php.watcher', () => {
       diff: 'undefVariableUsage.2.patch',
       checkFiles: [['UndefVariableUsageModule.php', 'UndefVariableUsageModule.2.php']]
     },
-
-    // TODO: #491
-    // { // add ignore annotation
-    //   entry: 'elephizeAnnotationIgnore.entry.ts',
-    //   diff: 'elephizeAnnotationIgnore.1.patch',
-    //   checkFiles: [['ElephizeAnnotationIgnoreModule.php', 'ElephizeAnnotationIgnoreModule.1.php']]
-    // },
-    // { // try change ignored file, should not change
-    //   entry: 'elephizeAnnotationIgnore.entry.ts',
-    //   diff: 'elephizeAnnotationIgnore.2.patch',
-    //   checkFiles: [['ElephizeAnnotationIgnoreImportedModule.php', 'ElephizeAnnotationIgnoreImportedModule.1.php']]
-    // },
-    // { // remove ignore annotation
-    //   entry: 'elephizeAnnotationIgnore.entry.ts',
-    //   diff: 'elephizeAnnotationIgnore.3.patch',
-    //   checkFiles: [['ElephizeAnnotationIgnoreModule.php', 'ElephizeAnnotationIgnoreModule.2.php']]
-    // },
-    // { // try change ignored file, now it should change
-    //   entry: 'elephizeAnnotationIgnore.entry.ts',
-    //   diff: 'elephizeAnnotationIgnore.4.patch',
-    //   checkFiles: [['ElephizeAnnotationIgnoreImportedModule.php', 'ElephizeAnnotationIgnoreImportedModule.2.php']]
-    // },
-    // { // add target annotation
-    //   entry: 'elephizeAnnotationTarget.entry.ts',
-    //   diff: 'elephizeAnnotationTarget.1.patch',
-    //   checkFiles: [
-    //     ['ElephizeAnnotationTargetModule.php', 'ElephizeAnnotationTargetModule.1.php'],
-    //     ['ElephizeAnnotationTarget.php', 'ElephizeAnnotationTarget.1.php']
-    //   ]
-    // },
-    // { // remove target annotation
-    //   entry: 'elephizeAnnotationTarget.entry.ts',
-    //   diff: 'elephizeAnnotationTarget.2.patch',
-    //   checkFiles: [
-    //     ['ElephizeAnnotationTargetModule.php', 'ElephizeAnnotationTargetModule.2.php']
-    //   ]
-    // },
+    { // add target annotation
+      entry: 'elephizeAnnotationTarget.entry.tsx',
+      diff: 'elephizeAnnotationTarget.1.patch',
+      checkFiles: [
+        ['ElephizeAnnotationTarget.php', 'ElephizeAnnotationTarget.1.php']
+      ]
+    },
+    { // remove target annotation
+      entry: 'elephizeAnnotationTarget.entry.tsx',
+      diff: 'elephizeAnnotationTarget.2.patch',
+      checkFiles: [
+        ['ElephizeAnnotationTargetModule.php', 'ElephizeAnnotationTargetModule.2.php']
+      ]
+    },
   ]);
 });

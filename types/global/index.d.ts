@@ -15,7 +15,6 @@ type $__ElephizeTypehint__Any__$ = number
 | symbol
 | null
 | undefined
-| void
 | $__ElephizeTypehint__Mixed__$;
 
 declare type mixed = $__ElephizeTypehint__Any__$;

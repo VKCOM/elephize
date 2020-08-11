@@ -219,7 +219,7 @@ function _describeNodeType(node: ts.Node | undefined, type: ts.Type, checker: ts
 // Check parent types: Number for 1, String for "asd" etc
 function _describeAsApparentType(t: ts.Type, checker: ts.TypeChecker, nodeIdentForLog?: string) {
   log(`Failed to describe node: ${nodeIdentForLog}, checking apparent type`, LogSeverity.TYPEHINT);
-  const appType = checker.getApparentType(t);
+  const appType = t.symbol ? checker.getApparentType(t) : checker.getBaseTypeOfLiteralType(t);
   const appStrType = checker.typeToString(appType).toLowerCase()
     .replace(/^\s+|\s+$/g, '');
   return _transformTypeName(t, checker, nodeIdentForLog)(appStrType);

@@ -58,21 +58,21 @@ export function capitalize(s: string) {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
-export function classNameFromPath(normalizedPath: string) {
+export function classNameFromPath(normalizedPath: string, external = false) {
   const pieces = normalizedPath.split('/');
   const fn = capitalize(pieces.pop()?.split('.')[0] || '');
-  return fn.replace(/\./g, '_') + 'Module';
+  return fn.replace(/\./g, '_') + (external ? 'CjsWrapper' : 'Module');
 }
 
 export function resolveAliasesAndPaths(
-  targetPath: string,
+  originalSourcePath: string,
   currentDir: string,
   baseDir: string,
-  tsPaths: { [key: string]: string [] },
+  tsPaths: { [key: string]: string[] },
   outputAliases: { [key: string]: string },
   skipOutputAliases?: boolean
 ): string | null {
-  targetPath = targetPath.replace(/\.[jt]sx?$/, '');
+  originalSourcePath = originalSourcePath.replace(/\.[jt]sx?$/, '');
   for (const pathOrig in tsPaths) {
     if (pathOrig === '*') {
       throw new Error('Asterisk-only aliases are not supported');
@@ -80,13 +80,13 @@ export function resolveAliasesAndPaths(
 
     const pathToTry = pathOrig.replace(/\*$/g, '');
 
-    if (targetPath.startsWith(pathToTry)) {
+    if (originalSourcePath.startsWith(pathToTry)) {
       log('Trying paths for location: ' + pathToTry, LogSeverity.INFO);
       return _applyOutputAliases(tsPaths[pathOrig].reduce((acc, name) => {
         if (acc) {
           return acc;
         }
-        const target = targetPath.replace(pathToTry, name.replace(/\*$/g, ''));
+        const target = originalSourcePath.replace(pathToTry, name.replace(/\*$/g, ''));
         const tPath = target.startsWith('/')
           ? target // absolute path, no need to resolve
           : path.resolve(baseDir, target);
@@ -100,8 +100,8 @@ export function resolveAliasesAndPaths(
     }
   }
 
-  log('Trying non-aliased path: ' + path.resolve(currentDir, targetPath).replace(baseDir, '[base]'), LogSeverity.INFO);
-  return _applyOutputAliases(_lookupFile(path.resolve(currentDir, targetPath)), baseDir, outputAliases, skipOutputAliases);
+  log('Trying non-aliased path: ' + path.resolve(currentDir, originalSourcePath).replace(baseDir, '[base]'), LogSeverity.INFO);
+  return _applyOutputAliases(_lookupFile(path.resolve(currentDir, originalSourcePath)), baseDir, outputAliases, skipOutputAliases);
 }
 
 function _applyOutputAliases(path = '', baseDir: string, outputAliases: { [key: string]: string }, skip?: boolean): string {

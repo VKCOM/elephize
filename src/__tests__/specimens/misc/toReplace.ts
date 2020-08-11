@@ -1,0 +1,1 @@
+export const getLang = (test: string) => '' + test;

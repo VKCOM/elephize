@@ -48,6 +48,7 @@
   },
   "homepage": "https://github.com/VKCOM/elephize#readme",
   "dependencies": {
+    "@mattacosta/php-common": "^1.0.0-beta.4",
     "@prettier/plugin-php": "^0.14.0",
     "chalk": "^4.1.0",
     "cli": "^1.0.1",

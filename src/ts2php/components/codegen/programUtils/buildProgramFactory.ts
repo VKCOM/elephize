@@ -1,14 +1,7 @@
-import {
-  CompilerHost,
-  CompilerOptions,
-  createProgram,
-  Diagnostic,
-  getDefaultCompilerOptions,
-  Program,
-  TranspileOptions,
-  WriteFileCallback
-} from 'typescript';
+import * as ts from 'typescript';
 import { existsSync } from 'fs';
+import { CliOptions, ImportReplacementRule } from '../../../types';
+import { resolveModules } from '../../cjsModules/resolveModules';
 import { compilerHostSourceGetter } from '../sourceFilesHelper';
 
 // internals. Not good thing to import them this way, but it's hard to customize transpileModule the way we want.
@@ -18,16 +11,25 @@ const { addRange } = require('typescript');
  * Create typescript `Program` object for one-time build.
  *
  * @param filenames
- * @param skippedFiles
+ * @param importRules
+ * @param baseDir
+ * @param tsPaths
  * @param transpileOptions
  * @param writeFile
  */
-export function getBuildProgram(filenames: string[], skippedFiles: string[], transpileOptions: TranspileOptions, writeFile: WriteFileCallback): Program {
-  const diagnostics: Diagnostic[] = [];
-  const options: CompilerOptions = {...transpileOptions.compilerOptions || {}};
+export function getBuildProgram(
+  filenames: string[],
+  importRules: CliOptions['importRules'],
+  baseDir: string,
+  tsPaths: { [key: string]: string[] },
+  transpileOptions: ts.TranspileOptions,
+  writeFile: ts.WriteFileCallback
+): [ts.Program, ImportReplacementRule[]] {
+  const diagnostics: ts.Diagnostic[] = [];
+  const options: ts.CompilerOptions = {...transpileOptions.compilerOptions || {}};
 
   // mix in default options
-  const defaultOptions = getDefaultCompilerOptions();
+  const defaultOptions = ts.getDefaultCompilerOptions();
   for (const key in defaultOptions) {
     if (defaultOptions.hasOwnProperty(key) && options[key] === undefined) {
       options[key] = defaultOptions[key];
@@ -41,26 +43,35 @@ export function getBuildProgram(filenames: string[], skippedFiles: string[], tra
   options.allowNonTsExtensions = true;
 
   // Create a compilerHost object to allow the compiler to read and write files
-  const compilerHost: CompilerHost = {
-    getSourceFile: compilerHostSourceGetter(skippedFiles, options.target),
+  const resolutionFun = resolveModules(options, importRules, baseDir, tsPaths);
+  let replacements: ImportReplacementRule[] = [];
+  const compilerHost: ts.CompilerHost = {
+    resolveModuleNames: (moduleNames: string[], containingFile: string) => {
+      const [resolvedModules, importReplacements] = resolutionFun(moduleNames, containingFile);
+      replacements = replacements.concat(importReplacements);
+      return resolvedModules;
+    },
+    getSourceFile: compilerHostSourceGetter(options.target),
     writeFile,
     getDefaultLibFileName: () => 'lib.d.ts',
     useCaseSensitiveFileNames: () => false,
     getCanonicalFileName: fileName => fileName,
     getCurrentDirectory: () => '',
     getNewLine: () => '\n',
-    fileExists: (fileName): boolean => existsSync(fileName),
+    fileExists: (fileName): boolean => {
+      return existsSync(fileName);
+    },
     readFile: () => '',
     directoryExists: () => true,
     getDirectories: () => []
   };
 
-  const program = createProgram(filenames, options, compilerHost);
+  const program = ts.createProgram(filenames, options, compilerHost);
 
   if (transpileOptions.reportDiagnostics) {
     addRange(/*to*/ diagnostics, /*from*/ program.getSyntacticDiagnostics());
     addRange(/*to*/ diagnostics, /*from*/ program.getOptionsDiagnostics());
   }
 
-  return program;
+  return [program, replacements];
 }
