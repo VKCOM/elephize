@@ -25,6 +25,12 @@ class ExportModule extends CJSModule {
      * @var float $test2
      */
     public $test2;
+    /**
+     * @return string
+     */
+    public function test333() {
+        return "kek";
+    }
 
     private function __construct() {
         $this->test2 = 1;

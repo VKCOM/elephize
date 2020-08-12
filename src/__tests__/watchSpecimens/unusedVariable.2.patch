@@ -1,0 +1,9 @@
+--- unusedVariable.entry.ts
++++ unusedVariable.entry.ts
+@@ -1,6 +1,5 @@
+ const uvtest2 = (b: number) => {
+   let a = 1 + b;
+-  const c = b;
+   return a;
+ };
+ console.log(uvtest2(1));

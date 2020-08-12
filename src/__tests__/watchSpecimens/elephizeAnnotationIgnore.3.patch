@@ -1,0 +1,7 @@
+--- elephizeAnnotationIgnore.entry.ts
++++ elephizeAnnotationIgnore.entry.ts
+@@ -1,4 +1,3 @@
+-// @elephizeIgnore
+ import { eaitest1 } from './elephizeAnnotationIgnoreImported';
+ const eaitest2 = (b: number) => b + 1;
+ console.log(eaitest2(1));

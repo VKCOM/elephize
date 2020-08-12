@@ -1,6 +1,6 @@
-import { translateCode, defaultOptions } from '../ts2php/components/codegen/translateCode';
+import { translateCode} from '../ts2php/components/codegen/translateCode';
 import * as path from 'path';
-import { getProgram } from '../ts2php/utils/programFromString';
+import { getBuildProgram } from '../ts2php/components/codegen/programUtils/buildProgramFactory';
 import * as ts from 'typescript';
 import {
   flagParentOfType,
@@ -10,9 +10,10 @@ import {
   getLeftExpr
 } from '../ts2php/utils/ast';
 import { NodeFlagStore } from '../ts2php/components/codegen/nodeFlagStore';
+import { defaultOptions } from '../ts2php/components/codegen/defaultCompilerOptions';
 
 function compile(files: string[]): ts.SourceFile | undefined {
-  let program = getProgram(files, [],
+  let program = getBuildProgram(files, [],
     {
       compilerOptions: defaultOptions
     },
@@ -45,8 +46,7 @@ function findFirstNode(where: ts.Node, type: ts.SyntaxKind) {
 }
 
 function recompile(fileNames: string[], onData: (filename: string, rootNode: ts.Node) => void): NodeFlagStore {
-  return translateCode({
-    fileNames,
+  return translateCode(fileNames, {
     baseDir: '',
     aliases: {},
     namespaces: { root: '', builtins: '' },

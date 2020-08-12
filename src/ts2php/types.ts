@@ -48,16 +48,16 @@ export type Declaration = {
 export type ExpressionHook = (node: ts.CallExpression, context: Context<Declaration>) => string | undefined;
 
 export type TranslateOptions = {
-  fileNames: string[];
   baseDir: string;
   aliases: { [key: string]: string };
   namespaces: NsMap;
   customGlobals?: { [key: string]: string };
   disableCodeElimination?: boolean;
   options?: ts.CompilerOptions;
-  onData: (filename: string, content: string) => void;
+  onData: (sourceFilename: string, targetFilename: string, content: string, error?: number) => void;
   onBeforeRender?: (filename: string, rootNode: ts.Node) => void; // mainly for testing purposes...
   onFinish?: (registry: ModuleRegistry) => void;
+  getCloseHandle?: (handle: () => void) => void; // get function which closes watcher when called
 };
 
 export type NsMap = {

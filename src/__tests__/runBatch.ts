@@ -26,14 +26,13 @@ const customGlobals = {
 export function runBatch(basePath: string[], testSuite: string[][]) {
   let promises: Array<Promise<any>> = [];
 
-  translateCode({
-    fileNames: testSuite.map((path) => pResolve(...basePath, ...path)),
+  translateCode(testSuite.map((path) => pResolve(...basePath, ...path)), {
     baseDir,
     aliases: {},
     namespaces,
     customGlobals,
     options: compilerOptions,
-    onData: (filename: string, content: string) => onData(basePath, promises, filename, content)
+    onData: (sourceFilename: string, targetFilename: string, content: string) => onData(basePath, promises, targetFilename, content)
   });
 
   return Promise.all(promises)

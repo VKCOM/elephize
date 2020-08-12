@@ -78,7 +78,7 @@ export function getPhpPrimitiveTypeForFunc(node: ts.FunctionExpression | ts.Arro
 }
 
 function _parseArrayType(node: ts.Type, checker: ts.TypeChecker, excludeObjects = true, nodeIdentForLog?: string) {
-  let typeNode = checker.typeToTypeNode(node);
+  let typeNode = checker.typeToTypeNode(node, undefined, undefined);
   if (!typeNode) {
     log(`No type node found for symbol: ${nodeIdentForLog}`, LogSeverity.TYPEHINT);
     return false;
@@ -136,7 +136,8 @@ function _parseArrayType(node: ts.Type, checker: ts.TypeChecker, excludeObjects 
 const checkArrMixedNode = (typeNode: ts.TypeNode) => {
   if (typeNode.kind === ts.SyntaxKind.TupleType) {
     // For [mixed, any]
-    if ((typeNode as ts.TupleTypeNode).elementTypes.some((t: any) => t.typeName?.symbol?.declarations[0].type?.types.some((t: any) => t.typeName?.escapedText === mixedTypehintId))) {
+    const types = (typeNode as any).elementTypes /* ts < 4 */ || (typeNode as any).elements /* ts 4+ */;
+    if (types.some((t: any) => t.typeName?.symbol?.declarations[0].type?.types.some((t: any) => t.typeName?.escapedText === mixedTypehintId))) {
       return true;
     }
   }

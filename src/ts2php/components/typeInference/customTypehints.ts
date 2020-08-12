@@ -2,7 +2,7 @@ import * as ts from 'typescript';
 import { customTypehints, mixedTypehintId } from './customTypehintsList';
 
 export function checkCustomTypehints(type: ts.Type, checker: ts.TypeChecker) {
-  let typeNode = checker.typeToTypeNode(type);
+  let typeNode = checker.typeToTypeNode(type, undefined, undefined);
   if (!typeNode) {
     return false;
   }
@@ -18,7 +18,7 @@ export function checkCustomTypehints(type: ts.Type, checker: ts.TypeChecker) {
 
   let typesToDrop: any[] = [];
   const foundTypes = typeRefs.map((t) => {
-    let typeNode = checker.typeToTypeNode(t);
+    let typeNode = checker.typeToTypeNode(t, undefined, undefined);
     if (!typeNode) {
       return t;
     }
@@ -50,7 +50,7 @@ export function traverseReferences(type: ts.Type, checker: ts.TypeChecker): ts.T
 
   let types: ts.Type[] = [];
   for (let t of type.types) {
-    let typeNode = checker.typeToTypeNode(t);
+    let typeNode = checker.typeToTypeNode(t, undefined, undefined);
     if (typeNode) {
       if (typeNode.kind === ts.SyntaxKind.TypeReference || typeNode.kind === ts.SyntaxKind.TypeAliasDeclaration) {
         types = types.concat(traverseReferences(t, checker));

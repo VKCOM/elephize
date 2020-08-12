@@ -1,7 +1,7 @@
 import * as glob from 'glob';
 import { Options } from './types';
 import { log, LogSeverity } from '../../utils/log';
-import { translateCode } from '../codegen/translateCode';
+import { translateCode, translateCodeAndWatch } from '../codegen/translateCode';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as iconv from 'iconv-lite';
@@ -28,16 +28,17 @@ export function transpile(options: Options, baseDir: string, outDir: string) {
       paths: options.tsPaths || {}
     };
 
-    translateCode({
-      fileNames: matches.map((p) => path.resolve('./', p)),
-      baseDir,
-      aliases: options.aliases,
-      namespaces,
-      disableCodeElimination: options.noZap,
-      options: compilerOptions,
-      onData: (filename: string, content: string) => onData(filename, content),
-      onFinish
-    });
+    (options.watch ? translateCodeAndWatch : translateCode)(
+      matches.map((p) => path.resolve('./', p)), {
+        baseDir,
+        aliases: options.aliases,
+        namespaces,
+        disableCodeElimination: options.noZap,
+        options: compilerOptions,
+        onData: (sourceFilename: string, targetFilename: string, content: string) => onData(targetFilename, content),
+        onFinish
+      }
+    );
   });
 
   function onData(filename: string, content: string) {

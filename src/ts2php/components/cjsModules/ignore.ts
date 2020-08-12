@@ -1,5 +1,6 @@
 import * as fs from 'fs';
 import * as ts from 'typescript';
+import * as path from 'path';
 import { ctx, log, LogSeverity } from '../../utils/log';
 import { resolveAliasesAndPaths } from '../../utils/pathsAndNames';
 
@@ -9,24 +10,18 @@ const ctxEx = (fn: string, node?: ts.Node) => node ? ctx(node) : `Entry point: $
 
 type ParseSourceFileOpts = {
   filename: string;
+  baseDir: string;
   onFinish: (result: ts.SourceFile) => void;
   onSkip: (filename: string) => void;
   importReference?: ts.ImportDeclaration;
 };
 
-export function parseSourceFile({ filename, onFinish, onSkip, importReference }: ParseSourceFileOpts) {
+function parseSourceFile({ filename, baseDir, onFinish, onSkip, importReference }: ParseSourceFileOpts) {
   fs.readFile(filename, { encoding: 'utf-8' }, (err, data) => {
     const sourceFile = ts.createSourceFile(filename, data, ts.ScriptTarget.Latest,true);
 
-    const trivia = importReference?.getFullText().substr(0, importReference?.getLeadingTriviaWidth());
-    if (trivia?.includes('@elephizeIgnore')) {
-      log(`Skipping ignored file: ${filename}`, LogSeverity.INFO, ctxEx(filename, importReference));
-      onSkip(filename);
-      return;
-    }
-
     if (sourceFile.isDeclarationFile) {
-      log(`Skipping declaration file: ${filename}`, LogSeverity.INFO, ctxEx(filename, importReference));
+      log(`Skipping declaration file: ${filename}`, LogSeverity.INFO, ctxEx(filename.replace(baseDir, '[base]'), importReference));
       onSkip(filename);
       return;
     }
@@ -58,6 +53,15 @@ export const getSkippedFilesPromiseExec = ({ entrypoint, baseDir, tsPaths, alias
   };
 
   const parseSourceFileRecursive = (filename: string, ref?: ts.ImportDeclaration) => {
+    if (ref) {
+      const trivia = ref?.getFullText().substr(0, ref?.getLeadingTriviaWidth());
+      if (trivia?.includes('@elephizeIgnore')) {
+        log(`Skipping ignored import: ${filename}`, LogSeverity.INFO, ctxEx(filename.replace(baseDir, '[base]'), ref));
+        semDec(filename);
+        return;
+      }
+    }
+
     filename = filename.replace(/^'|'$/g, '');
 
     if (filename.match(/^[a-z_-]+$/) || filename.startsWith('@')) {
@@ -65,18 +69,22 @@ export const getSkippedFilesPromiseExec = ({ entrypoint, baseDir, tsPaths, alias
       return;
     }
 
+    // Directory where file with import is located
+    const fileBaseDir = path.dirname(ref ? path.resolve(ref.getSourceFile().fileName) : path.resolve(entrypoint));
+
     const fn = resolveAliasesAndPaths(
       filename.replace(/^'|'$/g, ''),
-      '', baseDir, tsPaths, aliases, true
+      fileBaseDir, baseDir, tsPaths, aliases, true
     );
 
     if (!fn) {
-      log(`Module not found: ${filename}`, LogSeverity.ERROR, ctxEx(filename, ref));
+      log(`Module not found: ${filename.replace(baseDir, '[base]')}`,
+        LogSeverity.ERROR, ctxEx(filename.replace(baseDir, '[base]'), ref));
       return;
     }
 
     semInc();
-    parseSourceFile({ filename: fn, importReference: ref, onSkip: semDec, onFinish: (result) => {
+    parseSourceFile({ filename: fn, baseDir, importReference: ref, onSkip: semDec, onFinish: (result) => {
       const imports = result.statements.filter((c): c is ts.ImportDeclaration => c.kind === ts.SyntaxKind.ImportDeclaration);
       imports.forEach((imp) => {
         parseSourceFileRecursive(imp.moduleSpecifier.getText(result), imp);

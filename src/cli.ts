@@ -21,6 +21,7 @@ let _options = cli.parse({
   baseDir: ['b', 'Base src directory for transpiled code', 'string', undefined],
   encoding: ['l', 'Set output encoding for non-ascii symbols', 'string', undefined],
   rootNs: ['n', 'Root namespace name for generated classes', 'string', undefined],
+  watch: ['w', 'Start elephize in watcher mode', 'bool', undefined],
   help: ['h', 'Show some help', 'bool', undefined],
 });
 
