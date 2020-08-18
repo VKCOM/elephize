@@ -1,0 +1,1948 @@
+# -----------------------------------------------------------------------------
+# Copyright 2017 Matt Acosta
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# -----------------------------------------------------------------------------
+
+nodes:
+
+# -----------------------------------------------------------------------------
+# Expressions
+# -----------------------------------------------------------------------------
+
+- name: Expression
+  abstract: true
+
+- name: Intrinsic
+  extends: Expression
+  abstract: true
+- name: Invocation
+  extends: Expression
+  abstract: true
+  properties:
+  - name: openParen
+    type: TokenNode
+  - name: argumentList
+    type: NodeList
+    optional: true
+  - name: closeParen
+    type: TokenNode
+- name: MemberAccess
+  extends: Expression
+  abstract: true
+  properties:
+  - name: dereferencable
+    type: Expression
+  - name: objectOperator
+    type: TokenNode
+- name: MemberInvocation
+  extends: Invocation
+  abstract: true
+  properties:
+  - name: dereferenceable
+    type: Expression
+  - name: objectOperator
+    type: TokenNode
+  - name: openParen
+    type: TokenNode
+    inherited: true
+  - name: argumentList
+    type: NodeList
+    inherited: true
+    optional: true
+  - name: closeParen
+    type: TokenNode
+    inherited: true
+- name: ObjectCreation
+  extends: Expression
+  abstract: true
+  properties:
+  - name: newKeyword
+    type: TokenNode
+- name: ScopedAccess
+  extends: Expression
+  abstract: true
+  properties:
+  - name: qualifier
+    type:
+    - Expression
+    - Name
+  - name: doubleColon
+    type: TokenNode
+- name: ScopedInvocation
+  extends: Invocation
+  abstract: true
+  properties:
+  - name: qualifier
+    type:
+    - Expression
+    - Name
+  - name: doubleColon
+    type: TokenNode
+  - name: openParen
+    type: TokenNode
+    inherited: true
+  - name: argumentList
+    type: NodeList
+    inherited: true
+    optional: true
+  - name: closeParen
+    type: TokenNode
+    inherited: true
+- name: Variable
+  extends: Expression
+  abstract: true
+
+# --- Expression nodes --------------------------------------------------------
+- name: AnonymousFunction
+  extends: Expression
+  properties:
+  - name: staticKeyword
+    type: TokenNode
+    optional: true
+  - name: functionKeyword
+    type: TokenNode
+  - name: ampersand
+    type: TokenNode
+    optional: true
+  - name: openParen
+    type: TokenNode
+  - name: parameters
+    type: NodeList
+    optional: true
+  - name: closeParen
+    type: TokenNode
+  - name: useClause
+    type: ClosureUse
+    optional: true
+  - name: colon
+    type: TokenNode
+    optional: true
+  - name: returnType
+    type:
+    - NamedType
+    - PredefinedType
+    optional: true
+  - name: statements
+    type: StatementBlock
+  visitorName: visitAnonymousFunction
+- name: AnonymousObjectCreation
+  extends: ObjectCreation
+  properties:
+  - name: newKeyword
+    type: TokenNode
+    inherited: true
+  - name: anonymousClass
+    type: AnonymousClass
+  visitorName: visitAnonymousObjectCreation
+- name: Array
+  extends: Expression
+  properties:
+  - name: arrayKeyword
+    type: TokenNode
+    optional: true
+  - name: openParenOrBracket
+    type: TokenNode
+  - name: initializerList
+    type: NodeList
+    optional: true
+  - name: closeParenOrBracket
+    type: TokenNode
+  visitorName: visitArray
+- name: ArrowFunction
+  extends: Expression
+  properties:
+  - name: staticKeyword
+    type: TokenNode
+    optional: true
+  - name: fnKeyword
+    type: TokenNode
+  - name: ampersand
+    type: TokenNode
+    optional: true
+  - name: openParen
+    type: TokenNode
+  - name: parameters
+    type: NodeList
+    optional: true
+  - name: closeParen
+    type: TokenNode
+  - name: colon
+    type: TokenNode
+    optional: true
+  - name: returnType
+    type:
+    - NamedType
+    - PredefinedType
+    optional: true
+  - name: doubleArrow
+    type: TokenNode
+  - name: expr
+    type: Expression
+  visitorName: visitArrowFunction
+- name: Assignment
+  extends: Expression
+  properties:
+  - name: leftOperand
+    type: Expression
+  - name: operator
+    type: TokenNode
+  - name: ampersand
+    type: TokenNode
+    optional: true
+  - name: rightOperand
+    type: Expression
+  visitorName: visitAssignmentExpression
+- name: Binary
+  extends: Expression
+  properties:
+  - name: leftOperand
+    type: Expression
+  - name: operator
+    type: TokenNode
+  - name: rightOperand
+    type: Expression
+  visitorName: visitBinaryExpression
+# @todo Should not mix expression and name.
+- name: ClassConstant
+  extends: ScopedAccess
+  properties:
+  - name: qualifier
+    type:
+    - Expression
+    - Name
+    inherited: true
+  - name: doubleColon
+    type: TokenNode
+    inherited: true
+  - name: identifier
+    type: TokenNode
+  visitorName: visitClassConstant
+- name: Clone
+  extends: Expression
+  properties:
+  - name: cloneKeyword
+    type: TokenNode
+  - name: expression
+    type: Expression
+  visitorName: visitClone
+- name: Conditional
+  extends: Expression
+  properties:
+  - name: condition
+    type: Expression
+  - name: question
+    type: TokenNode
+  - name: trueExpr
+    type: Expression
+    optional: true
+  - name: colon
+    type: TokenNode
+  - name: falseExpr
+    type: Expression
+  visitorName: visitConditionalExpression
+- name: Constant
+  extends: Expression
+  properties:
+  - name: name
+    type: Name
+  visitorName: visitConstant
+- name: DestructuringAssignment
+  extends: Expression
+  properties:
+  - name: unpackedList
+    type:
+    - Array
+    - ListDestructure
+  - name: operator
+    type: TokenNode
+  - name: operand
+    type: Expression
+  visitorName: visitDestructuringAssignment
+- name: ElementAccess
+  extends: Expression
+  properties:
+  - name: dereferencable
+    type: Expression
+  - name: openBraceOrBracket
+    type: TokenNode
+  - name: index
+    type: Expression
+    optional: true
+  - name: closeBraceOrBracket
+    type: TokenNode
+  visitorName: visitElementAccess
+- name: EmptyIntrinsic
+  extends: Intrinsic
+  properties:
+  - name: emptyKeyword
+    type: TokenNode
+  - name: openParen
+    type: TokenNode
+  - name: expression
+    type: Expression
+  - name: closeParen
+    type: TokenNode
+  visitorName: visitEmptyIntrinsic
+- name: ErrorControl
+  extends: Expression
+  properties:
+  - name: at
+    type: TokenNode
+  - name: expression
+    type: Expression
+  visitorName: visitErrorControl
+- name: EvalIntrinsic
+  extends: Intrinsic
+  properties:
+  - name: evalKeyword
+    type: TokenNode
+  - name: openParen
+    type: TokenNode
+  - name: expression
+    type: Expression
+  - name: closeParen
+    type: TokenNode
+  visitorName: visitEvalIntrinsic
+- name: ExitIntrinsic
+  extends: Intrinsic
+  properties:
+  - name: exitOrDieKeyword
+    type: TokenNode
+  - name: openParen
+    type: TokenNode
+    optional: true
+  - name: expression
+    type: Expression
+    optional: true
+  - name: closeParen
+    type: TokenNode
+    optional: true
+  visitorName: visitExitIntrinsic
+- name: ExpressionGroup
+  extends: Expression
+  properties:
+  - name: openParen
+    type: TokenNode
+  - name: expression
+    type: Expression
+  - name: closeParen
+    type: TokenNode
+  visitorName: visitExpressionGroup
+- name: FlexibleHeredocTemplate
+  extends: Expression
+  properties:
+  - name: heredocStart
+    type: TokenNode
+  - name: flexibleElements
+    type: NodeList
+  - name: heredocEnd
+    type: TokenNode
+  visitorName: visitFlexibleHeredocTemplate
+# @todo Should not mix expression and name.
+- name: FunctionInvocation
+  extends: Invocation
+  properties:
+  - name: reference
+    type:
+    - Expression
+    - Name
+  - name: openParen
+    type: TokenNode
+    inherited: true
+  - name: argumentList
+    type: NodeList
+    inherited: true
+    optional: true
+  - name: closeParen
+    type: TokenNode
+    inherited: true
+  visitorName: visitFunctionInvocation
+- name: HeredocTemplate
+  extends: Expression
+  properties:
+  - name: heredocStart
+    type: TokenNode
+  - name: template
+    type: NodeList
+    optional: true
+  - name: heredocEnd
+    type: TokenNode
+  visitorName: visitHeredocTemplate
+- name: IndirectMethodInvocation
+  extends: MemberInvocation
+  properties:
+  - name: dereferenceable
+    type: Expression
+    inherited: true
+  - name: objectOperator
+    type: TokenNode
+    inherited: true
+  - name: openBrace
+    type: TokenNode
+    optional: true
+  - name: member
+    type: Expression
+  - name: closeBrace
+    type: TokenNode
+    optional: true
+  - name: openParen
+    type: TokenNode
+    inherited: true
+  - name: argumentList
+    type: NodeList
+    inherited: true
+    optional: true
+  - name: closeParen
+    type: TokenNode
+    inherited: true
+  visitorName: visitMethodInvocation
+  visitorType: MemberInvocation
+- name: IndirectMemberAccess
+  extends: MemberAccess
+  properties:
+  - name: dereferencable
+    type: Expression
+    inherited: true
+  - name: objectOperator
+    type: TokenNode
+    inherited: true
+  - name: openBrace
+    type: TokenNode
+    optional: true
+  - name: member
+    type: Expression
+  - name: closeBrace
+    type: TokenNode
+    optional: true
+  visitorName: visitMemberAccess
+  visitorType: MemberAccess
+- name: IndirectObjectCreation
+  extends: ObjectCreation
+  properties:
+  - name: newKeyword
+    type: TokenNode
+    inherited: true
+  - name: classNameReference
+    type: Expression
+  - name: openParen
+    type: TokenNode
+    optional: true
+  - name: argumentList
+    type: NodeList
+    optional: true
+  - name: closeParen
+    type: TokenNode
+    optional: true
+  visitorName: visitObjectCreation
+  visitorType: ObjectCreation
+# @todo Should not mix expression and name.
+- name: IndirectScopedInvocation
+  extends: ScopedInvocation
+  properties:
+  - name: qualifier
+    type:
+    - Expression
+    - Name
+    inherited: true
+  - name: doubleColon
+    type: TokenNode
+    inherited: true
+  - name: openBrace
+    type: TokenNode
+    optional: true
+  - name: member
+    type: Expression
+  - name: closeBrace
+    type: TokenNode
+    optional: true
+  - name: openParen
+    type: TokenNode
+    inherited: true
+  - name: argumentList
+    type: NodeList
+    inherited: true
+    optional: true
+  - name: closeParen
+    type: TokenNode
+    inherited: true
+  visitorName: visitScopedInvocation
+  visitorType: ScopedInvocation
+- name: IndirectStringVariable
+  extends: Expression
+  properties:
+  - name: dollarOpenBrace
+    type: TokenNode
+  - name: expression
+    type: Expression
+  - name: closeBrace
+    type: TokenNode
+  visitorName: visitIndirectStringVariable
+- name: IndirectVariable
+  extends: Variable
+  properties:
+  - name: dollar
+    type: TokenNode
+  - name: openBrace
+    type: TokenNode
+    optional: true
+  - name: expression
+    type: Expression
+  - name: closeBrace
+    type: TokenNode
+    optional: true
+  visitorName: visitIndirectVariable
+- name: InstanceOf
+  extends: Expression
+  properties:
+  - name: operand
+    type: Expression
+  - name: instanceOfKeyword
+    type: TokenNode
+  - name: classNameOrReference
+    type:
+    - Expression
+    - Name
+  visitorName: visitInstanceOf
+- name: IsSetIntrinsic
+  extends: Intrinsic
+  properties:
+  - name: isSetKeyword
+    type: TokenNode
+  - name: openParen
+    type: TokenNode
+  - name: expressions
+    type: NodeList
+  - name: closeParen
+    type: TokenNode
+  visitorName: visitIsSetIntrinsic
+- name: LexicalVariable
+  extends: Variable
+  properties:
+  - name: ampersand
+    type: TokenNode
+    optional: true
+  - name: variable
+    type: TokenNode
+  visitorName: visitLexicalVariable
+- name: Literal
+  extends: Expression
+  properties:
+  - name: value
+    type: TokenNode
+  visitorName: visitLiteral
+- name: LocalVariable
+  extends: Variable
+  properties:
+  - name: variable
+    type: TokenNode
+  visitorName: visitLocalVariable
+- name: NamedMemberAccess
+  extends: MemberAccess
+  properties:
+  - name: dereferencable
+    type: Expression
+    inherited: true
+  - name: objectOperator
+    type: TokenNode
+    inherited: true
+  - name: member
+    type: TokenNode
+  visitorName: visitMemberAccess
+  visitorType: MemberAccess
+- name: NamedMethodInvocation
+  extends: MemberInvocation
+  properties:
+  - name: dereferenceable
+    type: Expression
+    inherited: true
+  - name: objectOperator
+    type: TokenNode
+    inherited: true
+  - name: identifierOrKeyword
+    type: TokenNode
+  - name: openParen
+    type: TokenNode
+    inherited: true
+  - name: argumentList
+    type: NodeList
+    inherited: true
+    optional: true
+  - name: closeParen
+    type: TokenNode
+    inherited: true
+  visitorName: visitMethodInvocation
+  visitorType: MemberInvocation
+- name: NamedObjectCreation
+  extends: ObjectCreation
+  properties:
+  - name: newKeyword
+    type: TokenNode
+    inherited: true
+  - name: className
+    type: Name
+  - name: openParen
+    type: TokenNode
+    optional: true
+  - name: argumentList
+    type: NodeList
+    optional: true
+  - name: closeParen
+    type: TokenNode
+    optional: true
+  visitorName: visitObjectCreation
+  visitorType: ObjectCreation
+# @todo Should not mix expression and name.
+- name: NamedScopedInvocation
+  extends: ScopedInvocation
+  properties:
+  - name: qualifier
+    type:
+    - Expression
+    - Name
+    inherited: true
+  - name: doubleColon
+    type: TokenNode
+    inherited: true
+  - name: member
+    type: TokenNode
+  - name: openParen
+    type: TokenNode
+    inherited: true
+  - name: argumentList
+    type: NodeList
+    inherited: true
+    optional: true
+  - name: closeParen
+    type: TokenNode
+    inherited: true
+  visitorName: visitScopedInvocation
+  visitorType: ScopedInvocation
+# Makes it easier to tell the difference between prefix and postfix unary
+# expressions without having to compare offsets.
+- name: PostfixUnary
+  extends: Expression
+  properties:
+  - name: operand
+    type: Expression
+  - name: operator
+    type: TokenNode
+  visitorName: visitPostfixUnaryExpression
+- name: PrintIntrinsic
+  extends: Intrinsic
+  properties:
+  - name: printKeyword
+    type: TokenNode
+  - name: expression
+    type: Expression
+  visitorName: visitPrintIntrinsic
+- name: ScriptInclusion
+  extends: Intrinsic
+  properties:
+  - name: inclusionKeyword
+    type: TokenNode
+  - name: expression
+    type: Expression
+  visitorName: visitScriptInclusion
+# Exactly the same as a heredoc.
+- name: ShellCommandTemplate
+  extends: Expression
+  properties:
+  - name: openBackQuote
+    type: TokenNode
+  - name: template
+    type: NodeList
+    optional: true
+  - name: closeBackQuote
+    type: TokenNode
+  visitorName: visitShellCommandTemplate
+# @todo Should not mix expression and name.
+- name: StaticProperty
+  extends: ScopedAccess
+  properties:
+  - name: qualifier
+    type:
+    - Expression
+    - Name
+    inherited: true
+  - name: doubleColon
+    type: TokenNode
+    inherited: true
+  - name: member
+    type: Expression
+  visitorName: visitStaticProperty
+# `VARIABLE [ string-offset ]`
+- name: StringElementAccess
+  extends: Expression
+  properties:
+  - name: variable
+    type: TokenNode
+  - name: openBracket
+    type: TokenNode
+  - name: minus
+    type: TokenNode
+    optional: true
+  - name: index
+    type: TokenNode
+  - name: closeBracket
+    type: TokenNode
+  visitorName: visitStringElementAccess
+# `{ expr }`
+- name: StringExpression
+  extends: Expression
+  properties:
+  - name: openBrace
+    type: TokenNode
+  - name: expression
+    type: Expression
+  - name: closeBrace
+    type: TokenNode
+  visitorName: visitStringExpression
+# `STRING_IDENTIFIER`
+- name: StringVariable
+  extends: Variable
+  properties:
+  - name: identifier
+    type: TokenNode
+  visitorName: visitStringVariable
+- name: StringTemplate
+  extends: Expression
+  properties:
+  - name: openQuote
+    type: TokenNode
+  - name: template
+    type: NodeList
+  - name: closeQuote
+    type: TokenNode
+  visitorName: visitStringTemplate
+- name: Unary
+  extends: Expression
+  properties:
+  - name: operator
+    type: TokenNode
+  - name: operand
+    type: Expression
+  visitorName: visitUnaryExpression
+- name: Yield
+  extends: Expression
+  properties:
+  - name: yieldKeyword
+    type: TokenNode
+  - name: key
+    type: Expression
+    optional: true
+  - name: doubleArrow
+    type: TokenNode
+    optional: true
+  - name: value
+    type: Expression
+    optional: true
+  visitorName: visitYield
+- name: YieldFrom
+  extends: Expression
+  properties:
+  - name: yieldFromKeyword
+    type: TokenNode
+  - name: delegate
+    type: Expression
+  visitorName: visitYieldFrom
+
+# -----------------------------------------------------------------------------
+# Statements
+# -----------------------------------------------------------------------------
+
+- name: Statement
+  abstract: true
+
+# Used by do-while, for, foreach, and while statements.
+- name: Iteration
+  extends: Statement
+  abstract: true
+# Used by break, continue, goto, return, and throw statements.
+- name: Jump
+  extends: Statement
+  abstract: true
+# Used by if and switch statements.
+- name: Selection
+  extends: Statement
+  abstract: true
+# Used by class, interface, and trait declarations.
+- name: TypeDeclaration
+  extends: Statement
+  abstract: true
+  properties:
+  - name: identifier
+    type: TokenNode
+  - name: openBrace
+    type: TokenNode
+  - name: members
+    type: NodeList
+    optional: true
+  - name: closeBrace
+    type: TokenNode
+
+# --- Statement nodes --------------------------------------------------------
+- name: Break
+  extends: Jump
+  properties:
+  - name: breakKeyword
+    type: TokenNode
+  - name: depth
+    type: Expression
+    optional: true
+  - name: semicolon
+    type: TokenNode
+  visitorName: visitBreak
+- name: ClassDeclaration
+  extends: TypeDeclaration
+  properties:
+  - name: modifiers
+    type: NodeList
+    optional: true
+  - name: classKeyword
+    type: TokenNode
+  - name: identifier
+    type: TokenNode
+    inherited: true
+  - name: extendsKeyword
+    type: TokenNode
+    optional: true
+  - name: baseType
+    type: Name
+    optional: true
+  - name: implementsKeyword
+    type: TokenNode
+    optional: true
+  - name: interfaces
+    type: NodeList
+    optional: true
+  - name: openBrace
+    type: TokenNode
+    inherited: true
+  - name: members
+    type: NodeList
+    optional: true
+    inherited: true
+  - name: closeBrace
+    type: TokenNode
+    inherited: true
+  visitorName: visitClassDeclaration
+# See also: ClassConstantElement
+- name: ClassConstantDeclaration
+  extends: Statement
+  properties:
+  - name: modifiers
+    type: NodeList
+    optional: true
+  - name: constKeyword
+    type: TokenNode
+  - name: elements
+    type: NodeList
+  - name: semicolon
+    type: TokenNode
+  visitorName: visitClassConstantDeclaration
+# See also: ConstantElement
+- name: ConstantDeclaration
+  extends: Statement
+  properties:
+  - name: constKeyword
+    type: TokenNode
+  - name: elements
+    type: NodeList
+  - name: semicolon
+    type: TokenNode
+  visitorName: visitConstantDeclaration
+- name: Continue
+  extends: Jump
+  properties:
+  - name: continueKeyword
+    type: TokenNode
+  - name: depth
+    type: Expression
+    optional: true
+  - name: semicolon
+    type: TokenNode
+  visitorName: visitContinue
+- name: ExpressionStatement
+  extends: Statement
+  properties:
+  - name: expression
+    type: Expression
+    optional: true
+  - name: semicolon
+    type: TokenNode
+  visitorName: visitExpressionStatement
+- name: Declare
+  extends: Statement
+  properties:
+  - name: declareKeyword
+    type: TokenNode
+  - name: openParen
+    type: TokenNode
+  - name: directives
+    type: NodeList
+  - name: closeParen
+    type: TokenNode
+  - name: statement
+    type: Statement
+  visitorName: visitDeclare
+- name: DeclareBlock
+  extends: Statement
+  properties:
+  - name: declareKeyword
+    type: TokenNode
+  - name: openParen
+    type: TokenNode
+  - name: directives
+    type: NodeList
+  - name: closeParen
+    type: TokenNode
+  - name: colon
+    type: TokenNode
+  - name: statements
+    type: NodeList
+    optional: true
+  - name: endDeclare
+    type: TokenNode
+  - name: semicolon
+    type: TokenNode
+  visitorName: visitDeclareBlock
+- name: DoWhile
+  extends: Iteration
+  properties:
+  - name: doKeyword
+    type: TokenNode
+  - name: statement
+    type: Statement
+  - name: whileKeyword
+    type: TokenNode
+  - name: openParen
+    type: TokenNode
+  - name: condition
+    type: Expression
+  - name: closeParen
+    type: TokenNode
+  - name: semicolon
+    type: TokenNode
+  visitorName: visitDoWhile
+# This node is also used for inline text, so `echo` and `;` are optional.
+- name: Echo
+  extends: Statement
+  properties:
+  - name: echoKeyword
+    type: TokenNode
+    optional: true
+  - name: expressionList
+    type: NodeList
+  - name: semicolon
+    type: TokenNode
+    optional: true
+  visitorName: visitEcho
+- name: For
+  extends: Iteration
+  properties:
+  - name: forKeyword
+    type: TokenNode
+  - name: openParen
+    type: TokenNode
+  - name: initializers
+    type: NodeList
+    optional: true
+  - name: firstSemicolon
+    type: TokenNode
+  - name: conditions
+    type: NodeList
+    optional: true
+  - name: secondSemicolon
+    type: TokenNode
+  - name: incrementors
+    type: NodeList
+    optional: true
+  - name: closeParen
+    type: TokenNode
+  - name: statement
+    type: Statement
+  visitorName: visitFor
+- name: ForBlock
+  extends: Iteration
+  properties:
+  - name: forKeyword
+    type: TokenNode
+  - name: openParen
+    type: TokenNode
+  - name: initializers
+    type: NodeList
+    optional: true
+  - name: firstSemicolon
+    type: TokenNode
+  - name: conditions
+    type: NodeList
+    optional: true
+  - name: secondSemicolon
+    type: TokenNode
+  - name: incrementors
+    type: NodeList
+    optional: true
+  - name: closeParen
+    type: TokenNode
+  - name: colon
+    type: TokenNode
+  - name: statements
+    type: NodeList
+    optional: true
+  - name: endForKeyword
+    type: TokenNode
+  - name: semicolon
+    type: TokenNode
+  visitorName: visitForBlock
+- name: ForEach
+  extends: Iteration
+  properties:
+  - name: forEachKeyword
+    type: TokenNode
+  - name: openParen
+    type: TokenNode
+  - name: source
+    type: Expression
+  - name: asKeyword
+    type: TokenNode
+  - name: key
+    type: Expression
+    optional: true
+  - name: doubleArrow
+    type: TokenNode
+    optional: true
+  - name: ampersand
+    type: TokenNode
+    optional: true
+  - name: value
+    type:
+    - Expression
+    - ListDestructure
+  - name: closeParen
+    type: TokenNode
+  - name: statement
+    type: Statement
+  visitorName: visitForEach
+- name: ForEachBlock
+  extends: Iteration
+  properties:
+  - name: forEachKeyword
+    type: TokenNode
+  - name: openParen
+    type: TokenNode
+  - name: source
+    type: Expression
+  - name: asKeyword
+    type: TokenNode
+  - name: key
+    type: Expression
+    optional: true
+  - name: doubleArrow
+    type: TokenNode
+    optional: true
+  - name: ampersand
+    type: TokenNode
+    optional: true
+  - name: value
+    type:
+    - Expression
+    - ListDestructure
+  - name: closeParen
+    type: TokenNode
+  - name: colon
+    type: TokenNode
+  - name: statements
+    type: NodeList
+    optional: true
+  - name: endForEach
+    type: TokenNode
+  - name: semicolon
+    type: TokenNode
+  visitorName: visitForEachBlock
+- name: FunctionDeclaration
+  extends: Statement
+  properties:
+  - name: functionKeyword
+    type: TokenNode
+  - name: ampersand
+    type: TokenNode
+    optional: true
+  - name: identifier
+    type: TokenNode
+  - name: openParen
+    type: TokenNode
+  - name: parameters
+    type: NodeList
+    optional: true
+  - name: closeParen
+    type: TokenNode
+  - name: colon
+    type: TokenNode
+    optional: true
+  - name: returnType
+    type:
+    - NamedType
+    - PredefinedType
+    optional: true
+  - name: statements
+    type: StatementBlock
+  visitorName: visitFunctionDeclaration
+- name: Global
+  extends: Statement
+  properties:
+  - name: globalKeyword
+    type: TokenNode
+  - name: variables
+    type: NodeList
+  - name: semicolon
+    type: TokenNode
+  visitorName: visitGlobalDeclaration
+- name: GoTo
+  extends: Jump
+  properties:
+  - name: gotoKeyword
+    type: TokenNode
+  - name: label
+    type: TokenNode
+  - name: semicolon
+    type: TokenNode
+  visitorName: visitGoTo
+- name: HaltCompiler
+  extends: Statement
+  properties:
+  - name: haltCompilerKeyword
+    type: TokenNode
+  - name: openParen
+    type: TokenNode
+  - name: closeParen
+    type: TokenNode
+  - name: semicolon
+    type: TokenNode
+  visitorName: visitHaltCompiler
+- name: If
+  extends: Selection
+  properties:
+  - name: ifKeyword
+    type: TokenNode
+  - name: openParen
+    type: TokenNode
+  - name: condition
+    type: Expression
+  - name: closeParen
+    type: TokenNode
+  - name: statement
+    type: Statement
+  - name: elseIfClauses
+    type: NodeList
+    optional: true
+  - name: elseClause
+    type: Else
+    optional: true
+  visitorName: visitIf
+- name: IfBlock
+  extends: Selection
+  properties:
+  - name: ifKeyword
+    type: TokenNode
+  - name: openParen
+    type: TokenNode
+  - name: condition
+    type: Expression
+  - name: closeParen
+    type: TokenNode
+  - name: colon
+    type: TokenNode
+  - name: statements
+    type: NodeList
+    optional: true
+  - name: elseIfClauses
+    type: NodeList
+    optional: true
+  - name: elseClause
+    type: ElseBlock
+    optional: true
+  - name: endIfKeyword
+    type: TokenNode
+  - name: semicolon
+    type: TokenNode
+  visitorName: visitIfBlock
+- name: IncompleteMember
+  extends: Statement
+  properties:
+  - name: modifiers
+    type: NodeList
+  visitorName: visitIncompleteMember
+- name: InterfaceDeclaration
+  extends: TypeDeclaration
+  properties:
+  - name: interfaceKeyword
+    type: TokenNode
+  - name: identifier
+    type: TokenNode
+    inherited: true
+  - name: extendsKeyword
+    type: TokenNode
+    optional: true
+  - name: baseInterfaces
+    type: NodeList
+    optional: true
+  - name: openBrace
+    type: TokenNode
+    inherited: true
+  - name: members
+    type: NodeList
+    optional: true
+    inherited: true
+  - name: closeBrace
+    type: TokenNode
+    inherited: true
+  visitorName: visitInterfaceDeclaration
+- name: Label
+  extends: Statement
+  properties:
+  - name: label
+    type: TokenNode
+  - name: colon
+    type: TokenNode
+  visitorName: visitLabel
+- name: MethodDeclaration
+  extends: Statement
+  properties:
+  - name: modifiers
+    type: NodeList
+    optional: true
+  - name: functionKeyword
+    type: TokenNode
+  - name: ampersand
+    type: TokenNode
+    optional: true
+  - name: identifierOrKeyword
+    type: TokenNode
+  - name: openParen
+    type: TokenNode
+  - name: parameters
+    type: NodeList
+    optional: true
+  - name: closeParen
+    type: TokenNode
+  - name: colon
+    type: TokenNode
+    optional: true
+  - name: returnType
+    type:
+    - NamedType
+    - PredefinedType
+    optional: true
+  - name: statements
+    type: StatementBlock
+    optional: true
+  - name: semicolon
+    type: TokenNode
+    optional: true
+  visitorName: visitMethodDeclaration
+- name: NamespaceDeclaration
+  extends: Statement
+  properties:
+  - name: namespaceKeyword
+    type: TokenNode
+  - name: name
+    type: Name
+  - name: semicolon
+    type: TokenNode
+  visitorName: visitNamespaceDeclaration
+- name: NamespaceGroupDeclaration
+  extends: Statement
+  properties:
+  - name: namespaceKeyword
+    type: TokenNode
+  - name: name
+    type: Name
+    optional: true
+  - name: openBrace
+    type: TokenNode
+  - name: statements
+    type: NodeList
+    optional: true
+  - name: closeBrace
+    type: TokenNode
+  visitorName: visitNamespaceGroupDeclaration
+# See also: PropertyElement
+- name: PropertyDeclaration
+  extends: Statement
+  properties:
+  - name: modifiers
+    type: NodeList
+  - name: type
+    type:
+    - NamedType
+    - PredefinedType
+    optional: true
+  - name: properties
+    type: NodeList
+  - name: semicolon
+    type: TokenNode
+  visitorName: visitPropertyDeclaration
+- name: Return
+  extends: Jump
+  properties:
+  - name: returnKeyword
+    type: TokenNode
+  - name: expression
+    type: Expression
+    optional: true
+  - name: semicolon
+    type: TokenNode
+  visitorName: visitReturn
+- name: StatementBlock
+  extends: Statement
+  properties:
+  - name: openBrace
+    type: TokenNode
+  - name: statements
+    type: NodeList
+    optional: true
+  - name: closeBrace
+    type: TokenNode
+  visitorName: visitStatementBlock
+- name: Static
+  extends: Statement
+  properties:
+  - name: staticKeyword
+    type: TokenNode
+  - name: variables
+    type: NodeList
+  - name: semicolon
+    type: TokenNode
+  visitorName: visitStaticDeclaration
+- name: Switch
+  extends: Selection
+  properties:
+  - name: switchKeyword
+    type: TokenNode
+  - name: openParen
+    type: TokenNode
+  - name: expression
+    type: Expression
+  - name: closeParen
+    type: TokenNode
+  - name: openBrace
+    type: TokenNode
+  - name: caseSemicolon
+    type: TokenNode
+    optional: true
+  - name: caseClauses
+    type: NodeList
+    optional: true
+  - name: closeBrace
+    type: TokenNode
+  visitorName: visitSwitch
+- name: SwitchBlock
+  extends: Selection
+  properties:
+  - name: switchKeyword
+    type: TokenNode
+  - name: openParen
+    type: TokenNode
+  - name: expression
+    type: Expression
+  - name: closeParen
+    type: TokenNode
+  - name: colon
+    type: TokenNode
+  - name: caseSemicolon
+    type: TokenNode
+    optional: true
+  - name: caseClauses
+    type: NodeList
+    optional: true
+  - name: endSwitch
+    type: TokenNode
+  - name: semicolon
+    type: TokenNode
+  visitorName: visitSwitchBlock
+- name: Throw
+  extends: Statement
+  properties:
+  - name: throwKeyword
+    type: TokenNode
+  - name: expression
+    type: Expression
+  - name: semicolon
+    type: TokenNode
+  visitorName: visitThrow
+- name: TraitDeclaration
+  extends: TypeDeclaration
+  properties:
+  - name: traitKeyword
+    type: TokenNode
+  - name: identifier
+    type: TokenNode
+    inherited: true
+  - name: openBrace
+    type: TokenNode
+    inherited: true
+  - name: members
+    type: NodeList
+    optional: true
+    inherited: true
+  - name: closeBrace
+    type: TokenNode
+    inherited: true
+  visitorName: visitTraitDeclaration
+- name: TraitUse
+  extends: Statement
+  properties:
+  - name: useKeyword
+    type: TokenNode
+  - name: traitNames
+    type: NodeList
+  - name: semicolon
+    type: TokenNode
+  visitorName: visitTraitUse
+- name: TraitUseGroup
+  extends: Statement
+  properties:
+  - name: useKeyword
+    type: TokenNode
+  - name: traitNames
+    type: NodeList
+  - name: openBrace
+    type: TokenNode
+  - name: adaptations
+    type: NodeList
+    optional: true
+  - name: closeBrace
+    type: TokenNode
+  visitorName: visitTraitUseGroup
+- name: Try
+  extends: Statement
+  properties:
+  - name: tryKeyword
+    type: TokenNode
+  - name: statements
+    type: StatementBlock
+  - name: catchClauses
+    type: NodeList
+    optional: true
+  - name: finallyClause
+    type: TryFinally
+    optional: true
+  visitorName: visitTry
+- name: Unset
+  extends: Statement
+  properties:
+  - name: unsetKeyword
+    type: TokenNode
+  - name: openParen
+    type: TokenNode
+  - name: expressionList
+    type: NodeList
+  - name: closeParen
+    type: TokenNode
+  - name: semicolon
+    type: TokenNode
+  visitorName: visitUnset
+- name: UseDeclaration
+  extends: Statement
+  properties:
+  - name: useKeyword
+    type: TokenNode
+  - name: useType
+    type: TokenNode
+    optional: true
+  - name: declarations
+    type: NodeList
+  - name: semicolon
+    type: TokenNode
+  visitorName: visitUseDeclaration
+- name: UseGroupDeclaration
+  extends: Statement
+  properties:
+  - name: useKeyword
+    type: TokenNode
+  - name: useType
+    type: TokenNode
+    optional: true
+  - name: rootName
+    type: NodeList
+  - name: openBrace
+    type: TokenNode
+  - name: declarations
+    type: NodeList
+  - name: closeBrace
+    type: TokenNode
+  - name: semicolon
+    type: TokenNode
+  visitorName: visitUseGroupDeclaration
+- name: While
+  extends: Iteration
+  properties:
+  - name: whileKeyword
+    type: TokenNode
+  - name: openParen
+    type: TokenNode
+  - name: condition
+    type: Expression
+  - name: closeParen
+    type: TokenNode
+  - name: statement
+    type: Statement
+  visitorName: visitWhile
+- name: WhileBlock
+  extends: Iteration
+  properties:
+  - name: whileKeyword
+    type: TokenNode
+  - name: openParen
+    type: TokenNode
+  - name: condition
+    type: Expression
+  - name: closeParen
+    type: TokenNode
+  - name: colon
+    type: TokenNode
+  - name: statements
+    type: NodeList
+    optional: true
+  - name: endWhileKeyword
+    type: TokenNode
+  - name: semicolon
+    type: TokenNode
+  visitorName: visitWhileBlock
+
+# -----------------------------------------------------------------------------
+# Clauses
+# -----------------------------------------------------------------------------
+
+# Used by fully qualified, partially qualified, and relative names.
+- name: Name
+  abstract: true
+  properties:
+  - name: namespaceName
+    type: NodeList
+# Used by named and referenced trait aliases.
+- name: TraitAlias
+  abstract: true
+  properties:
+  - name: asKeyword
+    type: TokenNode
+  - name: modifier
+    type: TokenNode
+    optional: true
+  - name: alias
+    type: TokenNode
+    optional: true
+  - name: semicolon
+    type: TokenNode
+- name: Type
+  abstract: true
+  properties:
+  - name: question
+    type: TokenNode
+    optional: true
+
+# -----------------------------------------------------------------------------
+
+- name: AnonymousClass
+  properties:
+  - name: classKeyword
+    type: TokenNode
+  - name: openParen
+    type: TokenNode
+    optional: true
+  - name: argumentList
+    type: NodeList
+    optional: true
+  - name: closeParen
+    type: TokenNode
+    optional: true
+  - name: extendsKeyword
+    type: TokenNode
+    optional: true
+  - name: baseType
+    type: Name
+    optional: true
+  - name: implementsKeyword
+    type: TokenNode
+    optional: true
+  - name: interfaces
+    type: NodeList
+    optional: true
+  - name: openBrace
+    type: TokenNode
+  - name: members
+    type: NodeList
+    optional: true
+  - name: closeBrace
+    type: TokenNode
+  visitorName: visitAnonymousClass
+- name: Argument
+  properties:
+  - name: ellipsis
+    type: TokenNode
+    optional: true
+  - name: value
+    type: Expression
+  visitorName: visitArgument
+- name: ArrayElement
+  properties:
+  - name: key
+    type: Expression
+    optional: true
+  - name: doubleArrow
+    type: TokenNode
+    optional: true
+  - name: valueOperator
+    type: TokenNode
+    optional: true
+  - name: value
+    type: Expression
+  visitorName: visitArrayElement
+# See also: ClassConstantDeclaration
+- name: ClassConstantElement
+  properties:
+  - name: identifierOrKeyword
+    type: TokenNode
+  - name: equal
+    type: TokenNode
+  - name: expression
+    type: Expression
+  visitorName: visitClassConstantElement
+- name: ClosureUse
+  properties:
+  - name: useKeyword
+    type: TokenNode
+  - name: openParen
+    type: TokenNode
+  - name: variables
+    type: NodeList
+  - name: closeParen
+    type: TokenNode
+  visitorName: visitClosureUse
+# Unlike ClassConstantElement, the name cannot be a semi-reserved keyword.
+- name: ConstantElement
+  properties:
+  - name: identifier
+    type: TokenNode
+  - name: equal
+    type: TokenNode
+  - name: expression
+    type: Expression
+  visitorName: visitConstantElement
+- name: Else
+  properties:
+  - name: elseKeyword
+    type: TokenNode
+  - name: statement
+    type: Statement
+  visitorName: visitElse
+- name: ElseBlock
+  properties:
+  - name: elseKeyword
+    type: TokenNode
+  - name: colon
+    type: TokenNode
+  - name: statements
+    type: NodeList
+    optional: true
+  visitorName: visitElseBlock
+- name: ElseIf
+  properties:
+  - name: elseIfKeyword
+    type: TokenNode
+  - name: openParen
+    type: TokenNode
+  - name: condition
+    type: Expression
+  - name: closeParen
+    type: TokenNode
+  - name: statement
+    type: Statement
+  visitorName: visitElseIf
+- name: ElseIfBlock
+  properties:
+  - name: elseIfKeyword
+    type: TokenNode
+  - name: openParen
+    type: TokenNode
+  - name: condition
+    type: Expression
+  - name: closeParen
+    type: TokenNode
+  - name: colon
+    type: TokenNode
+  - name: statements
+    type: NodeList
+    optional: true
+  visitorName: visitElseIfBlock
+- name: FlexibleHeredocElement
+  properties:
+  - name: indent
+    type: TokenNode
+  - name: template
+    type: NodeList
+    optional: true
+  visitorName: visitFlexibleHeredocElement
+- name: FullyQualifiedName
+  extends: Name
+  properties:
+  - name: leadingBackslash
+    type: TokenNode
+  - name: namespaceName
+    type: NodeList
+    inherited: true
+  visitorName: visitFullyQualifiedName
+- name: IncompleteNamedTraitAdaptation
+  properties:
+  - name: identifierOrKeyword
+    type: TokenNode
+  visitorName: visitIncompleteNamedTraitAdapatation
+- name: IncompleteReferencedTraitAdaptation
+  properties:
+  - name: reference
+    type: MethodReference
+  visitorName: visitIncompleteReferencedTraitAdaptation
+- name: ListDestructure
+  properties:
+  - name: listKeyword
+    type: TokenNode
+  - name: openParen
+    type: TokenNode
+  - name: variables
+    type: NodeList
+    optional: true
+  - name: closeParen
+    type: TokenNode
+  visitorName: visitListDestructure
+- name: ListDestructureElement
+  properties:
+  - name: key
+    type: Expression
+    optional: true
+  - name: doubleArrow
+    type: TokenNode
+    optional: true
+  - name: ampersand
+    type: TokenNode
+    optional: true
+  - name: value
+    type:
+    - Expression
+    - ListDestructure
+  visitorName: visitListDestructureElement
+# See also: TraitAlias, TraitPrecedence
+- name: MethodReference
+  properties:
+  - name: className
+    type: Name
+  - name: doubleColon
+    type: TokenNode
+  - name: methodName
+    type: TokenNode
+  visitorName: visitMethodReference
+# See also: ReferencedTraitAlias
+- name: NamedTraitAlias
+  extends: TraitAlias
+  properties:
+  - name: methodName
+    type: TokenNode
+  - name: asKeyword
+    type: TokenNode
+    inherited: true
+  - name: modifier
+    type: TokenNode
+    inherited: true
+    optional: true
+  - name: alias
+    type: TokenNode
+    inherited: true
+    optional: true
+  - name: semicolon
+    type: TokenNode
+    inherited: true
+  visitorName: visitTraitAlias
+  visitorType: TraitAlias
+# See also: PredefinedType
+- name: NamedType
+  extends: Type
+  properties:
+  - name: question
+    type: TokenNode
+    inherited: true
+    optional: true
+  - name: typeName
+    type: Name
+  visitorName: visitType
+  visitorType: Type
+- name: Parameter
+  properties:
+  - name: type
+    type:
+    - NamedType
+    - PredefinedType
+    optional: true
+  - name: ampersand
+    type: TokenNode
+    optional: true
+  - name: ellipsis
+    type: TokenNode
+    optional: true
+  - name: variable
+    type: TokenNode
+  - name: equal
+    type: TokenNode
+    optional: true
+  - name: expression
+    type: Expression
+    optional: true
+  visitorName: visitParameter
+# Contains both qualified names ("a\b") and unqualified names ("a").
+- name: PartiallyQualifiedName
+  extends: Name
+  properties:
+  - name: namespaceName
+    type: NodeList
+    inherited: true
+  visitorName: visitPartiallyQualifiedName
+# See also: NamedType
+- name: PredefinedType
+  extends: Type
+  properties:
+  - name: question
+    type: TokenNode
+    inherited: true
+    optional: true
+  - name: keyword
+    type: TokenNode
+  visitorName: visitType
+  visitorType: Type
+# See also: PropertyDeclaration
+- name: PropertyElement
+  properties:
+  - name: variable
+    type: TokenNode
+  - name: equal
+    type: TokenNode
+    optional: true
+  - name: expression
+    type: Expression
+    optional: true
+  visitorName: visitPropertyElement
+# See also: NamedTraitAlias
+- name: ReferencedTraitAlias
+  extends: TraitAlias
+  properties:
+  - name: reference
+    type: MethodReference
+  - name: asKeyword
+    type: TokenNode
+    inherited: true
+  - name: modifier
+    type: TokenNode
+    inherited: true
+    optional: true
+  - name: alias
+    type: TokenNode
+    inherited: true
+    optional: true
+  - name: semicolon
+    type: TokenNode
+    inherited: true
+  visitorName: visitTraitAlias
+  visitorType: TraitAlias
+- name: RelativeName
+  extends: Name
+  properties:
+  - name: namespaceKeyword
+    type: TokenNode
+  - name: leadingBackslash
+    type: TokenNode
+  - name: namespaceName
+    type: NodeList
+    inherited: true
+  visitorName: visitRelativeName
+# See also: StaticDeclaration
+# @todo Rename to StaticVariableElement?
+- name: StaticElement
+  properties:
+  - name: variable
+    type: TokenNode
+  - name: equal
+    type: TokenNode
+    optional: true
+  - name: expression
+    type: Expression
+    optional: true
+  visitorName: visitStaticElement
+- name: SwitchCase
+  properties:
+  - name: clauseKeyword
+    type: TokenNode
+  - name: expression
+    type: Expression
+    optional: true
+  - name: separator
+    type: TokenNode
+  - name: statements
+    type: NodeList
+    optional: true
+  visitorName: visitSwitchCase
+- name: TraitPrecedence
+  properties:
+  - name: methodReference
+    type: MethodReference
+  - name: insteadOfKeyword
+    type: TokenNode
+  - name: traitNames
+    type: NodeList
+  - name: semicolon
+    type: TokenNode
+  visitorName: visitTraitPrecedence
+- name: TryCatch
+  properties:
+  - name: catchKeyword
+    type: TokenNode
+  - name: openParen
+    type: TokenNode
+  - name: typeNames
+    type: NodeList
+  - name: variable
+    type: TokenNode
+  - name: closeParen
+    type: TokenNode
+  - name: statements
+    type: StatementBlock
+  visitorName: visitTryCatch
+- name: TryFinally
+  properties:
+  - name: finallyKeyword
+    type: TokenNode
+  - name: statements
+    type: StatementBlock
+  visitorName: visitTryFinally
+# See also: UseDeclaration, UseGroupDeclaration
+- name: UseElement
+  properties:
+  - name: typeKeyword
+    type: TokenNode
+    optional: true
+  - name: target
+    type: Name
+  - name: asKeyword
+    type: TokenNode
+    optional: true
+  - name: alias
+    type: TokenNode
+    optional: true
+  visitorName: visitUseElement

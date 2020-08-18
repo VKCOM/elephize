@@ -1,0 +1,352 @@
+# -----------------------------------------------------------------------------
+# Copyright 2017 Matt Acosta
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# -----------------------------------------------------------------------------
+
+# Severity:
+# - 0: hint
+# - 1: info
+# - 2: warning
+# - 3: error
+
+# Range:
+# - 1-99:      reserved (unused)
+# - 100-999:   internal errors
+# - 1000-1999: lexer errors
+# - 2000-2999: parser errors
+# - 3000-3999: semantic errors
+# - 4000-9999: reserved (future use)
+# - 10000+:    private use
+
+diagnostics:
+
+# -----------------------------------------------------------------------------
+# Internal diagnostics
+# -----------------------------------------------------------------------------
+
+- name: ERR_FeatureIsExperimental
+  text: "The '%s' feature is experimental and unsupported, use %s to enable"
+  code: 200
+# @todo Requires support for localizing feature names.
+- name: ERR_FeatureNotAvailable
+  text: "The '%s' feature requires PHP %s or later"
+  code: 201
+
+- name: ERR_FeatureClassConstantModifiers
+  text: "The feature 'class constant modifiers' requires PHP 7.1 or later"
+- name: ERR_FeatureListDeconstructionByRef
+  text: "The feature 'list deconstruction with assignment by reference' requires PHP 7.3 or later"
+- name: ERR_FeatureListDeconstructionKeys
+  text: "The feature 'list deconstruction by keys' requires PHP 7.1 or later"
+- name: ERR_FeatureListDeconstructionShortSyntax
+  text: "The feature 'shortened list deconstruction syntax' requires PHP 7.1 or later"
+- name: ERR_FeatureNullableTypes
+  text: "The feature 'nullable types' requires PHP 7.1 or later"
+- name: ERR_FeatureSpreadOperatorInArrays
+  text: "The feature 'spread operators in array initializers' requires PHP 7.4 or later"
+- name: ERR_FeatureTrailingCommasInArgumentLists
+  text: "The feature 'trailing commas in argument lists' requires PHP 7.3 or later"
+- name: ERR_FeatureTrailingCommasInUseDeclarations
+  text: "The feature 'trailing commas in use declarations' requires PHP 7.2 or later"
+- name: ERR_FeatureTryCatchUnionTypes
+  text: "The feature 'try-catch union types' requires PHP 7.1 or later"
+- name: ERR_FeatureTypedProperties
+  text: "The feature 'typed properties' requires PHP 7.4 or later"
+
+# -----------------------------------------------------------------------------
+# Lexer diagnostics
+# -----------------------------------------------------------------------------
+
+- name: ERR_UnexpectedCharacter
+  text: "Unexpected character (%s: '%s') in source text"
+  code: 1000
+- name: ERR_HeredocIndentHasSpacesAndTabs
+  text: "Indentation contains both space and tab characters"
+- name: ERR_HeredocIndentMismatch
+  text: "Indentation does not match that of the closing identifier"
+- name: ERR_InvalidNumber
+  text: "Invalid number"
+- name: ERR_InvalidEscapeSequenceUnicode
+  text: "Invalid unicode escape sequence"
+- name: ERR_UnicodeEscapeSequenceOverflow
+  text: "Code point in unicode escape sequence is greater than U+10FFFF"
+# Double-quote, back-quote, and heredoc strings.
+- name: ERR_UnterminatedString
+  text: "Unterminated string"
+# Single-quote and nowdoc strings.
+- name: ERR_UnterminatedStringConstant
+  text: "Unterminated string constant"
+- name: ERR_UnterminatedUnicodeEscapeSequence
+  text: "Unterminated unicode escape sequence, '}' expected"
+
+# --- Warnings ----------------------------------------------------------------
+# Double-quote, back-quote, and heredoc strings only.
+# @todo Add a custom diagnostic for verbatim strings.
+- name: WRN_InvalidEscapeSequence
+  text: "Invalid escape sequence"
+  severity: 2
+- name: WRN_OctalEscapeSequenceOverflow
+  text: "Octal escape sequence cannot be greater than \\377 (255)"
+  severity: 2
+- name: WRN_UnterminatedComment
+  text: "End of file found, '*/' expected"
+  severity: 2
+
+# -----------------------------------------------------------------------------
+# Parser diagnostics
+# -----------------------------------------------------------------------------
+
+- name: ERR_Syntax
+  text: "Syntax error, '%s' expected"
+  code: 2000
+- name: ERR_UnexpectedToken
+  text: "Unexpected token '%s'"
+  code: 2001
+- name: ERR_AbstractClassIsFinal
+  text: "An abstract class cannot be final"
+# @todo Alternative: "'%s' cannot be both abstract and final".
+- name: ERR_AbstractMemberIsFinal
+  text: "Abstract members cannot be final"
+- name: ERR_AbstractMemberIsPrivate
+  text: "Abstract members cannot be private"
+# @todo Alternative: "'%s' cannot declare a body because it is marked abstract"
+- name: ERR_AbstractMethodHasBody
+  text: "An abstract method cannot have a body"
+- name: ERR_ArgumentAfterUnpack
+  text: "A positional argument must be used prior to unpacked arguments"
+- name: ERR_BadConstantModifier
+  text: "Class constants cannot be abstract, final, or static"
+- name: ERR_BadInterfaceModifier
+  text: "Interface members cannot be abstract or final"
+- name: ERR_BadPropertyModifier
+  text: "Class properties cannot be abstract or final"
+- name: ERR_BadTraitAliasModifier
+  text: "The modifier '%s' cannot be used on a trait alias"
+- name: ERR_BadTypeModifier
+  text: "The modifier '%s' cannot be used on a class, interface, or trait"
+- name: ERR_BaseClauseAfterImplements
+  text: "Base clause must precede an interface list"
+# @todo Alternative: "A case label must be followed by a ':' or ';'"
+- name: ERR_CaseLabelSeparatorExpected
+  text: "Expected ':' or ';' after case label"
+- name: ERR_CatchOrFinallyExpected
+  text: "Expected 'catch' or 'finally'"
+- name: ERR_ClassMemberExpected
+  text: "Constant, method, or property declaration expected"
+- name: ERR_ClassNameOrReferenceExpected
+  text: "Expected a class name or a reference to evaluate as a class name"
+- name: ERR_CloseBraceExpected
+  text: "'}' expected"
+- name: ERR_CloseBracketExpected
+  text: "']' expected"
+- name: ERR_CloseParenExpected
+  text: "')' expected"
+- name: ERR_ColonOrDoubleArrowExpected
+  text: "':' or '=>' expected"
+- name: ERR_ColonOrSemicolonExpected
+  text: "':' or ';' expected"
+- name: ERR_CommaOrCloseBraceExpected
+  text: "',' or '}' expected"
+- name: ERR_CommaOrCloseParenExpected
+  text: "',' or ')' expected"
+- name: ERR_CommaOrOpenBraceExpected
+  text: "',' or '{' expected"
+- name: ERR_CommaOrSemicolonExpected
+  text: "',' or ';' expected"
+# - name: ERR_ConstantExpressionExpected
+#   text: "Constant expression expected"
+- name: ERR_DeconstructVariableMissing
+  text: "At least one variable is required to deconstruct an expression"
+- name: ERR_DeconstructVariableReference
+  text: "A destructuring variable cannot be assigned by reference"
+- name: ERR_DoubleArrowOrCloseParenExpected
+  text: "'=>' or ')' expected"
+- name: ERR_DuplicateModifier
+  text: "Duplicate '%s' modifier"
+- name: ERR_EllipsisOrCloseParenExpected
+  text: "'...' or ')' expected"
+- name: ERR_ExpressionExpected
+  text: "Expression expected, got '%s'"
+- name: ERR_ExpressionExpectedEOF
+  text: "End of file found, expression expected"
+- name: ERR_ExpressionNotAddressable
+  text: "The given expression does not have a usable address"
+- name: ERR_ExpressionOrCloseParenExpected
+  text: "Expression or ')' expected"
+- name: ERR_ExpressionOrColonExpected
+  text: "Expression or ':' expected"
+- name: ERR_ExpressionOrSemicolonExpected
+  text: "Expression or ';' expected"
+- name: ERR_HaltCompilerScope
+  text: "__halt_compiler() must be used in outermost scope"
+- name: ERR_IdentifierExpected
+  text: "Identifier expected"
+- name: ERR_IdentifierExpectedKeyword
+  text: "Identifier expected, '%s' is a keyword"
+- name: ERR_IdentifierOrCloseBraceExpected
+  text: "Identifier or '}' expected"
+- name: ERR_IdentifierOrOpenParenExpected
+  text: "Identifier or '(' expected"
+- name: ERR_IncompleteAnonymousClassDeclaration
+  text: "Argument list, base clause, interface list, or '{' expected"
+# @todo Improve text?
+- name: ERR_IncompleteArrayOrDestructure
+  text: "Expected an array initialization expression or destructuring assignment"
+- name: ERR_IncompleteArrowFunction
+  text: "Closure parameters or '&' expected"
+- name: ERR_IncompleteClassDeclaration
+  text: "Base clause, interface list, or '{' expected"
+- name: ERR_IncompleteClassDeclarationWithExtends
+  text: "Interface list or '{' expected"
+- name: ERR_IncompleteClosure
+  text: "Lexical variables, return type, or '{' expected"
+- name: ERR_IncompleteFunctionDeclaration
+  text: "Function name, closure parameters, or '&' expected"
+- name: ERR_IncompleteInterfaceDeclaration
+  text: "Base clause or '{' expected"
+- name: ERR_IncompleteNamespace
+  text: "Expected a namespace declaration or relative name"
+- name: ERR_IncompleteParameter
+  text: "Variable, '&' or '...' expected"
+- name: ERR_IncompleteParameterList
+  text: "Parameter list, initializer, or ')' expected"
+- name: ERR_IncompletePropertyDeclaration
+  text: "Property list, initializer, or ';' expected"
+- name: ERR_IncompleteStaticDeclaration
+  text: "Static variable list, initializer, or ';' expected"
+- name: ERR_IncompleteTraitAdaptation
+  text: "Expected 'as' or '::' in trait adaptation"
+- name: ERR_IncompleteTraitUse
+  text: "Trait list, adaptation clause, or ';' expected"
+- name: ERR_IncompleteUseDeclaration
+  text: "Expected additional imported names, an alias, or ';' in use declaration"
+- name: ERR_IncompleteUseGroupDeclaration
+  text: "Expected additional imported names, an alias, or '}' in use group clause"
+- name: ERR_IncompleteUseName
+  text: "Expected an identifier or use group clause"
+# Used when attempting to parse a `simple-variable`, if attempting to parse a
+# variable token, use `ERR_VariableNameExpected` instead.
+- name: ERR_IncompleteVariable
+  text: "Expected a variable or indirect expression to evaluate as a variable name"
+- name: ERR_IndentExpected
+  text: "Indentation expected"
+- name: ERR_InterfaceImplementsList
+  text: "The keyword 'implements' cannot be used on an interface"
+- name: ERR_InterfaceMethodDefinition
+  text: "Interfaces cannot contain method implementations"
+- name: ERR_InterfaceMemberExpected
+  text: "Constant or method declaration expected"
+- name: ERR_InterfaceMemberNotPublic
+  text: "Interface members must be public"
+- name: ERR_InterfaceProperty
+  text: "Interfaces cannot contain properties"
+- name: ERR_InterfaceTrait
+  text: "Interfaces cannot contain traits"
+- name: ERR_InvalidIterationDepth
+  text: "Iteration depth in '%s' statement must be a constant integer"
+- name: ERR_InvalidMemberDeclaration
+  text: "Invalid token '%s' in class, interface, or trait member declaration"
+- name: ERR_IterationDepthOrSemicolonExpected
+  text: "Iteration depth or ';' expected"
+- name: ERR_MalformedMethodReference
+  text: "A method reference requires a '::' after a class name"
+- name: ERR_MethodNameExpected
+  text: "Method name expected"
+- name: ERR_MethodNameOrAmpersandExpected
+  text: "Method name or '&' expected"
+- name: ERR_MultipleDefaultSwitchLabels
+  text: "Switch statements may only contain one 'default' label"
+- name: ERR_MultipleInheritance
+  text: "Classes may only inherit from one base class"
+- name: ERR_MultipleVisibilityModifiers
+  text: "The modifier '%s' cannot be used with another visibility modifier"
+- name: ERR_NamespaceIsNested
+  text: "Namespace declarations cannot be nested"
+- name: ERR_OpenBraceExpected
+  text: "'{' expected"
+- name: ERR_OpenBraceOrColonExpected
+  text: "'{' or ':' expected"
+- name: ERR_OpenBraceOrSemicolonExpected
+  text: "'{' or ';' expected"
+- name: ERR_OpenParenExpected
+  text: "'(' expected"
+- name: ERR_ParameterExpected
+  text: "Parameter expected"
+- name: ERR_ParameterOrCloseParenExpected
+  text: "Parameter or ')' expected"
+- name: ERR_PropertyExpected
+  text: "Property expected"
+- name: ERR_PropertyNameExpected
+  text: "Property name expected after '$'"
+- name: ERR_SemicolonExpected
+  text: "';' expected"
+- name: ERR_StatementExpected
+  text: "Statement expected"
+- name: ERR_StatementOrColonExpected
+  text: "Statement or ':' expected"
+# @todo Improve name?
+- name: ERR_StaticExpressionExpected
+  text: "Closure, variable, or '::' expected"
+# @todo Improve text?
+- name: ERR_StaticMemberExpected
+  text: "Identifier, variable, or '{' expected"  # ...in scoped access expression
+- name: ERR_StringOffsetExpected
+  text: "An interpolated element access expression must specify an offset"
+# @todo Improve text?
+- name: ERR_StringOffsetNumberExpected
+  text: "Integer offset expected"
+- name: ERR_StringVariableNameExpected
+  text: "Expected an expression or the name of a variable"
+- name: ERR_TraitAdaptationKeywordExpected
+  text: "Expected 'as' or 'insteadof' after method reference"
+- name: ERR_TraitConstant
+  text: "Traits cannot contain constants"
+- name: ERR_TraitMemberExpected
+  text: "Method or property declaration expected"
+- name: ERR_TryUnionOrVariableExpected
+  text: "Type union or variable expected"
+- name: ERR_TypeExpected
+  text: "Type expected"
+- name: ERR_UseTypeAlreadySpecified
+  text: "A use type has already been specified"
+# @todo Improve text?
+- name: ERR_UseTypeExpected
+  text: "Expected an imported type, constant, or function"
+# @todo Improve text?
+- name: ERR_UseTypeOrCloseBraceExpected
+  text: "Expected an imported type, constant, function, or '}'"
+- name: ERR_VariableExpected
+  text: "Variable expected"
+- name: ERR_VariableNameExpected
+  text: "Variable name expected after '$'"
+- name: ERR_VariableOrEllipsisExpected
+  text: "Variable or '...' expected"
+- name: ERR_VariadicHasDefaultValue
+  text: "A variadic parameter cannot have a default value"
+- name: ERR_VariadicIsNotLastParameter
+  text: "A variadic parameter must be the last parameter of a function or method signature"
+
+# --- Warnings ----------------------------------------------------------------
+- name: WRN_EmptySwitchBlock
+  text: "Empty switch block"
+  severity: 2
+- name: WRN_PossibleMistakenEmptyStatement
+  text: "Possible mistaken empty statement (use '{}' if this was intended)"
+  severity: 2
+- name: WRN_RealCast
+  text: "The '(real)' type cast is deprecated, use '(float)' instead"
+  severity: 2
+- name: WRN_UnsetCast
+  text: "The '(unset)' type cast is deprecated, use 'null' instead"
+  severity: 2
