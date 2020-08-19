@@ -21,7 +21,7 @@ import {
   Debug,
   Exception,
   InvalidOperationException
-} from '@mattacosta/php-common';
+} from '../../../php-common';
 
 import { DiagnosticSeverity } from '../../diagnostics/DiagnosticSeverity';
 import { INode } from '../node/INode';

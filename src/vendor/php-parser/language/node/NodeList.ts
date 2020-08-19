@@ -16,7 +16,7 @@
 
 'use strict';
 
-import { ArgumentOutOfRangeException, Hash } from '@mattacosta/php-common';
+import { ArgumentOutOfRangeException, Hash } from '../../../php-common';
 
 import { ISyntaxNode } from '../syntax/ISyntaxNode';
 import {

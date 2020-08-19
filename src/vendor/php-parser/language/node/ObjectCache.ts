@@ -16,7 +16,7 @@
 
 'use strict';
 
-import { IHashable } from '@mattacosta/php-common';
+import { IHashable } from '../../../php-common';
 
 /**
  * An entry in the object cache hash table.

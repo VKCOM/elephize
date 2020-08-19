@@ -16,7 +16,7 @@
 
 'use strict';
 
-import { Debug } from '@mattacosta/php-common';
+import { Debug } from '../../../php-common';
 
 import { ISyntaxNode } from './ISyntaxNode';
 import { NodeList } from '../node/NodeList';

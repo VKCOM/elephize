@@ -20,7 +20,7 @@
 
 'use strict';
 
-import { InvalidOperationException } from '@mattacosta/php-common';
+import { InvalidOperationException } from '../../../php-common';
 import {
   AnonymousClassNode,
   AnonymousFunctionNode,

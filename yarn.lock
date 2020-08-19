@@ -380,11 +380,6 @@
     "@types/yargs" "^15.0.0"
     chalk "^3.0.0"
 
-"@mattacosta/php-common@^1.0.0-beta.4":
-  version "1.0.0-beta.4"
-  resolved "https://registry.yarnpkg.com/@mattacosta/php-common/-/php-common-1.0.0-beta.4.tgz#2c681ef1b9b25fb103c86717aa73adef9a60b222"
-  integrity sha512-4iOQAhF0PQHWMeUZ/vAQ34c5xDk6kwumtM49YEOGKfn2iD3dLkZllyDivHJ+7fWu3md8Tj5g9i6VOJlxPMjAig==
-
 "@prettier/plugin-php@^0.14.0":
   version "0.14.0"
   resolved "https://registry.yarnpkg.com/@prettier/plugin-php/-/plugin-php-0.14.0.tgz#299d4dab3a6943fedf3db78eadb07debc9a78a0a"

@@ -21,7 +21,7 @@ import {
   Hash,
   IComparable,
   IHashable,
-} from '@mattacosta/php-common';
+} from '../../php-common';
 
 /**
  * A line number and character position.

@@ -16,7 +16,7 @@
 
 'use strict';
 
-import { Exception } from '@mattacosta/php-common';
+import { Exception } from '../../php-common';
 
 /**
  * Defines an interface for objects that can parse source text and return a

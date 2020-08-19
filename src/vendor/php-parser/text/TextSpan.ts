@@ -20,7 +20,7 @@ import {
   ArgumentOutOfRangeException,
   IComparable,
   IEquatable
-} from '@mattacosta/php-common';
+} from '../../php-common';
 
 /**
  * Represents a region of text.

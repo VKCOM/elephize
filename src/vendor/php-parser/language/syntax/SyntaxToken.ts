@@ -16,7 +16,7 @@
 
 'use strict';
 
-import { ArgumentException, Debug } from '@mattacosta/php-common';
+import { ArgumentException, Debug } from '../../../php-common';
 
 import { INode } from '../node/INode';
 import { ISourceText } from '../../text/ISourceText';

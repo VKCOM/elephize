@@ -20,7 +20,7 @@ import {
   ArgumentOutOfRangeException,
   Debug,
   Exception
-} from '@mattacosta/php-common';
+} from '../../../php-common';
 
 import { INode } from './INode';
 import { ISyntaxNode, ISyntaxNodeOrList } from '../syntax/ISyntaxNode';

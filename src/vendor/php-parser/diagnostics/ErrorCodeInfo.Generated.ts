@@ -20,7 +20,7 @@
 
 'use strict';
 
-import { ArgumentOutOfRangeException } from '@mattacosta/php-common';
+import { ArgumentOutOfRangeException } from '../../php-common';
 
 import { ErrorCode } from './ErrorCode.Generated';
 import { DiagnosticSeverity } from './DiagnosticSeverity';

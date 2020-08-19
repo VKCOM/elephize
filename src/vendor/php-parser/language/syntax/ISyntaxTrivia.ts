@@ -16,7 +16,7 @@
 
 'use strict';
 
-import { IEquatable } from '@mattacosta/php-common';
+import { IEquatable } from '../../../php-common';
 
 import { ISyntaxNode } from './ISyntaxNode';
 import { ISyntaxToken } from './ISyntaxToken';

@@ -16,7 +16,7 @@
 
 'use strict';
 
-import { ArgumentOutOfRangeException } from '@mattacosta/php-common';
+import { ArgumentOutOfRangeException } from '../../php-common';
 
 import { ErrorCode } from '../diagnostics/ErrorCode.Generated';
 import { ISourceText } from '../text/ISourceText';

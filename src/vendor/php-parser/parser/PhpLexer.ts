@@ -16,7 +16,7 @@
 
 'use strict';
 
-import { ArgumentException, Exception } from '@mattacosta/php-common';
+import { ArgumentException, Exception } from '../../php-common';
 
 import { Character, CharacterInfo } from './Character';
 import { Encoding } from '../text/Encoding';

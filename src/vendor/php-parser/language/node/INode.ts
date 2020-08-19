@@ -16,7 +16,7 @@
 
 'use strict';
 
-import { IHashable } from '@mattacosta/php-common';
+import { IHashable } from '../../../php-common';
 
 import { ISyntaxNode, ISyntaxNodeOrList } from '../syntax/ISyntaxNode';
 import { ITokenMetadata } from '../ITokenMetadata';

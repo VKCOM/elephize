@@ -16,7 +16,7 @@
 
 'use strict';
 
-import { Exception } from '@mattacosta/php-common';
+import { Exception } from '../../php-common';
 
 declare function require(path: string): any;
 

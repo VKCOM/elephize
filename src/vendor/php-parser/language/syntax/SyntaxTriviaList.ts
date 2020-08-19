@@ -16,7 +16,7 @@
 
 'use strict';
 
-import { IndexOutOfRangeException } from '@mattacosta/php-common';
+import { IndexOutOfRangeException } from '../../../php-common';
 
 import { INode } from '../node/INode';
 import { ISyntaxNode } from './ISyntaxNode';

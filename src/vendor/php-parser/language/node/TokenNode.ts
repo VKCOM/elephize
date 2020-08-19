@@ -16,7 +16,7 @@
 
 'use strict';
 
-import { Hash, InvalidOperationException } from '@mattacosta/php-common';
+import { Hash, InvalidOperationException } from '../../../php-common';
 
 import { INode } from './INode';
 import { ISyntaxNode } from '../syntax/ISyntaxNode';

@@ -16,7 +16,7 @@
 
 'use strict';
 
-import { ArgumentOutOfRangeException } from '@mattacosta/php-common';
+import { ArgumentOutOfRangeException } from '../../php-common';
 
 import { PhpLexerState } from './PhpLexerState';
 

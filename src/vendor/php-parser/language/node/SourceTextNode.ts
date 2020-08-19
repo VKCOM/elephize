@@ -16,7 +16,7 @@
 
 'use strict';
 
-import { Hash } from '@mattacosta/php-common';
+import { Hash } from '../../../php-common';
 
 import { INode } from './INode';
 import { Node } from './Node';

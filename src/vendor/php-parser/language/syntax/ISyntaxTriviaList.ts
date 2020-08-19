@@ -16,7 +16,7 @@
 
 'use strict';
 
-import { ICountable, IEquatable } from '@mattacosta/php-common';
+import { ICountable, IEquatable } from '../../../php-common';
 
 import { ISyntaxToken } from './ISyntaxToken';
 import { ISyntaxTrivia } from './ISyntaxTrivia';
