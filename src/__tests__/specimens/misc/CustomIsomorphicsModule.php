@@ -29,6 +29,7 @@ class CustomIsomorphicsModule extends CJSModule {
         ];
         do {
             \VK\Elephize\Builtins\Console::log(ToReplaceCjsWrapper::getInstance()->getLang("lol!"));
+            \VK\Elephize\Builtins\Console::log(ToReplaceCjsWrapper::getInstance()->getLangStatic("lol!"));
             if ($this->obj4) {
                 break;
             }

@@ -1,6 +1,7 @@
 import { CommonjsModule } from './commonjsModule';
 import { NsMap } from '../../types';
 import { PhpParsedStruct } from './phpParser';
+import { log, LogSeverity } from '../../utils/log';
 
 export class CommonjsExternalModule extends CommonjsModule {
   public readonly isDerived: boolean = false;
@@ -38,7 +39,7 @@ export class CommonjsExternalModule extends CommonjsModule {
   }
 
   public addProperty(identifier: string) {
-    this._hoistedContent.add(this._phpStruct.getDecl('$' + identifier));
+    log(`Access to properties for substituted modules is not supported: @ ${this.sourceFileName} accessing ${identifier}`, LogSeverity.ERROR);
   }
 
   public addMethod(identifier: string) {

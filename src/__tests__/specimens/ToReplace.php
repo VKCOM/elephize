@@ -10,4 +10,12 @@ class ToReplace {
     public function getLang($test) {
         return $test . $test;
     }
+
+    /**
+     * @param string $test
+     * @return string
+     */
+    public static function getLangStatic($test) {
+        return $test . $test;
+    }
 }
