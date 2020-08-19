@@ -5,9 +5,6 @@
   },
   "bail": "none",
   "baseDir": ".",
-  "customGlobals": {
-    "getLang": "CustomBackendService::getLang"
-  },
   "noZap": false,
   "outDir": "build",
   "output": "bootstrap.php",
