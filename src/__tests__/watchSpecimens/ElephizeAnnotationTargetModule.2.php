@@ -16,13 +16,12 @@ class ElephizeAnnotationTargetModule extends CJSModule {
     }
 
     /**
-     * @return var
+     * @return string
      */
     public function ElephizeAnnotationTarget() {
         $_3b2ed12 = [0];
         $count = $_3b2ed12[0];
-        return $this->h(
-            IntrinsicElement::get("div"),
+        return IntrinsicElement::get("div")->render(
             [],
             [
                 IntrinsicElement::get("p")->render([], ["You clicked ", $count, " times "]),

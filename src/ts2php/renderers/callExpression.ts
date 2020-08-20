@@ -6,7 +6,6 @@ import {
   getLeftExpr
 } from '../utils/ast';
 import { Context } from '../components/context';
-import { intrinsicElements } from '../internalConfig/intrinsicElements';
 import { ctx, log, LogSeverity } from '../utils/log';
 import { reactHooksSupport } from '../components/react/reactHooks';
 import { insideComponent } from '../components/unusedCodeElimination/usageGraph/nodeData';

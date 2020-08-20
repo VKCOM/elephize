@@ -27,8 +27,7 @@ class ElephizeAnnotationTarget extends RenderableComponent {
     public function render(array $props, array $children) {
         $_3b2ed12 = [0];
         $count = $_3b2ed12[0];
-        return $this->h(
-            IntrinsicElement::get("div"),
+        return IntrinsicElement::get("div")->render(
             [],
             [
                 IntrinsicElement::get("p")->render([], ["You clicked ", $count, " times "]),

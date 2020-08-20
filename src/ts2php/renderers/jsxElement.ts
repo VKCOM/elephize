@@ -32,8 +32,12 @@ export function tJsxElement(node: ts.JsxElement, context: Context<Declaration>) 
     if (declaration.flags & DeclFlag.External || declaration.flags & DeclFlag.DereferencedImport) {
       component = context.registry.getExportedComponent(context.moduleDescriptor, declaration.targetModulePath, node.openingElement.tagName.getText());
     } else {
-      log('Components should be extracted to separate single-class files. If this is not case, something wrong happened :(', LogSeverity.ERROR, ctx(node));
-      component = '';
+      component = context.registry.getLocalComponent(context.moduleDescriptor, node.openingElement.tagName.getText());
+    }
+
+    if (!component) {
+      log(`Component not found neither in exports, nor in local scope: ${node.openingElement.tagName.getText()}`, LogSeverity.ERROR, ctx(node));
+      return '';
     }
     return `${component}->render(${attrs || '[]'}, ${children || '[]'})`;
   }

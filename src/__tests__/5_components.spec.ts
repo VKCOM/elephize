@@ -13,6 +13,6 @@ test('ts2php.components', () => {
     ['components', 'ComponentWithOuterFunction.tsx'],
     ['components', 'ComponentBinaryOperators.tsx'],
     ['components', 'TwoComponents.tsx'],
-    // ['components', 'NestedComponentWithDummyInProps.tsx'],
+    ['components', 'NestedComponentWithDummyInProps.tsx'],
   ]);
 });

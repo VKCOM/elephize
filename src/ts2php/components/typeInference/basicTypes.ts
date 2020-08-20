@@ -162,6 +162,9 @@ const _transformTypeName = (type: ts.Type, checker: ts.TypeChecker, nodeIdentFor
   if (arrType) {
     return arrType;
   }
+  if (t === 'Element' && (type.symbol as any)?.parent?.escapedName === 'JSX') { // Workaround; jsx elements are rendered to strings
+    return 'string';
+  }
   return typeMap[t] || 'var';
 };
 
