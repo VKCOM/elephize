@@ -26,19 +26,18 @@ class Jsx extends RenderableComponent {
      */
     public function render(array $props, array $children) {
         $jsxa = $this->frg([
-            $this->h(
-                IntrinsicElement::get("div"),
+            IntrinsicElement::get("div")->render(
                 ["id" => "test"],
-                [$this->h(IntrinsicElement::get("b"), [], ["ololo"]), "test"]
+                [IntrinsicElement::get("b")->render([], ["ololo"]), "test"]
             ),
-            $this->h(IntrinsicElement::get("i"), [], ["test1"]),
+            IntrinsicElement::get("i")->render([], ["test1"]),
         ]);
-        $jsxb = $this->h(IntrinsicElement::get("b"), [], [$jsxa]);
+        $jsxb = IntrinsicElement::get("b")->render([], [$jsxa]);
         $jsxprops = [
             "id" => "test",
             "className" => "test2",
         ];
-        $jsxc = $this->h(IntrinsicElement::get("div"), array_merge(["title" => "testtitle"], $jsxprops, $jsxprops), [
+        $jsxc = IntrinsicElement::get("div")->render(array_merge(["title" => "testtitle"], $jsxprops, $jsxprops), [
             "Oh my ",
             $jsxb,
             " my oh",

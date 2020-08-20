@@ -35,6 +35,6 @@ class ReactSupport extends RenderableComponent {
         $memoized_callback();
         \VK\Elephize\Builtins\Console::log($memoized);
         \VK\Elephize\Builtins\Console::log($ref);
-        return $this->h(IntrinsicElement::get("div"), [], []);
+        return IntrinsicElement::get("div")->render([], []);
     }
 }

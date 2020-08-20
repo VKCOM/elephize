@@ -25,6 +25,6 @@ class ComponentIgnore extends RenderableComponent {
      * @return string
      */
     public function render(array $props, array $children) {
-        return $this->h(IntrinsicElement::get("div"), [], ["test"]);
+        return IntrinsicElement::get("div")->render([], ["test"]);
     }
 }

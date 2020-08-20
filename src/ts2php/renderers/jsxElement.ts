@@ -20,7 +20,7 @@ export function tJsxElement(node: ts.JsxElement, context: Context<Declaration>) 
   }
 
   if (intrinsicElements[node.openingElement.tagName.getText()]) {
-    return `$this->h(IntrinsicElement::get("${node.openingElement.tagName.getText().toLowerCase()}"), ${attrs || '[]'}, ${children || '[]'})`;
+    return `IntrinsicElement::get("${node.openingElement.tagName.getText().toLowerCase()}")->render(${attrs || '[]'}, ${children || '[]'})`;
   } else {
     const declData = context.scope.findByIdent(node.openingElement.tagName.getText());
     if (!declData) {
@@ -35,6 +35,6 @@ export function tJsxElement(node: ts.JsxElement, context: Context<Declaration>) 
       log('Components should be extracted to separate single-class files. If this is not case, something wrong happened :(', LogSeverity.ERROR, ctx(node));
       component = '';
     }
-    return `$this->h(${component}, ${attrs || '[]'}, ${children || '[]'})`;
+    return `${component}->render(${attrs || '[]'}, ${children || '[]'})`;
   }
 }

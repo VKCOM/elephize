@@ -30,15 +30,14 @@ class NestedComponent extends RenderableComponent {
         $_3b2ed12 = [0];
         $count = $_3b2ed12[0];
         $arr = [1, 2, 3];
-        return $this->h(
-            IntrinsicElement::get("div"),
+        return IntrinsicElement::get("div")->render(
             [],
             [
-                $this->h(DummyComponent::getInstance(), ["count" => $count], []),
+                DummyComponent::getInstance()->render(["count" => $count], []),
                 Stdlib::arrayMap1(
                     $arr,
                     /* _b4f3ee1 */ function ($val) use ($count) {
-                        return $this->h(DummyComponent::getInstance(), ["key" => $val, "count" => $count], []);
+                        return DummyComponent::getInstance()->render(["key" => $val, "count" => $count], []);
                     }
                 ),
             ]

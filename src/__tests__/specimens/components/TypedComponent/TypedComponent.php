@@ -26,6 +26,6 @@ class TypedComponent extends RenderableComponent {
      */
     public function render(array $props, array $children) {
         $classes = $props["classes"];
-        return $this->h(IntrinsicElement::get("div"), ["className" => $classes], [$children]);
+        return IntrinsicElement::get("div")->render(["className" => $classes], [$children]);
     }
 }

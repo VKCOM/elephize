@@ -13,7 +13,7 @@ export function tJsxSelfClosingElement(node: ts.JsxSelfClosingElement, context: 
   }
 
   if (intrinsicElements[node.tagName.getText()]) {
-    return `$this->h(IntrinsicElement::get("${node.tagName.getText()}"), ${attrs || '[]'}, [])`;
+    return `IntrinsicElement::get("${node.tagName.getText()}")->render(${attrs || '[]'}, [])`;
   } else {
     const decl = context.scope.findByIdent(node.tagName.getText());
     if (!decl) {
@@ -29,6 +29,6 @@ export function tJsxSelfClosingElement(node: ts.JsxSelfClosingElement, context: 
       log('Components should be extracted to separate single-class files. If this is not case, something wrong happened :(', LogSeverity.ERROR, ctx(node));
       component = '';
     }
-    return `$this->h(${component}, ${attrs || '[]'}, [])`;
+    return `${component}->render(${attrs || '[]'}, [])`;
   }
 }

@@ -29,13 +29,12 @@ class SecondComponent extends RenderableComponent {
     public function render(array $initial_props, array $children) {
         $props = array_merge([], TwoComponentsModule::getInstance()->default_props, [], $initial_props, []);
         $count = $props["count"];
-        return $this->h(
-            IntrinsicElement::get("div"),
+        return IntrinsicElement::get("div")->render(
             [],
             [
-                $this->h(IntrinsicElement::get("p"), [], ["You clicked ", $count, " times"]),
-                $this->h(IntrinsicElement::get("button"), [], [" Click me "]),
-                $this->h(IntrinsicElement::get("button"), ["disabled" => true], [" Click me "]),
+                IntrinsicElement::get("p")->render([], ["You clicked ", $count, " times"]),
+                IntrinsicElement::get("button")->render([], [" Click me "]),
+                IntrinsicElement::get("button")->render(["disabled" => true], [" Click me "]),
             ]
         );
     }

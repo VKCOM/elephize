@@ -35,17 +35,14 @@ class BasicComponentWithViewLogic extends RenderableComponent {
         $hr_str = $hr < 10 ? "0" . (string) $hr : (string) $hr;
         $time = $hr_str . ":" . $min_str . ":" . $sec_str;
         $keys = [$hr_str, $min_str, $sec_str];
-        return $this->h(
-            IntrinsicElement::get("div"),
+        return IntrinsicElement::get("div")->render(
             [],
             [
-                $this->h(
-                    IntrinsicElement::get("p"),
+                IntrinsicElement::get("p")->render(
                     [],
                     ["You clicked ", $count, " times starting at ", $props["count"], "."]
                 ),
-                $this->h(
-                    IntrinsicElement::get("button"),
+                IntrinsicElement::get("button")->render(
                     [],
                     [
                         $time,
@@ -53,22 +50,19 @@ class BasicComponentWithViewLogic extends RenderableComponent {
                         Stdlib::arrayMap1(
                             $keys,
                             /* _1100a5a */ function ($c) {
-                                return $this->h(IntrinsicElement::get("b"), ["key" => "b"], [$c]);
+                                return IntrinsicElement::get("b")->render(["key" => "b"], [$c]);
                             }
                         ),
-                        $this->h(
-                            IntrinsicElement::get("table"),
+                        IntrinsicElement::get("table")->render(
                             [],
                             [
-                                $this->h(
-                                    IntrinsicElement::get("tbody"),
+                                IntrinsicElement::get("tbody")->render(
                                     [],
                                     [
                                         Stdlib::arrayMap2(
                                             $props["children"],
                                             /* _28597c3 */ function ($row, $idx) {
-                                                return $this->h(
-                                                    IntrinsicElement::get("tr"),
+                                                return IntrinsicElement::get("tr")->render(
                                                     ["key" => "tr" . (string) $idx],
                                                     ["test"]
                                                 );
