@@ -31,22 +31,7 @@ function getSourceFile(path: string, target?: ScriptTarget) {
   return sourceFiles[path];
 }
 
-export const compilerHostSourceGetter = (skippedFiles: string[], scriptTarget?: ScriptTarget) => (fileName: string) => {
-  if (skippedFiles.includes(fileName)) {
-    // Use this hack to prevent typescript resolver from getting into files we don't want to parse.
-    return undefined;
-  }
-  if (fileName.endsWith('.d.ts')) {
-    return getDtsSourceFile(fileName, scriptTarget) || undefined;
-  }
-  return getSourceFile(fileName, scriptTarget) || undefined;
-};
-
-export const watcherHostSourceGetter = (skippedFiles: string[], scriptTarget?: ScriptTarget) => (fileName: string) => {
-  if (skippedFiles.includes(fileName)) {
-    // Use this hack to prevent typescript resolver from getting into files we don't want to parse.
-    return undefined;
-  }
+export const compilerHostSourceGetter = (scriptTarget?: ScriptTarget) => (fileName: string) => {
   if (fileName.endsWith('.d.ts')) {
     return getDtsSourceFile(fileName, scriptTarget) || undefined;
   }

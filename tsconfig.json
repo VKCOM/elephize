@@ -8,6 +8,7 @@
     "noImplicitAny": true,
     "resolveJsonModule": true,
     "strictNullChecks": true,
+    "downlevelIteration": true,
     "typeRoots": [
       "./src/types",
       "./node_modules/@types"
@@ -19,6 +20,8 @@
     "demo/**/*",
     "dist/**/*",
     "src/__tests__/watchSpecimens.~/**/*",
+    "src/__tests__/watchSpecimens/**/*",
+    "src/__tests__/specimens/**/*",
     "node_modules/**/*"
   ]
 }

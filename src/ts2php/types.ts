@@ -1,6 +1,7 @@
 import * as ts from 'typescript';
-import { Context } from './components/context';
-import { ModuleRegistry } from './components/cjsModules/moduleRegistry';
+import {Context} from './components/context';
+import {ModuleRegistry} from './components/cjsModules/moduleRegistry';
+import { NodeFlagStore } from './components/codegen/nodeFlagStore';
 
 export type Dict<T> = { [key: string]: T };
 export type CallbackType = ts.FunctionExpression | ts.ArrowFunction | undefined;
@@ -47,19 +48,6 @@ export type Declaration = {
 
 export type ExpressionHook = (node: ts.CallExpression, context: Context<Declaration>) => string | undefined;
 
-export type TranslateOptions = {
-  baseDir: string;
-  aliases: { [key: string]: string };
-  namespaces: NsMap;
-  customGlobals?: { [key: string]: string };
-  disableCodeElimination?: boolean;
-  options?: ts.CompilerOptions;
-  onData: (sourceFilename: string, targetFilename: string, content: string, error?: number) => void;
-  onBeforeRender?: (filename: string, rootNode: ts.Node) => void; // mainly for testing purposes...
-  onFinish?: (registry: ModuleRegistry) => void;
-  getCloseHandle?: (handle: () => void) => void; // get function which closes watcher when called
-};
-
 export type NsMap = {
   root: string;
   builtins: string;
@@ -95,4 +83,55 @@ export type SpecialVars = {
 export type MethodsTypes = {
   return: string;
   args: { [key: string]: string };
+};
+
+export type ImportReplacementRule = {
+  modulePath: string;
+  implementationPath: string;
+  implementationClass: string;
+};
+
+type ReplacedImportRule = {
+  ignore: false;
+  implementationPath: ImportReplacementRule['implementationPath'];
+  implementationClass: ImportReplacementRule['implementationClass'];
+};
+type IgnoredImportRule = {
+  ignore: true;
+};
+export type ImportRule = ReplacedImportRule | IgnoredImportRule;
+
+export type CliOptions = {
+  aliases: { [key: string]: string };
+  bail: 'none' | 'warn' | 'error';
+  baseDir: string;
+  config: string;
+  encoding: string;
+  help: boolean;
+  noZap: boolean;
+  outDir: string;
+  output: string;
+  quiet: boolean;
+  importRules: {
+    [moduleIdentifier: string]: ImportRule;
+  };
+  rootNs: string;
+  src: string;
+  tsPaths: { [key: string]: string[] };
+  verbose: boolean;
+  verboseTypehints: boolean;
+  verboseUsage: boolean;
+  watch: boolean;
+};
+
+export type TranslateOptions = {
+  aliases: CliOptions['aliases'];
+  baseDir: CliOptions['baseDir'];
+  disableCodeElimination?: boolean;
+  getCloseHandle?: (handle: () => void) => void; // get function which closes watcher when called
+  namespaces: NsMap;
+  onBeforeRender?: (filename: string, rootNode: ts.Node, nodeFlagStore: NodeFlagStore) => void; // mainly for testing purposes...
+  onData: (sourceFilename: string, targetFilename: string, content: string, error?: number) => void;
+  onFinish?: (registry: ModuleRegistry) => void;
+  options?: ts.CompilerOptions;
 };

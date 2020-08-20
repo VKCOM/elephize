@@ -6,11 +6,23 @@ import { log, LogSeverity } from '../ts2php/utils/log';
 import { normalizeFileExt } from '../ts2php/utils/pathsAndNames';
 import * as prettier from 'prettier/standalone';
 import { phpPrettierOptions } from '../ts2php/internalConfig/phpPrettierOptions';
+import { resolveRulePaths } from '../ts2php/components/cjsModules/resolveModules';
+import { CliOptions } from '../ts2php/types';
 
 const baseDir = path.resolve(__dirname, '..', '..');
 const namespaces = {
   root: 'VK\\Elephize',
   builtins: 'VK\\Elephize\\Builtins'
+};
+const importRules: CliOptions['importRules'] = {
+  'src/__tests__/specimens/misc/toReplace.ts': {
+    ignore: false,
+    implementationPath: 'src/__tests__/specimens/ToReplace.php',
+    implementationClass: 'ToReplace'
+  },
+  'src/__tests__/specimens/misc/__toIgnore.ts': {
+    ignore: true
+  }
 };
 const compilerOptions = {
   baseUrl: baseDir,
@@ -18,19 +30,14 @@ const compilerOptions = {
     '#aliasedTestFolder/*': ['src/__tests__/*']
   }
 };
-const customGlobals = {
-  // js -> php
-  'getLang': 'CustomIso::getLang'
-};
 
 export function runBatch(basePath: string[], testSuite: string[][]) {
   let promises: Array<Promise<any>> = [];
 
-  translateCode(testSuite.map((path) => pResolve(...basePath, ...path)), {
+  translateCode(testSuite.map((path) => pResolve(...basePath, ...path)), resolveRulePaths(importRules, baseDir), compilerOptions.paths, {
     baseDir,
     aliases: {},
     namespaces,
-    customGlobals,
     options: compilerOptions,
     onData: (sourceFilename: string, targetFilename: string, content: string) => onData(basePath, promises, targetFilename, content)
   });

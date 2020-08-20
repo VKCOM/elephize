@@ -20,15 +20,12 @@ const namespaces = {
   root: 'VK\\Elephize',
   builtins: 'VK\\Elephize\\Builtins'
 };
+const importRules = { };
 const compilerOptions = {
   baseUrl: baseDir,
   paths: {
     '#aliasedTestFolder/*': ['src/__tests__/*']
   }
-};
-const customGlobals = {
-  // js -> php
-  'getLang': 'CustomIso::getLang'
 };
 
 let lastDiffApplied = 0;
@@ -56,11 +53,10 @@ export function runWatcherTests(watcherTestConfig: WatcherTestQueueItem[]) {
         let close = () => {};
 
         log('Triggering watcher tests for: \n   ' + files.map((f) => f.replace(__dirname, '')).join('\n   '), LogSeverity.INFO);
-        translateCodeAndWatch(files.map((f) => pResolve(__dirname, 'watchSpecimens.~', f)), {
+        translateCodeAndWatch(files.map((f) => pResolve(__dirname, 'watchSpecimens.~', f)), importRules, compilerOptions.paths,{
           baseDir,
           aliases: {},
           namespaces,
-          customGlobals,
           options: compilerOptions,
           getCloseHandle: (handle) => close = handle,
           onData: (sourceFilename: string, targetFilename: string, content: string, error?: number) => {

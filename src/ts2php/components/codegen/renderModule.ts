@@ -20,7 +20,6 @@ import { NodeFlagStore } from './nodeFlagStore';
  * @param registry
  * @param currentModule
  * @param disableCodeElimination
- * @param customGlobals
  */
 export function renderModule(
   checker: ts.TypeChecker,
@@ -31,8 +30,7 @@ export function renderModule(
   namespaces: NsMap,
   registry: ModuleRegistry,
   currentModule: CommonjsModule,
-  disableCodeElimination = false,
-  customGlobals: { [key: string]: string } = {}
+  disableCodeElimination = false
 ): void {
   Scope._forceDisableUnusedVarsElimination = disableCodeElimination;
   const moduleScope = Scope.newRootScope<Declaration>({flags: 0}, currentModule.sourceFileName, [
@@ -41,8 +39,7 @@ export function renderModule(
     'window',
     'Math',
     'Object',
-    'Array',
-    ...Object.keys(customGlobals)
+    'Array'
   ]);
 
   let contextDry = new Context<Declaration>(
@@ -54,8 +51,7 @@ export function renderModule(
     true,
     baseDir,
     namespaces,
-    registry,
-    customGlobals
+    registry
   );
 
   // First pass: build trees and collect var usage info
@@ -81,8 +77,7 @@ export function renderModule(
     false,
     baseDir,
     namespaces,
-    registry,
-    customGlobals
+    registry
   );
 
   // Second pass: build code with cleaned unused vars

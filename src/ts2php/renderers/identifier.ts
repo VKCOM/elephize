@@ -6,7 +6,6 @@ import { Context } from '../components/context';
 import { ctx, log, LogSeverity } from '../utils/log';
 import { snakify } from '../utils/pathsAndNames';
 import { insideComponent } from '../components/unusedCodeElimination/usageGraph/nodeData';
-import { Scope } from '../components/unusedCodeElimination/usageGraph';
 
 export function tIdentifier(node: ts.Identifier, context: Context<Declaration>) {
   const builtin = node.escapedText && builtins.has(node.escapedText.toString());
@@ -24,17 +23,7 @@ export function tIdentifier(node: ts.Identifier, context: Context<Declaration>) 
     }
   }
 
-  const [decl, scope] = context.scope.findByIdent(node.escapedText.toString()) || [];
-
-  // Custom isomorphic plugins support
-  if (context.customGlobals[node.escapedText.toString()]) {
-    if (decl && scope && scope.tNodeLocal !== Scope.tNode) {
-      log(`Detected shadowing of global variable ${node.escapedText.toString()} - probably a bug`, LogSeverity.WARN, ctx(node));
-    } else {
-      log(`Replacing variable according to customGlobals setting: ${node.escapedText.toString()} -> ${context.customGlobals[node.escapedText.toString()]}`, LogSeverity.INFO, ctx(node));
-      return context.customGlobals[node.escapedText.toString()];
-    }
-  }
+  const [decl, ] = context.scope.findByIdent(node.escapedText.toString()) || [];
 
   if (decl && decl.flags & DeclFlag.DereferencedImport) {
     return context.registry.getExportedIdentifier(context.moduleDescriptor, decl.targetModulePath, decl.propName || node.escapedText.toString(), !isCallableIdent);

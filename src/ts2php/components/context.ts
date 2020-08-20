@@ -17,8 +17,7 @@ export class Context<T> {
     public dryRun: boolean,
     public baseDir: string,
     public readonly namespaces: NsMap,
-    public readonly registry: ModuleRegistry,
-    public readonly customGlobals: { [key: string]: string }
+    public readonly registry: ModuleRegistry
   ) { }
 
   public get scope() {

@@ -1,6 +1,6 @@
-import { Options } from './types';
+import { CliOptions } from '../../types';
 
-export function help(options: Options) {
+export function help(options: CliOptions) {
   if (options.help) {
     console.log(`Elephize: ts/react -> php transpiler
 Options:

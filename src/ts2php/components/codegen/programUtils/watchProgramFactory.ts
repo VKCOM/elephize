@@ -3,7 +3,8 @@
 import * as ts from 'typescript';
 import { getDefaultCompilerOptions } from 'typescript';
 import { log, LogSeverity } from '../../../utils/log';
-// import { watcherHostSourceGetter } from '../sourceFilesHelper';
+import { CliOptions, ImportReplacementRule } from '../../../types';
+import { resolveModules } from '../../cjsModules/resolveModules';
 
 const formatHost: ts.FormatDiagnosticsHost = {
   getCanonicalFileName: path => path,
@@ -16,16 +17,20 @@ let lastDiagCode: number | undefined;
  * Create typescript `Program` object with incremental compilation on any change.
  *
  * @param filenames
- * @param skippedFiles
+ * @param importRules
+ * @param baseDir
+ * @param tsPaths
  * @param compilerOptions
  * @param onProgramReady
  * @param getCloseHandle
  */
 export function getWatchProgram(
   filenames: string[],
-  skippedFiles: string[],
+  importRules: CliOptions['importRules'],
+  baseDir: string,
+  tsPaths: { [key: string]: string[] },
   compilerOptions: ts.CompilerOptions,
-  onProgramReady: (p: ts.Program, errcode?: number) => void,
+  onProgramReady: (p: ts.Program, replacements: ImportReplacementRule[], errcode?: number) => void,
   getCloseHandle?: (closeHandle: () => void) => void
 ) {
   const options: ts.CompilerOptions = {...compilerOptions || {}};
@@ -53,20 +58,31 @@ export function getWatchProgram(
     options,
     ts.sys,
     createProgram,
-    reportDiagnostic
+    reportDiagnostic,
+    reportWatchStatusChanged
   );
 
+  // TODO: непонятно как подключить дефолтные либы (которые в buildProgram подключаются через getSourceFile). Скорее всего завалится вывод типов, проверить
+
   const origCreateProgram = host.createProgram;
+  // host.resolveModuleNames() <- // TODO: customize just like in buildProgramFactory
   host.createProgram = (rootNames: readonly string[], options, host, oldProgram) => {
     lastDiagCode = undefined;
     return origCreateProgram(rootNames, options, host, oldProgram);
   };
   const origPostProgramCreate = host.afterProgramCreate;
+  const resolutionFun = resolveModules(options, importRules, baseDir, tsPaths);
+  let replacements: ImportReplacementRule[] = [];
+  host.resolveModuleNames = (moduleNames: string[], containingFile: string) => {
+    const [resolvedModules, importReplacements] = resolutionFun(moduleNames, containingFile);
+    replacements = replacements.concat(importReplacements);
+    return resolvedModules;
+  };
 
   host.afterProgramCreate = (program) => {
     setTimeout(() => {
       origPostProgramCreate!(program);
-      onProgramReady(program.getProgram(), lastDiagCode);
+      onProgramReady(program.getProgram(), replacements, lastDiagCode);
       lastDiagCode = undefined;
     }, 100);
   };
@@ -80,4 +96,9 @@ export function getWatchProgram(
 function reportDiagnostic(diagnostic: ts.Diagnostic) {
   lastDiagCode = diagnostic.code;
   log(ts.formatDiagnostic(diagnostic, formatHost), LogSeverity.ERROR);
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function reportWatchStatusChanged(diagnostic: ts.Diagnostic) {
+  // Do nothing, just suppress default messages
 }

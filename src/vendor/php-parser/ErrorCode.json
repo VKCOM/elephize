@@ -1,0 +1,542 @@
+{
+  "200": {
+    "severity": 3,
+    "text": "The '%s' feature is experimental and unsupported, use %s to enable"
+  },
+  "201": {
+    "severity": 3,
+    "text": "The '%s' feature requires PHP %s or later"
+  },
+  "202": {
+    "severity": 3,
+    "text": "The feature 'class constant modifiers' requires PHP 7.1 or later"
+  },
+  "203": {
+    "severity": 3,
+    "text": "The feature 'list deconstruction with assignment by reference' requires PHP 7.3 or later"
+  },
+  "204": {
+    "severity": 3,
+    "text": "The feature 'list deconstruction by keys' requires PHP 7.1 or later"
+  },
+  "205": {
+    "severity": 3,
+    "text": "The feature 'shortened list deconstruction syntax' requires PHP 7.1 or later"
+  },
+  "206": {
+    "severity": 3,
+    "text": "The feature 'nullable types' requires PHP 7.1 or later"
+  },
+  "207": {
+    "severity": 3,
+    "text": "The feature 'spread operators in array initializers' requires PHP 7.4 or later"
+  },
+  "208": {
+    "severity": 3,
+    "text": "The feature 'trailing commas in argument lists' requires PHP 7.3 or later"
+  },
+  "209": {
+    "severity": 3,
+    "text": "The feature 'trailing commas in use declarations' requires PHP 7.2 or later"
+  },
+  "210": {
+    "severity": 3,
+    "text": "The feature 'try-catch union types' requires PHP 7.1 or later"
+  },
+  "211": {
+    "severity": 3,
+    "text": "The feature 'typed properties' requires PHP 7.4 or later"
+  },
+  "1000": {
+    "severity": 3,
+    "text": "Unexpected character (%s: '%s') in source text"
+  },
+  "1001": {
+    "severity": 3,
+    "text": "Indentation contains both space and tab characters"
+  },
+  "1002": {
+    "severity": 3,
+    "text": "Indentation does not match that of the closing identifier"
+  },
+  "1003": {
+    "severity": 3,
+    "text": "Invalid number"
+  },
+  "1004": {
+    "severity": 3,
+    "text": "Invalid unicode escape sequence"
+  },
+  "1005": {
+    "severity": 3,
+    "text": "Code point in unicode escape sequence is greater than U+10FFFF"
+  },
+  "1006": {
+    "severity": 3,
+    "text": "Unterminated string"
+  },
+  "1007": {
+    "severity": 3,
+    "text": "Unterminated string constant"
+  },
+  "1008": {
+    "severity": 3,
+    "text": "Unterminated unicode escape sequence, '}' expected"
+  },
+  "1009": {
+    "severity": 2,
+    "text": "Invalid escape sequence"
+  },
+  "1010": {
+    "severity": 2,
+    "text": "Octal escape sequence cannot be greater than \\377 (255)"
+  },
+  "1011": {
+    "severity": 2,
+    "text": "End of file found, '*/' expected"
+  },
+  "2000": {
+    "severity": 3,
+    "text": "Syntax error, '%s' expected"
+  },
+  "2001": {
+    "severity": 3,
+    "text": "Unexpected token '%s'"
+  },
+  "2002": {
+    "severity": 3,
+    "text": "An abstract class cannot be final"
+  },
+  "2003": {
+    "severity": 3,
+    "text": "Abstract members cannot be final"
+  },
+  "2004": {
+    "severity": 3,
+    "text": "Abstract members cannot be private"
+  },
+  "2005": {
+    "severity": 3,
+    "text": "An abstract method cannot have a body"
+  },
+  "2006": {
+    "severity": 3,
+    "text": "A positional argument must be used prior to unpacked arguments"
+  },
+  "2007": {
+    "severity": 3,
+    "text": "Class constants cannot be abstract, final, or static"
+  },
+  "2008": {
+    "severity": 3,
+    "text": "Interface members cannot be abstract or final"
+  },
+  "2009": {
+    "severity": 3,
+    "text": "Class properties cannot be abstract or final"
+  },
+  "2010": {
+    "severity": 3,
+    "text": "The modifier '%s' cannot be used on a trait alias"
+  },
+  "2011": {
+    "severity": 3,
+    "text": "The modifier '%s' cannot be used on a class, interface, or trait"
+  },
+  "2012": {
+    "severity": 3,
+    "text": "Base clause must precede an interface list"
+  },
+  "2013": {
+    "severity": 3,
+    "text": "Expected ':' or ';' after case label"
+  },
+  "2014": {
+    "severity": 3,
+    "text": "Expected 'catch' or 'finally'"
+  },
+  "2015": {
+    "severity": 3,
+    "text": "Constant, method, or property declaration expected"
+  },
+  "2016": {
+    "severity": 3,
+    "text": "Expected a class name or a reference to evaluate as a class name"
+  },
+  "2017": {
+    "severity": 3,
+    "text": "'}' expected"
+  },
+  "2018": {
+    "severity": 3,
+    "text": "']' expected"
+  },
+  "2019": {
+    "severity": 3,
+    "text": "')' expected"
+  },
+  "2020": {
+    "severity": 3,
+    "text": "':' or '=>' expected"
+  },
+  "2021": {
+    "severity": 3,
+    "text": "':' or ';' expected"
+  },
+  "2022": {
+    "severity": 3,
+    "text": "',' or '}' expected"
+  },
+  "2023": {
+    "severity": 3,
+    "text": "',' or ')' expected"
+  },
+  "2024": {
+    "severity": 3,
+    "text": "',' or '{' expected"
+  },
+  "2025": {
+    "severity": 3,
+    "text": "',' or ';' expected"
+  },
+  "2026": {
+    "severity": 3,
+    "text": "At least one variable is required to deconstruct an expression"
+  },
+  "2027": {
+    "severity": 3,
+    "text": "A destructuring variable cannot be assigned by reference"
+  },
+  "2028": {
+    "severity": 3,
+    "text": "'=>' or ')' expected"
+  },
+  "2029": {
+    "severity": 3,
+    "text": "Duplicate '%s' modifier"
+  },
+  "2030": {
+    "severity": 3,
+    "text": "'...' or ')' expected"
+  },
+  "2031": {
+    "severity": 3,
+    "text": "Expression expected, got '%s'"
+  },
+  "2032": {
+    "severity": 3,
+    "text": "End of file found, expression expected"
+  },
+  "2033": {
+    "severity": 3,
+    "text": "The given expression does not have a usable address"
+  },
+  "2034": {
+    "severity": 3,
+    "text": "Expression or ')' expected"
+  },
+  "2035": {
+    "severity": 3,
+    "text": "Expression or ':' expected"
+  },
+  "2036": {
+    "severity": 3,
+    "text": "Expression or ';' expected"
+  },
+  "2037": {
+    "severity": 3,
+    "text": "__halt_compiler() must be used in outermost scope"
+  },
+  "2038": {
+    "severity": 3,
+    "text": "Identifier expected"
+  },
+  "2039": {
+    "severity": 3,
+    "text": "Identifier expected, '%s' is a keyword"
+  },
+  "2040": {
+    "severity": 3,
+    "text": "Identifier or '}' expected"
+  },
+  "2041": {
+    "severity": 3,
+    "text": "Identifier or '(' expected"
+  },
+  "2042": {
+    "severity": 3,
+    "text": "Argument list, base clause, interface list, or '{' expected"
+  },
+  "2043": {
+    "severity": 3,
+    "text": "Expected an array initialization expression or destructuring assignment"
+  },
+  "2044": {
+    "severity": 3,
+    "text": "Closure parameters or '&' expected"
+  },
+  "2045": {
+    "severity": 3,
+    "text": "Base clause, interface list, or '{' expected"
+  },
+  "2046": {
+    "severity": 3,
+    "text": "Interface list or '{' expected"
+  },
+  "2047": {
+    "severity": 3,
+    "text": "Lexical variables, return type, or '{' expected"
+  },
+  "2048": {
+    "severity": 3,
+    "text": "Function name, closure parameters, or '&' expected"
+  },
+  "2049": {
+    "severity": 3,
+    "text": "Base clause or '{' expected"
+  },
+  "2050": {
+    "severity": 3,
+    "text": "Expected a namespace declaration or relative name"
+  },
+  "2051": {
+    "severity": 3,
+    "text": "Variable, '&' or '...' expected"
+  },
+  "2052": {
+    "severity": 3,
+    "text": "Parameter list, initializer, or ')' expected"
+  },
+  "2053": {
+    "severity": 3,
+    "text": "Property list, initializer, or ';' expected"
+  },
+  "2054": {
+    "severity": 3,
+    "text": "Static variable list, initializer, or ';' expected"
+  },
+  "2055": {
+    "severity": 3,
+    "text": "Expected 'as' or '::' in trait adaptation"
+  },
+  "2056": {
+    "severity": 3,
+    "text": "Trait list, adaptation clause, or ';' expected"
+  },
+  "2057": {
+    "severity": 3,
+    "text": "Expected additional imported names, an alias, or ';' in use declaration"
+  },
+  "2058": {
+    "severity": 3,
+    "text": "Expected additional imported names, an alias, or '}' in use group clause"
+  },
+  "2059": {
+    "severity": 3,
+    "text": "Expected an identifier or use group clause"
+  },
+  "2060": {
+    "severity": 3,
+    "text": "Expected a variable or indirect expression to evaluate as a variable name"
+  },
+  "2061": {
+    "severity": 3,
+    "text": "Indentation expected"
+  },
+  "2062": {
+    "severity": 3,
+    "text": "The keyword 'implements' cannot be used on an interface"
+  },
+  "2063": {
+    "severity": 3,
+    "text": "Interfaces cannot contain method implementations"
+  },
+  "2064": {
+    "severity": 3,
+    "text": "Constant or method declaration expected"
+  },
+  "2065": {
+    "severity": 3,
+    "text": "Interface members must be public"
+  },
+  "2066": {
+    "severity": 3,
+    "text": "Interfaces cannot contain properties"
+  },
+  "2067": {
+    "severity": 3,
+    "text": "Interfaces cannot contain traits"
+  },
+  "2068": {
+    "severity": 3,
+    "text": "Iteration depth in '%s' statement must be a constant integer"
+  },
+  "2069": {
+    "severity": 3,
+    "text": "Invalid token '%s' in class, interface, or trait member declaration"
+  },
+  "2070": {
+    "severity": 3,
+    "text": "Iteration depth or ';' expected"
+  },
+  "2071": {
+    "severity": 3,
+    "text": "A method reference requires a '::' after a class name"
+  },
+  "2072": {
+    "severity": 3,
+    "text": "Method name expected"
+  },
+  "2073": {
+    "severity": 3,
+    "text": "Method name or '&' expected"
+  },
+  "2074": {
+    "severity": 3,
+    "text": "Switch statements may only contain one 'default' label"
+  },
+  "2075": {
+    "severity": 3,
+    "text": "Classes may only inherit from one base class"
+  },
+  "2076": {
+    "severity": 3,
+    "text": "The modifier '%s' cannot be used with another visibility modifier"
+  },
+  "2077": {
+    "severity": 3,
+    "text": "Namespace declarations cannot be nested"
+  },
+  "2078": {
+    "severity": 3,
+    "text": "'{' expected"
+  },
+  "2079": {
+    "severity": 3,
+    "text": "'{' or ':' expected"
+  },
+  "2080": {
+    "severity": 3,
+    "text": "'{' or ';' expected"
+  },
+  "2081": {
+    "severity": 3,
+    "text": "'(' expected"
+  },
+  "2082": {
+    "severity": 3,
+    "text": "Parameter expected"
+  },
+  "2083": {
+    "severity": 3,
+    "text": "Parameter or ')' expected"
+  },
+  "2084": {
+    "severity": 3,
+    "text": "Property expected"
+  },
+  "2085": {
+    "severity": 3,
+    "text": "Property name expected after '$'"
+  },
+  "2086": {
+    "severity": 3,
+    "text": "';' expected"
+  },
+  "2087": {
+    "severity": 3,
+    "text": "Statement expected"
+  },
+  "2088": {
+    "severity": 3,
+    "text": "Statement or ':' expected"
+  },
+  "2089": {
+    "severity": 3,
+    "text": "Closure, variable, or '::' expected"
+  },
+  "2090": {
+    "severity": 3,
+    "text": "Identifier, variable, or '{' expected"
+  },
+  "2091": {
+    "severity": 3,
+    "text": "An interpolated element access expression must specify an offset"
+  },
+  "2092": {
+    "severity": 3,
+    "text": "Integer offset expected"
+  },
+  "2093": {
+    "severity": 3,
+    "text": "Expected an expression or the name of a variable"
+  },
+  "2094": {
+    "severity": 3,
+    "text": "Expected 'as' or 'insteadof' after method reference"
+  },
+  "2095": {
+    "severity": 3,
+    "text": "Traits cannot contain constants"
+  },
+  "2096": {
+    "severity": 3,
+    "text": "Method or property declaration expected"
+  },
+  "2097": {
+    "severity": 3,
+    "text": "Type union or variable expected"
+  },
+  "2098": {
+    "severity": 3,
+    "text": "Type expected"
+  },
+  "2099": {
+    "severity": 3,
+    "text": "A use type has already been specified"
+  },
+  "2100": {
+    "severity": 3,
+    "text": "Expected an imported type, constant, or function"
+  },
+  "2101": {
+    "severity": 3,
+    "text": "Expected an imported type, constant, function, or '}'"
+  },
+  "2102": {
+    "severity": 3,
+    "text": "Variable expected"
+  },
+  "2103": {
+    "severity": 3,
+    "text": "Variable name expected after '$'"
+  },
+  "2104": {
+    "severity": 3,
+    "text": "Variable or '...' expected"
+  },
+  "2105": {
+    "severity": 3,
+    "text": "A variadic parameter cannot have a default value"
+  },
+  "2106": {
+    "severity": 3,
+    "text": "A variadic parameter must be the last parameter of a function or method signature"
+  },
+  "2107": {
+    "severity": 2,
+    "text": "Empty switch block"
+  },
+  "2108": {
+    "severity": 2,
+    "text": "Possible mistaken empty statement (use '{}' if this was intended)"
+  },
+  "2109": {
+    "severity": 2,
+    "text": "The '(real)' type cast is deprecated, use '(float)' instead"
+  },
+  "2110": {
+    "severity": 2,
+    "text": "The '(unset)' type cast is deprecated, use 'null' instead"
+  }
+}

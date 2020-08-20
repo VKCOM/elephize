@@ -1,0 +1,6 @@
+--- modifyFileTypehints.entry.ts
++++ modifyFileTypehints.entry.ts
+@@ -1,2 +1,2 @@
+-const mfttest = (a: mixed, b: number) => a.toString() + b.toString();
++const mfttest = (a: number, b: number) => a.toString() + b.toString();
+ console.log(mfttest(1, 3));

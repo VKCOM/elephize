@@ -1,0 +1,5 @@
+Copied from https://github.com/mattacosta/php-parser
+All rights belong to respective authors.
+
+Q: Why not npm package?
+A: Compiled npm package fails when trying to extend class SyntaxWalker from typescript. Source text in typescript work fine though.

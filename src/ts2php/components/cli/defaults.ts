@@ -1,21 +1,22 @@
-import { Options } from './types';
+import { CliOptions } from '../../types';
 
-export const defaultOptions: Options = {
+export const defaultOptions: CliOptions = {
+  aliases: {},
+  bail: 'none',
+  baseDir: '.',
   config: '.elephizerc',
-  src: '**/*.tsx',
+  encoding: 'utf-8',
+  importRules: {},
+  help: false,
+  noZap: false,
   outDir: 'build/',
   output: '__stdout',
   quiet: false,
-  verbose: false,
-  verboseUsage: false,
-  verboseTypehints: false,
-  bail: 'none',
-  noZap: false,
-  baseDir: '.',
-  help: false,
-  encoding: 'utf-8',
-  aliases: {},
-  tsPaths: {},
   rootNs: 'VK\\Elephize',
+  src: '**/*.tsx',
+  tsPaths: {},
+  verbose: false,
+  verboseTypehints: false,
+  verboseUsage: false,
   watch: false
 };

@@ -3,6 +3,8 @@
 use VK\Elephize\Builtins\Stdlib;
 use VK\Elephize\Builtins\CJSModule;
 
+require_once __DIR__ . '/ToReplaceCjsWrapper.php';
+
 class CustomIsomorphicsModule extends CJSModule {
     /**
      * @var CustomIsomorphicsModule $_mod
@@ -26,7 +28,8 @@ class CustomIsomorphicsModule extends CJSModule {
             "b" => 2,
         ];
         do {
-            \VK\Elephize\Builtins\Console::log(CustomIso::getLang("lol!"));
+            \VK\Elephize\Builtins\Console::log(ToReplaceCjsWrapper::getInstance()->getLang("lol!"));
+            \VK\Elephize\Builtins\Console::log(ToReplaceCjsWrapper::getInstance()->getLangStatic("lol!"));
             if ($this->obj4) {
                 break;
             }
