@@ -23,6 +23,11 @@ export function tIdentifier(node: ts.Identifier, context: Context<Declaration>) 
     }
   }
 
+  // Warn user for wrong usage of special variable
+  if (context.dryRun && node.escapedText === 'window' && node.parent.getText() === 'window._elephizeIsServer') {
+    log('Special variable \'window._elephizeIsServer\' should be used in ternary conditions only!', LogSeverity.ERROR, ctx(node));
+  }
+
   const [decl, ] = context.scope.findByIdent(node.escapedText.toString()) || [];
 
   if (decl && decl.flags & DeclFlag.DereferencedImport) {
