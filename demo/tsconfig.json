@@ -21,6 +21,10 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "baseUrl": "./src/",
+    "typeRoots": [
+      "./node_modules/@types",
+      "../types"
+    ],
     "paths": {
       "#iso_palette/*": ["components/iso_palette/*"],
       "#utils/*": ["utils/*"]

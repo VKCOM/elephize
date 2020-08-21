@@ -23,6 +23,7 @@ export const App: React.FunctionComponent = () => {
       <span className={'elephize-test-title-head'}>Коэффициент</span>
       <span className={'elephize-test-title-head'}>Действия</span>
     </div>
+    {window._elephizeIsServer ? <div>It's PHP!</div> : <div>It's JS!</div>}
 
     {Object.keys(data).map((key, idx) => <div key={`id-${idx}`} className={'elephize-test-row'}>
       <span className={'elephize-test-title'}>Lol {key} kek</span>

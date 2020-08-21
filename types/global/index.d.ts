@@ -20,3 +20,9 @@ type $__ElephizeTypehint__Any__$ = number
 declare type mixed = $__ElephizeTypehint__Any__$;
 declare type int = number & $__ElephizeTypehint__Int__$;
 declare function parseInt(s: string, radix?: number): int;
+
+interface Window {
+  _elephizeIsServer?: boolean;
+}
+
+declare var window: Window & typeof globalThis;

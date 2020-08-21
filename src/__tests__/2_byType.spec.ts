@@ -12,6 +12,7 @@ test('ts2php.byType', () => {
     ['byType', 'functionDeclaration.ts'],
     ['byType', 'identifier.ts'],
     ['byType', 'ifStatement.ts'],
+    ['byType', 'serverIfStatement.ts'],
     ['byType', 'import.ts'],
     ['byType', 'jsx.tsx'],
     ['byType', 'loops.ts'],
