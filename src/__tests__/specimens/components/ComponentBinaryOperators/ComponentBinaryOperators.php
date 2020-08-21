@@ -27,14 +27,13 @@ class ComponentBinaryOperators extends RenderableComponent {
     public function render(array $props, array $children) {
         $_a01e27a = [$props["initialValue"] ?: ""];
         $input_value = $_a01e27a[0];
-        return $this->h(
-            IntrinsicElement::get("div"),
+        return IntrinsicElement::get("div")->render(
             [],
             [
-                $this->h(IntrinsicElement::get("p"), [], ["You clicked ", $props["count"], " times"]),
-                $this->h(IntrinsicElement::get("button"), [], [" Click me "]),
+                IntrinsicElement::get("p")->render([], ["You clicked ", $props["count"], " times"]),
+                IntrinsicElement::get("button")->render([], [" Click me "]),
                 $input_value
-                    ? $this->h(IntrinsicElement::get("span"), ["className" => "someSpan"], [$input_value])
+                    ? IntrinsicElement::get("span")->render(["className" => "someSpan"], [$input_value])
                     : $input_value,
             ]
         );

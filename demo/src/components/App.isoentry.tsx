@@ -4,6 +4,11 @@ import { StatefulInput } from '#iso_palette/Input/Input.iso';
 import { Radio } from '#iso_palette/Radio/Radio.iso';
 
 // @elephizeTarget
+export const GenericIcon: React.FunctionComponent = () => {
+  return <span>ico!</span>;
+};
+
+// @elephizeTarget
 export const App: React.FunctionComponent = () => {
   const { useState } = React;
   const [data/* , updateData */]: [{ [key: string]: number }, any] = useState({
@@ -37,6 +42,9 @@ export const App: React.FunctionComponent = () => {
       </span>
       <span className={'elephize-test-actions'}>
         <Button appearance={'primary'} size={'m'} wide={false} disabled={false} onClick={saveData}>
+          Сохранить
+        </Button>
+        <Button appearance={'primary'} size={'m'} wide={false} disabled={false} before={<GenericIcon />}>
           Сохранить
         </Button>
       </span>

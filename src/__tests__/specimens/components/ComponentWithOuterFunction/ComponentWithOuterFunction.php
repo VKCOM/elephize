@@ -28,8 +28,7 @@ class ComponentWithOuterFunction extends RenderableComponent {
      */
     public function render(array $props, array $children) {
         $classes = $props["classes"];
-        return $this->h(
-            IntrinsicElement::get("div"),
+        return IntrinsicElement::get("div")->render(
             [
                 "className" => ComponentWithOuterFunctionModule::getInstance()->prepareClasses(
                     ComponentWithOuterFunctionModule::getInstance()->morePrepare($classes)

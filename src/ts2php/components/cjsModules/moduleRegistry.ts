@@ -125,6 +125,21 @@ export class ModuleRegistry {
     return this._getInstance(derived || targetFilename, identifier);
   }
 
+  public getLocalComponent(forModule: CommonjsModule, identifier: string): string {
+    // Find local module
+    const module = this._sourceFilenameToModule.get(forModule.sourceFileName)
+      ?.find((mod) => mod.originalIdentName === identifier);
+
+    if (!module) {
+      log(`No exported component ${identifier} found for filename ${forModule.sourceFileName}`, LogSeverity.ERROR);
+      return '';
+    } else {
+      forModule.registerRequiredFile(module.targetFileName, forModule.targetFileName, module);
+    }
+
+    return this._getInstance(module.targetFileName, identifier);
+  }
+
   protected _registerCommonModule(className: string, fullyQualifiedSourceFilename: string, newFilename: string, external = false, implPath?: string) {
     let moduleDescriptor;
     if (external) {

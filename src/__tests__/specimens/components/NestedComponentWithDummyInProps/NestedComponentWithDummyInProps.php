@@ -6,14 +6,14 @@ use VK\Elephize\Builtins\Stdlib;
 
 require_once __DIR__ . '/../DummyComponent/DummyComponent.php';
 
-class NestedComponent extends RenderableComponent {
+class NestedComponentWithDummyInProps extends RenderableComponent {
     /**
-     * @var NestedComponent $_mod
+     * @var NestedComponentWithDummyInProps $_mod
      */
     private static $_mod;
-    public static function getInstance(): NestedComponent {
+    public static function getInstance(): NestedComponentWithDummyInProps {
         if (!self::$_mod) {
-            self::$_mod = new NestedComponent();
+            self::$_mod = new NestedComponentWithDummyInProps();
         }
         return self::$_mod;
     }
@@ -33,6 +33,7 @@ class NestedComponent extends RenderableComponent {
         return IntrinsicElement::get("div")->render(
             [],
             [
+                $props["componentToRender"],
                 DummyComponent::getInstance()->render(["count" => $count], []),
                 Stdlib::arrayMap1(
                     $arr,

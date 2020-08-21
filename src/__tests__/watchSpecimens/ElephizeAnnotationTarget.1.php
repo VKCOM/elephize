@@ -27,13 +27,12 @@ class ElephizeAnnotationTarget extends RenderableComponent {
     public function render(array $props, array $children) {
         $_3b2ed12 = [0];
         $count = $_3b2ed12[0];
-        return $this->h(
-            IntrinsicElement::get("div"),
+        return IntrinsicElement::get("div")->render(
             [],
             [
-                $this->h(IntrinsicElement::get("p"), [], ["You clicked ", $count, " times "]),
-                $this->h(IntrinsicElement::get("button"), [], [" Click me "]),
-                $this->h(IntrinsicElement::get("button"), ["disabled" => true], [" Click me "]),
+                IntrinsicElement::get("p")->render([], ["You clicked ", $count, " times "]),
+                IntrinsicElement::get("button")->render([], [" Click me "]),
+                IntrinsicElement::get("button")->render(["disabled" => true], [" Click me "]),
             ]
         );
     }

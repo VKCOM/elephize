@@ -11,6 +11,8 @@ interface Props extends React.ButtonHTMLAttributes<any> {
   wide: boolean;
   /** Отключена ли кнопка, или нет (можно ли на неё кликать) */
   disabled: boolean;
+  /** Содержимое перед контентом кнопки */
+  before?: React.ReactElement;
 }
 
 // Непонятный костыль, не уверен что это корректно, что может прийти массив вообще
@@ -36,7 +38,7 @@ const buttonDefaultProps: Props = {
  */
 export const Button: React.FunctionComponent<Props> = (inputProps) => {
   const props = { ...buttonDefaultProps, ...inputProps };
-  const { className, appearance, wide, overflow, size, ...nativeProps } = props;
+  const { className, appearance, wide, overflow, size, before, ...nativeProps } = props;
   // 1) для того, чтобы disabled попал в nativeProps
   // 2) elephize резервирует children для имени на сервере, нужно писать именно так.
   const { disabled, children } = props;
@@ -55,6 +57,7 @@ export const Button: React.FunctionComponent<Props> = (inputProps) => {
 
   return (
     <button {...nativeProps} className={classnames}>
+      {before || null}
       {children}
     </button>
   );

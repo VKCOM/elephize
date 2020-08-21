@@ -6,7 +6,6 @@ import {
   getLeftExpr
 } from '../utils/ast';
 import { Context } from '../components/context';
-import { intrinsicElements } from '../internalConfig/intrinsicElements';
 import { ctx, log, LogSeverity } from '../utils/log';
 import { reactHooksSupport } from '../components/react/reactHooks';
 import { insideComponent } from '../components/unusedCodeElimination/usageGraph/nodeData';
@@ -37,38 +36,7 @@ export function tCallExpression(node: ts.CallExpression, context: Context<Declar
   const onUsage = (ident: string) => usedVars.add(ident);
   context.scope.addEventListener(Scope.EV_USAGE, onUsage);
 
-  if (ident === '$this->h') {
-    ident = '\n' + '$this->h';
-    context.nodeFlagsStore.upsert(node, { name: 'ReactCreateElement' });
-
-    let [componentName, attrs, ...children] = node.arguments;
-    let componentNameRendered: string;
-    let attrsRendered: string;
-    let childrenRendered: string[];
-
-    if (componentName.kind === ts.SyntaxKind.StringLiteral) { // intrinsic element
-      componentNameRendered = renderNode(componentName, context);
-      const componentNameUnquoted = componentNameRendered.replace(/"/g, '');
-      if (!intrinsicElements[componentNameUnquoted]) {
-        log(`Unknown intrinsic tag ${componentNameUnquoted}`, LogSeverity.ERROR, ctx(node));
-        return 'null';
-      }
-
-      // This will be used in propertyAssignment visitor to check attrs
-      context.nodeFlagsStore.upsert(node, { elementName: componentNameUnquoted });
-      attrsRendered = renderNode(attrs, context) || '[]';
-      childrenRendered = renderNodes(children, context);
-    } else { // react component
-      componentNameRendered = renderNode(componentName, context);
-      attrsRendered = renderNode(attrs, context) || '[]';
-      childrenRendered = renderNodes(children, context);
-    }
-    args = [
-      componentNameRendered,
-      attrsRendered,
-      '[' + childrenRendered.join(', ') + ']' // convert child nodes to explicit array
-    ];
-  } else if (node.expression.kind === ts.SyntaxKind.PropertyAccessExpression
+  if (node.expression.kind === ts.SyntaxKind.PropertyAccessExpression
     && (node.expression as ts.PropertyAccessExpression).name.escapedText === 'hasOwnProperty') {
     // Object {}.hasOwnProperty() support for For-In loops; not a general support!
     flagParentOfType(node, [ts.SyntaxKind.IfStatement], { drop: true }, context.nodeFlagsStore);

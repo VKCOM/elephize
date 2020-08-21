@@ -11,10 +11,6 @@ import { builtins } from '../internalConfig/jsBuiltins';
 export function tPropertyAccessExpression(node: ts.PropertyAccessExpression, context: Context<Declaration>) {
   let [ident, accessor] = renderNodes([node.expression, node.name], context);
 
-  if (ident === '$React' && accessor === 'createElement') {
-    return '$this->h';
-  }
-
   if (ident === '$exports' && !context.scope.getClosure().has('exports')) {
     log('You should use `export` instead of `module.exports = `', LogSeverity.ERROR, ctx(node));
     return '';

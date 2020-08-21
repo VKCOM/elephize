@@ -27,16 +27,14 @@ class BasicComponentWithProps extends RenderableComponent {
     public function render(array $props, array $children) {
         $_e8afc0c = [$props["count"]];
         $count = $_e8afc0c[0];
-        return $this->h(
-            IntrinsicElement::get("div"),
+        return IntrinsicElement::get("div")->render(
             [],
             [
-                $this->h(
-                    IntrinsicElement::get("p"),
+                IntrinsicElement::get("p")->render(
                     [],
                     ["You clicked ", $count, " times starting at ", $props["count"], "."]
                 ),
-                $this->h(IntrinsicElement::get("button"), [], [" Click me "]),
+                IntrinsicElement::get("button")->render([], [" Click me "]),
             ]
         );
     }

@@ -20,7 +20,7 @@ export function tJsxElement(node: ts.JsxElement, context: Context<Declaration>) 
   }
 
   if (intrinsicElements[node.openingElement.tagName.getText()]) {
-    return `$this->h(IntrinsicElement::get("${node.openingElement.tagName.getText().toLowerCase()}"), ${attrs || '[]'}, ${children || '[]'})`;
+    return `IntrinsicElement::get("${node.openingElement.tagName.getText().toLowerCase()}")->render(${attrs || '[]'}, ${children || '[]'})`;
   } else {
     const declData = context.scope.findByIdent(node.openingElement.tagName.getText());
     if (!declData) {
@@ -32,9 +32,13 @@ export function tJsxElement(node: ts.JsxElement, context: Context<Declaration>) 
     if (declaration.flags & DeclFlag.External || declaration.flags & DeclFlag.DereferencedImport) {
       component = context.registry.getExportedComponent(context.moduleDescriptor, declaration.targetModulePath, node.openingElement.tagName.getText());
     } else {
-      log('Components should be extracted to separate single-class files. If this is not case, something wrong happened :(', LogSeverity.ERROR, ctx(node));
-      component = '';
+      component = context.registry.getLocalComponent(context.moduleDescriptor, node.openingElement.tagName.getText());
     }
-    return `$this->h(${component}, ${attrs || '[]'}, ${children || '[]'})`;
+
+    if (!component) {
+      log(`Component not found neither in exports, nor in local scope: ${node.openingElement.tagName.getText()}`, LogSeverity.ERROR, ctx(node));
+      return '';
+    }
+    return `${component}->render(${attrs || '[]'}, ${children || '[]'})`;
   }
 }
