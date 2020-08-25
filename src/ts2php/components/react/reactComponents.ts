@@ -50,6 +50,11 @@ export function handleComponent(context: Context<Declaration>, node: ts.Expressi
     context.pushScope(nodeName.getText());
     context.scope.ownerNode!.data.isComponent = true;
 
+    // Declare props
+    [...funcNode.parameters].forEach((ident) => context.scope.addDeclaration(
+      ident.getText(), [], { terminateLocally: true, dryRun: context.dryRun }
+    ));
+
     let args = renderNodes([...funcNode.parameters], context);
     let block = renderNode(funcNode.body, context);
 

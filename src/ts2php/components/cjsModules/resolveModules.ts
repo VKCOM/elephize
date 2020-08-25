@@ -81,7 +81,10 @@ export const resolveModules = (options: ts.CompilerOptions, importRules: CliOpti
       if (result.resolvedModule) {
         resolvedModules.push(result.resolvedModule);
       } else {
-        log(`Module ${moduleName} was not found while parsing imports of ${containingFile}`, LogSeverity.ERROR);
+        if (!containingFile.endsWith('.d.ts')) {
+          // there may be false-positive errors in .d.ts files belonging to node typings
+          log(`Module ${moduleName} was not found while parsing imports of ${containingFile}`, LogSeverity.ERROR);
+        }
         resolvedModules.push(emptyModule);
       }
     }
