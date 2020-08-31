@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Button } from '#iso_palette/Button/Button.iso';
 import { StatefulInput } from '#iso_palette/Input/Input.iso';
 import { Radio } from '#iso_palette/Radio/Radio.iso';
+import { CheckBox } from '#iso_palette/CheckBox/CheckBox.iso';
 
 // @elephizeTarget
 export const GenericIcon: React.FunctionComponent = () => {
@@ -39,6 +40,7 @@ export const App: React.FunctionComponent = () => {
         <Radio name={'el-test'} value={'1'}>1x</Radio>
         <Radio name={'el-test'} value={'2'}>2x</Radio>
         <Radio name={'el-test'} value={'3'}>3x</Radio>
+        <CheckBox name={'test2'} />
       </span>
       <span className={'elephize-test-actions'}>
         <Button appearance={'primary'} size={'m'} wide={false} disabled={false} onClick={saveData}>

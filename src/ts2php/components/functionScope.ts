@@ -7,6 +7,7 @@ import { ctx, log, LogSeverity } from '../utils/log';
 import { BoundNode } from './unusedCodeElimination/usageGraph/node';
 import { renderNode, renderNodes } from './codegen/renderNodes';
 import { usedInNestedScope } from './unusedCodeElimination/usageGraph/nodeData';
+import { getTimeMarker } from '../utils/hrtime';
 
 type FunctionalDecl = ts.FunctionDeclaration | ts.FunctionExpression | ts.ArrowFunction;
 
@@ -27,7 +28,8 @@ export function getRenderedBlock(
     context.scope.addDeclaration(nodeIdent, [], { dryRun: context.dryRun });
   }
 
-  context.pushScope(nodeIdent);
+  const stackCtr = getTimeMarker();
+  context.pushScope(`function__${stackCtr}`, nodeIdent);
 
   // Declare all parameters
   argSynList.map(fetchAllBindingIdents)
@@ -50,7 +52,7 @@ export function getRenderedBlock(
     idMap.set(ident, !!(decl.flags & DeclFlag.ModifiedInLowerScope));
   });
 
-  context.popScope();
+  context.popScope(`function__${stackCtr}`, bodyBlock?.getLastToken());
   return { syntaxList, block, idMap };
 }
 

@@ -3,11 +3,12 @@ import { ModuleRegistry } from './cjsModules/moduleRegistry';
 import { CommonjsModule } from './cjsModules/commonjsModule';
 import { Scope } from './unusedCodeElimination/usageGraph';
 import { BoundNode } from './unusedCodeElimination/usageGraph/node';
-import { log, LogSeverity, shortCtx } from '../utils/log';
+import { ctx, log, LogSeverity, shortCtx } from '../utils/log';
 import { NsMap } from '../types';
 import { NodeFlagStore } from './codegen/nodeFlagStore';
 
 export class Context<T> {
+  protected _uniqIdStack: string[] = [];
   public constructor(
     protected _scope: Scope<T>,
     public checker: ts.TypeChecker,
@@ -24,7 +25,10 @@ export class Context<T> {
     return this._scope;
   }
 
-  public pushScope(ownerIdent: string) { // should be called strictly after addDeclaration!
+  public pushScope(uniqid: string, ownerIdent: string) { // should be called strictly after addDeclaration!
+    // log('Push scope w/' + ownerIdent + ' / ' + uniqid, LogSeverity.INFO);
+
+    this._uniqIdStack.push(uniqid);
     const node = this._scope.declarations.get(ownerIdent);
 
     if (node && (node as BoundNode<T>).ownedScope && this.dryRun) {
@@ -32,15 +36,21 @@ export class Context<T> {
     }
 
     if (!node || node.homeScope !== this._scope) {
+      log(`Failed to push scope into stack, this may lead to errors; (${ownerIdent} /${uniqid})`, LogSeverity.WARN);
       return;
     }
 
     this._scope = node.spawnScope(this.moduleDescriptor.sourceFileName, this.dryRun);
   }
 
-  public popScope() {
+  public popScope(uniqid: string, context?: ts.Node) {
+    // log('Pop scope / ' + uniqid, LogSeverity.INFO);
+    if (uniqid !== this._uniqIdStack[this._uniqIdStack.length - 1]) {
+      throw new Error('Attempt to pop frame that is not on top of stack: this should not happen and probably is a bug in transpiler \n' + ctx(context));
+    }
+    this._uniqIdStack.pop();
     if (!this._scope.parentScope) {
-      throw new Error('Call stack got out of bounds: this should not happen and probably is a bug in transpiler');
+      throw new Error('Call stack got out of bounds: this should not happen and probably is a bug in transpiler \n' + ctx(context));
     }
     this._scope = this._scope.parentScope;
   }

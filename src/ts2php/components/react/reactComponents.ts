@@ -3,6 +3,7 @@ import { Declaration } from '../../types';
 import { getClosestOrigParentOfType, getClosestParentOfAnyType } from '../../utils/ast';
 import { Context } from '../context';
 import { renderNode, renderNodes } from '../codegen/renderNodes';
+import { getTimeMarker } from '../../utils/hrtime';
 
 /**
  * Top-level functions marked with IC prefix are expected to be functional Isomorphic Components
@@ -47,7 +48,8 @@ export function handleComponent(context: Context<Declaration>, node: ts.Expressi
 
     const decl = context.scope.addDeclaration(nodeName.getText(), [], { terminateGlobally: true, dryRun: context.dryRun });
 
-    context.pushScope(nodeName.getText());
+    const stackCtr = getTimeMarker();
+    context.pushScope(`component__${stackCtr}`, nodeName.getText());
     context.scope.ownerNode!.data.isComponent = true;
 
     // Declare props
@@ -61,7 +63,7 @@ export function handleComponent(context: Context<Declaration>, node: ts.Expressi
     if (decl && decl.ownedScope) {
       context.scope.terminateToParentTerminalNode(context.dryRun);
     }
-    context.popScope();
+    context.popScope(`component__${stackCtr}`, funcNode.getLastToken());
 
     descriptor.setArgs(args.join(', '));
     descriptor.setBlock(block);
