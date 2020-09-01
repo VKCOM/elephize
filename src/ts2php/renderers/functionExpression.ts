@@ -20,6 +20,7 @@ export function tFunctionExpression(node: ts.FunctionExpression, context: Contex
   let funcIdent: string;
   if (parentDecl && (parentDecl as ts.VariableDeclaration).initializer === node) {
     funcIdent = (parentDecl as ts.VariableDeclaration).name.getText();
+    context.scope.addDeclaration(funcIdent, [], { dryRun: context.dryRun });
   } else {
     funcIdent = identifyAnonymousNode(node);
     // We should terminate anonymous functions locally, unless they are assigned to variable

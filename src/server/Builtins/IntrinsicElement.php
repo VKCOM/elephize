@@ -96,6 +96,9 @@ class IntrinsicElement extends RenderableComponent {
             if ($name === 'className') {
                 $name = 'class';
             }
+            if ($value === true) {
+                $value = 'true';
+            }
             $attrs[] = $name . '="' . htmlspecialchars($value) . '"';
         }
 
