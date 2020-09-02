@@ -35,6 +35,17 @@ class TemplateStringModule extends CJSModule {
      * @var string $tse
      */
     public $tse;
+    /**
+     * @param boolean $param
+     * @return string
+     */
+    public function tsf($param) {
+        if (!$param) {
+            return "";
+        }
+        $aaa = 123;
+        return "asd " . $param . " " . $aaa . " dsa";
+    }
 
     private function __construct() {
         $this->tsa = "Hello world";
@@ -42,6 +53,6 @@ class TemplateStringModule extends CJSModule {
         $this->tsc = "Lol " . strlen($this->tsb) . " kek " . strlen($this->tsa) . " wow";
         $this->tsd = "Kek " . ($this->tsc . substr($this->tsb, 1)) . " lol";
         $this->tse = $this->tsa . " wow";
-        \VK\Elephize\Builtins\Console::log($this->tsd, $this->tse);
+        \VK\Elephize\Builtins\Console::log($this->tsd, $this->tse, $this->tsf(true));
     }
 }
