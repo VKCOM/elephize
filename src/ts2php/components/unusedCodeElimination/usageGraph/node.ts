@@ -216,19 +216,19 @@ export class BindPendingNode<T extends { [key: string]: any }> extends ScopeNode
     this._tmpTraceTargetNodes.add(node);
   }
 
-  public latebind(traceTargetNodes: Array<ScopeNode<T>>): BoundNode<T> {
-    const node = new BoundNode<T>(
+  public makeBoundNode(traceTargetNodes: Array<ScopeNode<T>>, withHomeScope: Scope<T>): BoundNode<T> {
+    return new BoundNode<T>(
       this.ident,
-      this.homeScope,
+      withHomeScope,
       this.data,
       Array.from(this._edges).concat(traceTargetNodes)
     );
+  }
 
+  public replaceWith(node: BoundNode<T>) {
     this._tmpTraceTargetNodes.forEach((n) => {
       n.removeEdgeTo(this);
       n.addEdgeTo(node);
     });
-
-    return node;
   }
 }

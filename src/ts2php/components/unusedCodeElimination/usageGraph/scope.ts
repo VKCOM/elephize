@@ -187,6 +187,19 @@ export class Scope<NodeData extends { [key: string]: any }> {
     log(`[${dryRun ? 'D' : ' '}] ${action}: ${traceSourceIdent} -> [${tgtIdents.join(', ')}]`, LogSeverity.INFO);
   }
 
+  protected collectPendingNodes(scope: Scope<NodeData>, ident: string) {
+    const collectedNodes: Array<BindPendingNode<NodeData>> = [];
+    function _collect(scopeC: Scope<NodeData>) {
+      const pendingNode = scopeC.declarations.get(ident);
+      if (pendingNode && isPending(pendingNode)) {
+        collectedNodes.push(pendingNode);
+      }
+      scopeC.childScopes.forEach(_collect);
+    }
+    _collect(scope);
+    return collectedNodes;
+  }
+
   /**
    * Add declaration of identifier to current scope
    *
@@ -199,35 +212,40 @@ export class Scope<NodeData extends { [key: string]: any }> {
    */
   public addDeclaration(traceSourceIdent: string, traceTargetIdents: Array<string | undefined>, { terminateGlobally = false, terminateLocally = false, dryRun = false } = {}): BoundNode<NodeData> | null {
     let node: BoundNode<NodeData>;
-    const pendingNode = this.declarations.get(traceSourceIdent);
+    // To make sure we're creating a new node and not binding lately-bound one, we should check every child
+    // scope (recursively) for existence of node with current identifier.
+    const pendingNodes = this.collectPendingNodes(this, traceSourceIdent);
+    const nodeDeclaredInCurrentScope = this.declarations.get(traceSourceIdent);
 
-    if (dryRun) {
-      this._logAction('Add declaration', traceSourceIdent, dryRun, traceTargetIdents, terminateLocally, terminateGlobally);
-      if (pendingNode && !isPending(pendingNode)) {
-        log(`Identifier ${traceSourceIdent} already declared @ ${pendingNode.homeScope.tNodeLocal}`, LogSeverity.ERROR, shortCtx(this.sourceFile));
-        return null;
-      }
-    } else {
-      if (!pendingNode) {
+    // We don't declare anything in second run, just check and bail out
+    if (!dryRun) {
+      if (!nodeDeclaredInCurrentScope) {
         log(`No identifier ${traceSourceIdent} declared while unused vars elimination: it's probably a bug in transpiler`, LogSeverity.ERROR, shortCtx(this.sourceFile));
         return null;
       }
-      if (isPending(pendingNode)) {
+      if (isPending(nodeDeclaredInCurrentScope)) {
         log(`Node ${traceSourceIdent} was not bound while unused vars elimination: it's probably a bug in transpiler`, LogSeverity.ERROR, shortCtx(this.sourceFile));
         return null;
       }
-      return pendingNode as BoundNode<NodeData>;
+      return nodeDeclaredInCurrentScope as BoundNode<NodeData>;
+    }
+
+    this._logAction('Add declaration', traceSourceIdent, dryRun, traceTargetIdents, terminateLocally, terminateGlobally);
+    if (nodeDeclaredInCurrentScope && !isPending(nodeDeclaredInCurrentScope)) {
+      log(`Identifier ${traceSourceIdent} already declared @ ${nodeDeclaredInCurrentScope.homeScope.tNodeLocal}`, LogSeverity.ERROR, shortCtx(this.sourceFile));
+      return null;
     }
 
     // We should pass here only in dry run with pending or undefined node
     const traceTargetNodes = traceTargetIdents.filter((s): s is string => !!s).map(this._findOrInsertNode);
-    if (pendingNode) {
-      if (!isPending(pendingNode)) {
-        return pendingNode as BoundNode<NodeData>;
-      }
-      node = pendingNode.latebind(traceTargetNodes);
-      this.identsUsed.delete(pendingNode);
-      this.identsUsed.add(node);
+    if (pendingNodes.length > 0) {
+      node = pendingNodes[0].makeBoundNode(traceTargetNodes, this);
+      pendingNodes.forEach((n) => {
+        n.homeScope.declarations.delete(n.ident);
+        n.replaceWith(node);
+        n.homeScope.identsUsed.delete(n);
+        n.homeScope.identsUsed.add(node);
+      });
       this.declarations.set(traceSourceIdent, node);
       this._callListeners(Scope.EV_BIND_UNBOUND, traceSourceIdent);
     } else {
