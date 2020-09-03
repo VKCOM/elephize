@@ -50,19 +50,18 @@ class IntrinsicElement extends RenderableComponent {
      * @return array
      */
     protected function separateTextNodes(array $children) {
-        $filtered_children = array_values(array_filter($children));
         $new_children = [];
         // Add <!-- --> between simple text nodes to make react hydration happy in case of vars interpolation.
-        for ($i = 0; $i < count($filtered_children) - 1; $i++) {
-            $new_children[] = $filtered_children[$i];
+        for ($i = 0; $i < count($children) - 1; $i++) {
+            $new_children[] = $children[$i];
             // Rendered content is not html tags -> use separator
-            if ($filtered_children[$i][0] !== '<' && $filtered_children[$i + 1][0] !== '<') {
+            if ($children[$i][0] !== '<' && $children[$i + 1][0] !== '<') {
                 $new_children[] = '<!-- -->';
             }
         }
         // Add last child
-        if (!empty($filtered_children)) {
-            $new_children[] = $filtered_children[count($filtered_children) - 1];
+        if (!empty($children)) {
+            $new_children[] = $children[count($children) - 1];
         }
 
         // Trim first and last child at the beginning and at the end.
