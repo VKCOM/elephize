@@ -165,10 +165,10 @@ export class Scope<NodeData extends { [key: string]: any }> {
    */
   public _addChildScope(sourceFile: string, ownerNode: ScopeNode<NodeData>): Scope<NodeData> {
     const child = new Scope(sourceFile, this._nodeDefaultData, this, ownerNode);
-    child._termNodeLocalName = '__#retval@' + ownerNode.ident;
+    child._termNodeLocalName = '__#retval@' + ownerNode.ident; // internal value for tNodeLocal
     const terminalNode = new BoundNode<NodeData>(child.tNodeLocal, child, this._nodeDefaultData);
-    child.declarations.set(Scope.tNode, this.terminalNode);
-    child.declarations.set(child.tNodeLocal, terminalNode);
+    child.declarations.set(Scope.tNode, this.terminalNode); // assign global terminal node by ref
+    child.declarations.set(child.tNodeLocal, terminalNode); // assign local terminal node
     this.childScopes.add(child);
     return child;
   }
@@ -255,10 +255,12 @@ export class Scope<NodeData extends { [key: string]: any }> {
     }
 
     if (terminateGlobally) {
+      this._logAction('Terminate call to global [@addDeclaration]', traceSourceIdent, dryRun, traceTargetIdents, terminateLocally, terminateGlobally);
       this.terminalNode.addEdgeTo(node);
     }
 
     if (terminateLocally) {
+      this._logAction('Terminate call to local [@addDeclaration]', traceSourceIdent, dryRun, traceTargetIdents, terminateLocally, terminateGlobally);
       this.localTerminalNode.addEdgeTo(node);
     }
 
@@ -281,23 +283,26 @@ export class Scope<NodeData extends { [key: string]: any }> {
       return;
     }
 
-    this._logAction('Add usage', traceSourceIdent, dryRun, traceTargetIdents, terminateLocally, terminateGlobally);
-
     let traceSourceNode = this._findOrInsertNode(traceSourceIdent);
     this.identsUsed.add(traceSourceNode);
     this._callListeners(Scope.EV_USAGE, traceSourceIdent);
 
     if (terminateGlobally) {
+      this._logAction('Terminate call to global [@addUsage]', traceSourceIdent, dryRun, traceTargetIdents, terminateLocally, terminateGlobally);
       this.terminalNode.addEdgeTo(traceSourceNode);
     }
 
     if (terminateLocally) {
+      this._logAction('Terminate call to local [@addUsage]', traceSourceIdent, dryRun, traceTargetIdents, terminateLocally, terminateGlobally);
       this.localTerminalNode.addEdgeTo(traceSourceNode);
     }
 
     traceTargetIdents
       .map(this._findOrInsertNode)
-      .forEach((n) => traceSourceNode.addEdgeTo(n));
+      .forEach((n) => {
+        this._logAction('Add usage', traceSourceIdent, dryRun, [n.ident], terminateLocally, terminateGlobally);
+        traceSourceNode.addEdgeTo(n);
+      });
   }
 
   public terminateCall(traceTargetIdent: string, { traceSourceIdent, dryRun = false }: { traceSourceIdent?: string; dryRun?: boolean } = {}) {
@@ -310,10 +315,10 @@ export class Scope<NodeData extends { [key: string]: any }> {
       traceSourceIdent = this.tNodeLocal;
     }
 
-    this._logAction('Terminate call', traceSourceIdent, dryRun, [traceTargetIdent], false, false);
-
     const traceTargetNode = this._findOrInsertNode(traceTargetIdent);
     const traceSourceNode = this._findOrInsertNode(traceSourceIdent);
+
+    this._logAction('Terminate call', traceSourceIdent, dryRun, [traceTargetIdent], false, false);
     traceSourceNode.addEdgeTo(traceTargetNode);
   }
 
@@ -326,8 +331,6 @@ export class Scope<NodeData extends { [key: string]: any }> {
       return;
     }
 
-    this._logAction('Terminate scope to local', this.parentScope?.tNodeLocal || '', dryRun, [this.tNodeLocal], false, false);
-
     const traceSourceNode = this.parentScope?.localTerminalNode;
     if (!traceSourceNode) {
       log('Trying to terminate root node to upper scope - this is error in transpiler', LogSeverity.ERROR, shortCtx(this.sourceFile));
@@ -335,6 +338,7 @@ export class Scope<NodeData extends { [key: string]: any }> {
     }
 
     const traceTargetNode = this.localTerminalNode;
+    this._logAction('Terminate scope to local', this.parentScope?.tNodeLocal || '', dryRun, [this.tNodeLocal], false, false);
     traceSourceNode.addEdgeTo(traceTargetNode);
   }
 
