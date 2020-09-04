@@ -41,7 +41,7 @@ abstract class RenderableComponent extends CJSModule {
         foreach ($array as $item) {
             if (is_array($item)) {
                 $flat = array_merge($flat, $this->flatten($item));
-            } else {
+            } else if ($item !== null) {
                 $flat[] = (string)$item;
             }
         }

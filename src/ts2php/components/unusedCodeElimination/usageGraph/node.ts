@@ -26,6 +26,12 @@ export class ScopeNode<T extends { [key: string]: any }> {
    * Traverse mark: common flag, used in DFS
    */
   protected _traverseMark = false;
+  /**
+   * Target nodes where current unbound node is to be replaced with bound node.
+   * This should be filled in BindPendingNode, and is intended to be READONLY in BoundNode it's replaced with.
+   * @protected
+   */
+  protected _tmpTraceTargetNodes: Map<string, ScopeNode<T>> = new Map();
 
   public constructor(ident: string, homeScope: Scope<T>, data: T) {
     this.ident = ident;
@@ -174,8 +180,9 @@ export class ScopeNode<T extends { [key: string]: any }> {
 export class BoundNode<T extends { [key: string]: any }> extends ScopeNode<T> {
   public readonly _type = 'early_bound';
 
-  public constructor(ident: string, homeScope: Scope<T>, data: T, traceTargetNodes: Array<ScopeNode<T>> = []) {
+  public constructor(ident: string, homeScope: Scope<T>, data: T, traceTargetNodes: Array<ScopeNode<T>> = [], tmpSourceTargets?: Map<string, ScopeNode<T>>) {
     super(ident, homeScope, data);
+    this._tmpTraceTargetNodes = tmpSourceTargets || new Map();
     traceTargetNodes.forEach((node) => this.addEdgeTo(node));
   }
 
@@ -203,6 +210,17 @@ export class BoundNode<T extends { [key: string]: any }> extends ScopeNode<T> {
     if (!this._ownedScope) {
       throw new Error('Failed to get owned scope!');
     }
+
+    // If this node was unbound once, it should have temporary trace targets,
+    // we should append our local terminals there in order to make our unused
+    // vars collector work well with function hoisting.
+    this._tmpTraceTargetNodes.forEach((node) => {
+      const localTerm = this._ownedScope?.localTerminalNode;
+      if (localTerm) {
+        node.addEdgeTo(localTerm);
+      }
+    });
+
     return this._ownedScope;
   }
 }
@@ -210,25 +228,26 @@ export class BoundNode<T extends { [key: string]: any }> extends ScopeNode<T> {
 // Late-bound graph node
 export class BindPendingNode<T extends { [key: string]: any }> extends ScopeNode<T> {
   public readonly _type = 'late_bound';
-  protected _tmpTraceTargetNodes: Set<ScopeNode<T>> = new Set();
 
   public revdep(node: ScopeNode<T>) {
-    this._tmpTraceTargetNodes.add(node);
+    // TODO: this may fail in case of shadowing functions
+    this._tmpTraceTargetNodes.set(node.ident, node);
   }
 
-  public latebind(traceTargetNodes: Array<ScopeNode<T>>): BoundNode<T> {
-    const node = new BoundNode<T>(
+  public makeBoundNode(traceTargetNodes: Array<ScopeNode<T>>, withHomeScope: Scope<T>): BoundNode<T> {
+    return new BoundNode<T>(
       this.ident,
-      this.homeScope,
+      withHomeScope,
       this.data,
-      Array.from(this._edges).concat(traceTargetNodes)
+      Array.from(this._edges).concat(traceTargetNodes),
+      this._tmpTraceTargetNodes
     );
+  }
 
+  public replaceWith(node: BoundNode<T>) {
     this._tmpTraceTargetNodes.forEach((n) => {
       n.removeEdgeTo(this);
       n.addEdgeTo(node);
     });
-
-    return node;
   }
 }

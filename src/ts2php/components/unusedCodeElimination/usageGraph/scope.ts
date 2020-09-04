@@ -165,10 +165,10 @@ export class Scope<NodeData extends { [key: string]: any }> {
    */
   public _addChildScope(sourceFile: string, ownerNode: ScopeNode<NodeData>): Scope<NodeData> {
     const child = new Scope(sourceFile, this._nodeDefaultData, this, ownerNode);
-    child._termNodeLocalName = '__#retval@' + ownerNode.ident;
+    child._termNodeLocalName = '__#retval@' + ownerNode.ident; // internal value for tNodeLocal
     const terminalNode = new BoundNode<NodeData>(child.tNodeLocal, child, this._nodeDefaultData);
-    child.declarations.set(Scope.tNode, this.terminalNode);
-    child.declarations.set(child.tNodeLocal, terminalNode);
+    child.declarations.set(Scope.tNode, this.terminalNode); // assign global terminal node by ref
+    child.declarations.set(child.tNodeLocal, terminalNode); // assign local terminal node
     this.childScopes.add(child);
     return child;
   }
@@ -187,6 +187,19 @@ export class Scope<NodeData extends { [key: string]: any }> {
     log(`[${dryRun ? 'D' : ' '}] ${action}: ${traceSourceIdent} -> [${tgtIdents.join(', ')}]`, LogSeverity.INFO);
   }
 
+  protected collectPendingNodes(scope: Scope<NodeData>, ident: string) {
+    const collectedNodes: Array<BindPendingNode<NodeData>> = [];
+    function _collect(scopeC: Scope<NodeData>) {
+      const pendingNode = scopeC.declarations.get(ident);
+      if (pendingNode && isPending(pendingNode)) {
+        collectedNodes.push(pendingNode);
+      }
+      scopeC.childScopes.forEach(_collect);
+    }
+    _collect(scope);
+    return collectedNodes;
+  }
+
   /**
    * Add declaration of identifier to current scope
    *
@@ -199,35 +212,40 @@ export class Scope<NodeData extends { [key: string]: any }> {
    */
   public addDeclaration(traceSourceIdent: string, traceTargetIdents: Array<string | undefined>, { terminateGlobally = false, terminateLocally = false, dryRun = false } = {}): BoundNode<NodeData> | null {
     let node: BoundNode<NodeData>;
-    const pendingNode = this.declarations.get(traceSourceIdent);
+    // To make sure we're creating a new node and not binding lately-bound one, we should check every child
+    // scope (recursively) for existence of node with current identifier.
+    const pendingNodes = this.collectPendingNodes(this, traceSourceIdent);
+    const nodeDeclaredInCurrentScope = this.declarations.get(traceSourceIdent);
 
-    if (dryRun) {
-      this._logAction('Add declaration', traceSourceIdent, dryRun, traceTargetIdents, terminateLocally, terminateGlobally);
-      if (pendingNode && !isPending(pendingNode)) {
-        log(`Identifier ${traceSourceIdent} already declared @ ${pendingNode.homeScope.tNodeLocal}`, LogSeverity.ERROR, shortCtx(this.sourceFile));
-        return null;
-      }
-    } else {
-      if (!pendingNode) {
+    // We don't declare anything in second run, just check and bail out
+    if (!dryRun) {
+      if (!nodeDeclaredInCurrentScope) {
         log(`No identifier ${traceSourceIdent} declared while unused vars elimination: it's probably a bug in transpiler`, LogSeverity.ERROR, shortCtx(this.sourceFile));
         return null;
       }
-      if (isPending(pendingNode)) {
+      if (isPending(nodeDeclaredInCurrentScope)) {
         log(`Node ${traceSourceIdent} was not bound while unused vars elimination: it's probably a bug in transpiler`, LogSeverity.ERROR, shortCtx(this.sourceFile));
         return null;
       }
-      return pendingNode as BoundNode<NodeData>;
+      return nodeDeclaredInCurrentScope as BoundNode<NodeData>;
+    }
+
+    this._logAction('Add declaration', traceSourceIdent, dryRun, traceTargetIdents, terminateLocally, terminateGlobally);
+    if (nodeDeclaredInCurrentScope && !isPending(nodeDeclaredInCurrentScope)) {
+      log(`Identifier ${traceSourceIdent} already declared @ ${nodeDeclaredInCurrentScope.homeScope.tNodeLocal}`, LogSeverity.ERROR, shortCtx(this.sourceFile));
+      return null;
     }
 
     // We should pass here only in dry run with pending or undefined node
     const traceTargetNodes = traceTargetIdents.filter((s): s is string => !!s).map(this._findOrInsertNode);
-    if (pendingNode) {
-      if (!isPending(pendingNode)) {
-        return pendingNode as BoundNode<NodeData>;
-      }
-      node = pendingNode.latebind(traceTargetNodes);
-      this.identsUsed.delete(pendingNode);
-      this.identsUsed.add(node);
+    if (pendingNodes.length > 0) {
+      node = pendingNodes[0].makeBoundNode(traceTargetNodes, this);
+      pendingNodes.forEach((n) => {
+        n.homeScope.declarations.delete(n.ident);
+        n.replaceWith(node);
+        n.homeScope.identsUsed.delete(n);
+        n.homeScope.identsUsed.add(node);
+      });
       this.declarations.set(traceSourceIdent, node);
       this._callListeners(Scope.EV_BIND_UNBOUND, traceSourceIdent);
     } else {
@@ -237,10 +255,12 @@ export class Scope<NodeData extends { [key: string]: any }> {
     }
 
     if (terminateGlobally) {
+      this._logAction('Terminate call to global [@addDeclaration]', traceSourceIdent, dryRun, traceTargetIdents, terminateLocally, terminateGlobally);
       this.terminalNode.addEdgeTo(node);
     }
 
     if (terminateLocally) {
+      this._logAction('Terminate call to local [@addDeclaration]', traceSourceIdent, dryRun, traceTargetIdents, terminateLocally, terminateGlobally);
       this.localTerminalNode.addEdgeTo(node);
     }
 
@@ -263,23 +283,26 @@ export class Scope<NodeData extends { [key: string]: any }> {
       return;
     }
 
-    this._logAction('Add usage', traceSourceIdent, dryRun, traceTargetIdents, terminateLocally, terminateGlobally);
-
     let traceSourceNode = this._findOrInsertNode(traceSourceIdent);
     this.identsUsed.add(traceSourceNode);
     this._callListeners(Scope.EV_USAGE, traceSourceIdent);
 
     if (terminateGlobally) {
+      this._logAction('Terminate call to global [@addUsage]', traceSourceIdent, dryRun, traceTargetIdents, terminateLocally, terminateGlobally);
       this.terminalNode.addEdgeTo(traceSourceNode);
     }
 
     if (terminateLocally) {
+      this._logAction('Terminate call to local [@addUsage]', traceSourceIdent, dryRun, traceTargetIdents, terminateLocally, terminateGlobally);
       this.localTerminalNode.addEdgeTo(traceSourceNode);
     }
 
     traceTargetIdents
       .map(this._findOrInsertNode)
-      .forEach((n) => traceSourceNode.addEdgeTo(n));
+      .forEach((n) => {
+        this._logAction('Add usage', traceSourceIdent, dryRun, [n.ident], terminateLocally, terminateGlobally);
+        traceSourceNode.addEdgeTo(n);
+      });
   }
 
   public terminateCall(traceTargetIdent: string, { traceSourceIdent, dryRun = false }: { traceSourceIdent?: string; dryRun?: boolean } = {}) {
@@ -292,10 +315,10 @@ export class Scope<NodeData extends { [key: string]: any }> {
       traceSourceIdent = this.tNodeLocal;
     }
 
-    this._logAction('Terminate call', traceSourceIdent, dryRun, [traceTargetIdent], false, false);
-
     const traceTargetNode = this._findOrInsertNode(traceTargetIdent);
     const traceSourceNode = this._findOrInsertNode(traceSourceIdent);
+
+    this._logAction('Terminate call', traceSourceIdent, dryRun, [traceTargetIdent], false, false);
     traceSourceNode.addEdgeTo(traceTargetNode);
   }
 
@@ -308,8 +331,6 @@ export class Scope<NodeData extends { [key: string]: any }> {
       return;
     }
 
-    this._logAction('Terminate scope to local', this.parentScope?.tNodeLocal || '', dryRun, [this.tNodeLocal], false, false);
-
     const traceSourceNode = this.parentScope?.localTerminalNode;
     if (!traceSourceNode) {
       log('Trying to terminate root node to upper scope - this is error in transpiler', LogSeverity.ERROR, shortCtx(this.sourceFile));
@@ -317,6 +338,7 @@ export class Scope<NodeData extends { [key: string]: any }> {
     }
 
     const traceTargetNode = this.localTerminalNode;
+    this._logAction('Terminate scope to local', this.parentScope?.tNodeLocal || '', dryRun, [this.tNodeLocal], false, false);
     traceSourceNode.addEdgeTo(traceTargetNode);
   }
 

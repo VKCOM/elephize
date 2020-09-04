@@ -2,10 +2,6 @@ import * as React from 'react';
 
 type CChildren = Array<Array<JSX.Element | undefined>>;
 
-function prepareClasses(classes: string) {
-  return classes.split(';').join(' ');
-}
-
 const morePrepare = (classes: string) => classes.split(' ').join('-');
 
 /**
@@ -17,4 +13,8 @@ export function ComponentWithOuterFunction(props: { children: CChildren; classes
   /** @param string[] children */
   const { children, classes } = props;
   return <div className={prepareClasses(morePrepare(classes))}>{children}</div>;
+}
+
+function prepareClasses(classes: string) {
+  return classes.split(';').join(' ');
 }

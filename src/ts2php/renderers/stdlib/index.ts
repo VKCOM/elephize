@@ -57,7 +57,10 @@ export const hookStdlib: ExpressionHook = (node: ts.CallExpression, context: Con
   });
 
   context.scope.removeEventListener(Scope.EV_USAGE, onUsage);
-  markUsedVars(node, lExp, usedVars, context);
+
+  if (result) { // Don't do redundant work if there's no result
+    markUsedVars(node, lExp, usedVars, context);
+  }
 
   return result;
 };

@@ -19,15 +19,15 @@ class ComponentWithOuterFunctionModule extends CJSModule {
      * @param string $classes
      * @return string
      */
-    public function prepareClasses($classes) {
-        return implode(" ", explode(";", $classes));
+    public function morePrepare($classes) {
+        return implode("-", explode(" ", $classes));
     }
     /**
      * @param string $classes
      * @return string
      */
-    public function morePrepare($classes) {
-        return implode("-", explode(" ", $classes));
+    public function prepareClasses($classes) {
+        return implode(" ", explode(";", $classes));
     }
 
     private function __construct() {
