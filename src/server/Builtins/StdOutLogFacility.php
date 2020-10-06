@@ -14,7 +14,7 @@ class StdOutLogFacility implements ILogFacility {
      *
      */
     public function flush() {
-        #ifndef KittenPHP
+        #ifndef KPHP
         if (function_exists('flush')) {
             flush();
         }
