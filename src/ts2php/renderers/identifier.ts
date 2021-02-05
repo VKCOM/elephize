@@ -46,8 +46,14 @@ export function tIdentifier(node: ts.Identifier, context: Context<Declaration>) 
 
   if ( // assignment inside object literal
     node.parent.kind === ts.SyntaxKind.PropertyAssignment && (node.parent as ts.PropertyAssignment).name === node
-    || node.parent.kind === ts.SyntaxKind.ShorthandPropertyAssignment && (node.parent as ts.ShorthandPropertyAssignment).name === node
   ) {
+    return node.escapedText.toString();
+  }
+
+  if ( // shorthand assignment inside object literal; should append usage case!
+    node.parent.kind === ts.SyntaxKind.ShorthandPropertyAssignment && (node.parent as ts.ShorthandPropertyAssignment).name === node
+  ) {
+    context.scope.addUsage(node.getText(), [], { dryRun: context.dryRun });
     return node.escapedText.toString();
   }
 
