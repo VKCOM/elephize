@@ -6,7 +6,12 @@ const sourceFiles: { [key: string]: SourceFile | null } = {};
 // Try find d.ts source in typescript folder
 function getDtsSourceFile(name: string, target?: ScriptTarget) {
   if (sourceFiles[name] === undefined) {
-    let path = name.startsWith('/') ? name : require.resolve('typescript/lib/' + name);
+    let path;
+    try {
+      path = name.startsWith('/') ? name : require.resolve('typescript/lib/' + name);
+    } catch (e) {
+      path = require.resolve(name.replace(/^node_modules\//, ''));
+    }
     if (existsSync(path)) {
       let input = readFileSync(path, {encoding: 'utf-8'});
       sourceFiles[name] = createSourceFile(name, input, target!);
