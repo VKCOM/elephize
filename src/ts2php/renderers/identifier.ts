@@ -31,6 +31,12 @@ export function tIdentifier(node: ts.Identifier, context: Context<Declaration>) 
   const [decl, ] = context.scope.findByIdent(node.escapedText.toString()) || [];
 
   if (decl && decl.flags & DeclFlag.DereferencedImport) {
+    if (!decl.targetModulePath) {
+      // This condition is to prevent errors while importing types from external modules.
+      // It's fine to import type/interface identifiers without any checks, if they're used only in type expressions.
+      // It might be difficult to debug import failures, though, we consider it typescript compiler/checker business.
+      return 'null';
+    }
     return context.registry.getExportedIdentifier(context.moduleDescriptor, decl.targetModulePath, decl.propName || node.escapedText.toString(), !isCallableIdent);
   }
 

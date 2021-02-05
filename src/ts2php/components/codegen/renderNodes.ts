@@ -99,6 +99,9 @@ function _renderNode(node: ts.Node | undefined, context: Context<Declaration>): 
     return '';
   }
 
+  if (node.kind === ts.SyntaxKind.InterfaceDeclaration) return '';
+  if (node.kind === ts.SyntaxKind.TypeAliasDeclaration) return '';
+
   if (ts.isFunctionDeclaration(node)) return tFunctionDeclaration(node, context);
   if (ts.isFunctionExpression(node)) return tFunctionExpression(node, context);
   if (ts.isArrowFunction(node)) return tArrowFunction(node, context);
