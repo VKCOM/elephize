@@ -14,6 +14,7 @@ test('ts2php.components', () => {
     ['components', 'ComponentBinaryOperators.tsx'],
     ['components', 'TwoComponents.tsx'],
     ['components', 'NestedComponentWithDummyInProps.tsx'],
+    ['components', 'InnerHtmlComponent.tsx'],
 
     ['fixes', 'CheckBox.tsx'],
   ]);
