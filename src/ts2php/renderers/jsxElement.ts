@@ -8,8 +8,15 @@ import { renderNode, renderNodes } from '../components/codegen/renderNodes';
 export function tJsxElement(node: ts.JsxElement, context: Context<Declaration>) {
   // opening element
   const attrs = renderNode(node.openingElement.attributes, context);
+
+  // support for dangerouslySetInnerHtml; don't render children if we have some prerendered data for node
+  const innerhtml = context.nodeFlagsStore.get(node.openingElement)?.prerenderedData;
+
   // child nodes
-  const childrenRendered = renderNodes([...node.children], context);
+  const childrenRendered = innerhtml
+    ? innerhtml
+    : renderNodes([...node.children], context);
+
   const children = childrenRendered && childrenRendered.length
     ? '[' + childrenRendered.join(', ') + ']'
     : '[]';
