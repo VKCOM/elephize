@@ -1,4 +1,5 @@
 import { runBatch } from './runBatch';
+import { log } from '../ts2php/utils/log';
 
 test('ts2php.stdlibMethods', () => {
   return runBatch([__dirname, 'specimens'], [
@@ -37,5 +38,5 @@ test('ts2php.stdlibMethods', () => {
     ['misc', 'elephizeIgnore.tsx'],
     ['misc', 'exportedTypes.ts'],
     ['misc', 'importedTypes.tsx']
-  ]);
+  ], log);
 });

@@ -1,4 +1,5 @@
 import { runBatch } from './runBatch';
+import { log } from '../ts2php/utils/log';
 
 test('ts2php.components', () => {
   return runBatch([__dirname, 'specimens'], [
@@ -17,5 +18,5 @@ test('ts2php.components', () => {
     ['components', 'InnerHtmlComponent.tsx'],
 
     ['fixes', 'CheckBox.tsx'],
-  ]);
+  ], log);
 });

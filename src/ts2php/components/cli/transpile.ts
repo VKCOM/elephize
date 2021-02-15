@@ -30,7 +30,7 @@ export function transpile(options: CliOptions, baseDir: string, outDir: string, 
     };
 
     (options.watch ? translateCodeAndWatch : translateCode)(
-      matches.map((p) => path.resolve('./', p)), resolveRulePaths(options.importRules, baseDir), options.tsPaths, {
+      matches.map((p) => path.resolve('./', p)), resolveRulePaths(options.importRules, baseDir), options.tsPaths, log, {
         baseDir,
         aliases: options.aliases,
         namespaces,

@@ -7,6 +7,7 @@ import * as prettier from 'prettier/standalone';
 import { phpPrettierOptions } from '../ts2php/internalConfig/phpPrettierOptions';
 import { resolveRulePaths } from '../ts2php/components/cjsModules/resolveModules';
 import { CliOptions } from '../ts2php/types';
+import { LogObj } from '../ts2php/utils/log';
 
 const baseDir = path.resolve(__dirname, '..', '..');
 const namespaces = {
@@ -30,10 +31,10 @@ const compilerOptions = {
   }
 };
 
-export function runBatch(basePath: string[], testSuite: string[][]) {
+export function runBatch(basePath: string[], testSuite: string[][], log: LogObj) {
   let promises: Array<Promise<any>> = [];
 
-  translateCode(testSuite.map((path) => pResolve(...basePath, ...path)), resolveRulePaths(importRules, baseDir), compilerOptions.paths, {
+  translateCode(testSuite.map((path) => pResolve(...basePath, ...path)), resolveRulePaths(importRules, baseDir), compilerOptions.paths, log, {
     baseDir,
     aliases: {},
     namespaces,

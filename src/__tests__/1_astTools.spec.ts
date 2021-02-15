@@ -11,13 +11,15 @@ import {
 } from '../ts2php/utils/ast';
 import { NodeFlagStore } from '../ts2php/components/codegen/nodeFlagStore';
 import { defaultOptions } from '../ts2php/components/codegen/defaultCompilerOptions';
+import { log } from '../ts2php/utils/log';
 
 function compile(files: string[]): ts.SourceFile | undefined {
   let [program] = getBuildProgram(files, {}, '', {},
     {
       compilerOptions: defaultOptions
     },
-    () => null
+    () => null,
+    log
   );
   for (const sourceFile of program.getSourceFiles()) {
     if (!sourceFile.isDeclarationFile) { // skip .d.ts if any
@@ -46,7 +48,7 @@ function findFirstNode(where: ts.Node, type: ts.SyntaxKind) {
 }
 
 function recompile(fileNames: string[], onData: (filename: string, rootNode: ts.Node, nodeFlagStore: NodeFlagStore) => void) {
-  return translateCode(fileNames, {}, {}, {
+  return translateCode(fileNames, {}, {}, log, {
     baseDir: '',
     aliases: {},
     namespaces: { root: '', builtins: '' },

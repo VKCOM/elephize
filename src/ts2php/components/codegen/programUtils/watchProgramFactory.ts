@@ -60,7 +60,7 @@ export function getWatchProgram(
     options,
     ts.sys,
     createProgram,
-    reportDiagnostic,
+    reportDiagnostic(log),
     reportWatchStatusChanged
   );
 
@@ -95,9 +95,11 @@ export function getWatchProgram(
   }
 }
 
-function reportDiagnostic(diagnostic: ts.Diagnostic, log: LogObj) {
-  lastDiagCode = diagnostic.code;
-  log(ts.formatDiagnostic(diagnostic, formatHost), LogSeverity.ERROR);
+function reportDiagnostic(log: LogObj) {
+  return (diagnostic: ts.Diagnostic) => {
+    lastDiagCode = diagnostic.code;
+    log(ts.formatDiagnostic(diagnostic, formatHost), LogSeverity.ERROR);
+  };
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

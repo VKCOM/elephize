@@ -1,4 +1,5 @@
 import { runBatch } from './runBatch';
+import { log } from '../ts2php/utils/log';
 
 test('ts2php.byType', () => {
   return runBatch([__dirname, 'specimens'], [
@@ -24,5 +25,5 @@ test('ts2php.byType', () => {
     ['byType', 'switchStatement.ts'],
     ['byType', 'templateString.ts'],
     ['byType', 'tsInternals.ts'],
-  ]);
+  ], log);
 });

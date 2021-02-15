@@ -53,7 +53,7 @@ export function runWatcherTests(watcherTestConfig: WatcherTestQueueItem[]) {
         let close = () => {};
 
         log('Triggering watcher tests for: \n   ' + files.map((f) => f.replace(__dirname, '')).join('\n   '), LogSeverity.INFO);
-        translateCodeAndWatch(files.map((f) => pResolve(__dirname, 'watchSpecimens.~', f)), importRules, compilerOptions.paths,{
+        translateCodeAndWatch(files.map((f) => pResolve(__dirname, 'watchSpecimens.~', f)), importRules, compilerOptions.paths, log,{
           baseDir,
           aliases: {},
           namespaces,
