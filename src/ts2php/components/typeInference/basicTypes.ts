@@ -3,7 +3,7 @@ import { MethodsTypes } from '../../types';
 import { checkCustomTypehints } from './customTypehints';
 import { typeMap } from './basicTypesMap';
 import { mixedTypehintId } from './customTypehintsList';
-import { LogObj, LogSeverity } from '../../utils/log';
+import { LogObj } from '../../utils/log';
 
 /**
  * Check if node has proper inferred type identified by typeString
@@ -28,7 +28,7 @@ export function hasType(node: ts.Node, checker: ts.TypeChecker, typeString: stri
 export function hasArrayType(node: ts.Node, checker: ts.TypeChecker, log: LogObj): boolean {
   const nodeIdentForLog = node.getText();
   let nd: ts.Node = (node as ts.PropertyAccessExpression).expression;
-  log(`Checking array type of node: ${nodeIdentForLog}`, LogSeverity.TYPEHINT);
+  log.typehint('Checking array type of node: %s', [nodeIdentForLog]);
   let type = checker.getTypeAtLocation(nd);
   const foundType = _parseArrayType(type, checker, log, true, nodeIdentForLog);
   return foundType === 'array' || foundType === 'mixed' /* for mixed[] or like that */;
@@ -83,7 +83,7 @@ export function getPhpPrimitiveTypeForFunc(node: ts.FunctionExpression | ts.Arro
 function _parseArrayType(node: ts.Type, checker: ts.TypeChecker, log: LogObj, excludeObjects = true, nodeIdentForLog?: string) {
   let typeNode = checker.typeToTypeNode(node, undefined, undefined);
   if (!typeNode) {
-    log(`No type node found for symbol: ${nodeIdentForLog}`, LogSeverity.TYPEHINT);
+    log.typehint('No type node found for symbol: %s', [nodeIdentForLog || '']);
     return false;
   }
 
@@ -94,7 +94,7 @@ function _parseArrayType(node: ts.Type, checker: ts.TypeChecker, log: LogObj, ex
     const decls = sym.getDeclarations() as ts.Declaration[];
     const [ifaceDecl] = decls.filter((d) => d.kind === ts.SyntaxKind.InterfaceDeclaration);
     if (!ifaceDecl) {
-      log(`No interface declaration found for symbol: ${nodeIdentForLog}`, LogSeverity.TYPEHINT);
+      log.typehint('No interface declaration found for symbol: %s', [nodeIdentForLog || '']);
       return false;
     }
 
@@ -103,31 +103,31 @@ function _parseArrayType(node: ts.Type, checker: ts.TypeChecker, log: LogObj, ex
       isObjectType = (ifaceDecl as ts.InterfaceDeclaration).members.length > 0;
     }
     if (isObjectType || (ifaceDecl as ts.InterfaceDeclaration).name.text === 'Array') {
-      log(`Found array-like interface declaration for symbol: ${nodeIdentForLog}`, LogSeverity.TYPEHINT);
+      log.typehint('Found array-like interface declaration for symbol: %s', [nodeIdentForLog || '']);
       return 'array';
     }
   }
 
   if (!excludeObjects && typeNode.kind === ts.SyntaxKind.TypeLiteral) {
-    log(`Found array literal declaration for symbol: ${nodeIdentForLog}`, LogSeverity.TYPEHINT);
+    log.typehint('Found array literal declaration for symbol: %s', [nodeIdentForLog || '']);
     return 'array';
   }
 
   if (typeNode.kind === ts.SyntaxKind.ArrayType) {
     if (checkArrMixedNode(typeNode)) {
-      log(`Found MIXED in array type declaration for symbol: ${nodeIdentForLog}`, LogSeverity.TYPEHINT);
+      log.typehint('Found MIXED in array type declaration for symbol: %s', [nodeIdentForLog || '']);
       return 'mixed';
     }
-    log(`Found array type declaration for symbol: ${nodeIdentForLog}`, LogSeverity.TYPEHINT);
+    log.typehint('Found array type declaration for symbol: %s', [nodeIdentForLog || '']);
     return 'array';
   }
 
   if (typeNode.kind === ts.SyntaxKind.TupleType) {
     if (checkArrMixedNode(typeNode)) {
-      log(`Found MIXED in tuple type declaration for symbol: ${nodeIdentForLog}`, LogSeverity.TYPEHINT);
+      log.typehint('Found MIXED in tuple type declaration for symbol: %s', [nodeIdentForLog || '']);
       return 'mixed';
     }
-    log(`Found tuple type declaration for symbol: ${nodeIdentForLog}`, LogSeverity.TYPEHINT);
+    log.typehint('Found tuple type declaration for symbol: %s', [nodeIdentForLog || '']);
     return 'array';
   }
 
@@ -185,7 +185,7 @@ function _describeNodeType(node: ts.Node | undefined, type: ts.Type, checker: ts
     const typehint = Array.from(new Set((<string[]>[])
       .concat(types)))
       .join('|');
-    log(`Inferred type of node: ${nodeIdentForLog} -> ${typehint} [1]`, LogSeverity.TYPEHINT);
+    log.typehint('Inferred type of node: %s -> %s [1]', [nodeIdentForLog || '', typehint]);
     return typehint;
   }
 
@@ -202,7 +202,7 @@ function _describeNodeType(node: ts.Node | undefined, type: ts.Type, checker: ts
     });
 
     if (appStrTypes.includes('var')) {
-      log(`Inferred type of node: ${nodeIdentForLog} -> var [2]`, LogSeverity.TYPEHINT);
+      log.typehint('Inferred type of node: %s -> var [2]', [nodeIdentForLog || '']);
       return 'var';
     }
 
@@ -211,20 +211,20 @@ function _describeNodeType(node: ts.Node | undefined, type: ts.Type, checker: ts
       .concat(appStrTypes)))
       .join('|');
 
-    log(`Inferred type of node: ${nodeIdentForLog} -> ${typehint} [3]`, LogSeverity.TYPEHINT);
+    log.typehint('Inferred type of node: %s -> %s [3]', [nodeIdentForLog || '', typehint]);
     return typehint;
   }
 
   const typehint = Array.from(new Set((<string[]>[])
     .concat(strTypes)))
     .join('|');
-  log(`Inferred type of node: ${nodeIdentForLog} -> ${typehint} [4]`, LogSeverity.TYPEHINT);
+  log.typehint('Inferred type of node: %s -> %s [4]', [nodeIdentForLog || '', typehint]);
   return typehint;
 }
 
 // Check parent types: Number for 1, String for "asd" etc
 function _describeAsApparentType(t: ts.Type, checker: ts.TypeChecker, log: LogObj, nodeIdentForLog?: string) {
-  log(`Failed to describe node: ${nodeIdentForLog}, checking apparent type`, LogSeverity.TYPEHINT);
+  log.typehint('Failed to describe node: %s, checking apparent type', [nodeIdentForLog || '']);
   const appType = t.symbol ? checker.getApparentType(t) : checker.getBaseTypeOfLiteralType(t);
   const appStrType = checker.typeToString(appType).toLowerCase()
     .replace(/^\s+|\s+$/g, '');

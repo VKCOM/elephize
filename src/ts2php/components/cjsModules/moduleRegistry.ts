@@ -1,5 +1,5 @@
 import { CommonjsModule } from './commonjsModule';
-import { LogObj, LogSeverity } from '../../utils/log';
+import { LogObj } from '../../utils/log';
 import { ReactModule } from './reactModule';
 import {
   camelize,
@@ -54,7 +54,7 @@ export class ModuleRegistry {
   public getExportedIdentifier(forModule: CommonjsModule, targetFilename: string | undefined, identifier: string, rewriteCase = false): string {
     if (!targetFilename) {
       // Dropped or ignored import
-      this.log(`Attempt to reach dropped or ignored module: ${identifier} \n\t@ ${forModule.sourceFileName}`, LogSeverity.ERROR);
+      this.log.error('Attempt to reach dropped or ignored module: %s \n\t@ %s', [identifier, forModule.sourceFileName]);
       return 'null';
     }
 
@@ -75,7 +75,7 @@ export class ModuleRegistry {
   public callExportedCallable(forModule: CommonjsModule, targetFilename: string | undefined, identifier: string, args: string[]): string {
     if (!targetFilename) {
       // Dropped or ignored import
-      this.log(`Attempt to reach dropped or ignored module: ${identifier} \n\t@ ${forModule.sourceFileName}`, LogSeverity.ERROR);
+      this.log.error('Attempt to reach dropped or ignored module: %s \n\t@ %s', [identifier, forModule.sourceFileName]);
       return 'null';
     }
 
@@ -96,7 +96,7 @@ export class ModuleRegistry {
   public getExportedComponent(forModule: CommonjsModule, targetFilename: string | undefined, identifier: string): string {
     if (!targetFilename) {
       // Dropped or ignored import
-      this.log(`Attempt to reach dropped or ignored module: ${identifier} \n\t@ ${forModule.sourceFileName}`, LogSeverity.ERROR);
+      this.log.error('Attempt to reach dropped or ignored module: %s \n\t@ %s', [identifier, forModule.sourceFileName]);
       return 'null';
     }
 
@@ -112,10 +112,10 @@ export class ModuleRegistry {
     }
 
     if (!module) {
-      this.log(`No exported component found for filename ${targetFilename}`, LogSeverity.WARN);
+      this.log.warn('No exported component found for filename %s', [targetFilename]);
     } else {
       if (module.isExternal) {
-        this.log(`Derived components in external module are not supported: ${targetFilename}`, LogSeverity.ERROR);
+        this.log.error('Derived components in external module are not supported: %s', [targetFilename]);
       }
       if (!derived) { // if targetFilename contains php module path
         derived = targetFilename;
@@ -132,7 +132,7 @@ export class ModuleRegistry {
       ?.find((mod) => mod.originalIdentName === identifier);
 
     if (!module) {
-      this.log(`No exported component ${identifier} found for filename ${forModule.sourceFileName}`, LogSeverity.ERROR);
+      this.log.error('No exported component %s found for filename %s', [identifier, forModule.sourceFileName]);
       return '';
     } else {
       forModule.registerRequiredFile(module.targetFileName, forModule.targetFileName, module);
@@ -154,7 +154,7 @@ export class ModuleRegistry {
       );
 
       if (!implPath) {
-        this.log(`No implementation path declared for substitution module ${className}`, LogSeverity.ERROR);
+        this.log.error('No implementation path declared for substitution module %s', [className]);
         throw new Error();
       }
       moduleDescriptor.useImplementationFromPath(implPath);
@@ -177,7 +177,7 @@ export class ModuleRegistry {
   protected _registerExternalClass(rule: ImportReplacementRule): CommonjsModule | null {
     const fullyQualifiedSourceFilename = resolveAliasesAndPaths(this.log, rule.modulePath, '', this._baseDir, this._tsPaths, this._aliases);
     if (!fullyQualifiedSourceFilename) {
-      this.log(`Failed to lookup file ${rule.modulePath} [#1]`, LogSeverity.ERROR);
+      this.log.error('Failed to lookup file %s [#1]', [rule.modulePath]);
       return null;
     }
 
@@ -191,7 +191,7 @@ export class ModuleRegistry {
   public registerClass(filepath: string): CommonjsModule | null {
     const fullyQualifiedSourceFilename = resolveAliasesAndPaths(this.log, filepath, '', this._baseDir, this._tsPaths, this._aliases);
     if (!fullyQualifiedSourceFilename) {
-      this.log(`Failed to lookup file ${filepath} [#1]`, LogSeverity.ERROR);
+      this.log.error('Failed to lookup file %s [#1]', [filepath]);
       return null;
     }
 
@@ -271,7 +271,7 @@ export class ModuleRegistry {
 
   protected _getInstance(filename: string, identifier: string): string {
     if (!this._targetFilenameToModule.has(filename)) {
-      this.log(`Module not registered: ${filename}, when trying to reach property ${identifier}`, LogSeverity.ERROR);
+      this.log.error('Module not registered: %s, when trying to reach property %s', [filename, identifier]);
       return '';
     }
 

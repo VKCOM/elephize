@@ -2,7 +2,7 @@
 
 import * as ts from 'typescript';
 import { getDefaultCompilerOptions } from 'typescript';
-import { LogObj, LogSeverity } from '../../../utils/log';
+import { LogObj } from '../../../utils/log';
 import { CliOptions, ImportReplacementRule } from '../../../types';
 import { resolveModules } from '../../cjsModules/resolveModules';
 
@@ -98,7 +98,7 @@ export function getWatchProgram(
 function reportDiagnostic(log: LogObj) {
   return (diagnostic: ts.Diagnostic) => {
     lastDiagCode = diagnostic.code;
-    log(ts.formatDiagnostic(diagnostic, formatHost), LogSeverity.ERROR);
+    log.error(ts.formatDiagnostic(diagnostic, formatHost), []);
   };
 }
 

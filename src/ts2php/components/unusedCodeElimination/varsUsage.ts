@@ -1,6 +1,5 @@
 import * as ts from 'typescript';
 import { fetchAllBindingIdents, getClosestOrigParentByPredicate } from '../../utils/ast';
-import { LogSeverity } from '../../utils/log';
 import { Context } from '../context';
 import { Scope } from './usageGraph';
 import { Declaration } from '../../types';
@@ -38,7 +37,7 @@ export function markUsedVars(node: ts.CallExpression, lExp: ts.Identifier, usedV
         }
         break;
       default:
-        context.log('Unsupported expression kind; this may lead to unexpected behavior od dead code elimination, check your result', LogSeverity.INFO);
+        context.log.info('Unsupported expression kind; this may lead to unexpected behavior od dead code elimination, check your result', []);
     }
   }
   // end of unused vars elimination related

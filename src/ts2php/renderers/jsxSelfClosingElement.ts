@@ -1,14 +1,14 @@
 import * as ts from 'typescript';
 import { Declaration, DeclFlag } from '../types';
 import { Context } from '../components/context';
-import { ctx, LogSeverity } from '../utils/log';
+import { ctx } from '../utils/log';
 import { intrinsicElements } from '../internalConfig/intrinsicElements';
 import { renderNode } from '../components/codegen/renderNodes';
 
 export function tJsxSelfClosingElement(node: ts.JsxSelfClosingElement, context: Context<Declaration>) {
   const attrs = renderNode(node.attributes, context);
   if (node.tagName.kind !== ts.SyntaxKind.Identifier) {
-    context.log('Non-identifiers are not supported as jsx elements', LogSeverity.ERROR, ctx(node));
+    context.log.error('Non-identifiers are not supported as jsx elements', [], ctx(node));
     return 'null';
   }
 
@@ -17,7 +17,7 @@ export function tJsxSelfClosingElement(node: ts.JsxSelfClosingElement, context: 
   } else {
     const decl = context.scope.findByIdent(node.tagName.getText());
     if (!decl) {
-      context.log('Component identifier not declared: ' + node.tagName.getText(), LogSeverity.ERROR, ctx(node));
+      context.log.error('Component identifier not declared: %s', [node.tagName.getText()], ctx(node));
       return 'null';
     }
     const [declaration] = decl;
@@ -30,7 +30,7 @@ export function tJsxSelfClosingElement(node: ts.JsxSelfClosingElement, context: 
     }
 
     if (!component) {
-      context.log(`Component not found neither in exports, nor in local scope: ${node.tagName.getText()}`, LogSeverity.ERROR, ctx(node));
+      context.log.error('Component not found neither in exports, nor in local scope: %s', [node.tagName.getText()], ctx(node));
       return '';
     }
     return `${component}->render(${attrs || '[]'}, [])`;

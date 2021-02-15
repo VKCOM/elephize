@@ -37,6 +37,7 @@ test('ts2php.stdlibMethods', () => {
     ['misc', 'typeInference.ts'],
     ['misc', 'elephizeIgnore.tsx'],
     ['misc', 'exportedTypes.ts'],
-    ['misc', 'importedTypes.tsx']
+    ['misc', 'importedTypes.tsx'],
+    ['misc', 'ignoreNonameImports.tsx'],
   ], log);
 });

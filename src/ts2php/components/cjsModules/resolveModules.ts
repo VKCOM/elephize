@@ -1,7 +1,7 @@
 import * as ts from 'typescript';
 import { CliOptions, ImportReplacementRule, ImportRule } from '../../types';
 import * as path from 'path';
-import { LogObj, LogSeverity } from '../../utils/log';
+import { LogObj } from '../../utils/log';
 import { resolveAliasesAndPaths } from '../../utils/pathsAndNames';
 
 /*
@@ -48,7 +48,7 @@ function findImportRule(importRules: CliOptions['importRules'], baseDir: string,
   if (!path) {
     return undefined;
   }
-  log(`Checking import override rules for ${path}`, LogSeverity.INFO);
+  log.info('Checking import override rules for %s', [path]);
   return importRules[path];
 }
 
@@ -57,7 +57,7 @@ export const resolveModules = (options: ts.CompilerOptions, importRules: CliOpti
   moduleNames: string[],
   containingFile: string
 ): [ts.ResolvedModule[], ImportReplacementRule[]] => {
-  log(`Trying to resolve module names [${moduleNames.join(', ')}] found in ${containingFile}`, LogSeverity.INFO);
+  log.info('Trying to resolve module names [%s] found in %s', [moduleNames.join(', '), containingFile]);
   const resolvedModules: ts.ResolvedModule[] = [];
   const replacements: ImportReplacementRule[] = [];
 
@@ -67,10 +67,10 @@ export const resolveModules = (options: ts.CompilerOptions, importRules: CliOpti
     if (rule) {
       resolvedModules.push(emptyModule);
       if (!rule.ignore) {
-        log(`Module ${moduleName} was replaced with implementation ${rule.implementationClass} according to library settings`, LogSeverity.INFO);
+        log.info('Module %s was replaced with implementation %s according to library settings', [moduleName, rule.implementationClass]);
         replacements.push({ modulePath: mPath, ...rule });
       } else {
-        log(`Module ${moduleName} was ignored according to library settings`, LogSeverity.INFO);
+        log.info('Module %s was ignored according to library settings', [moduleName]);
       }
     } else {
       // try to use standard resolution
@@ -83,7 +83,7 @@ export const resolveModules = (options: ts.CompilerOptions, importRules: CliOpti
       } else {
         if (!containingFile.endsWith('.d.ts')) {
           // there may be false-positive errors in .d.ts files belonging to node typings
-          log(`Module ${moduleName} was not found while parsing imports of ${containingFile}`, LogSeverity.ERROR);
+          log.error('Module %s was not found while parsing imports of %s', [moduleName, containingFile]);
         }
         resolvedModules.push(emptyModule);
       }

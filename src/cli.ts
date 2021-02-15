@@ -1,7 +1,7 @@
 import * as cli from 'cli';
 import * as path from 'path';
 import * as fs from 'fs';
-import { log, LogSeverity } from './ts2php/utils/log';
+import { log } from './ts2php/utils/log';
 import { help } from './ts2php/components/cli/help';
 import { retrieveConfig } from './ts2php/components/cli/retrieveConfig';
 import { configureLogging } from './ts2php/components/cli/configureLogging';
@@ -29,16 +29,16 @@ help(_options);
 const options = retrieveConfig(_options, log);
 configureLogging(log, options);
 
-log('Running with configuration: ' + JSON.stringify(options, null, '  '), LogSeverity.INFO);
-log(`Running transpilation in glob: ${options.src}`, LogSeverity.INFO);
+log.INFO('Running with configuration: %s', [JSON.stringify(options, null, '  ')]);
+log.INFO('Running transpilation in glob: %s', [options.src]);
 
 // Create output dir if absent
 const outDir = path.resolve(options.outDir);
 fs.mkdirSync(outDir, { recursive: true });
 
 const baseDir = path.resolve(options.baseDir);
-log('Selected source directory [base]: ' + baseDir, LogSeverity.SPECIAL);
-log('Selected target directory [out]: ' + outDir, LogSeverity.SPECIAL);
+log.SPECIAL('Selected source directory [base]: %s', [baseDir]);
+log.SPECIAL('Selected target directory [out]: %s', [outDir]);
 log.baseDir = baseDir;
 log.outDir = outDir;
 

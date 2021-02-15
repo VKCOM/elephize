@@ -1,5 +1,5 @@
 import { Scope } from './scope';
-import { LogObj, LogSeverity, LogVerbosity, shortCtx } from '../../../utils/log';
+import { LogObj, LogVerbosity, shortCtx } from '../../../utils/log';
 
 export const isBound = <T>(node: ScopeNode<T>): node is BoundNode<T> => node._type === 'early_bound';
 export const isPending = <T>(node: ScopeNode<T>): node is BindPendingNode<T> => node._type === 'late_bound';
@@ -98,7 +98,7 @@ export class ScopeNode<T extends { [key: string]: any }> {
   protected _traverse(cb: (node: ScopeNode<T>) => boolean, traversedNodeList: Set<ScopeNode<T>>, bailOnUnbound: boolean) {
     this._edges.forEach((node) => {
       if (bailOnUnbound && !isBound(node)) {
-        this.log(`Identifier "${node.ident}" was used but was never declared. This is compile error`, LogSeverity.ERROR, shortCtx(this.homeScope.sourceFile));
+        this.log.error('Identifier "%s" was used but was never declared. This is compile error', [node.ident], shortCtx(this.homeScope.sourceFile));
         return;
       }
       if (node._traverseMark) {
@@ -140,13 +140,13 @@ export class ScopeNode<T extends { [key: string]: any }> {
   public get used() { return this._usageMark; }
   protected _markUsed() {
     if (this.log.verbosity! & LogVerbosity.WITH_USAGE_GRAPH_DUMP) {
-      this.log('Marking node as used: ' + this.ident, LogSeverity.INFO);
+      this.log.info('Marking node as used: %s', [this.ident]);
     }
     this._usageMark = true;
   }
   public reset() {
     if (this.log.verbosity! & LogVerbosity.WITH_USAGE_GRAPH_DUMP) {
-      this.log('Resetting node usage: ' + this.ident, LogSeverity.INFO);
+      this.log.info('Resetting node usage: %s', [this.ident]);
     }
     this._usageMark = false;
   }
@@ -157,21 +157,21 @@ export class ScopeNode<T extends { [key: string]: any }> {
    */
   public markUsage() {
     if (this.ident !== Scope.tNode) {
-      this.log('Mark usage method is not expected to be applied to non-terminal nodes', LogSeverity.ERROR, shortCtx(this.homeScope.sourceFile));
+      this.log.error('Mark usage method is not expected to be applied to non-terminal nodes', [], shortCtx(this.homeScope.sourceFile));
       return;
     }
 
     if (isBound(this)) {
       this._markUsed();
     } else {
-      this.log(`Undeclared or dropped identifier encountered: ${this.ident}`, LogSeverity.ERROR, shortCtx(this.homeScope.sourceFile));
+      this.log.error('Undeclared or dropped identifier encountered: %s', [this.ident], shortCtx(this.homeScope.sourceFile));
     }
 
     this.traverse((node: ScopeNode<T>) => {
       if (isBound(node)) {
         node._markUsed();
       } else {
-        this.log(`Undeclared or dropped identifier encountered: ${node.ident}`, LogSeverity.ERROR, shortCtx(this.homeScope.sourceFile));
+        this.log.error('Undeclared or dropped identifier encountered: %s', [node.ident], shortCtx(this.homeScope.sourceFile));
       }
       return true;
     });

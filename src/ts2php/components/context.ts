@@ -3,7 +3,7 @@ import { ModuleRegistry } from './cjsModules/moduleRegistry';
 import { CommonjsModule } from './cjsModules/commonjsModule';
 import { Scope } from './unusedCodeElimination/usageGraph';
 import { BoundNode } from './unusedCodeElimination/usageGraph/node';
-import { ctx, LogObj, LogSeverity, shortCtx } from '../utils/log';
+import { ctx, LogObj, shortCtx } from '../utils/log';
 import { NsMap } from '../types';
 import { NodeFlagStore } from './codegen/nodeFlagStore';
 
@@ -27,17 +27,17 @@ export class Context<T> {
   }
 
   public pushScope(uniqid: string, ownerIdent: string) { // should be called strictly after addDeclaration!
-    // log('Push scope w/' + ownerIdent + ' / ' + uniqid, LogSeverity.INFO);
+    // log.INFO('Push scope w/' + ownerIdent + ' / ' + uniqid)
 
     this._uniqIdStack.push(uniqid);
     const node = this._scope.declarations.get(ownerIdent);
 
     if (node && (node as BoundNode<T>).ownedScope && this.dryRun) {
-      this.log('Reassignment of functional scopes is not supported: ' + ownerIdent, LogSeverity.ERROR, shortCtx(this.moduleDescriptor.sourceFileName));
+      this.log.error('Reassignment of functional scopes is not supported: %s', [ownerIdent], shortCtx(this.moduleDescriptor.sourceFileName));
     }
 
     if (!node || node.homeScope !== this._scope) {
-      this.log(`Failed to push scope into stack, this may lead to errors; (${ownerIdent} /${uniqid})`, LogSeverity.WARN);
+      this.log.warn('Failed to push scope into stack, this may lead to errors; (%s / %s)',  [ownerIdent, uniqid]);
       return;
     }
 
@@ -45,7 +45,7 @@ export class Context<T> {
   }
 
   public popScope(uniqid: string, context?: ts.Node) {
-    // log('Pop scope / ' + uniqid, LogSeverity.INFO);
+    // log.INFO('Pop scope / ' + uniqid)
     if (uniqid !== this._uniqIdStack[this._uniqIdStack.length - 1]) {
       throw new Error('Attempt to pop frame that is not on top of stack: this should not happen and probably is a bug in transpiler \n' + ctx(context));
     }
