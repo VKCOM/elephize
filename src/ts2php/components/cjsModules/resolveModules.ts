@@ -35,7 +35,7 @@ function readFile(fileName: string): string | undefined {
 }
 
 function resolveModulePath(name: string, containingFile: string, baseDir: string, tsPaths: { [key: string]: string[] }): string {
-  const localPath = resolveAliasesAndPaths(name, path.dirname(containingFile), baseDir, tsPaths, {}, true);
+  const localPath = resolveAliasesAndPaths(log, name, path.dirname(containingFile), baseDir, tsPaths, {}, true);
   if (localPath) { // relative or aliased path found
     return localPath;
   }

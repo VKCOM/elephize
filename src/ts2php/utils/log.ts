@@ -23,7 +23,7 @@ export enum LogVerbosity {
 }
 
 type LogFunc = (message: string, severity: LogSeverity, context?: string) => void;
-type LogObj = LogFunc & {
+export type LogObj = LogFunc & {
   noOutput?: boolean;
   warnCount?: number;
   errCount?: number;

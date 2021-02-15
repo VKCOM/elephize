@@ -17,7 +17,7 @@ export function tImportDeclaration(node: ts.ImportDeclaration, context: Context<
     }
   } else if (moduleSpec) {
     let currentFilePath = node.getSourceFile().fileName;
-    let sourceFilename = resolveAliasesAndPaths(moduleSpec, path.dirname(currentFilePath), context.baseDir, context.compilerOptions.paths || {}, context.registry._aliases);
+    let sourceFilename = resolveAliasesAndPaths(log, moduleSpec, path.dirname(currentFilePath), context.baseDir, context.compilerOptions.paths || {}, context.registry._aliases);
 
     if (sourceFilename === null) {
       if (moduleSpec.includes('/')) {

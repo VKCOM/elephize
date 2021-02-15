@@ -3,9 +3,10 @@ import { Declaration } from '../types';
 import { Context } from '../components/context';
 import { hasExport } from '../utils/hasExport';
 import { renderNode } from '../components/codegen/renderNodes';
+import { log } from '../utils/log';
 
 export function tVariableStatement(node: ts.VariableStatement, context: Context<Declaration>) {
-  const exported = hasExport(node);
+  const exported = hasExport(node, log);
   const declList = node.declarationList;
 
   if (exported) {

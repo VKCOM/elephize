@@ -172,7 +172,7 @@ export class ModuleRegistry {
   }
 
   protected _registerExternalClass(rule: ImportReplacementRule): CommonjsModule | null {
-    const fullyQualifiedSourceFilename = resolveAliasesAndPaths(rule.modulePath, '', this._baseDir, this._tsPaths, this._aliases);
+    const fullyQualifiedSourceFilename = resolveAliasesAndPaths(log, rule.modulePath, '', this._baseDir, this._tsPaths, this._aliases);
     if (!fullyQualifiedSourceFilename) {
       log(`Failed to lookup file ${rule.modulePath} [#1]`, LogSeverity.ERROR);
       return null;
@@ -186,7 +186,7 @@ export class ModuleRegistry {
   }
 
   public registerClass(filepath: string): CommonjsModule | null {
-    const fullyQualifiedSourceFilename = resolveAliasesAndPaths(filepath, '', this._baseDir, this._tsPaths, this._aliases);
+    const fullyQualifiedSourceFilename = resolveAliasesAndPaths(log, filepath, '', this._baseDir, this._tsPaths, this._aliases);
     if (!fullyQualifiedSourceFilename) {
       log(`Failed to lookup file ${filepath} [#1]`, LogSeverity.ERROR);
       return null;

@@ -1,7 +1,7 @@
 import * as ts from 'typescript';
-import { ctx, log, LogSeverity } from './log';
+import { ctx, LogObj, LogSeverity } from './log';
 
-export function hasExport(node: ts.Node) {
+export function hasExport(node: ts.Node, log: LogObj) {
   if (node.modifiers) {
     for (let m of node.modifiers) {
       if (m.kind === ts.SyntaxKind.DefaultKeyword) {

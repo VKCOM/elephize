@@ -14,7 +14,7 @@ import { renderNode } from '../components/codegen/renderNodes';
 import { getPhpPrimitiveTypeForFunc } from '../components/typeInference/basicTypes';
 
 export function tFunctionDeclaration(node: ts.FunctionDeclaration, context: Context<Declaration>) {
-  const exported = hasExport(node);
+  const exported = hasExport(node, log);
   if (exported === null) {
     return ''; // export default not supported
   }
