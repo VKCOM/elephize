@@ -5,7 +5,7 @@ import { hasExport } from '../utils/hasExport';
 import { renderNode } from '../components/codegen/renderNodes';
 
 export function tVariableStatement(node: ts.VariableStatement, context: Context<Declaration>) {
-  const exported = hasExport(node);
+  const exported = hasExport(node, context.log);
   const declList = node.declarationList;
 
   if (exported) {

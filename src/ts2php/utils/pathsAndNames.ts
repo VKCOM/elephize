@@ -1,5 +1,5 @@
 import { Dict } from '../types';
-import { log, LogSeverity } from './log';
+import { LogObj, LogSeverity } from './log';
 import * as path from 'path';
 import * as fs from 'fs';
 
@@ -65,6 +65,7 @@ export function classNameFromPath(normalizedPath: string, external = false) {
 }
 
 export function resolveAliasesAndPaths(
+  log: LogObj,
   originalSourcePath: string,
   currentDir: string,
   baseDir: string,

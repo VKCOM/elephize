@@ -1,6 +1,6 @@
 import * as ts from 'typescript';
 import { Declaration, ExpressionHook } from '../../types';
-import { ctx, log, LogSeverity } from '../../utils/log';
+import { ctx, LogSeverity } from '../../utils/log';
 import { propNameIs } from './_propName';
 import { hasArrayType } from '../../components/typeInference/basicTypes';
 import { Context } from '../../components/context';
@@ -26,19 +26,19 @@ export const arrayStringIndexOf: ExpressionHook = (node: ts.CallExpression, cont
     let args = renderNodes([...node.arguments], context);
     let varName = renderNode(varNameNode, context);
     if (!args || !args[0]) {
-      log('String.prototype.indexOf: can\'t find searchable element in call.', LogSeverity.ERROR, ctx(node));
+      context.log('String.prototype.indexOf: can\'t find searchable element in call.', LogSeverity.ERROR, ctx(node));
       return 'null';
     }
     return `strpos(${varName}, ${args.join(', ')})`;
   } else {
-    if (!hasArrayType(node.expression, context.checker)) {
-      log('Left-hand expression must have string, array-like or iterable inferred type', LogSeverity.ERROR, ctx(node));
+    if (!hasArrayType(node.expression, context.checker, context.log)) {
+      context.log('Left-hand expression must have string, array-like or iterable inferred type', LogSeverity.ERROR, ctx(node));
       return 'null';
     }
     let args = renderNodes([...node.arguments], context);
     let varName = renderNode(varNameNode, context);
     if (!args || !args[0]) {
-      log('Array.prototype.indexOf: can\'t find searchable element in call.', LogSeverity.ERROR, ctx(node));
+      context.log('Array.prototype.indexOf: can\'t find searchable element in call.', LogSeverity.ERROR, ctx(node));
       return 'null';
     }
     if (args[1]) {

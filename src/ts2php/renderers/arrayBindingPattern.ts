@@ -1,7 +1,7 @@
 import * as ts from 'typescript';
 import { Declaration, DeclFlag } from '../types';
 import { Context } from '../components/context';
-import { ctx, log, LogSeverity } from '../utils/log';
+import { ctx, LogSeverity } from '../utils/log';
 import { isExportedVar } from '../utils/ast';
 import { isTopLevel } from '../utils/isTopLevel';
 import { identifyAnonymousNode } from '../components/unusedCodeElimination/usageGraph/nodeData';
@@ -16,12 +16,12 @@ function renderBindingElement(el: ts.BindingElement | ts.OmittedExpression, inde
 
   if (!context.dryRun && !context.scope.checkUsage(el.name.getText())) {
     // Remove unused vars declarations
-    log(`Dropped unused var $${el.name.getText()} from [out]/${context.moduleDescriptor.targetFileName}`, LogSeverity.INFO);
+    context.log(`Dropped unused var $${el.name.getText()} from [out]/${context.moduleDescriptor.targetFileName}`, LogSeverity.INFO);
     return null;
   }
 
   if (el.name.kind !== ts.SyntaxKind.Identifier) {
-    log(`Nested bindings are not supported: ${el.name.getText()}`, LogSeverity.ERROR, ctx(el));
+    context.log(`Nested bindings are not supported: ${el.name.getText()}`, LogSeverity.ERROR, ctx(el));
     return null;
   }
 

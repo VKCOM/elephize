@@ -1,5 +1,5 @@
 import { BindPendingNode, BoundNode, isPending, ScopeNode } from './node';
-import { log, LogSeverity, LogVerbosity, shortCtx } from '../../../utils/log';
+import { LogObj, LogSeverity, LogVerbosity, shortCtx } from '../../../utils/log';
 
 export class Scope<NodeData extends { [key: string]: any }> {
   public static _forceDisableUnusedVarsElimination = false;
@@ -30,18 +30,6 @@ export class Scope<NodeData extends { [key: string]: any }> {
    */
   public readonly childScopes: Set<Scope<NodeData>> = new Set();
   /**
-   * Default custom data for declarations (aka graph nodes)
-   */
-  protected readonly _nodeDefaultData: NodeData;
-  /**
-   * Parent scope, if any. Root scope (module scope) should not have parent.
-   */
-  public readonly parentScope?: Scope<NodeData>;
-  /**
-   * Node which spawned current scope. May be undefined for root scope.
-   */
-  public readonly ownerNode?: ScopeNode<NodeData>;
-  /**
    * Usage data of every ident. Needed to determine all vars that should be passed in closure
    */
   protected readonly identsUsed: Set<ScopeNode<NodeData>> = new Set();
@@ -49,17 +37,29 @@ export class Scope<NodeData extends { [key: string]: any }> {
    * User hooks to collect more precise usage data in upper scopes
    */
   protected listeners: Map<string, Set<(ident: string) => void>> = new Map();
-  /**
-   * Path to processed source file (mainly for logging and debug purposes)
-   */
-  public readonly sourceFile: string;
 
-  protected constructor(sourceFile: string, nodeDefaultData: NodeData, parentScope?: Scope<NodeData>, ownerNode?: ScopeNode<NodeData>) {
-    this._nodeDefaultData = nodeDefaultData;
-    this.parentScope = parentScope;
-    this.ownerNode = ownerNode;
-    this.sourceFile = sourceFile;
-  }
+  protected constructor(
+    /**
+     * Path to processed source file (mainly for logging and debug purposes)
+     */
+    public readonly sourceFile: string,
+    /**
+     * Default custom data for declarations (aka graph nodes)
+     */
+    protected readonly nodeDefaultData: NodeData,
+    /**
+     * Logger object
+     */
+    protected readonly log: LogObj,
+    /**
+     * Parent scope, if any. Root scope (module scope) should not have parent.
+     */
+    public readonly parentScope?: Scope<NodeData>,
+    /**
+     * Node which spawned current scope. May be undefined for root scope.
+     */
+    public readonly ownerNode?: ScopeNode<NodeData>
+  ) {}
 
   /**
    * Static: create new root scope with new terminal node in it.
@@ -67,12 +67,13 @@ export class Scope<NodeData extends { [key: string]: any }> {
    *
    * @param nodeDefaultData  Default custom data for declarations (aka graph nodes)
    * @param sourceFile       Path to processed source file
+   * @param log              Logger instance
    * @param globalsList      Global vars that should be terminated to global scope
    */
-  public static newRootScope<NodeData extends { [key: string]: any }>(nodeDefaultData: NodeData, sourceFile: string, globalsList: string[] = []): Scope<NodeData> {
-    const scope = new Scope<NodeData>(sourceFile, nodeDefaultData);
+  public static newRootScope<NodeData extends { [key: string]: any }>(nodeDefaultData: NodeData, sourceFile: string, log: LogObj, globalsList: string[] = []): Scope<NodeData> {
+    const scope = new Scope<NodeData>(sourceFile, nodeDefaultData, log);
     scope._termNodeLocalName = Scope.tNode; // For root scope, local and global termination nodes are the same node.
-    const terminalNode = new BoundNode<NodeData>(Scope.tNode, scope, nodeDefaultData);
+    const terminalNode = new BoundNode<NodeData>(Scope.tNode, scope, nodeDefaultData, log);
     scope.declarations.set(Scope.tNode, terminalNode);
     // Don't set dryRun here, because newRootScope is expected to be called only once before any runs
     globalsList.forEach((ident: string) => scope.addDeclaration(ident, [], { terminateGlobally: true, dryRun: true }));
@@ -153,7 +154,7 @@ export class Scope<NodeData extends { [key: string]: any }> {
       return foundNode;
     }
 
-    const node = new BindPendingNode(ident, this, this._nodeDefaultData);
+    const node = new BindPendingNode(ident, this, this.nodeDefaultData, this.log);
     this.declarations.set(ident, node);
     this._callListeners(Scope.EV_UNBOUND_CREATED, ident);
     return node;
@@ -164,9 +165,9 @@ export class Scope<NodeData extends { [key: string]: any }> {
    * Should not be used by hand, use Node.spawnScope() instead.
    */
   public _addChildScope(sourceFile: string, ownerNode: ScopeNode<NodeData>): Scope<NodeData> {
-    const child = new Scope(sourceFile, this._nodeDefaultData, this, ownerNode);
+    const child = new Scope(sourceFile, this.nodeDefaultData, this.log, this, ownerNode);
     child._termNodeLocalName = '__#retval@' + ownerNode.ident; // internal value for tNodeLocal
-    const terminalNode = new BoundNode<NodeData>(child.tNodeLocal, child, this._nodeDefaultData);
+    const terminalNode = new BoundNode<NodeData>(child.tNodeLocal, child, this.nodeDefaultData, this.log);
     child.declarations.set(Scope.tNode, this.terminalNode); // assign global terminal node by ref
     child.declarations.set(child.tNodeLocal, terminalNode); // assign local terminal node
     this.childScopes.add(child);
@@ -174,7 +175,7 @@ export class Scope<NodeData extends { [key: string]: any }> {
   }
 
   protected _logAction(action: string, traceSourceIdent: string, dryRun: boolean, traceTargetIdents: Array<string | undefined>, terminateLocally: boolean, terminateGlobally: boolean) {
-    if (!(log.verbosity! & LogVerbosity.WITH_ELIMINATION_HINTS)) {
+    if (!(this.log.verbosity! & LogVerbosity.WITH_ELIMINATION_HINTS)) {
       return;
     }
     const tgtIdents = traceTargetIdents.filter((id) => !!id);
@@ -184,7 +185,7 @@ export class Scope<NodeData extends { [key: string]: any }> {
     if (terminateLocally) {
       tgtIdents.push(this.tNodeLocal);
     }
-    log(`[${dryRun ? 'D' : ' '}] ${action}: ${traceSourceIdent} -> [${tgtIdents.join(', ')}]`, LogSeverity.INFO);
+    this.log(`[${dryRun ? 'D' : ' '}] ${action}: ${traceSourceIdent} -> [${tgtIdents.join(', ')}]`, LogSeverity.INFO);
   }
 
   protected collectPendingNodes(scope: Scope<NodeData>, ident: string) {
@@ -220,11 +221,11 @@ export class Scope<NodeData extends { [key: string]: any }> {
     // We don't declare anything in second run, just check and bail out
     if (!dryRun) {
       if (!nodeDeclaredInCurrentScope) {
-        log(`No identifier ${traceSourceIdent} declared while unused vars elimination: it's probably a bug in transpiler`, LogSeverity.ERROR, shortCtx(this.sourceFile));
+        this.log(`No identifier ${traceSourceIdent} declared while unused vars elimination: it's probably a bug in transpiler`, LogSeverity.ERROR, shortCtx(this.sourceFile));
         return null;
       }
       if (isPending(nodeDeclaredInCurrentScope)) {
-        log(`Node ${traceSourceIdent} was not bound while unused vars elimination: it's probably a bug in transpiler`, LogSeverity.ERROR, shortCtx(this.sourceFile));
+        this.log(`Node ${traceSourceIdent} was not bound while unused vars elimination: it's probably a bug in transpiler`, LogSeverity.ERROR, shortCtx(this.sourceFile));
         return null;
       }
       return nodeDeclaredInCurrentScope as BoundNode<NodeData>;
@@ -232,7 +233,7 @@ export class Scope<NodeData extends { [key: string]: any }> {
 
     this._logAction('Add declaration', traceSourceIdent, dryRun, traceTargetIdents, terminateLocally, terminateGlobally);
     if (nodeDeclaredInCurrentScope && !isPending(nodeDeclaredInCurrentScope)) {
-      log(`Identifier ${traceSourceIdent} already declared @ ${nodeDeclaredInCurrentScope.homeScope.tNodeLocal}`, LogSeverity.ERROR, shortCtx(this.sourceFile));
+      this.log(`Identifier ${traceSourceIdent} already declared @ ${nodeDeclaredInCurrentScope.homeScope.tNodeLocal}`, LogSeverity.ERROR, shortCtx(this.sourceFile));
       return null;
     }
 
@@ -249,7 +250,7 @@ export class Scope<NodeData extends { [key: string]: any }> {
       this.declarations.set(traceSourceIdent, node);
       this._callListeners(Scope.EV_BIND_UNBOUND, traceSourceIdent);
     } else {
-      node = new BoundNode(traceSourceIdent, this, this._nodeDefaultData, traceTargetNodes);
+      node = new BoundNode(traceSourceIdent, this, this.nodeDefaultData, this.log, traceTargetNodes);
       this.declarations.set(traceSourceIdent, node);
       this._callListeners(Scope.EV_DECL, traceSourceIdent);
     }
@@ -333,7 +334,7 @@ export class Scope<NodeData extends { [key: string]: any }> {
 
     const traceSourceNode = this.parentScope?.localTerminalNode;
     if (!traceSourceNode) {
-      log('Trying to terminate root node to upper scope - this is error in transpiler', LogSeverity.ERROR, shortCtx(this.sourceFile));
+      this.log('Trying to terminate root node to upper scope - this is error in transpiler', LogSeverity.ERROR, shortCtx(this.sourceFile));
       return;
     }
 
@@ -347,7 +348,7 @@ export class Scope<NodeData extends { [key: string]: any }> {
    */
   public reset() {
     if (this.parentScope) {
-      log('reset() is not intended to be used with non-root scope', LogSeverity.ERROR, shortCtx(this.sourceFile));
+      this.log('reset() is not intended to be used with non-root scope', LogSeverity.ERROR, shortCtx(this.sourceFile));
       return;
     }
     this.declarations.forEach((node) => node.reset());

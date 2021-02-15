@@ -28,7 +28,7 @@ export const renderPattern = (
     identList.push(el.identifier);
     const ident = snakify(el.identifier.getText());
     if (isTopLevel(node, context)) { // Top-level declarations transform to properties and construction initializers
-      context.moduleDescriptor.addProperty('$' + ident, getPhpPrimitiveType(el.identifier, context.checker), 'public');
+      context.moduleDescriptor.addProperty('$' + ident, getPhpPrimitiveType(el.identifier, context.checker, context.log), 'public');
       context.moduleDescriptor.addStatement(`$this->${ident} = ${el.initializer};`);
       return null;
     } else {

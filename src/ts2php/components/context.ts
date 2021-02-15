@@ -3,7 +3,7 @@ import { ModuleRegistry } from './cjsModules/moduleRegistry';
 import { CommonjsModule } from './cjsModules/commonjsModule';
 import { Scope } from './unusedCodeElimination/usageGraph';
 import { BoundNode } from './unusedCodeElimination/usageGraph/node';
-import { ctx, log, LogSeverity, shortCtx } from '../utils/log';
+import { ctx, LogObj, LogSeverity, shortCtx } from '../utils/log';
 import { NsMap } from '../types';
 import { NodeFlagStore } from './codegen/nodeFlagStore';
 
@@ -18,7 +18,8 @@ export class Context<T> {
     public dryRun: boolean,
     public baseDir: string,
     public readonly namespaces: NsMap,
-    public readonly registry: ModuleRegistry
+    public readonly registry: ModuleRegistry,
+    public readonly log: LogObj
   ) { }
 
   public get scope() {
@@ -32,11 +33,11 @@ export class Context<T> {
     const node = this._scope.declarations.get(ownerIdent);
 
     if (node && (node as BoundNode<T>).ownedScope && this.dryRun) {
-      log('Reassignment of functional scopes is not supported: ' + ownerIdent, LogSeverity.ERROR, shortCtx(this.moduleDescriptor.sourceFileName));
+      this.log('Reassignment of functional scopes is not supported: ' + ownerIdent, LogSeverity.ERROR, shortCtx(this.moduleDescriptor.sourceFileName));
     }
 
     if (!node || node.homeScope !== this._scope) {
-      log(`Failed to push scope into stack, this may lead to errors; (${ownerIdent} /${uniqid})`, LogSeverity.WARN);
+      this.log(`Failed to push scope into stack, this may lead to errors; (${ownerIdent} /${uniqid})`, LogSeverity.WARN);
       return;
     }
 

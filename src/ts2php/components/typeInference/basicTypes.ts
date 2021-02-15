@@ -3,7 +3,7 @@ import { MethodsTypes } from '../../types';
 import { checkCustomTypehints } from './customTypehints';
 import { typeMap } from './basicTypesMap';
 import { mixedTypehintId } from './customTypehintsList';
-import { log, LogSeverity } from '../../utils/log';
+import { LogObj, LogSeverity } from '../../utils/log';
 
 /**
  * Check if node has proper inferred type identified by typeString
@@ -23,13 +23,14 @@ export function hasType(node: ts.Node, checker: ts.TypeChecker, typeString: stri
  *
  * @param node
  * @param checker
+ * @param log
  */
-export function hasArrayType(node: ts.Node, checker: ts.TypeChecker): boolean {
+export function hasArrayType(node: ts.Node, checker: ts.TypeChecker, log: LogObj): boolean {
   const nodeIdentForLog = node.getText();
   let nd: ts.Node = (node as ts.PropertyAccessExpression).expression;
   log(`Checking array type of node: ${nodeIdentForLog}`, LogSeverity.TYPEHINT);
   let type = checker.getTypeAtLocation(nd);
-  const foundType = _parseArrayType(type, checker, true, nodeIdentForLog);
+  const foundType = _parseArrayType(type, checker, log, true, nodeIdentForLog);
   return foundType === 'array' || foundType === 'mixed' /* for mixed[] or like that */;
 }
 
@@ -38,10 +39,11 @@ export function hasArrayType(node: ts.Node, checker: ts.TypeChecker): boolean {
  *
  * @param node
  * @param checker
+ * @param log
  */
-export function getPhpPrimitiveType(node: ts.Node, checker: ts.TypeChecker) {
+export function getPhpPrimitiveType(node: ts.Node, checker: ts.TypeChecker, log: LogObj) {
   const type = checker.getTypeAtLocation(node);
-  return _describeNodeType(node, type, checker);
+  return _describeNodeType(node, type, checker, log);
 }
 
 /**
@@ -50,8 +52,9 @@ export function getPhpPrimitiveType(node: ts.Node, checker: ts.TypeChecker) {
  * @param node
  * @param argList
  * @param checker
+ * @param log
  */
-export function getPhpPrimitiveTypeForFunc(node: ts.FunctionExpression | ts.ArrowFunction | ts.FunctionDeclaration, argList: string[], checker: ts.TypeChecker): MethodsTypes | undefined {
+export function getPhpPrimitiveTypeForFunc(node: ts.FunctionExpression | ts.ArrowFunction | ts.FunctionDeclaration, argList: string[], checker: ts.TypeChecker, log: LogObj): MethodsTypes | undefined {
   const signature = checker.getSignatureFromDeclaration(node);
   if (!signature) {
     // Not functional type?
@@ -62,14 +65,14 @@ export function getPhpPrimitiveTypeForFunc(node: ts.FunctionExpression | ts.Arro
   for (let i = 0; i < node.parameters.length; i++) {
     const param = node.parameters[i].name;
     if (param.kind === ts.SyntaxKind.Identifier) {
-      params[argList[i]] = getPhpPrimitiveType(param, checker);
+      params[argList[i]] = getPhpPrimitiveType(param, checker, log);
     } else {
       params[argList[i]] = 'var'; // TODO: more specific typing? (applies for destructured objects too!)
     }
   }
 
   const returnType = checker.getReturnTypeOfSignature(signature);
-  const rettype = _describeNodeType(undefined, returnType, checker);
+  const rettype = _describeNodeType(undefined, returnType, checker, log);
 
   return {
     args: params,
@@ -77,7 +80,7 @@ export function getPhpPrimitiveTypeForFunc(node: ts.FunctionExpression | ts.Arro
   };
 }
 
-function _parseArrayType(node: ts.Type, checker: ts.TypeChecker, excludeObjects = true, nodeIdentForLog?: string) {
+function _parseArrayType(node: ts.Type, checker: ts.TypeChecker, log: LogObj, excludeObjects = true, nodeIdentForLog?: string) {
   let typeNode = checker.typeToTypeNode(node, undefined, undefined);
   if (!typeNode) {
     log(`No type node found for symbol: ${nodeIdentForLog}`, LogSeverity.TYPEHINT);
@@ -157,8 +160,8 @@ const checkArrMixedNode = (typeNode: ts.TypeNode) => {
   return false;
 };
 
-const _transformTypeName = (type: ts.Type, checker: ts.TypeChecker, nodeIdentForLog?: string) => (t: string) => {
-  const arrType = _parseArrayType(type, checker, false, nodeIdentForLog);
+const _transformTypeName = (type: ts.Type, checker: ts.TypeChecker, log: LogObj, nodeIdentForLog?: string) => (t: string) => {
+  const arrType = _parseArrayType(type, checker, log, false, nodeIdentForLog);
   if (arrType) {
     return arrType;
   }
@@ -168,7 +171,7 @@ const _transformTypeName = (type: ts.Type, checker: ts.TypeChecker, nodeIdentFor
   return typeMap[t] || 'var';
 };
 
-function _describeNodeType(node: ts.Node | undefined, type: ts.Type, checker: ts.TypeChecker) {
+function _describeNodeType(node: ts.Node | undefined, type: ts.Type, checker: ts.TypeChecker, log: LogObj) {
   const nodeIdentForLog = node?.getText();
   const customTypehints = checkCustomTypehints(type, checker);
   if (customTypehints) {
@@ -177,7 +180,7 @@ function _describeNodeType(node: ts.Node | undefined, type: ts.Type, checker: ts
         return t;
       }
       // Some of union members may be literal types
-      return _describeAsApparentType(t, checker, nodeIdentForLog);
+      return _describeAsApparentType(t, checker, log, nodeIdentForLog);
     }).filter((t) => !customTypehints.typesToDrop.includes(t));
     const typehint = Array.from(new Set((<string[]>[])
       .concat(types)))
@@ -189,13 +192,13 @@ function _describeNodeType(node: ts.Node | undefined, type: ts.Type, checker: ts
   const strTypes = checker.typeToString(type, node, ts.TypeFormatFlags.None)
     .split('|')
     .map((t) => t.replace(/^\s+|\s+$/g, ''))
-    .map(_transformTypeName(type, checker, nodeIdentForLog));
+    .map(_transformTypeName(type, checker, log, nodeIdentForLog));
 
   if (strTypes.includes('var')) {
     const types = type.isUnionOrIntersection() ? type.types : [type];
 
     const appStrTypes = types.map((t) => {
-      return _describeAsApparentType(t, checker, nodeIdentForLog);
+      return _describeAsApparentType(t, checker, log, nodeIdentForLog);
     });
 
     if (appStrTypes.includes('var')) {
@@ -220,10 +223,10 @@ function _describeNodeType(node: ts.Node | undefined, type: ts.Type, checker: ts
 }
 
 // Check parent types: Number for 1, String for "asd" etc
-function _describeAsApparentType(t: ts.Type, checker: ts.TypeChecker, nodeIdentForLog?: string) {
+function _describeAsApparentType(t: ts.Type, checker: ts.TypeChecker, log: LogObj, nodeIdentForLog?: string) {
   log(`Failed to describe node: ${nodeIdentForLog}, checking apparent type`, LogSeverity.TYPEHINT);
   const appType = t.symbol ? checker.getApparentType(t) : checker.getBaseTypeOfLiteralType(t);
   const appStrType = checker.typeToString(appType).toLowerCase()
     .replace(/^\s+|\s+$/g, '');
-  return _transformTypeName(t, checker, nodeIdentForLog)(appStrType);
+  return _transformTypeName(t, checker, log, nodeIdentForLog)(appStrType);
 }

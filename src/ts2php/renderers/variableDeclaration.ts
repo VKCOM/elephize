@@ -3,7 +3,7 @@ import { Declaration, DeclFlag } from '../types';
 import { checkReactAssignment } from '../components/react/reactHooks';
 import { Context } from '../components/context';
 import { getClosestParentOfType, isExportedVar } from '../utils/ast';
-import { ctx, log, LogSeverity } from '../utils/log';
+import { ctx, LogSeverity } from '../utils/log';
 import { isTopLevel, isTopLevelComponent } from '../utils/isTopLevel';
 import { generateFunctionElements } from '../components/functionScope';
 import { Scope } from '../components/unusedCodeElimination/usageGraph';
@@ -96,7 +96,7 @@ export function tVariableDeclaration(node: ts.VariableDeclaration, context: Cont
 function topStatements(node: ts.VariableDeclaration, initializerNode: ts.Node | undefined, addIdent: (ident: string) => Set<string>, usedIdents: Set<string>, isFuncDeclaration: boolean, context: Context<Declaration> ) {
   if (!node.initializer) {
     context.scope.removeEventListener(Scope.EV_USAGE, addIdent);
-    log('Module scope variables should have initializers to ensure proper type detection', LogSeverity.ERROR, ctx(node));
+    context.log('Module scope variables should have initializers to ensure proper type detection', LogSeverity.ERROR, ctx(node));
     return 'null';
   }
 
@@ -125,7 +125,7 @@ function topStatements(node: ts.VariableDeclaration, initializerNode: ts.Node | 
       const isExportedFuncExp = !!(node.name.kind === ts.SyntaxKind.Identifier && isExportedVar(node.name));
       if (!context.dryRun && (context.scope.checkUsage(node.name.getText()) || isExportedFuncExp) && !flags?.drop) {
         context.moduleDescriptor.addMethod(node.name.getText(), block, syntaxList.join(', '),
-          getPhpPrimitiveTypeForFunc(node.initializer as ts.FunctionExpression, syntaxList, context.checker), 'public');
+          getPhpPrimitiveTypeForFunc(node.initializer as ts.FunctionExpression, syntaxList, context.checker, context.log), 'public');
       }
     }
   } else {
@@ -134,7 +134,7 @@ function topStatements(node: ts.VariableDeclaration, initializerNode: ts.Node | 
     const nameIdent = node.name;
     // We expect plain identifier as name here
     if (nameIdent.kind !== ts.SyntaxKind.Identifier) {
-      log('Top-level variable identifier should not be a binding expression', LogSeverity.ERROR, ctx(node));
+      context.log('Top-level variable identifier should not be a binding expression', LogSeverity.ERROR, ctx(node));
       context.scope.removeEventListener(Scope.EV_USAGE, addIdent);
       return '';
     }
@@ -142,7 +142,7 @@ function topStatements(node: ts.VariableDeclaration, initializerNode: ts.Node | 
     const ident = snakify(nameIdent.getText());
     const flags = context.nodeFlagsStore.get(node);
     if (!context.dryRun && context.scope.checkUsage(nameIdent.getText()) && !flags?.drop) {
-      context.moduleDescriptor.addProperty('$' + ident, getPhpPrimitiveType(nameIdent, context.checker), 'public');
+      context.moduleDescriptor.addProperty('$' + ident, getPhpPrimitiveType(nameIdent, context.checker, context.log), 'public');
       context.moduleDescriptor.addStatement(`$this->${ident} = ${initializer};`);
     }
   }

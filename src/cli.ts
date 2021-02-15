@@ -26,8 +26,8 @@ let _options = cli.parse({
 });
 
 help(_options);
-const options = retrieveConfig(_options);
-configureLogging(options);
+const options = retrieveConfig(_options, log);
+configureLogging(log, options);
 
 log('Running with configuration: ' + JSON.stringify(options, null, '  '), LogSeverity.INFO);
 log(`Running transpilation in glob: ${options.src}`, LogSeverity.INFO);
@@ -42,4 +42,4 @@ log('Selected target directory [out]: ' + outDir, LogSeverity.SPECIAL);
 log.baseDir = baseDir;
 log.outDir = outDir;
 
-transpile(options, baseDir, outDir);
+transpile(options, baseDir, outDir, log);

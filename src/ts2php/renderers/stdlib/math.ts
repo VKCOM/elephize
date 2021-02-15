@@ -1,6 +1,6 @@
 import * as ts from 'typescript';
 import { Declaration, ExpressionHook } from '../../types';
-import { ctx, log, LogSeverity } from '../../utils/log';
+import { ctx, LogSeverity } from '../../utils/log';
 import { Context } from '../../components/context';
 import { getCallExpressionArg } from '../../utils/ast';
 import { renderNode, renderNodes } from '../../components/codegen/renderNodes';
@@ -48,7 +48,7 @@ export const math: ExpressionHook = (node: ts.CallExpression, context: Context<D
     case 'log10':
       return `log(${renderNode(getCallExpressionArg(node), context)}, 10)`;
     default:
-      log(`Math: unsupported method (${operation})`, LogSeverity.ERROR, ctx(node));
+      context.log(`Math: unsupported method (${operation})`, LogSeverity.ERROR, ctx(node));
       return 'null';
   }
 };

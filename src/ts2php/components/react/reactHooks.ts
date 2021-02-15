@@ -1,7 +1,7 @@
 import * as ts from 'typescript';
 import { Declaration, Dict, hooksNames, SpecialVars } from '../../types';
 import { Context } from '../context';
-import { ctx, log, LogSeverity } from '../../utils/log';
+import { ctx, LogSeverity } from '../../utils/log';
 import { flagParentOfType } from '../../utils/ast';
 import { renderNode } from '../codegen/renderNodes';
 
@@ -35,7 +35,7 @@ const hookRenderers: HookRenderers = {
   },
 
   'useContext': (node, context, nodeIdent) => {
-    log('React contexts are not supported in isomorphic components', LogSeverity.ERROR, ctx(node));
+    context.log('React contexts are not supported in isomorphic components', LogSeverity.ERROR, ctx(node));
     return dropRender(node, context, nodeIdent);
   },
 
@@ -43,7 +43,7 @@ const hookRenderers: HookRenderers = {
     context.scope.addDeclaration(nodeIdent, [], { terminateGlobally: true, dryRun: context.dryRun });
     const val = renderNode(node.arguments[1], context); // recognize only 2nd argument of call, it's initial state
     if (!val) {
-      log('You must provide initial state to useReducer call', LogSeverity.ERROR, ctx(node));
+      context.log('You must provide initial state to useReducer call', LogSeverity.ERROR, ctx(node));
     }
     return `[${val}]`;
   },

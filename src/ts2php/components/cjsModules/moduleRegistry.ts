@@ -1,5 +1,5 @@
 import { CommonjsModule } from './commonjsModule';
-import { log, LogSeverity } from '../../utils/log';
+import { LogObj, LogSeverity } from '../../utils/log';
 import { ReactModule } from './reactModule';
 import {
   camelize,
@@ -37,7 +37,8 @@ export class ModuleRegistry {
     public readonly _aliases: { [key: string]: string },
     private readonly _tsPaths: { [key: string]: string[] },
     private readonly _namespaces: NsMap,
-    private readonly _replacements: ImportReplacementRule[]
+    private readonly _replacements: ImportReplacementRule[],
+    protected readonly log: LogObj
   ) {
     this._replacements.forEach((rule) => this._registerExternalClass(rule));
   }
@@ -53,7 +54,7 @@ export class ModuleRegistry {
   public getExportedIdentifier(forModule: CommonjsModule, targetFilename: string | undefined, identifier: string, rewriteCase = false): string {
     if (!targetFilename) {
       // Dropped or ignored import
-      log(`Attempt to reach dropped or ignored module: ${identifier} \n\t@ ${forModule.sourceFileName}`, LogSeverity.ERROR);
+      this.log(`Attempt to reach dropped or ignored module: ${identifier} \n\t@ ${forModule.sourceFileName}`, LogSeverity.ERROR);
       return 'null';
     }
 
@@ -74,7 +75,7 @@ export class ModuleRegistry {
   public callExportedCallable(forModule: CommonjsModule, targetFilename: string | undefined, identifier: string, args: string[]): string {
     if (!targetFilename) {
       // Dropped or ignored import
-      log(`Attempt to reach dropped or ignored module: ${identifier} \n\t@ ${forModule.sourceFileName}`, LogSeverity.ERROR);
+      this.log(`Attempt to reach dropped or ignored module: ${identifier} \n\t@ ${forModule.sourceFileName}`, LogSeverity.ERROR);
       return 'null';
     }
 
@@ -95,7 +96,7 @@ export class ModuleRegistry {
   public getExportedComponent(forModule: CommonjsModule, targetFilename: string | undefined, identifier: string): string {
     if (!targetFilename) {
       // Dropped or ignored import
-      log(`Attempt to reach dropped or ignored module: ${identifier} \n\t@ ${forModule.sourceFileName}`, LogSeverity.ERROR);
+      this.log(`Attempt to reach dropped or ignored module: ${identifier} \n\t@ ${forModule.sourceFileName}`, LogSeverity.ERROR);
       return 'null';
     }
 
@@ -111,10 +112,10 @@ export class ModuleRegistry {
     }
 
     if (!module) {
-      log(`No exported component found for filename ${targetFilename}`, LogSeverity.WARN);
+      this.log(`No exported component found for filename ${targetFilename}`, LogSeverity.WARN);
     } else {
       if (module.isExternal) {
-        log(`Derived components in external module are not supported: ${targetFilename}`, LogSeverity.ERROR);
+        this.log(`Derived components in external module are not supported: ${targetFilename}`, LogSeverity.ERROR);
       }
       if (!derived) { // if targetFilename contains php module path
         derived = targetFilename;
@@ -131,7 +132,7 @@ export class ModuleRegistry {
       ?.find((mod) => mod.originalIdentName === identifier);
 
     if (!module) {
-      log(`No exported component ${identifier} found for filename ${forModule.sourceFileName}`, LogSeverity.ERROR);
+      this.log(`No exported component ${identifier} found for filename ${forModule.sourceFileName}`, LogSeverity.ERROR);
       return '';
     } else {
       forModule.registerRequiredFile(module.targetFileName, forModule.targetFileName, module);
@@ -148,11 +149,12 @@ export class ModuleRegistry {
         className,
         fullyQualifiedSourceFilename,
         newFilename,
-        this._namespaces
+        this._namespaces,
+        this.log
       );
 
       if (!implPath) {
-        log(`No implementation path declared for substitution module ${className}`, LogSeverity.ERROR);
+        this.log(`No implementation path declared for substitution module ${className}`, LogSeverity.ERROR);
         throw new Error();
       }
       moduleDescriptor.useImplementationFromPath(implPath);
@@ -161,7 +163,8 @@ export class ModuleRegistry {
         className,
         fullyQualifiedSourceFilename,
         newFilename,
-        this._namespaces
+        this._namespaces,
+        this.log
       );
     }
 
@@ -172,9 +175,9 @@ export class ModuleRegistry {
   }
 
   protected _registerExternalClass(rule: ImportReplacementRule): CommonjsModule | null {
-    const fullyQualifiedSourceFilename = resolveAliasesAndPaths(rule.modulePath, '', this._baseDir, this._tsPaths, this._aliases);
+    const fullyQualifiedSourceFilename = resolveAliasesAndPaths(this.log, rule.modulePath, '', this._baseDir, this._tsPaths, this._aliases);
     if (!fullyQualifiedSourceFilename) {
-      log(`Failed to lookup file ${rule.modulePath} [#1]`, LogSeverity.ERROR);
+      this.log(`Failed to lookup file ${rule.modulePath} [#1]`, LogSeverity.ERROR);
       return null;
     }
 
@@ -186,9 +189,9 @@ export class ModuleRegistry {
   }
 
   public registerClass(filepath: string): CommonjsModule | null {
-    const fullyQualifiedSourceFilename = resolveAliasesAndPaths(filepath, '', this._baseDir, this._tsPaths, this._aliases);
+    const fullyQualifiedSourceFilename = resolveAliasesAndPaths(this.log, filepath, '', this._baseDir, this._tsPaths, this._aliases);
     if (!fullyQualifiedSourceFilename) {
-      log(`Failed to lookup file ${filepath} [#1]`, LogSeverity.ERROR);
+      this.log(`Failed to lookup file ${filepath} [#1]`, LogSeverity.ERROR);
       return null;
     }
 
@@ -215,6 +218,7 @@ export class ModuleRegistry {
       originalModule.sourceFileName,
       newFilename,
       this._namespaces,
+      this.log,
       originalIdent,
       originalModule
     );
@@ -267,7 +271,7 @@ export class ModuleRegistry {
 
   protected _getInstance(filename: string, identifier: string): string {
     if (!this._targetFilenameToModule.has(filename)) {
-      log(`Module not registered: ${filename}, when trying to reach property ${identifier}`, LogSeverity.ERROR);
+      this.log(`Module not registered: ${filename}, when trying to reach property ${identifier}`, LogSeverity.ERROR);
       return '';
     }
 

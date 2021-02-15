@@ -4,7 +4,7 @@ import { ImportReplacementRule, TranslateOptions } from '../../../types';
 import { ModuleRegistry } from '../../cjsModules/moduleRegistry';
 import { renderModule } from '../renderModule';
 import { CommonjsModule } from '../../cjsModules/commonjsModule';
-import { log, LogSeverity } from '../../../utils/log';
+import { LogObj, LogSeverity } from '../../../utils/log';
 import * as prettier from 'prettier/standalone';
 import { phpPrettierOptions } from '../../../internalConfig/phpPrettierOptions';
 import { defaultOptions } from '../defaultCompilerOptions';
@@ -16,6 +16,7 @@ import { CommonjsExternalModule } from '../../cjsModules/commonjsExternalModule'
  * @param program
  * @param replacements
  * @param nodeFlagStore
+ * @param log
  * @param onData
  * @param onBeforeRender
  * @param baseDir
@@ -25,7 +26,7 @@ import { CommonjsExternalModule } from '../../cjsModules/commonjsExternalModule'
  * @param options
  * @param onFinish
  */
-export function translateProgram(program: ts.Program, replacements: ImportReplacementRule[], nodeFlagStore: NodeFlagStore, {
+export function translateProgram(program: ts.Program, replacements: ImportReplacementRule[], nodeFlagStore: NodeFlagStore, log: LogObj, {
   onData,
   onBeforeRender = () => undefined,
   baseDir,
@@ -39,7 +40,14 @@ export function translateProgram(program: ts.Program, replacements: ImportReplac
     console.time('Elephize recompilation done');
   }
 
-  let registry = new ModuleRegistry(baseDir, aliases, options.paths || {}, namespaces, replacements);
+  let registry = new ModuleRegistry(
+    baseDir,
+    aliases,
+    options.paths || {},
+    namespaces,
+    replacements,
+    log
+  );
   let checker = program.getTypeChecker();
   for (const sourceFile of program.getSourceFiles()) {
     if (!sourceFile.isDeclarationFile) { // skip .d.ts if any
@@ -49,7 +57,7 @@ export function translateProgram(program: ts.Program, replacements: ImportReplac
       }
 
       onBeforeRender(sourceFile.fileName, sourceFile, nodeFlagStore);
-      renderModule(checker, options, sourceFile, nodeFlagStore, baseDir, namespaces, registry, currentModule, disableCodeElimination);
+      renderModule(checker, options, sourceFile, nodeFlagStore, baseDir, namespaces, registry, currentModule, log, disableCodeElimination);
     }
   }
 

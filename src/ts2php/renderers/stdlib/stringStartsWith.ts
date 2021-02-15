@@ -1,6 +1,6 @@
 import * as ts from 'typescript';
 import { Declaration, ExpressionHook } from '../../types';
-import { ctx, log, LogSeverity } from '../../utils/log';
+import { ctx, LogSeverity } from '../../utils/log';
 import { propNameIs } from './_propName';
 import { hasType } from '../../components/typeInference/basicTypes';
 import { Context } from '../../components/context';
@@ -18,17 +18,17 @@ export const stringStartsWith: ExpressionHook = (node: ts.CallExpression, contex
     return undefined;
   }
   if (!hasType(node.expression, context.checker, 'string')) {
-    log('Left-hand expression must have string inferred type', LogSeverity.ERROR, ctx(node));
+    context.log('Left-hand expression must have string inferred type', LogSeverity.ERROR, ctx(node));
     return 'null';
   }
   const varNameNode = getCallExpressionLeftSide(node);
   let args = renderNodes([...node.arguments], context);
   let varName = renderNode(varNameNode, context);
   if (!args || !args[0]) {
-    log('String.prototype.startsWith: can\'t find searchable element in call.', LogSeverity.ERROR, ctx(node));
+    context.log('String.prototype.startsWith: can\'t find searchable element in call.', LogSeverity.ERROR, ctx(node));
     return 'null';
   }
-  log('Converting String.prototype.startsWith to strpos(): check your encodings twice!', LogSeverity.WARN, ctx(node));
+  context.log('Converting String.prototype.startsWith to strpos(): check your encodings twice!', LogSeverity.WARN, ctx(node));
   if (args[1]) {
     return `strpos(${varName}, ${args[0]}, ${args[1]}) === 0`;
   } else {

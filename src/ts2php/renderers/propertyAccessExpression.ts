@@ -1,6 +1,6 @@
 import * as ts from 'typescript';
 import { Declaration, DeclFlag } from '../types';
-import { ctx, log, LogSeverity } from '../utils/log';
+import { ctx, LogSeverity } from '../utils/log';
 import { getLeftExpr } from '../utils/ast';
 import { Context } from '../components/context';
 import { insideComponent } from '../components/unusedCodeElimination/usageGraph/nodeData';
@@ -12,7 +12,7 @@ export function tPropertyAccessExpression(node: ts.PropertyAccessExpression, con
   let [ident, accessor] = renderNodes([node.expression, node.name], context);
 
   if (ident === '$exports' && !context.scope.getClosure().has('exports')) {
-    log('You should use `export` instead of `module.exports = `', LogSeverity.ERROR, ctx(node));
+    context.log('You should use `export` instead of `module.exports = `', LogSeverity.ERROR, ctx(node));
     return '';
   }
 
@@ -30,7 +30,7 @@ export function tPropertyAccessExpression(node: ts.PropertyAccessExpression, con
       type.isStringLiteral()
       || context.checker.typeToString(type, node.expression, ts.TypeFormatFlags.None) === 'string'
     ) {
-      log('Converting .length to strlen(): check your encodings!', LogSeverity.WARN);
+      context.log('Converting .length to strlen(): check your encodings!', LogSeverity.WARN);
       return `strlen(${ident})`;
     }
     return `count(${ident})`;
@@ -49,7 +49,7 @@ export function tPropertyAccessExpression(node: ts.PropertyAccessExpression, con
         return 'M_' + accessor;
       default:
         if (!supportedMathMethods.includes(accessor)) {
-          log(`Math: unsupported property (${accessor})`, LogSeverity.ERROR, ctx(node));
+          context.log(`Math: unsupported property (${accessor})`, LogSeverity.ERROR, ctx(node));
         }
         return 'null';
     }
@@ -61,7 +61,7 @@ export function tPropertyAccessExpression(node: ts.PropertyAccessExpression, con
   }
 
   if (accessor === 'children' && insideComponent(context.scope)) {
-    log(`Accessing ${ident}.children inside react component function: note that accessing props.children` +
+    context.log(`Accessing ${ident}.children inside react component function: note that accessing props.children` +
       ' won\'t work on server! Use object dereferencing instead.', LogSeverity.WARN, ctx(node));
   }
 

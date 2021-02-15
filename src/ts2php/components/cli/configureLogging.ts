@@ -1,7 +1,7 @@
-import { log, LogVerbosity } from '../../utils/log';
+import { LogObj, LogVerbosity } from '../../utils/log';
 import { CliOptions } from '../../types';
 
-export function configureLogging(options: CliOptions) {
+export function configureLogging(log: LogObj, options: CliOptions) {
   if (options.output === '__stdout') {
     log.forceStderr = true; // stdout used to print bootstrap file, force use stderr for debug messages
   }

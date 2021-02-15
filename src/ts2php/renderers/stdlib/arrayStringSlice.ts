@@ -1,6 +1,6 @@
 import * as ts from 'typescript';
 import { Declaration, ExpressionHook } from '../../types';
-import { ctx, log, LogSeverity } from '../../utils/log';
+import { ctx, LogSeverity } from '../../utils/log';
 import { propNameIs } from './_propName';
 import { hasArrayType } from '../../components/typeInference/basicTypes';
 import { Context } from '../../components/context';
@@ -45,7 +45,7 @@ export const arrayStringSlice: ExpressionHook = (node: ts.CallExpression, contex
     if (!args || !args[0]) {
       return varName;
     }
-    log('Converting String.prototype.substr to substr(): check your encodings twice!', LogSeverity.WARN, ctx(node));
+    context.log('Converting String.prototype.substr to substr(): check your encodings twice!', LogSeverity.WARN, ctx(node));
     if (args[1]) {
       return `substr(${varName}, ${args[0]}, strlen(${varName}) - ${args[1]} - 1)`;
     } else {
@@ -53,8 +53,8 @@ export const arrayStringSlice: ExpressionHook = (node: ts.CallExpression, contex
     }
   } else {
     const forced = isForcedArrayType(context, node);
-    if (!hasArrayType(node.expression, context.checker) && !forced) {
-      log('Left-hand expression must have string, array-like or iterable inferred type', LogSeverity.ERROR, ctx(node));
+    if (!hasArrayType(node.expression, context.checker, context.log) && !forced) {
+      context.log('Left-hand expression must have string, array-like or iterable inferred type', LogSeverity.ERROR, ctx(node));
       return 'null';
     }
 
