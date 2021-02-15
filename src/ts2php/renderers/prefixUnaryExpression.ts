@@ -1,7 +1,7 @@
 import * as ts from 'typescript';
 import { Declaration } from '../types';
 import { Context } from '../components/context';
-import { ctx, log, LogSeverity } from '../utils/log';
+import { ctx, LogSeverity } from '../utils/log';
 import { renderNode } from '../components/codegen/renderNodes';
 import { checkModificationInNestedScope } from '../components/functionScope';
 
@@ -10,7 +10,7 @@ export function tPrefixUnaryExpression(node: ts.PrefixUnaryExpression, context: 
     checkModificationInNestedScope(node.operand as ts.Identifier, context);
     let type = context.checker.getTypeAtLocation(node.operand);
     if (context.checker.typeToString(type, node.operand, ts.TypeFormatFlags.None) !== 'number') {
-      log('Trying to apply unary inc/dec operator to non-number variable. This is probably an error.', LogSeverity.ERROR, ctx(node));
+      context.log('Trying to apply unary inc/dec operator to non-number variable. This is probably an error.', LogSeverity.ERROR, ctx(node));
     }
   }
 

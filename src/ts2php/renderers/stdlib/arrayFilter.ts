@@ -1,6 +1,6 @@
 import * as ts from 'typescript';
 import { CallbackType, Declaration, ExpressionHook } from '../../types';
-import { ctx, log, LogSeverity } from '../../utils/log';
+import { ctx, LogSeverity } from '../../utils/log';
 import { propNameIs } from './_propName';
 import { hasArrayType } from '../../components/typeInference/basicTypes';
 import { Context } from '../../components/context';
@@ -18,7 +18,7 @@ export const arrayFilter: ExpressionHook = (node: ts.CallExpression, context: Co
     return undefined;
   }
   if (!hasArrayType(node.expression, context.checker)) {
-    log('Left-hand expression must have array-like or iterable inferred type', LogSeverity.ERROR, ctx(node));
+    context.log('Left-hand expression must have array-like or iterable inferred type', LogSeverity.ERROR, ctx(node));
     return 'null';
   }
 
@@ -26,7 +26,7 @@ export const arrayFilter: ExpressionHook = (node: ts.CallExpression, context: Co
   const varNode = getCallExpressionLeftSide(node);
 
   if ((funcNode?.parameters.length || 0) > 1) {
-    log('Array.prototype.filter with index in callback is not supported', LogSeverity.ERROR, ctx(node));
+    context.log('Array.prototype.filter with index in callback is not supported', LogSeverity.ERROR, ctx(node));
     return 'null';
   }
 

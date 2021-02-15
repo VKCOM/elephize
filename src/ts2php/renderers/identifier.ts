@@ -3,7 +3,7 @@ import { Declaration, DeclFlag } from '../types';
 import { builtins } from '../internalConfig/jsBuiltins';
 import { flagParentOfType } from '../utils/ast';
 import { Context } from '../components/context';
-import { ctx, log, LogSeverity } from '../utils/log';
+import { ctx, LogSeverity } from '../utils/log';
 import { snakify } from '../utils/pathsAndNames';
 import { insideComponent } from '../components/unusedCodeElimination/usageGraph/nodeData';
 
@@ -25,7 +25,7 @@ export function tIdentifier(node: ts.Identifier, context: Context<Declaration>) 
 
   // Warn user for wrong usage of special variable
   if (context.dryRun && node.escapedText === 'window' && node.parent.getText() === 'window._elephizeIsServer') {
-    log('Special variable \'window._elephizeIsServer\' should be used in ternary conditions only!', LogSeverity.ERROR, ctx(node));
+    context.log('Special variable \'window._elephizeIsServer\' should be used in ternary conditions only!', LogSeverity.ERROR, ctx(node));
   }
 
   const [decl, ] = context.scope.findByIdent(node.escapedText.toString()) || [];
@@ -46,7 +46,7 @@ export function tIdentifier(node: ts.Identifier, context: Context<Declaration>) 
 
   // Mark require expressions to process them in CallExpression visitor
   if (node.escapedText.toString() === 'require') {
-    log('You should use `import` instead of `require`', LogSeverity.ERROR, ctx(node));
+    context.log('You should use `import` instead of `require`', LogSeverity.ERROR, ctx(node));
     return 'null';
   }
 
@@ -101,7 +101,7 @@ export function tIdentifier(node: ts.Identifier, context: Context<Declaration>) 
   const isDeclaration = node.parent.kind === ts.SyntaxKind.VariableDeclaration && (node.parent as ts.VariableDeclaration).name === node;
   if (!context.dryRun && isDeclaration && !context.scope.checkUsage(node.getText())) {
     // Remove unused vars declarations
-    log(`Dropped unused var $${node.escapedText} from [out]/${context.moduleDescriptor.targetFileName}`, LogSeverity.INFO, ctx(node));
+    context.log(`Dropped unused var $${node.escapedText} from [out]/${context.moduleDescriptor.targetFileName}`, LogSeverity.INFO, ctx(node));
     flagParentOfType(node, [ts.SyntaxKind.VariableDeclaration], { drop: true }, context.nodeFlagsStore);
   }
 

@@ -2,7 +2,7 @@ import * as ts from 'typescript';
 import { Declaration, DeclFlag } from '../types';
 import { Context } from '../components/context';
 import { isExportedVar } from '../utils/ast';
-import { ctx, log, LogSeverity } from '../utils/log';
+import { ctx, LogSeverity } from '../utils/log';
 import * as path from 'path';
 import { initReact } from '../components/react/reactHooks';
 import { resolveAliasesAndPaths } from '../utils/pathsAndNames';
@@ -12,18 +12,18 @@ export function tImportDeclaration(node: ts.ImportDeclaration, context: Context<
   const moduleSpec = (node.moduleSpecifier as ts.StringLiteral).text;
   if (moduleSpec === 'react') {
     if (!initReact(node, context)) {
-      log('Importing react with dereferencing is not supported. Use `import * as React from \'react\' instead.', LogSeverity.ERROR, ctx(node));
+      context.log('Importing react with dereferencing is not supported. Use `import * as React from \'react\' instead.', LogSeverity.ERROR, ctx(node));
       return '';
     }
   } else if (moduleSpec) {
     let currentFilePath = node.getSourceFile().fileName;
-    let sourceFilename = resolveAliasesAndPaths(log, moduleSpec, path.dirname(currentFilePath), context.baseDir, context.compilerOptions.paths || {}, context.registry._aliases);
+    let sourceFilename = resolveAliasesAndPaths(context.log, moduleSpec, path.dirname(currentFilePath), context.baseDir, context.compilerOptions.paths || {}, context.registry._aliases);
 
     if (sourceFilename === null) {
       if (moduleSpec.includes('/')) {
-        log('Module not found: tried to find ' + moduleSpec, LogSeverity.ERROR, ctx(node));
+        context.log('Module not found: tried to find ' + moduleSpec, LogSeverity.ERROR, ctx(node));
       } else {
-        log('Importing arbitrary node modules is not supported. Only "react" module is allowed at the moment.', LogSeverity.ERROR, ctx(node));
+        context.log('Importing arbitrary node modules is not supported. Only "react" module is allowed at the moment.', LogSeverity.ERROR, ctx(node));
       }
       return '';
     }

@@ -51,7 +51,8 @@ export function renderModule(
     true,
     baseDir,
     namespaces,
-    registry
+    registry,
+    log
   );
 
   // First pass: build trees and collect var usage info
@@ -77,7 +78,8 @@ export function renderModule(
     false,
     baseDir,
     namespaces,
-    registry
+    registry,
+    log
   );
 
   // Second pass: build code with cleaned unused vars

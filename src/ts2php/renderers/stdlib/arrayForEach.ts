@@ -1,6 +1,6 @@
 import * as ts from 'typescript';
 import { CallbackType, Declaration, ExpressionHook } from '../../types';
-import { ctx, log, LogSeverity } from '../../utils/log';
+import { ctx, LogSeverity } from '../../utils/log';
 import { propNameIs } from './_propName';
 import { hasArrayType } from '../../components/typeInference/basicTypes';
 import { Context } from '../../components/context';
@@ -24,7 +24,7 @@ export const arrayForeach: ExpressionHook = (node: ts.CallExpression, context: C
     return undefined;
   }
   if (!hasArrayType(node.expression, context.checker)) {
-    log('Left-hand expression must have array-like or iterable inferred type', LogSeverity.ERROR, ctx(node));
+    context.log('Left-hand expression must have array-like or iterable inferred type', LogSeverity.ERROR, ctx(node));
     return 'null';
   }
 
@@ -32,7 +32,7 @@ export const arrayForeach: ExpressionHook = (node: ts.CallExpression, context: C
 
   const funcBlockNode: CallbackType = getCallExpressionCallbackArg(node) as CallbackType;
   if (!funcBlockNode) {
-    log('Array.prototype.forEach: can\'t find callable argument in call.', LogSeverity.ERROR, ctx(node));
+    context.log('Array.prototype.forEach: can\'t find callable argument in call.', LogSeverity.ERROR, ctx(node));
     return 'null';
   }
 
@@ -46,17 +46,17 @@ export const arrayForeach: ExpressionHook = (node: ts.CallExpression, context: C
 
   let varName = renderNodes([varNameNode], context).join('');
   if (!cbArgs || !cbArgs[0]) {
-    log('Array.prototype.forEach: can\'t find iterable element in call.', LogSeverity.ERROR, ctx(node));
+    context.log('Array.prototype.forEach: can\'t find iterable element in call.', LogSeverity.ERROR, ctx(node));
     return 'null';
   }
 
   if (cbArgs[0].name.kind !== ts.SyntaxKind.Identifier) {
-    log('Array.prototype.forEach: parameter destructuring in foreach is not supported.', LogSeverity.ERROR, ctx(node));
+    context.log('Array.prototype.forEach: parameter destructuring in foreach is not supported.', LogSeverity.ERROR, ctx(node));
     return 'null';
   }
   if (cbArgs[1]) {
     if (cbArgs[1].name.kind !== ts.SyntaxKind.Identifier) {
-      log('Array.prototype.forEach: parameter destructuring in foreach is not supported.', LogSeverity.ERROR, ctx(node));
+      context.log('Array.prototype.forEach: parameter destructuring in foreach is not supported.', LogSeverity.ERROR, ctx(node));
       return 'null';
     }
     return `foreach (${varName} as $${cbArgs[1].name.getText()} => $${cbArgs[0].name.getText()}) ${renderedBlock}`;

@@ -1,7 +1,7 @@
 import * as ts from 'typescript';
 import { Declaration } from '../types';
 import { Context } from '../components/context';
-import { ctx, log, LogSeverity } from '../utils/log';
+import { ctx, LogSeverity } from '../utils/log';
 import { renderNode } from '../components/codegen/renderNodes';
 
 export function tTypeofExpression(node: ts.TypeOfExpression, context: Context<Declaration>) {
@@ -12,7 +12,7 @@ export function tTypeofExpression(node: ts.TypeOfExpression, context: Context<De
     return `Stdlib::typeof(${exp})`;
   }
 
-  log('Typeof operator does not support `any`/`unknown` and functional arguments ' +
+  context.log('Typeof operator does not support `any`/`unknown` and functional arguments ' +
     '(and expressions returning functional types). Ensure that your expression evaluates to ' +
     'non-callable explicit type.', LogSeverity.ERROR, ctx(node));
   return 'null';

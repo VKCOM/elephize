@@ -1,6 +1,6 @@
 import * as ts from 'typescript';
 import { CallbackType, Declaration, ExpressionHook } from '../../types';
-import { ctx, log, LogSeverity } from '../../utils/log';
+import { ctx, LogSeverity } from '../../utils/log';
 import { propNameIs } from './_propName';
 import { hasArrayType } from '../../components/typeInference/basicTypes';
 import { Context } from '../../components/context';
@@ -18,14 +18,14 @@ export const arraySome: ExpressionHook = (node: ts.CallExpression, context: Cont
     return undefined;
   }
   if (!hasArrayType(node.expression, context.checker)) {
-    log('Left-hand expression must have array-like or iterable inferred type', LogSeverity.ERROR, ctx(node));
+    context.log('Left-hand expression must have array-like or iterable inferred type', LogSeverity.ERROR, ctx(node));
     return 'null';
   }
 
   const funcNode: CallbackType = getCallExpressionCallbackArg(node) as CallbackType;
   const funcArgsCount = funcNode?.parameters.length || 0;
   if (!funcArgsCount) {
-    log('Array.prototype.some: can\'t find iterable element in call.', LogSeverity.ERROR, ctx(node));
+    context.log('Array.prototype.some: can\'t find iterable element in call.', LogSeverity.ERROR, ctx(node));
     return 'null';
   }
 
