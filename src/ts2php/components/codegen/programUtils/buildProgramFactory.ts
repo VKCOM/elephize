@@ -3,6 +3,7 @@ import { existsSync } from 'fs';
 import { CliOptions, ImportReplacementRule } from '../../../types';
 import { resolveModules } from '../../cjsModules/resolveModules';
 import { compilerHostSourceGetter } from '../sourceFilesHelper';
+import { LogObj } from '../../../utils/log';
 
 // internals. Not good thing to import them this way, but it's hard to customize transpileModule the way we want.
 const { addRange } = require('typescript');
@@ -16,6 +17,7 @@ const { addRange } = require('typescript');
  * @param tsPaths
  * @param transpileOptions
  * @param writeFile
+ * @param log
  */
 export function getBuildProgram(
   filenames: string[],
@@ -23,7 +25,8 @@ export function getBuildProgram(
   baseDir: string,
   tsPaths: { [key: string]: string[] },
   transpileOptions: ts.TranspileOptions,
-  writeFile: ts.WriteFileCallback
+  writeFile: ts.WriteFileCallback,
+  log: LogObj
 ): [ts.Program, ImportReplacementRule[]] {
   const diagnostics: ts.Diagnostic[] = [];
   const options: ts.CompilerOptions = {...transpileOptions.compilerOptions || {}};
@@ -43,7 +46,7 @@ export function getBuildProgram(
   options.allowNonTsExtensions = true;
 
   // Create a compilerHost object to allow the compiler to read and write files
-  const resolutionFun = resolveModules(options, importRules, baseDir, tsPaths);
+  const resolutionFun = resolveModules(options, importRules, baseDir, tsPaths, log);
   let replacements: ImportReplacementRule[] = [];
   const compilerHost: ts.CompilerHost = {
     resolveModuleNames: (moduleNames: string[], containingFile: string) => {

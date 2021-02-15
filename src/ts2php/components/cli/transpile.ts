@@ -1,5 +1,5 @@
 import * as glob from 'glob';
-import { log, LogSeverity } from '../../utils/log';
+import { LogObj, LogSeverity } from '../../utils/log';
 import { translateCode, translateCodeAndWatch } from '../codegen/translateCode';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -11,7 +11,7 @@ import { CliOptions } from '../../types';
 import { resolveRulePaths } from '../cjsModules/resolveModules';
 const replace = require('stream-replace');
 
-export function transpile(options: CliOptions, baseDir: string, outDir: string) {
+export function transpile(options: CliOptions, baseDir: string, outDir: string, log: LogObj) {
   const namespaces = {
     root: options.rootNs,
     builtins: options.rootNs + '\\Builtins',

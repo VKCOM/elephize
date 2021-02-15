@@ -1,7 +1,8 @@
 import { Scope } from '../ts2php/components/unusedCodeElimination/usageGraph';
+import { log } from '../ts2php/utils/log';
 
 test.only('ts2php.UsageGraph.NewScope', () => {
-  const rootScope = Scope.newRootScope({ flag1: true, flag2: 'false' }, '');
+  const rootScope = Scope.newRootScope({ flag1: true, flag2: 'false' }, '', log);
   expect(rootScope.localTerminalNode).toBeTruthy();
   expect(rootScope.terminalNode).toBeTruthy();
   expect(rootScope.terminalNode).toEqual(rootScope.localTerminalNode);
@@ -11,7 +12,7 @@ test.only('ts2php.UsageGraph.NewScope', () => {
 });
 
 test('ts2php.UsageGraph.SimpleDeclaration_terminated', () => {
-  const rootScope = Scope.newRootScope({ flag1: true, flag2: 'false' }, '');
+  const rootScope = Scope.newRootScope({ flag1: true, flag2: 'false' }, '', log);
   const node = rootScope.addDeclaration('test', [], { terminateGlobally: true, dryRun: true });
   expect(rootScope.declarations.size).toEqual(2);
   rootScope.terminalNode.markUsage();
@@ -19,7 +20,7 @@ test('ts2php.UsageGraph.SimpleDeclaration_terminated', () => {
 });
 
 test('ts2php.UsageGraph.SimpleDeclaration_eliminated', () => {
-  const rootScope = Scope.newRootScope({ flag1: true, flag2: 'false' }, '');
+  const rootScope = Scope.newRootScope({ flag1: true, flag2: 'false' }, '', log);
   const node = rootScope.addDeclaration('test', [], { dryRun: true });
   expect(rootScope.declarations.size).toEqual(2);
   rootScope.terminalNode.markUsage();
@@ -28,7 +29,7 @@ test('ts2php.UsageGraph.SimpleDeclaration_eliminated', () => {
 });
 
 test('ts2php.UsageGraph.DependentDeclarations_terminated', () => {
-  const rootScope = Scope.newRootScope({ flag1: true, flag2: 'false' }, '');
+  const rootScope = Scope.newRootScope({ flag1: true, flag2: 'false' }, '', log);
   const node1 = rootScope.addDeclaration('test1', [], { dryRun: true });
   const node2 = rootScope.addDeclaration('test2', ['test1'], { dryRun: true });
   const node3 = rootScope.addDeclaration('test3', ['test2'], { dryRun: true });
@@ -43,7 +44,7 @@ test('ts2php.UsageGraph.DependentDeclarations_terminated', () => {
 
 // e.g. recursive calls
 test('ts2php.UsageGraph.DependentCyclicDeclarations_terminated', () => {
-  const rootScope = Scope.newRootScope({ flag1: true, flag2: 'false' }, '');
+  const rootScope = Scope.newRootScope({ flag1: true, flag2: 'false' }, '', log);
   const node1 = rootScope.addDeclaration('test1', ['test4'], { terminateGlobally: true, dryRun: true });
   const node2 = rootScope.addDeclaration('test2', ['test1'], { dryRun: true });
   const node3 = rootScope.addDeclaration('test3', ['test2'], { dryRun: true });
@@ -58,7 +59,7 @@ test('ts2php.UsageGraph.DependentCyclicDeclarations_terminated', () => {
 });
 
 test('ts2php.UsageGraph.DependentCyclicDeclarations_eliminated', () => {
-  const rootScope = Scope.newRootScope({ flag1: true, flag2: 'false' }, '');
+  const rootScope = Scope.newRootScope({ flag1: true, flag2: 'false' }, '', log);
   const node1 = rootScope.addDeclaration('test1', ['test4'], { dryRun: true });
   const node2 = rootScope.addDeclaration('test2', ['test1'], { dryRun: true });
   const node3 = rootScope.addDeclaration('test3', ['test2'], { dryRun: true });
@@ -77,7 +78,7 @@ test('ts2php.UsageGraph.DependentCyclicDeclarations_eliminated', () => {
 });
 
 test('ts2php.UsageGraph.ChildScope_ReturnTermination', () => {
-  const rootScope = Scope.newRootScope({ flag1: true, flag2: 'false' }, '');
+  const rootScope = Scope.newRootScope({ flag1: true, flag2: 'false' }, '', log);
   const node1 = rootScope.addDeclaration('test1', [], { dryRun: true });
   const node2 = rootScope.addDeclaration('test2', ['test1'], { dryRun: true });
   const localScope = node2!.spawnScope('', true);
@@ -93,7 +94,7 @@ test('ts2php.UsageGraph.ChildScope_ReturnTermination', () => {
 });
 
 test('ts2php.UsageGraph.ChildScope_UsageInLowerContext', () => {
-  const rootScope = Scope.newRootScope({ flag1: true, flag2: 'false' }, '');
+  const rootScope = Scope.newRootScope({ flag1: true, flag2: 'false' }, '', log);
   const node1 = rootScope.addDeclaration('test1', [], { dryRun: true });
   const node2 = rootScope.addDeclaration('test2', [], { dryRun: true });
   const localScope = node2!.spawnScope('',true);
@@ -111,7 +112,7 @@ test('ts2php.UsageGraph.ChildScope_UsageInLowerContext', () => {
 });
 
 test('ts2php.UsageGraph.ChildScope_Elimination', () => {
-  const rootScope = Scope.newRootScope({ flag1: true, flag2: 'false' }, '');
+  const rootScope = Scope.newRootScope({ flag1: true, flag2: 'false' }, '', log);
   const node1 = rootScope.addDeclaration('test1', [], { dryRun: true });
   const node2 = rootScope.addDeclaration('test2', [], { dryRun: true });
   const localScope = node2!.spawnScope('', true);
@@ -136,7 +137,7 @@ test('ts2php.UsageGraph.ChildScope_Elimination', () => {
 });
 
 test.skip('ts2php.UsageGraph.ChildScope_ScopeElimination', () => {
-  const rootScope = Scope.newRootScope({ flag1: true, flag2: 'false' }, '');
+  const rootScope = Scope.newRootScope({ flag1: true, flag2: 'false' }, '', log);
   const node1 = rootScope.addDeclaration('test1', [], { terminateGlobally: true, dryRun: true });
   const node2 = rootScope.addDeclaration('test2', [], { dryRun: true });
   const localScope = node2!.spawnScope('', true);

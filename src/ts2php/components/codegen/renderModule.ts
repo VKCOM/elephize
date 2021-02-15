@@ -4,7 +4,7 @@ import { ModuleRegistry } from '../cjsModules/moduleRegistry';
 import { CommonjsModule } from '../cjsModules/commonjsModule';
 import { Scope } from '../unusedCodeElimination/usageGraph';
 import { Context } from '../context';
-import { log, LogVerbosity } from '../../utils/log';
+import { LogObj, LogVerbosity } from '../../utils/log';
 import { renderNode } from './renderNodes';
 import { NodeFlagStore } from './nodeFlagStore';
 
@@ -19,6 +19,7 @@ import { NodeFlagStore } from './nodeFlagStore';
  * @param namespaces
  * @param registry
  * @param currentModule
+ * @param log
  * @param disableCodeElimination
  */
 export function renderModule(
@@ -30,10 +31,11 @@ export function renderModule(
   namespaces: NsMap,
   registry: ModuleRegistry,
   currentModule: CommonjsModule,
+  log: LogObj,
   disableCodeElimination = false
 ): void {
   Scope._forceDisableUnusedVarsElimination = disableCodeElimination;
-  const moduleScope = Scope.newRootScope<Declaration>({flags: 0}, currentModule.sourceFileName, [
+  const moduleScope = Scope.newRootScope<Declaration>({flags: 0}, currentModule.sourceFileName, log, [
     'console',
     'document',
     'window',

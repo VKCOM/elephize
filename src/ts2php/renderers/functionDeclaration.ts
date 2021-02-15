@@ -50,7 +50,7 @@ export function tFunctionDeclaration(node: ts.FunctionDeclaration, context: Cont
         const { syntaxList, block } = els;
         if (!context.dryRun && context.scope.checkUsage(node.name.getText())) {
           context.moduleDescriptor.addMethod(node.name.getText(), block, syntaxList.join(', '),
-            getPhpPrimitiveTypeForFunc(node, syntaxList, context.checker), 'public');
+            getPhpPrimitiveTypeForFunc(node, syntaxList, context.checker, context.log), 'public');
         }
 
         if (isExportedFun(node.name)) {

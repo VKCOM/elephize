@@ -2,7 +2,7 @@
 
 import * as ts from 'typescript';
 import { getDefaultCompilerOptions } from 'typescript';
-import { log, LogSeverity } from '../../../utils/log';
+import { LogObj, LogSeverity } from '../../../utils/log';
 import { CliOptions, ImportReplacementRule } from '../../../types';
 import { resolveModules } from '../../cjsModules/resolveModules';
 
@@ -22,6 +22,7 @@ let lastDiagCode: number | undefined;
  * @param tsPaths
  * @param compilerOptions
  * @param onProgramReady
+ * @param log
  * @param getCloseHandle
  */
 export function getWatchProgram(
@@ -31,6 +32,7 @@ export function getWatchProgram(
   tsPaths: { [key: string]: string[] },
   compilerOptions: ts.CompilerOptions,
   onProgramReady: (p: ts.Program, replacements: ImportReplacementRule[], errcode?: number) => void,
+  log: LogObj,
   getCloseHandle?: (closeHandle: () => void) => void
 ) {
   const options: ts.CompilerOptions = {...compilerOptions || {}};
@@ -71,7 +73,7 @@ export function getWatchProgram(
     return origCreateProgram(rootNames, options, host, oldProgram);
   };
   const origPostProgramCreate = host.afterProgramCreate;
-  const resolutionFun = resolveModules(options, importRules, baseDir, tsPaths);
+  const resolutionFun = resolveModules(options, importRules, baseDir, tsPaths, log);
   let replacements: ImportReplacementRule[] = [];
   host.resolveModuleNames = (moduleNames: string[], containingFile: string) => {
     const [resolvedModules, importReplacements] = resolutionFun(moduleNames, containingFile);
@@ -93,7 +95,7 @@ export function getWatchProgram(
   }
 }
 
-function reportDiagnostic(diagnostic: ts.Diagnostic) {
+function reportDiagnostic(diagnostic: ts.Diagnostic, log: LogObj) {
   lastDiagCode = diagnostic.code;
   log(ts.formatDiagnostic(diagnostic, formatHost), LogSeverity.ERROR);
 }

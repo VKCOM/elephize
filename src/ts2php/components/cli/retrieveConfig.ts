@@ -1,10 +1,10 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { defaultOptions } from './defaults';
-import { log, LogSeverity } from '../../utils/log';
+import { LogObj, LogSeverity } from '../../utils/log';
 import { CliOptions } from '../../types';
 
-export function retrieveConfig(options: any): CliOptions {
+export function retrieveConfig(options: any, log: LogObj): CliOptions {
   for (const k in options) {
     if (options[k] === undefined) {
       delete options[k];

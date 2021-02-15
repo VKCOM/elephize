@@ -3,7 +3,7 @@ import { Declaration, DeclFlag } from '../types';
 import * as ts from 'typescript';
 import { fetchAllBindingIdents, getClosestOrigParentOfType } from '../utils/ast';
 import { handleComponent } from './react/reactComponents';
-import { ctx, log, LogSeverity } from '../utils/log';
+import { ctx, LogSeverity } from '../utils/log';
 import { BoundNode } from './unusedCodeElimination/usageGraph/node';
 import { renderNode, renderNodes } from './codegen/renderNodes';
 import { usedInNestedScope } from './unusedCodeElimination/usageGraph/nodeData';
@@ -90,7 +90,7 @@ export function genClosure(idMap: Map<string, boolean>, context: Context<Declara
   let closureUse: string[] = [];
   idMap.forEach((modifiedInClosure, varName) => {
     if (modifiedInClosure) {
-      log(`Closure-scoped variable ${varName} has been modified inside closure, this will not work on server side`, LogSeverity.ERROR, ctx(node));
+      context.log(`Closure-scoped variable ${varName} has been modified inside closure, this will not work on server side`, LogSeverity.ERROR, ctx(node));
       closureUse.push(`/* !! MODIFIED INSIDE !! */$${varName}`);
     } else {
       closureUse.push(`$${varName}`);

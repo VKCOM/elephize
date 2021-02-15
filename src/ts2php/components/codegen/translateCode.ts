@@ -4,11 +4,13 @@ import { NodeFlagStore } from './nodeFlagStore';
 import { translateProgram } from './programUtils/translateProgram';
 import { defaultOptions } from './defaultCompilerOptions';
 import { getWatchProgram } from './programUtils/watchProgramFactory';
+import { LogObj } from '../../utils/log';
 
 type TranslatorFunc = (
   filenames: string[],
   importRules: CliOptions['importRules'],
   tsPaths: { [key: string]: string[] },
+  log: LogObj,
   opts: TranslateOptions
 ) => NodeFlagStore;
 
@@ -16,6 +18,7 @@ export const translateCode: TranslatorFunc = (
   fileNames,
   importRules,
   tsPaths,
+  log,
   {
     aliases = {},
     baseDir,
@@ -37,10 +40,11 @@ export const translateCode: TranslatorFunc = (
     {
       compilerOptions: {...defaultOptions, ...options}
     },
-    () => null
+    () => null,
+    log
   );
 
-  translateProgram(program, replacements, nodeFlagStore, { onData, onBeforeRender, baseDir, disableCodeElimination, aliases, namespaces, options, onFinish });
+  translateProgram(program, replacements, nodeFlagStore, log, { onData, onBeforeRender, baseDir, disableCodeElimination, aliases, namespaces, options, onFinish });
   return nodeFlagStore;
 };
 
@@ -48,6 +52,7 @@ export const translateCodeAndWatch: TranslatorFunc = (
   fileNames,
   importRules,
   tsPaths,
+  log,
   {
     aliases = {},
     baseDir,
@@ -62,7 +67,7 @@ export const translateCodeAndWatch: TranslatorFunc = (
 ): NodeFlagStore => {
   const nodeFlagStore = new NodeFlagStore(); // TODO: check! this may lead to unforeseen consequences in sequential rebuilds
   getWatchProgram(fileNames, importRules, baseDir, tsPaths, {...defaultOptions, ...options}, (program, replacements, errcode) => {
-    translateProgram(program, replacements, nodeFlagStore, {
+    translateProgram(program, replacements, nodeFlagStore, log, {
       aliases,
       baseDir,
       disableCodeElimination,
@@ -72,6 +77,6 @@ export const translateCodeAndWatch: TranslatorFunc = (
       onFinish,
       options: {...defaultOptions, ...options},
     });
-  }, getCloseHandle);
+  }, log, getCloseHandle);
   return nodeFlagStore;
 };

@@ -33,7 +33,7 @@ export const arrayStringLastIndexOf: ExpressionHook = (node: ts.CallExpression, 
     }
     return `strrpos(${varName}, ${args.join(', ')})`;
   } else {
-    if (!hasArrayType(node.expression, context.checker)) {
+    if (!hasArrayType(node.expression, context.checker, context.log)) {
       context.log('Left-hand expression must have string, array-like or iterable inferred type', LogSeverity.ERROR, ctx(node));
       return 'null';
     }

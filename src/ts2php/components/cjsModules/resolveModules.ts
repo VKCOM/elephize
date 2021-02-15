@@ -1,7 +1,7 @@
 import * as ts from 'typescript';
 import { CliOptions, ImportReplacementRule, ImportRule } from '../../types';
 import * as path from 'path';
-import { log, LogSeverity } from '../../utils/log';
+import { LogObj, LogSeverity } from '../../utils/log';
 import { resolveAliasesAndPaths } from '../../utils/pathsAndNames';
 
 /*
@@ -34,7 +34,7 @@ function readFile(fileName: string): string | undefined {
   return ts.sys.readFile(fileName);
 }
 
-function resolveModulePath(name: string, containingFile: string, baseDir: string, tsPaths: { [key: string]: string[] }): string {
+function resolveModulePath(name: string, containingFile: string, baseDir: string, tsPaths: { [key: string]: string[] }, log: LogObj): string {
   const localPath = resolveAliasesAndPaths(log, name, path.dirname(containingFile), baseDir, tsPaths, {}, true);
   if (localPath) { // relative or aliased path found
     return localPath;
@@ -44,7 +44,7 @@ function resolveModulePath(name: string, containingFile: string, baseDir: string
   return name;
 }
 
-function findImportRule(importRules: CliOptions['importRules'], baseDir: string, path?: string): ImportRule | undefined {
+function findImportRule(importRules: CliOptions['importRules'], baseDir: string, log: LogObj, path?: string): ImportRule | undefined {
   if (!path) {
     return undefined;
   }
@@ -53,7 +53,7 @@ function findImportRule(importRules: CliOptions['importRules'], baseDir: string,
 }
 
 const emptyModule = { resolvedFileName: path.resolve(__dirname, '__empty.ts') };
-export const resolveModules = (options: ts.CompilerOptions, importRules: CliOptions['importRules'], baseDir: string, tsPaths: { [key: string]: string[] }) => (
+export const resolveModules = (options: ts.CompilerOptions, importRules: CliOptions['importRules'], baseDir: string, tsPaths: { [key: string]: string[] }, log: LogObj) => (
   moduleNames: string[],
   containingFile: string
 ): [ts.ResolvedModule[], ImportReplacementRule[]] => {
@@ -62,8 +62,8 @@ export const resolveModules = (options: ts.CompilerOptions, importRules: CliOpti
   const replacements: ImportReplacementRule[] = [];
 
   for (const moduleName of moduleNames) {
-    const mPath = resolveModulePath(moduleName, containingFile, baseDir, tsPaths);
-    const rule = findImportRule(importRules, baseDir, mPath);
+    const mPath = resolveModulePath(moduleName, containingFile, baseDir, tsPaths, log);
+    const rule = findImportRule(importRules, baseDir, log, mPath);
     if (rule) {
       resolvedModules.push(emptyModule);
       if (!rule.ignore) {

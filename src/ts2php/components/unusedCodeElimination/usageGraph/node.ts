@@ -1,5 +1,5 @@
 import { Scope } from './scope';
-import { log, LogSeverity, LogVerbosity, shortCtx } from '../../../utils/log';
+import { LogObj, LogSeverity, LogVerbosity, shortCtx } from '../../../utils/log';
 
 export const isBound = <T>(node: ScopeNode<T>): node is BoundNode<T> => node._type === 'early_bound';
 export const isPending = <T>(node: ScopeNode<T>): node is BindPendingNode<T> => node._type === 'late_bound';
@@ -15,14 +15,6 @@ export class ScopeNode<T extends { [key: string]: any }> {
    */
   public readonly data: T;
   /**
-   * Variable or func name, unique in its scope.
-   */
-  public readonly ident: string;
-  /**
-   * Functional scope this var belongs to.
-   */
-  public readonly homeScope: Scope<T>;
-  /**
    * Traverse mark: common flag, used in DFS
    */
   protected _traverseMark = false;
@@ -33,9 +25,18 @@ export class ScopeNode<T extends { [key: string]: any }> {
    */
   protected _tmpTraceTargetNodes: Map<string, ScopeNode<T>> = new Map();
 
-  public constructor(ident: string, homeScope: Scope<T>, data: T) {
-    this.ident = ident;
-    this.homeScope = homeScope;
+  public constructor(
+    /**
+     * Variable or func name, unique in its scope.
+     */
+    public readonly ident: string,
+    /**
+     * Functional scope this var belongs to.
+     */
+    public readonly homeScope: Scope<T>,
+    data: T,
+    protected readonly log: LogObj
+  ) {
     this.data = { ...data };
   }
 
@@ -97,7 +98,7 @@ export class ScopeNode<T extends { [key: string]: any }> {
   protected _traverse(cb: (node: ScopeNode<T>) => boolean, traversedNodeList: Set<ScopeNode<T>>, bailOnUnbound: boolean) {
     this._edges.forEach((node) => {
       if (bailOnUnbound && !isBound(node)) {
-        log(`Identifier "${node.ident}" was used but was never declared. This is compile error`, LogSeverity.ERROR, shortCtx(this.homeScope.sourceFile));
+        this.log(`Identifier "${node.ident}" was used but was never declared. This is compile error`, LogSeverity.ERROR, shortCtx(this.homeScope.sourceFile));
         return;
       }
       if (node._traverseMark) {
@@ -138,14 +139,14 @@ export class ScopeNode<T extends { [key: string]: any }> {
   protected _usageMark = false;
   public get used() { return this._usageMark; }
   protected _markUsed() {
-    if (log.verbosity! & LogVerbosity.WITH_USAGE_GRAPH_DUMP) {
-      log('Marking node as used: ' + this.ident, LogSeverity.INFO);
+    if (this.log.verbosity! & LogVerbosity.WITH_USAGE_GRAPH_DUMP) {
+      this.log('Marking node as used: ' + this.ident, LogSeverity.INFO);
     }
     this._usageMark = true;
   }
   public reset() {
-    if (log.verbosity! & LogVerbosity.WITH_USAGE_GRAPH_DUMP) {
-      log('Resetting node usage: ' + this.ident, LogSeverity.INFO);
+    if (this.log.verbosity! & LogVerbosity.WITH_USAGE_GRAPH_DUMP) {
+      this.log('Resetting node usage: ' + this.ident, LogSeverity.INFO);
     }
     this._usageMark = false;
   }
@@ -156,21 +157,21 @@ export class ScopeNode<T extends { [key: string]: any }> {
    */
   public markUsage() {
     if (this.ident !== Scope.tNode) {
-      log('Mark usage method is not expected to be applied to non-terminal nodes', LogSeverity.ERROR, shortCtx(this.homeScope.sourceFile));
+      this.log('Mark usage method is not expected to be applied to non-terminal nodes', LogSeverity.ERROR, shortCtx(this.homeScope.sourceFile));
       return;
     }
 
     if (isBound(this)) {
       this._markUsed();
     } else {
-      log(`Undeclared or dropped identifier encountered: ${this.ident}`, LogSeverity.ERROR, shortCtx(this.homeScope.sourceFile));
+      this.log(`Undeclared or dropped identifier encountered: ${this.ident}`, LogSeverity.ERROR, shortCtx(this.homeScope.sourceFile));
     }
 
     this.traverse((node: ScopeNode<T>) => {
       if (isBound(node)) {
         node._markUsed();
       } else {
-        log(`Undeclared or dropped identifier encountered: ${node.ident}`, LogSeverity.ERROR, shortCtx(this.homeScope.sourceFile));
+        this.log(`Undeclared or dropped identifier encountered: ${node.ident}`, LogSeverity.ERROR, shortCtx(this.homeScope.sourceFile));
       }
       return true;
     });
@@ -180,8 +181,8 @@ export class ScopeNode<T extends { [key: string]: any }> {
 export class BoundNode<T extends { [key: string]: any }> extends ScopeNode<T> {
   public readonly _type = 'early_bound';
 
-  public constructor(ident: string, homeScope: Scope<T>, data: T, traceTargetNodes: Array<ScopeNode<T>> = [], tmpSourceTargets?: Map<string, ScopeNode<T>>) {
-    super(ident, homeScope, data);
+  public constructor(ident: string, homeScope: Scope<T>, data: T, log: LogObj, traceTargetNodes: Array<ScopeNode<T>> = [], tmpSourceTargets?: Map<string, ScopeNode<T>>) {
+    super(ident, homeScope, data, log);
     this._tmpTraceTargetNodes = tmpSourceTargets || new Map();
     traceTargetNodes.forEach((node) => this.addEdgeTo(node));
   }
@@ -239,6 +240,7 @@ export class BindPendingNode<T extends { [key: string]: any }> extends ScopeNode
       this.ident,
       withHomeScope,
       this.data,
+      this.log,
       Array.from(this._edges).concat(traceTargetNodes),
       this._tmpTraceTargetNodes
     );

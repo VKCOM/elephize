@@ -23,7 +23,7 @@ export const arrayForeach: ExpressionHook = (node: ts.CallExpression, context: C
   if (!propNameIs('forEach', node)) {
     return undefined;
   }
-  if (!hasArrayType(node.expression, context.checker)) {
+  if (!hasArrayType(node.expression, context.checker, context.log)) {
     context.log('Left-hand expression must have array-like or iterable inferred type', LogSeverity.ERROR, ctx(node));
     return 'null';
   }

@@ -17,7 +17,7 @@ export const arrayJoin: ExpressionHook = (node: ts.CallExpression, context: Cont
   if (!propNameIs('join', node)) {
     return undefined;
   }
-  if (!hasArrayType(node.expression, context.checker)) {
+  if (!hasArrayType(node.expression, context.checker, context.log)) {
     context.log('Left-hand expression must have array-like or iterable inferred type', LogSeverity.ERROR, ctx(node));
     return 'null';
   }

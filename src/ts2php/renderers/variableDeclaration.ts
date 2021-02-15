@@ -125,7 +125,7 @@ function topStatements(node: ts.VariableDeclaration, initializerNode: ts.Node | 
       const isExportedFuncExp = !!(node.name.kind === ts.SyntaxKind.Identifier && isExportedVar(node.name));
       if (!context.dryRun && (context.scope.checkUsage(node.name.getText()) || isExportedFuncExp) && !flags?.drop) {
         context.moduleDescriptor.addMethod(node.name.getText(), block, syntaxList.join(', '),
-          getPhpPrimitiveTypeForFunc(node.initializer as ts.FunctionExpression, syntaxList, context.checker), 'public');
+          getPhpPrimitiveTypeForFunc(node.initializer as ts.FunctionExpression, syntaxList, context.checker, context.log), 'public');
       }
     }
   } else {
@@ -142,7 +142,7 @@ function topStatements(node: ts.VariableDeclaration, initializerNode: ts.Node | 
     const ident = snakify(nameIdent.getText());
     const flags = context.nodeFlagsStore.get(node);
     if (!context.dryRun && context.scope.checkUsage(nameIdent.getText()) && !flags?.drop) {
-      context.moduleDescriptor.addProperty('$' + ident, getPhpPrimitiveType(nameIdent, context.checker), 'public');
+      context.moduleDescriptor.addProperty('$' + ident, getPhpPrimitiveType(nameIdent, context.checker, context.log), 'public');
       context.moduleDescriptor.addStatement(`$this->${ident} = ${initializer};`);
     }
   }

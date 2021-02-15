@@ -53,7 +53,7 @@ export const arrayStringSlice: ExpressionHook = (node: ts.CallExpression, contex
     }
   } else {
     const forced = isForcedArrayType(context, node);
-    if (!hasArrayType(node.expression, context.checker) && !forced) {
+    if (!hasArrayType(node.expression, context.checker, context.log) && !forced) {
       context.log('Left-hand expression must have string, array-like or iterable inferred type', LogSeverity.ERROR, ctx(node));
       return 'null';
     }

@@ -1,5 +1,5 @@
 import * as ts from 'typescript';
-import { ctx, log, LogSeverity } from '../../utils/log';
+import { ctx, LogObj, LogSeverity } from '../../utils/log';
 import { MethodsTypes, NsMap, SpecialVars } from '../../types';
 
 export class CommonjsModule {
@@ -15,6 +15,7 @@ export class CommonjsModule {
     public readonly sourceFileName: string,
     public readonly targetFileName: string,
     protected readonly _namespaces: NsMap,
+    public readonly log: LogObj,
     public readonly originalIdentName?: string,
     public readonly ancestorModule?: CommonjsModule
   ) { }
@@ -53,7 +54,7 @@ export class CommonjsModule {
 
   public registerSpecialVar(kind: keyof SpecialVars, name: string, node?: ts.Node) {
     if (this._specialVars[kind] && this._specialVars[kind] !== name) {
-      log(`Duplicate special variable assignment: ${kind} := ${name}`, LogSeverity.ERROR, node && ctx(node));
+      this.log(`Duplicate special variable assignment: ${kind} := ${name}`, LogSeverity.ERROR, node && ctx(node));
     }
     this._specialVars[kind] = name;
   }

@@ -1,7 +1,7 @@
 import { CommonjsModule } from './commonjsModule';
 import { NsMap } from '../../types';
 import { PhpParsedStruct } from './phpParser';
-import { log, LogSeverity } from '../../utils/log';
+import { LogObj, LogSeverity } from '../../utils/log';
 
 export class CommonjsExternalModule extends CommonjsModule {
   public readonly isDerived: boolean = false;
@@ -14,10 +14,11 @@ export class CommonjsExternalModule extends CommonjsModule {
     sourceFileName: string,
     targetFileName: string,
     _namespaces: NsMap,
+    log: LogObj,
     originalIdentName?: string,
     ancestorModule?: CommonjsModule
   ) {
-    super(className + 'CjsWrapper', sourceFileName, targetFileName, _namespaces, originalIdentName, ancestorModule);
+    super(className + 'CjsWrapper', sourceFileName, targetFileName, _namespaces, log, originalIdentName, ancestorModule);
   }
 
   public useImplementationFromPath(path: string) {
@@ -39,7 +40,7 @@ export class CommonjsExternalModule extends CommonjsModule {
   }
 
   public addProperty(identifier: string) {
-    log(`Access to properties for substituted modules is not supported: @ ${this.sourceFileName} accessing ${identifier}`, LogSeverity.ERROR);
+    this.log(`Access to properties for substituted modules is not supported: @ ${this.sourceFileName} accessing ${identifier}`, LogSeverity.ERROR);
   }
 
   public addMethod(identifier: string) {

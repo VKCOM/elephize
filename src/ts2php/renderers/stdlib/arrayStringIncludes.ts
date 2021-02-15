@@ -35,7 +35,7 @@ export const arrayStringIncludes: ExpressionHook = (node: ts.CallExpression, con
       return `strpos(${varName}, ${args[0]}) !== -1`;
     }
   } else {
-    if (!hasArrayType(node.expression, context.checker)) {
+    if (!hasArrayType(node.expression, context.checker, context.log)) {
       context.log('Left-hand expression must have string, array-like or iterable inferred type', LogSeverity.ERROR, ctx(node));
       return 'null';
     }

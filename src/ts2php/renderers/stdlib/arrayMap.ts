@@ -17,7 +17,7 @@ export const arrayMap: ExpressionHook = (node: ts.CallExpression, context: Conte
   if (!propNameIs('map', node)) {
     return undefined;
   }
-  if (!hasArrayType(node.expression, context.checker)) {
+  if (!hasArrayType(node.expression, context.checker, context.log)) {
     context.log('Left-hand expression must have array-like or iterable inferred type', LogSeverity.ERROR, ctx(node));
     return 'null';
   }

@@ -17,7 +17,7 @@ export const arrayReduce: ExpressionHook = (node: ts.CallExpression, context: Co
   if (!propNameIs('reduce', node)) {
     return undefined;
   }
-  if (!hasArrayType(node.expression, context.checker)) {
+  if (!hasArrayType(node.expression, context.checker, context.log)) {
     context.log('Left-hand expression must have array-like or iterable inferred type', LogSeverity.ERROR, ctx(node));
     return 'null';
   }

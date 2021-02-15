@@ -16,7 +16,7 @@ import { checkModificationInNestedScope } from '../../components/functionScope';
  */
 export const arrayPop: ExpressionHook = (node: ts.CallExpression, context: Context<Declaration>) => {
   if (propNameIs('pop', node)) {
-    if (!hasArrayType(node.expression, context.checker)) {
+    if (!hasArrayType(node.expression, context.checker, context.log)) {
       context.log('Left-hand expression must have array-like or iterable inferred type', LogSeverity.ERROR, ctx(node));
       return 'null';
     }
