@@ -1,6 +1,6 @@
 {
   "name": "@vkontakte/elephize",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "description": "typescript -> php basic transpiler",
   "main": "src/cli.ts",
   "types": "types/global/index.d.ts",
