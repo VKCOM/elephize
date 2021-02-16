@@ -9,6 +9,6 @@ export function Jsx() {
   const jsxb = <b>{jsxa}</b>;
 
   const jsxprops = {id: 'test', className: 'test2'};
-  const jsxc = <div title={'testtitle'} {...jsxprops} {...jsxprops}>Oh my {jsxb} my oh</div>;
+  const jsxc = <div aria-atomic title={'testtitle'} {...jsxprops} {...jsxprops}>Oh my {jsxb} my oh</div>;
   return jsxc;
 }
