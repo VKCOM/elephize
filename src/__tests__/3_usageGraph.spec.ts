@@ -4,7 +4,7 @@ const log = configureLogging({
   baseDir: '', output: '', outDir: ''
 });
 
-test.only('ts2php.UsageGraph.NewScope', () => {
+test('ts2php.UsageGraph.NewScope', () => {
   const rootScope = Scope.newRootScope({ flag1: true, flag2: 'false' }, '', log);
   expect(rootScope.localTerminalNode).toBeTruthy();
   expect(rootScope.terminalNode).toBeTruthy();
@@ -139,7 +139,7 @@ test('ts2php.UsageGraph.ChildScope_Elimination', () => {
   expect(nodeEl2?.used).toBeFalsy();
 });
 
-test.skip('ts2php.UsageGraph.ChildScope_ScopeElimination', () => {
+test('ts2php.UsageGraph.ChildScope_ScopeElimination', () => {
   const rootScope = Scope.newRootScope({ flag1: true, flag2: 'false' }, '', log);
   const node1 = rootScope.addDeclaration('test1', [], { terminateGlobally: true, dryRun: true });
   const node2 = rootScope.addDeclaration('test2', [], { dryRun: true });
