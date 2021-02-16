@@ -27,43 +27,45 @@ export enum LogVerbosity {
 const STDERR_FILE_DESCRIPTOR = 2; // should match process.stderr.fd
 const STDOUT_FILE_DESCRIPTOR = 1; // should match process.stdout.fd
 
-interface LogOptions {
+export interface LogOptions {
   noOutput: boolean;
   baseDir: string;
   outDir: string;
   verbosity?: LogVerbosity;
   forceStderr: boolean;
-};
+}
+
+export type LogPrinter = (message: string, msgid: string, params: string[], severity: LogSeverity, context?: string) => void;
 
 export interface LogObj {
   errCount: number;
   warnCount: number;
+  verbosity: number;
   info: (message: string, params: string[], context?: string) => void;
   warn: (message: string, params: string[], context?: string) => void;
   error: (message: string, params: string[], context?: string) => void;
   special: (message: string, params: string[], context?: string) => void;
   typehint: (message: string, params: string[], context?: string) => void;
-  _printLog: (message: string, params: string[], severity: LogSeverity, context?: string) => void;
   ctx: (node?: ts.Node) => string;
   shortCtx: (fn: string) => string;
 }
 
-class Logger implements LogObj {
+export class Logger implements LogObj {
   protected noOutput: boolean;
   protected baseDir: string;
   protected outDir: string;
-  protected verbosity: LogVerbosity;
+  protected _verbosity: LogVerbosity;
   protected forceStderr: boolean;
 
   protected _errCount = 0;
   protected _warnCount = 0;
-  protected _printer: Logger['_printLog'];
+  protected _printer: LogPrinter;
 
-  public constructor(options: LogOptions, printer?: Logger['_printLog']) {
+  public constructor(options: LogOptions, printer?: LogPrinter) {
     this.noOutput = options.noOutput;
     this.baseDir = options.baseDir;
     this.outDir = options.outDir;
-    this.verbosity = options.verbosity || (LogVerbosity.ERROR | LogVerbosity.WARN | LogVerbosity.WITH_CONTEXT); // Default for non-testing env
+    this._verbosity = options.verbosity || (LogVerbosity.ERROR | LogVerbosity.WARN | LogVerbosity.WITH_CONTEXT); // Default for non-testing env
     this.forceStderr = options.forceStderr;
     this._printer = printer || this._printLog.bind(this);
   }
@@ -76,35 +78,39 @@ class Logger implements LogObj {
     return this._warnCount;
   }
 
+  public get verbosity(): number {
+    return this._verbosity;
+  }
+
   public error(message: string, params: string[], context = ''): void {
     this._errCount++;
-    if (this.verbosity & LogVerbosity.ERROR) {
-      this._printer(message, params, LogSeverity.ERROR, this.verbosity & LogVerbosity.WITH_CONTEXT ? context : '');
+    if (this._verbosity & LogVerbosity.ERROR) {
+      this._printer(message, this._msgid(message), params, LogSeverity.ERROR, this._verbosity & LogVerbosity.WITH_CONTEXT ? context : '');
     }
   }
 
   public info(message: string, params: string[], context = ''): void {
-    if (this.verbosity & LogVerbosity.INFO) {
-      this._printer(message, params, LogSeverity.INFO, this.verbosity & LogVerbosity.WITH_CONTEXT ? context : '');
+    if (this._verbosity & LogVerbosity.INFO) {
+      this._printer(message, this._msgid(message), params, LogSeverity.INFO, this._verbosity & LogVerbosity.WITH_CONTEXT ? context : '');
     }
   }
 
   public special(message: string, params: string[], context = ''): void {
-    if (this.verbosity & LogVerbosity.INFO) {
-      this._printer(message, params, LogSeverity.SPECIAL, this.verbosity & LogVerbosity.WITH_CONTEXT ? context : '');
+    if (this._verbosity & LogVerbosity.INFO) {
+      this._printer(message, this._msgid(message), params, LogSeverity.SPECIAL, this._verbosity & LogVerbosity.WITH_CONTEXT ? context : '');
     }
   }
 
   public typehint(message: string, params: string[], context = ''): void {
-    if (this.verbosity & LogVerbosity.WITH_TYPEHINTS) {
-      this._printer(message, params, LogSeverity.TYPEHINT, this.verbosity & LogVerbosity.WITH_CONTEXT ? context : '');
+    if (this._verbosity & LogVerbosity.WITH_TYPEHINTS) {
+      this._printer(message, this._msgid(message), params, LogSeverity.TYPEHINT, this._verbosity & LogVerbosity.WITH_CONTEXT ? context : '');
     }
   }
 
   public warn(message: string, params: string[], context = ''): void {
     this._warnCount++;
-    if (this.verbosity & LogVerbosity.WARN) {
-      this._printer(message, params, LogSeverity.WARN, this.verbosity & LogVerbosity.WITH_CONTEXT ? context : '');
+    if (this._verbosity & LogVerbosity.WARN) {
+      this._printer(message, this._msgid(message), params, LogSeverity.WARN, this._verbosity & LogVerbosity.WITH_CONTEXT ? context : '');
     }
   }
 
@@ -126,7 +132,13 @@ class Logger implements LogObj {
     return `@${filename}`;
   }
 
-  protected _printLog(message: string, params: string[], severity: LogSeverity, context = '') {
+  protected _msgid(message: string): string {
+    const hash = createHash('md4');
+    hash.update(message);
+    return hash.digest('hex').substr(0, 5);
+  }
+
+  protected _printLog(message: string, msgid: string, params: string[], severity: LogSeverity, context = '') {
     if (this.baseDir && severity !== LogSeverity.SPECIAL) {
       message = message.replace(this.baseDir, '[base]');
     }
@@ -134,19 +146,16 @@ class Logger implements LogObj {
       message = message.replace(this.outDir, '[out]');
     }
 
-    const hash = createHash('md4');
-    hash.update(message);
-    const ident = hash.digest('hex').substr(0, 5);
-    let marker: string = chalk.dim(`[i #${ident}]`);
+    let marker: string = chalk.dim(`[i #${msgid}]`);
     switch (severity) {
       case LogSeverity.ERROR:
-        marker = chalk.bgRedBright(chalk.black(`[E #${ident}]`));
+        marker = chalk.bgRedBright(chalk.black(`[E #${msgid}]`));
         break;
       case LogSeverity.WARN:
-        marker = chalk.bgYellowBright(chalk.black(`[W #${ident}]`));
+        marker = chalk.bgYellowBright(chalk.black(`[W #${msgid}]`));
         break;
       case LogSeverity.SPECIAL:
-        marker = chalk.bgGreenBright(chalk.black(`[! #${ident}]`));
+        marker = chalk.bgGreenBright(chalk.black(`[! #${msgid}]`));
         break;
       case LogSeverity.INFO:
       default:

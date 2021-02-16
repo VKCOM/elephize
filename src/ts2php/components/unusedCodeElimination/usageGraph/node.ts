@@ -139,13 +139,13 @@ export class ScopeNode<T extends { [key: string]: any }> {
   protected _usageMark = false;
   public get used() { return this._usageMark; }
   protected _markUsed() {
-    if (this.log.verbosity! & LogVerbosity.WITH_USAGE_GRAPH_DUMP) {
+    if (this.log.verbosity & LogVerbosity.WITH_USAGE_GRAPH_DUMP) {
       this.log.info('Marking node as used: %s', [this.ident]);
     }
     this._usageMark = true;
   }
   public reset() {
-    if (this.log.verbosity! & LogVerbosity.WITH_USAGE_GRAPH_DUMP) {
+    if (this.log.verbosity & LogVerbosity.WITH_USAGE_GRAPH_DUMP) {
       this.log.info('Resetting node usage: %s', [this.ident]);
     }
     this._usageMark = false;

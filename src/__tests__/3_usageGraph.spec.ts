@@ -1,5 +1,8 @@
 import { Scope } from '../ts2php/components/unusedCodeElimination/usageGraph';
-import { log } from '../ts2php/utils/log';
+import { configureLogging } from '../ts2php/components/cli/configureLogging';
+const log = configureLogging({
+  baseDir: '', output: '', outDir: ''
+});
 
 test.only('ts2php.UsageGraph.NewScope', () => {
   const rootScope = Scope.newRootScope({ flag1: true, flag2: 'false' }, '', log);

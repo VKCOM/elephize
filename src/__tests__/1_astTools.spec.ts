@@ -11,7 +11,11 @@ import {
 } from '../ts2php/utils/ast';
 import { NodeFlagStore } from '../ts2php/components/codegen/nodeFlagStore';
 import { defaultOptions } from '../ts2php/components/codegen/defaultCompilerOptions';
-import { log } from '../ts2php/utils/log';
+import { configureLogging } from '../ts2php/components/cli/configureLogging';
+
+const log = configureLogging({
+  baseDir: '', output: '', outDir: ''
+});
 
 function compile(files: string[]): ts.SourceFile | undefined {
   let [program] = getBuildProgram(files, {}, '', {},

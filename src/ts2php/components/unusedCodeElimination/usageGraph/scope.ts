@@ -175,7 +175,7 @@ export class Scope<NodeData extends { [key: string]: any }> {
   }
 
   protected _logAction(action: string, traceSourceIdent: string, dryRun: boolean, traceTargetIdents: Array<string | undefined>, terminateLocally: boolean, terminateGlobally: boolean) {
-    if (!(this.log.verbosity! & LogVerbosity.WITH_ELIMINATION_HINTS)) {
+    if (!(this.log.verbosity & LogVerbosity.WITH_ELIMINATION_HINTS)) {
       return;
     }
     const tgtIdents = traceTargetIdents.filter((id) => !!id);

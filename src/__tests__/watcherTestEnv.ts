@@ -1,11 +1,10 @@
 import * as path from 'path';
 import { resolve as pResolve } from 'path';
 import { translateCodeAndWatch } from '../ts2php/components/codegen/translateCode';
+import { configureLogging } from '../ts2php/components/cli/configureLogging';
 import { readFileSync, writeFileSync } from 'fs';
-import '../ts2php/utils/log';
 import * as diff from 'diff';
 import * as rimraf from 'rimraf';
-import { LogSeverity } from '../ts2php/utils/log';
 import ncp = require('ncp');
 
 export type WatcherTestQueueItem = {
@@ -28,10 +27,9 @@ const compilerOptions = {
   }
 };
 
-function logPrintTest(message: string, params: string[], severity: LogSeverity, context = '') {
-
-}
-
+const log = configureLogging({
+  baseDir, output: '', outDir: ''
+});
 
 let lastDiffApplied = 0;
 export function runWatcherTests(watcherTestConfig: WatcherTestQueueItem[]) {
@@ -47,7 +45,7 @@ export function runWatcherTests(watcherTestConfig: WatcherTestQueueItem[]) {
 
       ncp(bSrc, bTgt, {}, (err) => {
         if (!err) {
-          log.INFO('Watcher test files successfully prepared', []);
+          console.info('Watcher test files successfully prepared');
         } else {
           throw err;
         }
@@ -57,7 +55,7 @@ export function runWatcherTests(watcherTestConfig: WatcherTestQueueItem[]) {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         let close = () => {};
 
-        log.INFO('Triggering watcher tests for: \n   %s', [files.map((f) => f.replace(__dirname, '')).join('\n   ')]);
+        console.info('Triggering watcher tests for: \n   %s', [files.map((f) => f.replace(__dirname, '')).join('\n   ')]);
         translateCodeAndWatch(files.map((f) => pResolve(__dirname, 'watchSpecimens.~', f)), importRules, compilerOptions.paths, log,{
           baseDir,
           aliases: {},
@@ -92,7 +90,7 @@ function applyNextDiff(nextDiff: WatcherTestQueueItem) {
   if (!nextDiff) {
     return;
   }
-  log.INFO('Applying diff %s @ %s',  [nextDiff.diff, nextDiff.entry]);
+  console.info('Applying diff %s @ %s',  nextDiff.diff, nextDiff.entry);
   const diff = pResolve(__dirname, 'watchSpecimens.~', nextDiff.diff);
   const cwd = process.cwd();
   process.chdir(pResolve(__dirname, 'watchSpecimens.~'));
@@ -104,7 +102,7 @@ function verifyDiff(targetFilename: string, content: string, error: number | und
   const diff = conf[lastDiffApplied];
   const checkedFileIndex = diff.checkFiles.findIndex((el) => el[0] === path.basename(targetFilename));
   if (checkedFileIndex === -1) {
-    log.WARN('Not found %s in %s', [path.basename(targetFilename), diff.checkFiles.join(', ')]);
+    console.warn('Not found %s in %s', path.basename(targetFilename), diff.checkFiles.join(', '));
     return;
   }
   const checkedFile = diff.checkFiles[checkedFileIndex];
@@ -116,9 +114,9 @@ function verifyDiff(targetFilename: string, content: string, error: number | und
     } else {
       expect(error).toBeFalsy();
     }
-    log.INFO('[VERIFIED] %s after %s', [checkedFile[0], diff.diff]);
+    console.info('[VERIFIED] %s after %s', checkedFile[0], diff.diff);
   } catch (e) {
-    log.ERROR('[FAILED] %s after %s', [checkedFile[0], diff.diff]);
+    console.error('[FAILED] %s after %s', checkedFile[0], diff.diff);
     fail({
       name: 'Test failed',
       message: `${checkedFile[0]} after ${diff.diff}\n`,
@@ -135,7 +133,7 @@ function applyPatch(patchFile: string) {
   if (sourceFileMatch && sourceFileMatch[1]) {
     sourceFile = sourceFileMatch[1];
   } else {
-    log.ERROR('Unable to find source file in "%s"', [patchFile]);
+    console.error('Unable to find source file in "%s"', patchFile);
     return;
   }
   let destinationFileMatch = /\+\+\+ ([^ \n\r\t]+).*/.exec(patch);
@@ -143,7 +141,7 @@ function applyPatch(patchFile: string) {
   if (destinationFileMatch && destinationFileMatch[1]) {
     destinationFile = destinationFileMatch[1];
   } else {
-    log.ERROR('Unable to find destination file in "%s"', [patchFile]);
+    console.error('Unable to find destination file in "%s"', patchFile);
     return;
   }
 
@@ -151,7 +149,7 @@ function applyPatch(patchFile: string) {
   let patched = diff.applyPatch(original, patch);
 
   if (!patched) {
-    log.ERROR('Failed to apply patch "%s" to "%s"', [patchFile, sourceFile]);
+    console.error('Failed to apply patch "%s" to "%s"', patchFile, sourceFile);
   }
 
   writeFileSync(destinationFile, patched);
