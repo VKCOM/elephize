@@ -29,7 +29,7 @@ class ObjectComputedPropertiesModule extends CJSModule {
         $this->ocp1 = [
             "a" => 123,
             $this->ocp_prop . "__asd" => 321,
-            "c" => 222,
+            $this->ocp_prop => 222,
             "d" => "123",
         ];
         \VK\Elephize\Builtins\Console::log($this->ocp1);
