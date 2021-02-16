@@ -20,13 +20,13 @@ class ClosuresModule extends CJSModule {
      * @return float
      */
     public function artest($b) {
-        $called = 0;
-        $nested = /* nested */ function ($c) use (/* !! MODIFIED INSIDE !! */ $called) {
-            $called += $c;
-            return $called;
+        $called_times = 0;
+        $nested = /* nested */ function ($c) use (/* !! MODIFIED INSIDE !! */ $called_times) {
+            $called_times += $c;
+            return $called_times;
         };
-        $nested2 = /* nested2 */ function ($c) use ($called) {
-            return $called + $c;
+        $nested2 = /* nested2 */ function ($c) use ($called_times) {
+            return $called_times + $c;
         };
         return $nested($b) + $nested2($b);
     }

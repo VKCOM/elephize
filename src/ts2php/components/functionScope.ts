@@ -7,6 +7,7 @@ import { BoundNode } from './unusedCodeElimination/usageGraph/node';
 import { renderNode, renderNodes } from './codegen/renderNodes';
 import { usedInNestedScope } from './unusedCodeElimination/usageGraph/nodeData';
 import { getTimeMarker } from '../utils/hrtime';
+import { snakify } from '../utils/pathsAndNames';
 
 type FunctionalDecl = ts.FunctionDeclaration | ts.FunctionExpression | ts.ArrowFunction;
 
@@ -90,9 +91,9 @@ export function genClosure(idMap: Map<string, boolean>, context: Context<Declara
   idMap.forEach((modifiedInClosure, varName) => {
     if (modifiedInClosure) {
       context.log.error('Closure-scoped variable %s has been modified inside closure, this will not work on server side', [varName], context.log.ctx(node));
-      closureUse.push(`/* !! MODIFIED INSIDE !! */$${varName}`);
+      closureUse.push(`/* !! MODIFIED INSIDE !! */$${snakify(varName)}`);
     } else {
-      closureUse.push(`$${varName}`);
+      closureUse.push(`$${snakify(varName)}`);
     }
 
     // Reset closure modification flag for all closure vars: they can be used in next closures without modification, and it's ok
