@@ -1,11 +1,11 @@
 const artest = (b: number) => {
-  let called = 0;
+  let calledTimes = 0;
   const nested = (c: number) => {
-    called += c;
-    return called;
+    calledTimes += c;
+    return calledTimes;
   };
   const nested2 = (c: number) => {
-    return called + c;
+    return calledTimes + c;
   };
   return nested(b) + nested2(b);
 };
