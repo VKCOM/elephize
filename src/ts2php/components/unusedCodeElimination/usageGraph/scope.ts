@@ -1,5 +1,5 @@
 import { BindPendingNode, BoundNode, isPending, ScopeNode } from './node';
-import { LogObj, LogSeverity, LogVerbosity, shortCtx } from '../../../utils/log';
+import { LogObj, LogVerbosity } from '../../../utils/log';
 
 export class Scope<NodeData extends { [key: string]: any }> {
   public static _forceDisableUnusedVarsElimination = false;
@@ -175,7 +175,7 @@ export class Scope<NodeData extends { [key: string]: any }> {
   }
 
   protected _logAction(action: string, traceSourceIdent: string, dryRun: boolean, traceTargetIdents: Array<string | undefined>, terminateLocally: boolean, terminateGlobally: boolean) {
-    if (!(this.log.verbosity! & LogVerbosity.WITH_ELIMINATION_HINTS)) {
+    if (!(this.log.verbosity & LogVerbosity.WITH_ELIMINATION_HINTS)) {
       return;
     }
     const tgtIdents = traceTargetIdents.filter((id) => !!id);
@@ -185,7 +185,7 @@ export class Scope<NodeData extends { [key: string]: any }> {
     if (terminateLocally) {
       tgtIdents.push(this.tNodeLocal);
     }
-    this.log(`[${dryRun ? 'D' : ' '}] ${action}: ${traceSourceIdent} -> [${tgtIdents.join(', ')}]`, LogSeverity.INFO);
+    this.log.info('[%s] %s: %s -> [%s]', [dryRun ? 'D' : ' ', action, traceSourceIdent, tgtIdents.join(', ')]);
   }
 
   protected collectPendingNodes(scope: Scope<NodeData>, ident: string) {
@@ -221,11 +221,11 @@ export class Scope<NodeData extends { [key: string]: any }> {
     // We don't declare anything in second run, just check and bail out
     if (!dryRun) {
       if (!nodeDeclaredInCurrentScope) {
-        this.log(`No identifier ${traceSourceIdent} declared while unused vars elimination: it's probably a bug in transpiler`, LogSeverity.ERROR, shortCtx(this.sourceFile));
+        this.log.error('No identifier %s declared while unused vars elimination: it\'s probably a bug in transpiler', [traceSourceIdent], this.log.shortCtx(this.sourceFile));
         return null;
       }
       if (isPending(nodeDeclaredInCurrentScope)) {
-        this.log(`Node ${traceSourceIdent} was not bound while unused vars elimination: it's probably a bug in transpiler`, LogSeverity.ERROR, shortCtx(this.sourceFile));
+        this.log.error('Node %s was not bound while unused vars elimination: it\'s probably a bug in transpiler', [traceSourceIdent], this.log.shortCtx(this.sourceFile));
         return null;
       }
       return nodeDeclaredInCurrentScope as BoundNode<NodeData>;
@@ -233,7 +233,7 @@ export class Scope<NodeData extends { [key: string]: any }> {
 
     this._logAction('Add declaration', traceSourceIdent, dryRun, traceTargetIdents, terminateLocally, terminateGlobally);
     if (nodeDeclaredInCurrentScope && !isPending(nodeDeclaredInCurrentScope)) {
-      this.log(`Identifier ${traceSourceIdent} already declared @ ${nodeDeclaredInCurrentScope.homeScope.tNodeLocal}`, LogSeverity.ERROR, shortCtx(this.sourceFile));
+      this.log.error('Identifier %s already declared @ %s', [traceSourceIdent, nodeDeclaredInCurrentScope.homeScope.tNodeLocal], this.log.shortCtx(this.sourceFile));
       return null;
     }
 
@@ -334,7 +334,7 @@ export class Scope<NodeData extends { [key: string]: any }> {
 
     const traceSourceNode = this.parentScope?.localTerminalNode;
     if (!traceSourceNode) {
-      this.log('Trying to terminate root node to upper scope - this is error in transpiler', LogSeverity.ERROR, shortCtx(this.sourceFile));
+      this.log.error('Trying to terminate root node to upper scope - this is error in transpiler', [], this.log.shortCtx(this.sourceFile));
       return;
     }
 
@@ -348,7 +348,7 @@ export class Scope<NodeData extends { [key: string]: any }> {
    */
   public reset() {
     if (this.parentScope) {
-      this.log('reset() is not intended to be used with non-root scope', LogSeverity.ERROR, shortCtx(this.sourceFile));
+      this.log.error('reset() is not intended to be used with non-root scope', [], this.log.shortCtx(this.sourceFile));
       return;
     }
     this.declarations.forEach((node) => node.reset());

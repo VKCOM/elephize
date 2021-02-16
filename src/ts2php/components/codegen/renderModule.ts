@@ -63,7 +63,7 @@ export function renderModule(
   // Trigger usage vars graph traversal
   moduleScope.terminalNode.markUsage();
 
-  if (log.verbosity! & LogVerbosity.WITH_USAGE_GRAPH_DUMP) {
+  if (log.verbosity & LogVerbosity.WITH_USAGE_GRAPH_DUMP) {
     moduleScope.terminalNode._dump();
   }
 

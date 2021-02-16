@@ -2,7 +2,6 @@ import * as ts from 'typescript';
 import { Declaration, DeclFlag } from '../types';
 import { Context } from '../components/context';
 import { isExportedVar } from '../utils/ast';
-import { ctx, LogSeverity } from '../utils/log';
 import * as path from 'path';
 import { initReact } from '../components/react/reactHooks';
 import { resolveAliasesAndPaths } from '../utils/pathsAndNames';
@@ -12,7 +11,7 @@ export function tImportDeclaration(node: ts.ImportDeclaration, context: Context<
   const moduleSpec = (node.moduleSpecifier as ts.StringLiteral).text;
   if (moduleSpec === 'react') {
     if (!initReact(node, context)) {
-      context.log('Importing react with dereferencing is not supported. Use `import * as React from \'react\' instead.', LogSeverity.ERROR, ctx(node));
+      context.log.error('Importing react with dereferencing is not supported. Use `import * as React from \'react\' instead.', [], context.log.ctx(node));
       return '';
     }
   } else if (moduleSpec) {
@@ -21,9 +20,9 @@ export function tImportDeclaration(node: ts.ImportDeclaration, context: Context<
 
     if (sourceFilename === null) {
       if (moduleSpec.includes('/')) {
-        context.log('Module not found: tried to find ' + moduleSpec, LogSeverity.ERROR, ctx(node));
+        context.log.error('Module not found: tried to find ' + moduleSpec, [], context.log.ctx(node));
       } else {
-        context.log('Importing arbitrary node modules is not supported. Only "react" module is allowed at the moment.', LogSeverity.ERROR, ctx(node));
+        context.log.error('Importing arbitrary node modules is not supported. Only "react" module is allowed at the moment.', [], context.log.ctx(node));
       }
       return '';
     }

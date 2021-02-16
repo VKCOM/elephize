@@ -1,4 +1,7 @@
 module.exports = {
+  'reporters': [
+    'jest-tap-reporter'
+  ],
   'roots': [
     '<rootDir>/src'
   ],

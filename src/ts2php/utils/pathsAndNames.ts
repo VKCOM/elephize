@@ -1,5 +1,5 @@
 import { Dict } from '../types';
-import { LogObj, LogSeverity } from './log';
+import { LogObj } from './log';
 import * as path from 'path';
 import * as fs from 'fs';
 
@@ -82,7 +82,7 @@ export function resolveAliasesAndPaths(
     const pathToTry = pathOrig.replace(/\*$/g, '');
 
     if (originalSourcePath.startsWith(pathToTry)) {
-      log('Trying paths for location: ' + pathToTry, LogSeverity.INFO);
+      log.info('Trying paths for location: %s', [pathToTry]);
       return _applyOutputAliases(tsPaths[pathOrig].reduce((acc, name) => {
         if (acc) {
           return acc;
@@ -91,7 +91,7 @@ export function resolveAliasesAndPaths(
         const tPath = target.startsWith('/')
           ? target // absolute path, no need to resolve
           : path.resolve(baseDir, target);
-        log('Trying to locate file: ' + tPath, LogSeverity.INFO);
+        log.info('Trying to locate file: %s', [tPath]);
         const fn = _lookupFile(tPath);
         if (fn) {
           return fn;
@@ -101,7 +101,7 @@ export function resolveAliasesAndPaths(
     }
   }
 
-  log('Trying non-aliased path: ' + path.resolve(currentDir, originalSourcePath).replace(baseDir, '[base]'), LogSeverity.INFO);
+  log.info('Trying non-aliased path: %s', [path.resolve(currentDir, originalSourcePath).replace(baseDir, '[base]')]);
   return _applyOutputAliases(_lookupFile(path.resolve(currentDir, originalSourcePath)), baseDir, outputAliases, skipOutputAliases);
 }
 

@@ -9,7 +9,6 @@ import { isTopLevel, isTopLevelComponent } from '../utils/isTopLevel';
 import { functionExpressionGen, generateFunctionElements } from '../components/functionScope';
 import { identifyAnonymousNode } from '../components/unusedCodeElimination/usageGraph/nodeData';
 import { Scope } from '../components/unusedCodeElimination/usageGraph';
-import { ctx, LogSeverity } from '../utils/log';
 import { renderNode } from '../components/codegen/renderNodes';
 import { getPhpPrimitiveTypeForFunc } from '../components/typeInference/basicTypes';
 
@@ -83,7 +82,7 @@ export function tFunctionDeclaration(node: ts.FunctionDeclaration, context: Cont
   }, context);
 
   if (!node.name) {
-    context.log('Function declarations without name are not supported', LogSeverity.ERROR, ctx(node));
+    context.log.error('Function declarations without name are not supported', [], context.log.ctx(node));
     return 'null;';
   }
 

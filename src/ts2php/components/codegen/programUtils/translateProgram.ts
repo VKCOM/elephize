@@ -4,7 +4,7 @@ import { ImportReplacementRule, TranslateOptions } from '../../../types';
 import { ModuleRegistry } from '../../cjsModules/moduleRegistry';
 import { renderModule } from '../renderModule';
 import { CommonjsModule } from '../../cjsModules/commonjsModule';
-import { LogObj, LogSeverity } from '../../../utils/log';
+import { LogObj } from '../../../utils/log';
 import * as prettier from 'prettier/standalone';
 import { phpPrettierOptions } from '../../../internalConfig/phpPrettierOptions';
 import { defaultOptions } from '../defaultCompilerOptions';
@@ -65,10 +65,10 @@ export function translateProgram(program: ts.Program, replacements: ImportReplac
     if (mod.isEmpty()) {
       if (mod instanceof CommonjsExternalModule) {
         // Do not emit external modules
-        log(`Module ${mod.className} (${mod.targetFileName}) is external: skip emit`, LogSeverity.INFO);
+        log.info('Module %s (%s) is external: skip emit', [mod.className, mod.targetFileName]);
       } else {
         // Do not emit empty modules
-        log(`Dropping module ${mod.className} (${mod.targetFileName}) because it's empty`, LogSeverity.INFO);
+        log.info('Dropping module %s (%s) because it\'s empty', [mod.className, mod.targetFileName]);
       }
       return;
     }

@@ -1,6 +1,5 @@
 import * as ts from 'typescript';
 import { ExpressionHook, Declaration } from '../../types';
-import { ctx, LogSeverity } from '../../utils/log';
 import { propNameIs } from './_propName';
 import { hasType } from '../../components/typeInference/basicTypes';
 import { Context } from '../../components/context';
@@ -17,7 +16,7 @@ export const stringSplit: ExpressionHook = (node: ts.CallExpression, context: Co
     return undefined;
   }
   if (!hasType(node.expression, context.checker, 'string')) {
-    context.log('Left-hand expression must have string inferred type', LogSeverity.ERROR, ctx(node));
+    context.log.error('Left-hand expression must have string inferred type', [], context.log.ctx(node));
     return 'null';
   }
   context.nodeFlagsStore.upsert(node, { name: 'string_split' });
@@ -44,7 +43,7 @@ export const stringSplit: ExpressionHook = (node: ts.CallExpression, context: Co
       return `preg_split(${separator}, ${varName})`;
     }
   } else {
-    context.log('String.prototype.split: Non-string and non-regexp-literal separators are not supported by transpiler.', LogSeverity.ERROR, ctx(node));
+    context.log.error('String.prototype.split: Non-string and non-regexp-literal separators are not supported by transpiler.', [], context.log.ctx(node));
     return 'null';
   }
 };

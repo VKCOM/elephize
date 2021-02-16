@@ -1,5 +1,10 @@
 import { runBatch } from './runBatch';
-import { log } from '../ts2php/utils/log';
+import { configureLogging } from '../ts2php/components/cli/configureLogging';
+import * as path from 'path';
+
+const log = configureLogging({
+  baseDir: path.resolve(__dirname, 'specimens'), output: '', outDir: ''
+});
 
 test('ts2php.stdlibMethods', () => {
   return runBatch([__dirname, 'specimens'], [
@@ -37,6 +42,6 @@ test('ts2php.stdlibMethods', () => {
     ['misc', 'typeInference.ts'],
     ['misc', 'elephizeIgnore.tsx'],
     ['misc', 'exportedTypes.ts'],
-    ['misc', 'importedTypes.tsx']
+    ['misc', 'importedTypes.tsx'],
   ], log);
 });

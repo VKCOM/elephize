@@ -1,7 +1,6 @@
 import * as ts from 'typescript';
 import { Declaration, ExpressionHook } from '../../types';
 import { propNameIs } from './_propName';
-import { ctx, LogSeverity } from '../../utils/log';
 import { hasArrayType } from '../../components/typeInference/basicTypes';
 import { Context } from '../../components/context';
 import { getCallExpressionLeftSide } from '../../utils/ast';
@@ -18,7 +17,7 @@ export const arrayJoin: ExpressionHook = (node: ts.CallExpression, context: Cont
     return undefined;
   }
   if (!hasArrayType(node.expression, context.checker, context.log)) {
-    context.log('Left-hand expression must have array-like or iterable inferred type', LogSeverity.ERROR, ctx(node));
+    context.log.error('Left-hand expression must have array-like or iterable inferred type', [], context.log.ctx(node));
     return 'null';
   }
 

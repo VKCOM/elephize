@@ -1,5 +1,5 @@
 import * as glob from 'glob';
-import { LogObj, LogSeverity } from '../../utils/log';
+import { LogObj } from '../../utils/log';
 import { translateCode, translateCodeAndWatch } from '../codegen/translateCode';
 import * as path from 'path';
 import * as fs from 'fs';
@@ -19,7 +19,7 @@ export function transpile(options: CliOptions, baseDir: string, outDir: string, 
 
   glob(options.src, (e: Error, matches: string[]) => {
     if (e) {
-      log(`${e}`, LogSeverity.ERROR);
+      log.error('%s', [e.toString()]);
       process.exit(1);
       return;
     }
@@ -44,7 +44,7 @@ export function transpile(options: CliOptions, baseDir: string, outDir: string, 
 
   function onData(filename: string, content: string) {
     const outputFilename = outDir + '/' + filename;
-    log('Emitting file: ' + outputFilename, LogSeverity.INFO);
+    log.info('Emitting file: %s', [outputFilename]);
     const outputDir = path.dirname(outputFilename);
     if (!fs.existsSync(outputDir)) {
       fs.mkdirSync(outputDir, { recursive: true });
@@ -64,10 +64,10 @@ export function transpile(options: CliOptions, baseDir: string, outDir: string, 
     if (options.output === '__stdout') {
       console.log(bootstrapContent);
     } else {
-      log('Creating bootstrap file', LogSeverity.SPECIAL);
+      log.special('Creating bootstrap file', []);
       fs.writeFile(path.resolve(outDir, options.output), iconv.encode(bootstrapContent, options.encoding || 'utf-8'), (err) => {
         if (!err) {
-          log('Bootstrap file successfully created', LogSeverity.SPECIAL);
+          log.special('Bootstrap file successfully created', []);
         }
       });
     }
@@ -75,9 +75,9 @@ export function transpile(options: CliOptions, baseDir: string, outDir: string, 
     const bSrc = path.resolve(__dirname, '..', '..', '..', 'server');
     const bTgt = outDir;
 
-    log('Copying server-side base files', LogSeverity.SPECIAL);
-    log(`From: ${bSrc}`, LogSeverity.SPECIAL);
-    log(`To: ${bTgt}`, LogSeverity.SPECIAL);
+    log.special('Copying server-side base files', []);
+    log.special('From: %s', [bSrc]);
+    log.special('To: %s', [bTgt]);
 
     ncp(bSrc, bTgt, {
       transform: function(read, write) {
@@ -85,7 +85,7 @@ export function transpile(options: CliOptions, baseDir: string, outDir: string, 
       }
     }, (err) => {
       if (!err) {
-        log('Server-side base files successfully copied', LogSeverity.SPECIAL);
+        log.special('Server-side base files successfully copied', []);
       }
     });
   }
