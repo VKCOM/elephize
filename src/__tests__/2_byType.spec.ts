@@ -23,6 +23,7 @@ test('ts2php.byType', () => {
     ['byType', 'jsx.tsx'],
     ['byType', 'loops.ts'],
     ['byType', 'objectLiteralExpression.ts'],
+    ['byType', 'objectComputedProperties.ts'],
     ['byType', 'parameterDestructuring.ts'],
     ['byType', 'propertyAccessExpression.ts'],
     ['byType', 'restOperator.ts'],

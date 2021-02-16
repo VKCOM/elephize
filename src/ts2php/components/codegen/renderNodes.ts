@@ -90,6 +90,7 @@ import { tTypeofExpression } from '../../renderers/typeofExpression';
 import { tShorthandPropertyAssignment } from '../../renderers/shorthandPropertyAssignment';
 import { tAsExpression } from '../../renderers/asExpression';
 import { tTypeAssertionExpression } from '../../renderers/typeAssertionExpression';
+import { tComputedPropertyName } from '../../renderers/computedPropertyName';
 import { tThis } from '../../renderers/this';
 import { Declaration } from '../../types';
 import { Context } from '../context';
@@ -154,6 +155,7 @@ function _renderNode(node: ts.Node | undefined, context: Context<Declaration>): 
   if (ts.isNamedImports(node)) return tNamedImports(node, context);
   if (ts.isTypeOfExpression(node)) return tTypeofExpression(node, context);
   if (ts.isAsExpression(node)) return tAsExpression(node, context);
+  if (ts.isComputedPropertyName(node)) return tComputedPropertyName(node, context);
 
   if (node.kind === ts.SyntaxKind.AsteriskToken) return tAsteriskToken();
   if (node.kind === ts.SyntaxKind.GreaterThanEqualsToken) return tEqualsGreaterThanToken();

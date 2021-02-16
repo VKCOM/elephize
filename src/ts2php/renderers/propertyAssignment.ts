@@ -26,6 +26,11 @@ export function tPropertyAssignment(node: ts.PropertyAssignment, context: Contex
     throw new Error('Name identifier cannot be empty');
   }
 
+  // Computed props don't require quoting magic
+  if (node.name.kind === ts.SyntaxKind.ComputedPropertyName) {
+    return `${name} => ${initializer}`;
+  }
+
   // Remove quotes - we don't need it in general, but add them back for all except numeric literals.
   name = name.replace(/^["']|["']$/g, '');
   if (!name.match(/^[0-9.]+$/)) {
