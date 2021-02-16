@@ -19,6 +19,10 @@ export function tJsxAttribute(node: ts.JsxAttribute, context: Context<Declaratio
     return '';
   }
 
+  if (!node.initializer) { // react boolean attribute
+    return `"${node.name.getText()}" => true`;
+  }
+
   const expr = renderNode(node.initializer, context);
   return `"${node.name.getText()}" => ${expr}`;
 }

@@ -37,7 +37,7 @@ class Jsx extends RenderableComponent {
             "id" => "test",
             "className" => "test2",
         ];
-        $jsxc = IntrinsicElement::get("div")->render(array_merge(["title" => "testtitle"], $jsxprops, $jsxprops), [
+        $jsxc = IntrinsicElement::get("div")->render(array_merge(["aria-atomic" => true, "title" => "testtitle"], $jsxprops, $jsxprops), [
             "Oh my ",
             $jsxb,
             " my oh",
