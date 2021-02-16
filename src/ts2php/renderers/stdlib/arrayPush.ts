@@ -1,6 +1,5 @@
 import * as ts from 'typescript';
 import { Declaration, ExpressionHook } from '../../types';
-import { ctx } from '../../utils/log';
 import { propNameIs } from './_propName';
 import { hasArrayType} from '../../components/typeInference/basicTypes';
 import { Context } from '../../components/context';
@@ -19,7 +18,7 @@ export const arrayPush: ExpressionHook = (node: ts.CallExpression, context: Cont
     return undefined;
   }
   if (!hasArrayType(node.expression, context.checker, context.log)) {
-    context.log.error('Left-hand expression must have array-like or iterable inferred type', [], ctx(node));
+    context.log.error('Left-hand expression must have array-like or iterable inferred type', [], context.log.ctx(node));
     return 'null';
   }
   checkModificationInNestedScope(getLeftExpr(node.expression), context);
@@ -27,7 +26,7 @@ export const arrayPush: ExpressionHook = (node: ts.CallExpression, context: Cont
   let args = renderNodes([...node.arguments], context);
   let varName = renderNode(varNameNode, context);
   if (!args || !args[0]) {
-    context.log.error('Array.prototype.push: no element in call.', [], ctx(node));
+    context.log.error('Array.prototype.push: no element in call.', [], context.log.ctx(node));
     return 'null';
   }
   return `array_push(${varName}, ${args.join(', ')})`;

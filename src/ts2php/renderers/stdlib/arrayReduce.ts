@@ -1,6 +1,5 @@
 import * as ts from 'typescript';
 import { CallbackType, Declaration, ExpressionHook } from '../../types';
-import { ctx } from '../../utils/log';
 import { propNameIs } from './_propName';
 import { hasArrayType } from '../../components/typeInference/basicTypes';
 import { Context } from '../../components/context';
@@ -18,7 +17,7 @@ export const arrayReduce: ExpressionHook = (node: ts.CallExpression, context: Co
     return undefined;
   }
   if (!hasArrayType(node.expression, context.checker, context.log)) {
-    context.log.error('Left-hand expression must have array-like or iterable inferred type', [], ctx(node));
+    context.log.error('Left-hand expression must have array-like or iterable inferred type', [], context.log.ctx(node));
     return 'null';
   }
 
@@ -36,12 +35,12 @@ export const arrayReduce: ExpressionHook = (node: ts.CallExpression, context: Co
   const funcArgsCount = funcNode?.parameters.length || 0;
 
   if (funcArgsCount > 2) {
-    context.log.error('Array.prototype.reduce with index in callback is not supported', [], ctx(node));
+    context.log.error('Array.prototype.reduce with index in callback is not supported', [], context.log.ctx(node));
     return 'null';
   }
 
   if (!initialValue) {
-    context.log.error('Array.prototype.reduce should have initial value of the accumulator', [], ctx(node));
+    context.log.error('Array.prototype.reduce should have initial value of the accumulator', [], context.log.ctx(node));
     return 'null';
   }
 

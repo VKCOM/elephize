@@ -36,12 +36,16 @@ interface LogOptions {
 };
 
 export interface LogObj {
+  errCount: number;
+  warnCount: number;
   info: (message: string, params: string[], context?: string) => void;
   warn: (message: string, params: string[], context?: string) => void;
   error: (message: string, params: string[], context?: string) => void;
   special: (message: string, params: string[], context?: string) => void;
   typehint: (message: string, params: string[], context?: string) => void;
   _printLog: (message: string, params: string[], severity: LogSeverity, context?: string) => void;
+  ctx: (node?: ts.Node) => string;
+  shortCtx: (fn: string) => string;
 }
 
 class Logger implements LogObj {
@@ -163,23 +167,3 @@ class Logger implements LogObj {
     }
   }
 }
-
-// TODO: replace with class method calls in all places
-export function ctx(node?: ts.Node): string {
-  if (!node) {
-    return '';
-  }
-  let { line, character } = node.getSourceFile().getLineAndCharacterOfPosition(node.getStart());
-  const filename = log.baseDir
-    ? node.getSourceFile().fileName.replace(log.baseDir, '[base]')
-    : node.getSourceFile().fileName;
-  return `@${filename}:${line + 1}:${character + 1}`;
-}
-
-export function shortCtx(fn: string): string {
-  const filename = log.baseDir
-    ? fn.replace(log.baseDir, '[base]')
-    : fn;
-  return `@${filename}`;
-}
-

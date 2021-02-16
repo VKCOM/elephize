@@ -6,7 +6,6 @@ import {
   getLeftExpr
 } from '../utils/ast';
 import { Context } from '../components/context';
-import { ctx } from '../utils/log';
 import { reactHooksSupport } from '../components/react/reactHooks';
 import { insideComponent } from '../components/unusedCodeElimination/usageGraph/nodeData';
 import { Scope } from '../components/unusedCodeElimination/usageGraph';
@@ -55,7 +54,7 @@ export function tCallExpression(node: ts.CallExpression, context: Context<Declar
     if (spread !== callChildren.length - 1) {
       // specific situation: php does not allow spreads in middle of argument list.
       // So we use array_merge + spread. Kphp will not be really happy with it though.
-      context.log.warn('Using array_merge to create parameters array for function, it may fail type inference', [], ctx(node));
+      context.log.warn('Using array_merge to create parameters array for function, it may fail type inference', [], context.log.ctx(node));
       args = [`...${makeCallArgs(callChildren, args)}`];
     } else {
       // ok, it's last one, so just add ... to spread element.
@@ -65,14 +64,14 @@ export function tCallExpression(node: ts.CallExpression, context: Context<Declar
 
   let lExp = getLeftExpr(node.expression);
   if (!lExp) {
-    context.log.error('Calls of non-identifier expressions are not supported', [], ctx(node));
+    context.log.error('Calls of non-identifier expressions are not supported', [], context.log.ctx(node));
     return 'null';
   }
 
   let [decl, declScope, declNode] = context.scope.findByIdent(lExp.getText()) || [];
   if (!context.dryRun) {
     if (!decl || (declNode && !isBound(declNode))) {
-      context.log.error('Call of undeclared or dropped identifier: %s', [lExp.getText()], ctx(node));
+      context.log.error('Call of undeclared or dropped identifier: %s', [lExp.getText()], context.log.ctx(node));
     }
   }
   markUsedVars(node, lExp, usedVars, context);

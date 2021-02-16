@@ -1,6 +1,5 @@
 import * as ts from 'typescript';
 import { Declaration, ExpressionHook } from '../../types';
-import { ctx } from '../../utils/log';
 import { propNameIs } from './_propName';
 import { hasType } from '../../components/typeInference/basicTypes';
 import { Context } from '../../components/context';
@@ -18,7 +17,7 @@ export const stringSubstr: ExpressionHook = (node: ts.CallExpression, context: C
     return undefined;
   }
   if (!hasType(node.expression, context.checker, 'string')) {
-    context.log.error('Left-hand expression must have string inferred type', [], ctx(node));
+    context.log.error('Left-hand expression must have string inferred type', [], context.log.ctx(node));
     return 'null';
   }
 
@@ -26,9 +25,9 @@ export const stringSubstr: ExpressionHook = (node: ts.CallExpression, context: C
   let args = renderNodes([...node.arguments], context);
   let varName = renderNode(varNameNode, context);
   if (!args || !args[0]) {
-    context.log.error('String.prototype.substr: can\'t find index in call.', [], ctx(node));
+    context.log.error('String.prototype.substr: can\'t find index in call.', [], context.log.ctx(node));
     return 'null';
   }
-  context.log.warn('Converting String.prototype.substr to substr(): check your encodings twice!', [], ctx(node));
+  context.log.warn('Converting String.prototype.substr to substr(): check your encodings twice!', [], context.log.ctx(node));
   return `substr(${varName}, ${args.join(', ')})`;
 };

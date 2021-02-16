@@ -1,7 +1,6 @@
 import * as ts from 'typescript';
 import { Declaration } from '../types';
 import { Context } from '../components/context';
-import { ctx } from '../utils/log';
 import { renderNode } from '../components/codegen/renderNodes';
 
 export function tTypeofExpression(node: ts.TypeOfExpression, context: Context<Declaration>) {
@@ -14,6 +13,6 @@ export function tTypeofExpression(node: ts.TypeOfExpression, context: Context<De
 
   context.log.error('Typeof operator does not support `any`/`unknown` and functional arguments ' +
     '(and expressions returning functional types). Ensure that your expression evaluates to ' +
-    'non-callable explicit type.', [], ctx(node));
+    'non-callable explicit type.', [], context.log.ctx(node));
   return 'null';
 }

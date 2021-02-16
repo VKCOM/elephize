@@ -5,7 +5,6 @@ import { getClosestParentOfAnyType } from '../utils/ast';
 import { renderElements as renderObjectBinding } from './objectBindingPattern';
 import { renderElements as renderArrayBinding } from './arrayBindingPattern';
 import { snakify } from '../utils/pathsAndNames';
-import { ctx } from '../utils/log';
 
 export function tParameterDeclaration(node: ts.ParameterDeclaration, context: Context<Declaration>) {
   // Object/array destructuring
@@ -17,7 +16,7 @@ export function tParameterDeclaration(node: ts.ParameterDeclaration, context: Co
     ]);
 
     if (!parentFunc) {
-      context.log.error('No function found for parameters declaration: this is unexpected error', [], ctx(node));
+      context.log.error('No function found for parameters declaration: this is unexpected error', [], context.log.ctx(node));
       return '';
     }
 

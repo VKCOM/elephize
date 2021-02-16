@@ -1,7 +1,6 @@
 import * as ts from 'typescript';
 import { Declaration, DeclFlag } from '../types';
 import { Context } from '../components/context';
-import { ctx } from '../utils/log';
 import { isExportedVar } from '../utils/ast';
 import { isTopLevel } from '../utils/isTopLevel';
 import { identifyAnonymousNode } from '../components/unusedCodeElimination/usageGraph/nodeData';
@@ -21,7 +20,7 @@ function renderBindingElement(el: ts.BindingElement | ts.OmittedExpression, inde
   }
 
   if (el.name.kind !== ts.SyntaxKind.Identifier) {
-    context.log.error('Nested bindings are not supported: %s', [el.name.getText()], ctx(el));
+    context.log.error('Nested bindings are not supported: %s', [el.name.getText()], context.log.ctx(el));
     return null;
   }
 

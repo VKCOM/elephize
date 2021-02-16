@@ -3,7 +3,7 @@ import { ModuleRegistry } from './cjsModules/moduleRegistry';
 import { CommonjsModule } from './cjsModules/commonjsModule';
 import { Scope } from './unusedCodeElimination/usageGraph';
 import { BoundNode } from './unusedCodeElimination/usageGraph/node';
-import { ctx, LogObj, shortCtx } from '../utils/log';
+import { LogObj } from '../utils/log';
 import { NsMap } from '../types';
 import { NodeFlagStore } from './codegen/nodeFlagStore';
 
@@ -33,7 +33,7 @@ export class Context<T> {
     const node = this._scope.declarations.get(ownerIdent);
 
     if (node && (node as BoundNode<T>).ownedScope && this.dryRun) {
-      this.log.error('Reassignment of functional scopes is not supported: %s', [ownerIdent], shortCtx(this.moduleDescriptor.sourceFileName));
+      this.log.error('Reassignment of functional scopes is not supported: %s', [ownerIdent], this.log.shortCtx(this.moduleDescriptor.sourceFileName));
     }
 
     if (!node || node.homeScope !== this._scope) {
@@ -47,11 +47,11 @@ export class Context<T> {
   public popScope(uniqid: string, context?: ts.Node) {
     // log.INFO('Pop scope / ' + uniqid)
     if (uniqid !== this._uniqIdStack[this._uniqIdStack.length - 1]) {
-      throw new Error('Attempt to pop frame that is not on top of stack: this should not happen and probably is a bug in transpiler \n' + ctx(context));
+      throw new Error('Attempt to pop frame that is not on top of stack: this should not happen and probably is a bug in transpiler \n' + this.log.ctx(context));
     }
     this._uniqIdStack.pop();
     if (!this._scope.parentScope) {
-      throw new Error('Call stack got out of bounds: this should not happen and probably is a bug in transpiler \n' + ctx(context));
+      throw new Error('Call stack got out of bounds: this should not happen and probably is a bug in transpiler \n' + this.log.ctx(context));
     }
     this._scope = this._scope.parentScope;
   }

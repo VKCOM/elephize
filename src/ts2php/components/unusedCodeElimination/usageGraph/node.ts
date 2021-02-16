@@ -1,5 +1,5 @@
 import { Scope } from './scope';
-import { LogObj, LogVerbosity, shortCtx } from '../../../utils/log';
+import { LogObj, LogVerbosity } from '../../../utils/log';
 
 export const isBound = <T>(node: ScopeNode<T>): node is BoundNode<T> => node._type === 'early_bound';
 export const isPending = <T>(node: ScopeNode<T>): node is BindPendingNode<T> => node._type === 'late_bound';
@@ -98,7 +98,7 @@ export class ScopeNode<T extends { [key: string]: any }> {
   protected _traverse(cb: (node: ScopeNode<T>) => boolean, traversedNodeList: Set<ScopeNode<T>>, bailOnUnbound: boolean) {
     this._edges.forEach((node) => {
       if (bailOnUnbound && !isBound(node)) {
-        this.log.error('Identifier "%s" was used but was never declared. This is compile error', [node.ident], shortCtx(this.homeScope.sourceFile));
+        this.log.error('Identifier "%s" was used but was never declared. This is compile error', [node.ident], this.log.shortCtx(this.homeScope.sourceFile));
         return;
       }
       if (node._traverseMark) {
@@ -157,21 +157,21 @@ export class ScopeNode<T extends { [key: string]: any }> {
    */
   public markUsage() {
     if (this.ident !== Scope.tNode) {
-      this.log.error('Mark usage method is not expected to be applied to non-terminal nodes', [], shortCtx(this.homeScope.sourceFile));
+      this.log.error('Mark usage method is not expected to be applied to non-terminal nodes', [], this.log.shortCtx(this.homeScope.sourceFile));
       return;
     }
 
     if (isBound(this)) {
       this._markUsed();
     } else {
-      this.log.error('Undeclared or dropped identifier encountered: %s', [this.ident], shortCtx(this.homeScope.sourceFile));
+      this.log.error('Undeclared or dropped identifier encountered: %s', [this.ident], this.log.shortCtx(this.homeScope.sourceFile));
     }
 
     this.traverse((node: ScopeNode<T>) => {
       if (isBound(node)) {
         node._markUsed();
       } else {
-        this.log.error('Undeclared or dropped identifier encountered: %s', [node.ident], shortCtx(this.homeScope.sourceFile));
+        this.log.error('Undeclared or dropped identifier encountered: %s', [node.ident], this.log.shortCtx(this.homeScope.sourceFile));
       }
       return true;
     });

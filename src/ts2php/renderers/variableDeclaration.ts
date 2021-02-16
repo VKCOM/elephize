@@ -3,7 +3,6 @@ import { Declaration, DeclFlag } from '../types';
 import { checkReactAssignment } from '../components/react/reactHooks';
 import { Context } from '../components/context';
 import { getClosestParentOfType, isExportedVar } from '../utils/ast';
-import { ctx } from '../utils/log';
 import { isTopLevel, isTopLevelComponent } from '../utils/isTopLevel';
 import { generateFunctionElements } from '../components/functionScope';
 import { Scope } from '../components/unusedCodeElimination/usageGraph';
@@ -96,7 +95,7 @@ export function tVariableDeclaration(node: ts.VariableDeclaration, context: Cont
 function topStatements(node: ts.VariableDeclaration, initializerNode: ts.Node | undefined, addIdent: (ident: string) => Set<string>, usedIdents: Set<string>, isFuncDeclaration: boolean, context: Context<Declaration> ) {
   if (!node.initializer) {
     context.scope.removeEventListener(Scope.EV_USAGE, addIdent);
-    context.log.error('Module scope variables should have initializers to ensure proper type detection', [], ctx(node));
+    context.log.error('Module scope variables should have initializers to ensure proper type detection', [], context.log.ctx(node));
     return 'null';
   }
 
@@ -134,7 +133,7 @@ function topStatements(node: ts.VariableDeclaration, initializerNode: ts.Node | 
     const nameIdent = node.name;
     // We expect plain identifier as name here
     if (nameIdent.kind !== ts.SyntaxKind.Identifier) {
-      context.log.error('Top-level variable identifier should not be a binding expression', [], ctx(node));
+      context.log.error('Top-level variable identifier should not be a binding expression', [], context.log.ctx(node));
       context.scope.removeEventListener(Scope.EV_USAGE, addIdent);
       return '';
     }

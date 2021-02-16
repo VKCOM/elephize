@@ -1,7 +1,6 @@
 import * as ts from 'typescript';
 import { Declaration, DeclFlag } from '../types';
 import { Context } from '../components/context';
-import { ctx } from '../utils/log';
 import { intrinsicElements } from '../internalConfig/intrinsicElements';
 import { renderNode, renderNodes } from '../components/codegen/renderNodes';
 
@@ -22,7 +21,7 @@ export function tJsxElement(node: ts.JsxElement, context: Context<Declaration>) 
     : '[]';
 
   if (node.openingElement.tagName.kind !== ts.SyntaxKind.Identifier) {
-    context.log.error('Non-identifiers are not supported as jsx elements', [], ctx(node));
+    context.log.error('Non-identifiers are not supported as jsx elements', [], context.log.ctx(node));
     return 'null';
   }
 
@@ -31,7 +30,7 @@ export function tJsxElement(node: ts.JsxElement, context: Context<Declaration>) 
   } else {
     const declData = context.scope.findByIdent(node.openingElement.tagName.getText());
     if (!declData) {
-      context.log.error('Component identifier not declared: %s', [node.openingElement.tagName.getText()], ctx(node));
+      context.log.error('Component identifier not declared: %s', [node.openingElement.tagName.getText()], context.log.ctx(node));
       return 'null';
     }
     const [declaration] = declData;
@@ -43,7 +42,7 @@ export function tJsxElement(node: ts.JsxElement, context: Context<Declaration>) 
     }
 
     if (!component) {
-      context.log.error('Component not found neither in exports, nor in local scope: %s', [node.openingElement.tagName.getText()], ctx(node));
+      context.log.error('Component not found neither in exports, nor in local scope: %s', [node.openingElement.tagName.getText()], context.log.ctx(node));
       return '';
     }
     return `${component}->render(${attrs || '[]'}, ${children || '[]'})`;

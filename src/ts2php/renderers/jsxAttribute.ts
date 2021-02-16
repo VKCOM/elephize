@@ -2,14 +2,13 @@ import * as ts from 'typescript';
 import { Declaration } from '../types';
 import { Context } from '../components/context';
 import { renderNode } from '../components/codegen/renderNodes';
-import { ctx } from '../utils/log';
 
 export function tJsxAttribute(node: ts.JsxAttribute, context: Context<Declaration>) {
   if (node.name.getText() === 'dangerouslySetInnerHTML') {
     const expr = (node?.initializer as ts.JsxExpression)?.expression as ts.ObjectLiteralExpression;
     const [prop] = expr?.properties;
     if (!prop?.name || prop?.name.getText() !== '__html') {
-      context.log.error('Wrong use of dangerouslySetInnerHtml: __html property not found', [], ctx(node));
+      context.log.error('Wrong use of dangerouslySetInnerHtml: __html property not found', [], context.log.ctx(node));
       return '';
     }
 

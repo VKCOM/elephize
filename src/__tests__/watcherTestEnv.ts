@@ -5,7 +5,7 @@ import { readFileSync, writeFileSync } from 'fs';
 import '../ts2php/utils/log';
 import * as diff from 'diff';
 import * as rimraf from 'rimraf';
-import { log, LogSeverity } from '../ts2php/utils/log';
+import { LogSeverity } from '../ts2php/utils/log';
 import ncp = require('ncp');
 
 export type WatcherTestQueueItem = {

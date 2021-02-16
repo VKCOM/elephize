@@ -1,6 +1,5 @@
 import * as ts from 'typescript';
 import { Declaration, ExpressionHook } from '../../types';
-import { ctx } from '../../utils/log';
 import { propNameIs } from './_propName';
 import { hasArrayType } from '../../components/typeInference/basicTypes';
 import { Context } from '../../components/context';
@@ -45,7 +44,7 @@ export const arrayStringSlice: ExpressionHook = (node: ts.CallExpression, contex
     if (!args || !args[0]) {
       return varName;
     }
-    context.log.warn('Converting String.prototype.substr to substr(): check your encodings twice!', [], ctx(node));
+    context.log.warn('Converting String.prototype.substr to substr(): check your encodings twice!', [], context.log.ctx(node));
     if (args[1]) {
       return `substr(${varName}, ${args[0]}, strlen(${varName}) - ${args[1]} - 1)`;
     } else {
@@ -54,7 +53,7 @@ export const arrayStringSlice: ExpressionHook = (node: ts.CallExpression, contex
   } else {
     const forced = isForcedArrayType(context, node);
     if (!hasArrayType(node.expression, context.checker, context.log) && !forced) {
-      context.log.error('Left-hand expression must have string, array-like or iterable inferred type', [], ctx(node));
+      context.log.error('Left-hand expression must have string, array-like or iterable inferred type', [], context.log.ctx(node));
       return 'null';
     }
 
