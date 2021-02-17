@@ -79,6 +79,7 @@ export function tVariableDeclaration(node: ts.VariableDeclaration, context: Cont
       decl.data.flags |= DeclFlag.Callable;
     }
     decl.data.targetModulePath = context.moduleDescriptor.targetFileName;
+    context.scope.terminateCall(node.name.getText(), { dryRun: context.dryRun });
   }
 
   if (!isFuncDeclaration) {
@@ -123,8 +124,11 @@ function topStatements(node: ts.VariableDeclaration, initializerNode: ts.Node | 
 
       const isExportedFuncExp = !!(node.name.kind === ts.SyntaxKind.Identifier && isExportedVar(node.name));
       if (!context.dryRun && (context.scope.checkUsage(node.name.getText()) || isExportedFuncExp) && !flags?.drop) {
-        context.moduleDescriptor.addMethod(node.name.getText(), block, syntaxList.join(', '),
-          getPhpPrimitiveTypeForFunc(node.initializer as ts.FunctionExpression, syntaxList, context.checker, context.log), 'public');
+        context.moduleDescriptor.addMethod(
+          node.name.getText(), block, syntaxList.join(', '),
+          getPhpPrimitiveTypeForFunc(node.initializer as ts.FunctionExpression, syntaxList, context.checker, context.log),
+          'public'
+        );
       }
     }
   } else {
@@ -171,6 +175,7 @@ function topStatements(node: ts.VariableDeclaration, initializerNode: ts.Node | 
     }
     decl.data.flags |= DeclFlag.HoistedToModule;
     decl.data.targetModulePath = context.moduleDescriptor.targetFileName;
+    context.scope.terminateCall(node.name.getText(), { dryRun: context.dryRun });
   }
 
   context.scope.removeEventListener(Scope.EV_USAGE, addIdent);
