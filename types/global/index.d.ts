@@ -25,4 +25,8 @@ interface Window {
   _elephizeIsServer?: boolean;
 }
 
+interface String {
+  replaceAll: (pattern: string | RegExp, replacement: string) => string; // TODO: remove after upgrade to recent typescript
+}
+
 declare var window: Window & typeof globalThis;
