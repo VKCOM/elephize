@@ -215,7 +215,7 @@ export function getClosestOrigParentByPredicate(node: ts.Node, predicate: (paren
   return null;
 }
 
-export function isExportedVar(node: ts.Identifier) {
+export function isExportedVar(node: ts.Identifier | ts.BindingName) {
   const varStmt = getClosestOrigParentOfType(node, ts.SyntaxKind.VariableStatement) as ts.VariableStatement | null;
   if (!varStmt) {
     return false;

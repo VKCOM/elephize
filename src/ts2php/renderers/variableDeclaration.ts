@@ -43,7 +43,7 @@ export function tVariableDeclaration(node: ts.VariableDeclaration, context: Cont
   if (!node.initializer) { // Single var declaration without initialization
     let decl = context.scope.addDeclaration(
       node.name.getText(), [],
-      {terminateGlobally: isExportedVar(node.name), dryRun: context.dryRun}
+      { terminateGlobally: isExportedVar(node.name), dryRun: context.dryRun }
     );
     if (decl) {
       decl.data.targetModulePath = context.moduleDescriptor.targetFileName;
@@ -65,7 +65,7 @@ export function tVariableDeclaration(node: ts.VariableDeclaration, context: Cont
   if (!isFuncDeclaration) {
     decl = context.scope.addDeclaration(
       node.name.getText(), [],
-      {terminateGlobally: isExportedVar(node.name), dryRun: context.dryRun}
+      { terminateGlobally: isExportedVar(node.name), dryRun: context.dryRun }
     );
   } else {
     const [, declScope] = context.scope.findByIdent(node.name.getText()) || [];
@@ -79,11 +79,10 @@ export function tVariableDeclaration(node: ts.VariableDeclaration, context: Cont
       decl.data.flags |= DeclFlag.Callable;
     }
     decl.data.targetModulePath = context.moduleDescriptor.targetFileName;
-    context.scope.terminateCall(node.name.getText(), { dryRun: context.dryRun });
   }
 
   if (!isFuncDeclaration) {
-    context.scope.addUsage(node.name.getText(), Array.from(usedIdents), {dryRun: context.dryRun});
+    context.scope.addUsage(node.name.getText(), Array.from(usedIdents), { dryRun: context.dryRun });
   }
 
   if (!isFuncDeclaration) {
@@ -175,7 +174,9 @@ function topStatements(node: ts.VariableDeclaration, initializerNode: ts.Node | 
     }
     decl.data.flags |= DeclFlag.HoistedToModule;
     decl.data.targetModulePath = context.moduleDescriptor.targetFileName;
-    context.scope.terminateCall(node.name.getText(), { dryRun: context.dryRun });
+    if (isExportedVar(node.name)) {
+      context.scope.terminateCall(node.name.getText(), {dryRun: context.dryRun});
+    }
   }
 
   context.scope.removeEventListener(Scope.EV_USAGE, addIdent);

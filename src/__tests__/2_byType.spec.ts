@@ -5,7 +5,7 @@ import * as path from 'path';
 const log = configureLogging({
   baseDir: path.resolve(__dirname, 'specimens'),
   output: '', outDir: '',
-  verbose: true, verboseUsage: true,
+  // verbose: true, verboseUsage: true,
 });
 
 test('ts2php.byType', () => {
