@@ -3,7 +3,7 @@ import { Declaration } from '../types';
 import { Context } from '../components/context';
 import { getLeftExpr } from '../utils/ast';
 import { Scope } from '../components/unusedCodeElimination/usageGraph';
-import { renderNodes } from '../components/codegen/renderNodes';
+import { renderNode, renderNodes } from '../components/codegen/renderNodes';
 import { checkModificationInNestedScope } from '../components/functionScope';
 
 export function tBinaryExpression(node: ts.BinaryExpression, context: Context<Declaration>) {
@@ -46,6 +46,18 @@ export function tBinaryExpression(node: ts.BinaryExpression, context: Context<De
       || context.checker.typeToString(typeRight, node.right, ts.TypeFormatFlags.None) === 'string'
     ) {
       replaceLiteral = '.';
+    }
+  } else if (node.operatorToken.kind === ts.SyntaxKind.PlusEqualsToken) {
+    // php needs .= for concatenation so we should check inferred types.
+    let typeLeft = context.checker.getTypeAtLocation(node.left);
+    let typeRight = context.checker.getTypeAtLocation(node.right);
+    if (
+      typeLeft.isStringLiteral()
+      || typeRight.isStringLiteral()
+      || context.checker.typeToString(typeLeft, node.left, ts.TypeFormatFlags.None) === 'string'
+      || context.checker.typeToString(typeRight, node.right, ts.TypeFormatFlags.None) === 'string'
+    ) {
+      replaceLiteral = '.=';
     }
   }
 
@@ -94,8 +106,9 @@ export function tBinaryExpression(node: ts.BinaryExpression, context: Context<De
           ].includes(kind)
         ) {
 
+          let leftExpr = renderNode(node.left, context);
           const [usedVars, onUsage] = startVarsCollecting(node, context) || [];
-          let [leftExpr, rightExpr] = renderNodes([node.left, node.right], context, false);
+          let rightExpr = renderNode(node.right, context);
           markVarsUsage(node, usedVars || new Set(), onUsage || (() => new Set()), context);
           return `${leftExpr} ? ${rightExpr} : ${leftExpr}`;
         }
@@ -107,14 +120,16 @@ export function tBinaryExpression(node: ts.BinaryExpression, context: Context<De
   }
 
   if (node.operatorToken.kind === ts.SyntaxKind.InKeyword) {
+    let leftExpr = renderNode(node.left, context);
     const [usedVars, onUsage] = startVarsCollecting(node, context) || [];
-    let [leftExpr, rightExpr] = renderNodes([node.left, node.right], context, false);
+    let rightExpr = renderNode(node.right, context);
     markVarsUsage(node, usedVars || new Set(), onUsage || (() => new Set()), context);
     return `isset(${rightExpr}[${leftExpr}])`;
   }
 
+  let leftExpr = renderNode(node.left, context);
   const [usedVars, onUsage] = startVarsCollecting(node, context) || [];
-  let [leftExpr, operator, rightExpr] = renderNodes([node.left, node.operatorToken, node.right], context);
+  let [operator, rightExpr] = renderNodes([node.operatorToken, node.right], context);
   markVarsUsage(node, usedVars || new Set(), onUsage || (() => new Set()), context);
   if (replaceLiteral) { // replace + with . for string-based operations
     operator = replaceLiteral;
@@ -131,20 +146,7 @@ export function tBinaryExpression(node: ts.BinaryExpression, context: Context<De
   return `${leftExpr} ${operator} ${rightExpr}`;
 }
 
-const stopOperators = [
-  ts.SyntaxKind.EqualsToken,
-  ts.SyntaxKind.PlusEqualsToken,
-  ts.SyntaxKind.MinusEqualsToken,
-  ts.SyntaxKind.AsteriskEqualsToken,
-  ts.SyntaxKind.SlashEqualsToken,
-  ts.SyntaxKind.AmpersandEqualsToken,
-  ts.SyntaxKind.BarEqualsToken,
-];
-
 function startVarsCollecting(expr: ts.BinaryExpression, context: Context<Declaration>): [Set<string>, (ident: string) => Set<string>] | undefined {
-  if (stopOperators.includes(expr.operatorToken.kind)) {
-    return;
-  }
   const usedVars = new Set<string>();
   const onUsage = (ident: string) => usedVars.add(ident);
   context.scope.addEventListener(Scope.EV_USAGE, onUsage);
@@ -152,10 +154,6 @@ function startVarsCollecting(expr: ts.BinaryExpression, context: Context<Declara
 }
 
 function markVarsUsage(expr: ts.BinaryExpression, usedVars: Set<string>, onUsage: (ident: string) => Set<string>, context: Context<Declaration>) {
-  if (stopOperators.includes(expr.operatorToken.kind)) {
-    return;
-  }
-
   context.scope.removeEventListener(Scope.EV_USAGE, onUsage);
   const leftVal = getLeftExpr(expr.left);
   if (leftVal) {

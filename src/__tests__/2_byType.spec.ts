@@ -3,7 +3,9 @@ import { configureLogging } from '../ts2php/components/cli/configureLogging';
 import * as path from 'path';
 
 const log = configureLogging({
-  baseDir: path.resolve(__dirname, 'specimens'), output: '', outDir: ''
+  baseDir: path.resolve(__dirname, 'specimens'),
+  output: '', outDir: '',
+  // verbose: true, verboseUsage: true,
 });
 
 test('ts2php.byType', () => {
@@ -31,5 +33,7 @@ test('ts2php.byType', () => {
     ['byType', 'switchStatement.ts'],
     ['byType', 'templateString.ts'],
     ['byType', 'tsInternals.ts'],
+
+    ['fixes', 'excessiveElimination.ts'],
   ], log);
 });

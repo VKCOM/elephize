@@ -64,7 +64,7 @@ export function renderModule(
   moduleScope.terminalNode.markUsage();
 
   if (log.verbosity & LogVerbosity.WITH_USAGE_GRAPH_DUMP) {
-    moduleScope.terminalNode._dump();
+    moduleScope.terminalNode._dump((msg: string) => log.info(msg, []));
   }
 
   currentModule.clearStatements();

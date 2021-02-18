@@ -1,7 +1,7 @@
 import * as path from 'path';
 import { resolve as pResolve } from 'path';
 import { translateCode } from '../ts2php/components/codegen/translateCode';
-import { readFileSync } from 'fs';
+import { readFileSync, writeFileSync, unlinkSync } from 'fs';
 import { normalizeFileExt } from '../ts2php/utils/pathsAndNames';
 import * as prettier from 'prettier/standalone';
 import { phpPrettierOptions } from '../ts2php/internalConfig/phpPrettierOptions';
@@ -51,10 +51,12 @@ function onData(basePath: string[], promises: Array<Promise<any>>, filename: str
   promises.push(new Promise((resolve) => {
     const resultFileName = normalizeFileExt(filename);
     const cont = prettier.format(content, phpPrettierOptions);
+    writeFileSync(resultFileName + '.result', cont, 'utf-8');
     expect(cont).toBeTruthy();
     expect(cont, 'Failed in file: ' + filename)
       .toEqual(prettier.format(readFileSync(resultFileName, 'utf-8'), phpPrettierOptions));
     process.stdout.write('[test ok] ' + filename.replace(pResolve(...basePath), '') + '\n');
+    unlinkSync(resultFileName + '.result');
     resolve();
   }));
 }
