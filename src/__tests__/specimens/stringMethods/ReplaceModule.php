@@ -40,8 +40,8 @@ class ReplaceModule extends CJSModule {
         $this->arepl = "12:3:45";
         $this->brepl = implode("", explode(":", $this->arepl, 1));
         $this->crepl = str_replace(":", "", $this->arepl);
-        $this->drepl = preg_replace("/[24]/i", "test", $this->arepl, 1);
-        $this->erepl = preg_replace("/[24]/i", "tst", $this->arepl);
+        $this->drepl = preg_replace("/[24]/iu", "test", $this->arepl, 1);
+        $this->erepl = preg_replace("/[24]/iu", "tst", $this->arepl);
         \VK\Elephize\Builtins\Console::log($this->brepl, $this->crepl, $this->drepl, $this->erepl);
     }
 }

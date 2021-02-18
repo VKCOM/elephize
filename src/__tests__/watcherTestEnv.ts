@@ -60,6 +60,7 @@ export function runWatcherTests(watcherTestConfig: WatcherTestQueueItem[]) {
           baseDir,
           aliases: {},
           namespaces,
+          encoding: 'utf-8',
           options: compilerOptions,
           getCloseHandle: (handle) => close = handle,
           onData: (sourceFilename: string, targetFilename: string, content: string, error?: number) => {

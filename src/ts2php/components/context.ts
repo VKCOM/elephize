@@ -18,6 +18,7 @@ export class Context<T> {
     public dryRun: boolean,
     public baseDir: string,
     public readonly namespaces: NsMap,
+    public readonly encoding: string,
     public readonly registry: ModuleRegistry,
     public readonly log: LogObj
   ) { }

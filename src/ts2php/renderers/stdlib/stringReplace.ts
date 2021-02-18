@@ -38,13 +38,13 @@ export const stringReplace: ExpressionHook = (node: ts.CallExpression, context: 
     } else {
       return `implode(${replacement}, explode(${pattern}, ${varName}, 1))`;
     }
-  } else if (nd.kind === ts.SyntaxKind.RegularExpressionLiteral) {
+  } else if (nd.kind === ts.SyntaxKind.RegularExpressionLiteral) { // regexp instances as pattern
     const reInfo = extractRegexFlags(pattern, context.log, nd);
-    // regexp instances as pattern
+    const uFlag = context.encoding.includes('utf') ? 'u' : ''; // always append unicode flag if we're outputting unicode
     if (reInfo.globalSearch) {
-      return `preg_replace("/${reInfo.expression}/${reInfo.phpFlags}", ${replacement}, ${varName})`;
+      return `preg_replace("/${reInfo.expression}/${reInfo.phpFlags}${uFlag}", ${replacement}, ${varName})`;
     } else {
-      return `preg_replace("/${reInfo.expression}/${reInfo.phpFlags}", ${replacement}, ${varName}, 1)`;
+      return `preg_replace("/${reInfo.expression}/${reInfo.phpFlags}${uFlag}", ${replacement}, ${varName}, 1)`;
     }
   } else {
     context.log.error('String.prototype.replace: Non-string and non-regexp-literal patterns are not supported by transpiler.', [], context.log.ctx(node));

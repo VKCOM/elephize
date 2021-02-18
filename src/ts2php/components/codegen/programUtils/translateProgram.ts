@@ -23,6 +23,7 @@ import { CommonjsExternalModule } from '../../cjsModules/commonjsExternalModule'
  * @param disableCodeElimination
  * @param aliases
  * @param namespaces
+ * @param encoding
  * @param options
  * @param onFinish
  */
@@ -33,6 +34,7 @@ export function translateProgram(program: ts.Program, replacements: ImportReplac
   disableCodeElimination = false,
   aliases = {},
   namespaces,
+  encoding,
   options = defaultOptions,
   onFinish = () => undefined
 }: TranslateOptions) {
@@ -57,7 +59,7 @@ export function translateProgram(program: ts.Program, replacements: ImportReplac
       }
 
       onBeforeRender(sourceFile.fileName, sourceFile, nodeFlagStore);
-      renderModule(checker, options, sourceFile, nodeFlagStore, baseDir, namespaces, registry, currentModule, log, disableCodeElimination);
+      renderModule(checker, options, sourceFile, nodeFlagStore, baseDir, namespaces, encoding, registry, currentModule, log, disableCodeElimination);
     }
   }
 

@@ -14,6 +14,10 @@ export const extractRegexFlags = (regex: string, log: LogObj, ctx: Node) => {
     return output;
   }
 
+  if (!flags) {
+    flags = '';
+  }
+
   if (flags.includes('g')) {
     output.globalSearch = true;
     flags = flags.replace('g', '');

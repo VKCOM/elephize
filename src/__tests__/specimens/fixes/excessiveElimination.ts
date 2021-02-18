@@ -5,8 +5,7 @@ export const parseTitle = (title: string): string => {
     const t = title.split('[style');
     const parsedTitle = t.reduce((acc: string, rawSubString: string) => {
       if (rawSubString.includes('[/style]')) {
-        const re = /\](.*?)\[\/style\]/;
-        const foundText = rawSubString.match(re) as string[];
+        const foundText = rawSubString.match(/\](.*?)\[\/style\]/) as string[];
         const textContent = foundText[0].split('[/style]')[0].slice(1);
 
         const rawStyleString = rawSubString.split('[/style]')[0].split(']')[0];

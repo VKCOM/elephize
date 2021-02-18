@@ -38,6 +38,7 @@ export function runBatch(basePath: string[], testSuite: string[][], log: LogObj)
     baseDir,
     aliases: {},
     namespaces,
+    encoding: 'utf-8',
     options: compilerOptions,
     onData: (sourceFilename: string, targetFilename: string, content: string) => onData(basePath, promises, targetFilename, content)
   });
