@@ -53,7 +53,7 @@ class ExcessiveEliminationModule extends CJSModule {
                     $style_string = array_reduce(
                         array_keys($styles),
                         /* _4b73782 */ function ($acc, $key) use ($styles) {
-                        $acc += $key . ": var(--" . $key . "-" . $styles[$key] . ");";
+                        $acc .= $key . ": var(--" . $key . "-" . $styles[$key] . ");";
                         return $acc;
                     },
                         ""
@@ -66,7 +66,7 @@ class ExcessiveEliminationModule extends CJSModule {
                         $text_content .
                         "
           </span> ";
-                    $acc += $styled_tag;
+                    $acc .= $styled_tag;
                     return $acc;
                 }
                 return $acc . $raw_sub_string . " ";

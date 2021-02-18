@@ -47,6 +47,18 @@ export function tBinaryExpression(node: ts.BinaryExpression, context: Context<De
     ) {
       replaceLiteral = '.';
     }
+  } else if (node.operatorToken.kind === ts.SyntaxKind.PlusEqualsToken) {
+    // php needs .= for concatenation so we should check inferred types.
+    let typeLeft = context.checker.getTypeAtLocation(node.left);
+    let typeRight = context.checker.getTypeAtLocation(node.right);
+    if (
+      typeLeft.isStringLiteral()
+      || typeRight.isStringLiteral()
+      || context.checker.typeToString(typeLeft, node.left, ts.TypeFormatFlags.None) === 'string'
+      || context.checker.typeToString(typeRight, node.right, ts.TypeFormatFlags.None) === 'string'
+    ) {
+      replaceLiteral = '.=';
+    }
   }
 
   // Elvis operator for simple expressions
