@@ -44,6 +44,7 @@ class ExcessiveEliminationModule extends CJSModule {
                         $key_value_pairs,
                         /* _51b824c */ function ($acc, $raw_style) {
                         $_c70ca84 = explode("=", $raw_style);
+                        $key = $_c70ca84[0];
                         $value = $_c70ca84[1];
                         $acc[$key] = preg_replace("/['\"]+/", "", $value);
                         return $acc;

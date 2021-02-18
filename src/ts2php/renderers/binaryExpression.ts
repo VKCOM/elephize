@@ -3,7 +3,7 @@ import { Declaration } from '../types';
 import { Context } from '../components/context';
 import { getLeftExpr } from '../utils/ast';
 import { Scope } from '../components/unusedCodeElimination/usageGraph';
-import { renderNode, renderNodes } from '../components/codegen/renderNodes';
+import { renderNode } from '../components/codegen/renderNodes';
 import { checkModificationInNestedScope } from '../components/functionScope';
 
 export function tBinaryExpression(node: ts.BinaryExpression, context: Context<Declaration>) {
@@ -106,10 +106,8 @@ export function tBinaryExpression(node: ts.BinaryExpression, context: Context<De
           ].includes(kind)
         ) {
 
-          let leftExpr = renderNode(node.left, context);
-          const [usedVars, onUsage] = startVarsCollecting(node, context) || [];
-          let rightExpr = renderNode(node.right, context);
-          markVarsUsage(node, usedVars || new Set(), onUsage || (() => new Set()), context);
+          const leftExpr = renderLeftExpr(node, context);
+          const rightExpr = renderRightExpr(node, context);
           return `${leftExpr} ? ${rightExpr} : ${leftExpr}`;
         }
       }
@@ -120,17 +118,15 @@ export function tBinaryExpression(node: ts.BinaryExpression, context: Context<De
   }
 
   if (node.operatorToken.kind === ts.SyntaxKind.InKeyword) {
-    let leftExpr = renderNode(node.left, context);
-    const [usedVars, onUsage] = startVarsCollecting(node, context) || [];
-    let rightExpr = renderNode(node.right, context);
-    markVarsUsage(node, usedVars || new Set(), onUsage || (() => new Set()), context);
+    const leftExpr = renderLeftExpr(node, context);
+    const rightExpr = renderRightExpr(node, context);
     return `isset(${rightExpr}[${leftExpr}])`;
   }
 
-  let leftExpr = renderNode(node.left, context);
-  const [usedVars, onUsage] = startVarsCollecting(node, context) || [];
-  let [operator, rightExpr] = renderNodes([node.operatorToken, node.right], context);
-  markVarsUsage(node, usedVars || new Set(), onUsage || (() => new Set()), context);
+  const leftExpr = renderLeftExpr(node, context);
+  let operator = renderNode(node.operatorToken, context);
+  const rightExpr = renderRightExpr(node, context);
+
   if (replaceLiteral) { // replace + with . for string-based operations
     operator = replaceLiteral;
   }
@@ -146,20 +142,40 @@ export function tBinaryExpression(node: ts.BinaryExpression, context: Context<De
   return `${leftExpr} ${operator} ${rightExpr}`;
 }
 
-function startVarsCollecting(expr: ts.BinaryExpression, context: Context<Declaration>): [Set<string>, (ident: string) => Set<string>] | undefined {
+function startVarsCollecting(context: Context<Declaration>): [Set<string>, (ident: string) => Set<string>] {
   const usedVars = new Set<string>();
   const onUsage = (ident: string) => usedVars.add(ident);
   context.scope.addEventListener(Scope.EV_USAGE, onUsage);
   return [usedVars, onUsage];
 }
 
-function markVarsUsage(expr: ts.BinaryExpression, usedVars: Set<string>, onUsage: (ident: string) => Set<string>, context: Context<Declaration>) {
+function markVarsUsage(origExpr: ts.BinaryExpression, usedVars: Set<string>, onUsage: (ident: string) => Set<string>, context: Context<Declaration>) {
   context.scope.removeEventListener(Scope.EV_USAGE, onUsage);
-  const leftVal = getLeftExpr(expr.left);
+  const leftVal = getLeftExpr(origExpr.left);
   if (leftVal) {
     // also connect all used vars to varname node as side-effect usage
     for (let ident of Array.from(usedVars)) {
       context.scope.terminateCall(ident, { traceSourceIdent: leftVal.getText(), dryRun: context.dryRun });
     }
   }
+}
+
+function renderLeftExpr(origExpr: ts.BinaryExpression, context: Context<Declaration>) {
+  let [usedVarsLeft, onUsageLeft] = startVarsCollecting(context);
+  let leftExpr = renderNode(origExpr.left, context);
+  const leftVal = getLeftExpr(origExpr.left);
+  if (leftVal) {
+    usedVarsLeft.delete(leftVal.getText());
+  } else {
+    usedVarsLeft = new Set(); // not identifier-based case; generally unsupported
+  }
+  markVarsUsage(origExpr, usedVarsLeft, onUsageLeft, context);
+  return leftExpr;
+}
+
+function renderRightExpr(origExpr: ts.BinaryExpression, context: Context<Declaration>) {
+  let [usedVarsRight, onUsageRight] = startVarsCollecting(context);
+  let rightExpr = renderNode(origExpr.right, context);
+  markVarsUsage(origExpr, usedVarsRight, onUsageRight, context);
+  return rightExpr;
 }
