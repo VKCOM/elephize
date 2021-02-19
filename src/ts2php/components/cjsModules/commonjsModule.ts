@@ -111,6 +111,7 @@ export class CommonjsModule {
   public generateContent() {
     return `<?php
 /* NOTICE: Generated file; Do not edit by hand */
+namespace ${this._namespaces.root};
 use ${this._namespaces.builtins}\\Stdlib;
 use ${this._namespaces.builtins}\\CJSModule;
 

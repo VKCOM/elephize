@@ -1,5 +1,6 @@
 <?php
 /* NOTICE: Generated file; Do not edit by hand */
+namespace VK\Elephize;
 use VK\Elephize\Builtins\Stdlib;
 use VK\Elephize\Builtins\CJSModule;
 

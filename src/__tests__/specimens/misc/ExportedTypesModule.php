@@ -1,5 +1,6 @@
 <?php
 /* NOTICE: Generated file; Do not edit by hand */
+namespace VK\Elephize;
 use VK\Elephize\Builtins\Stdlib;
 use VK\Elephize\Builtins\CJSModule;
 
@@ -21,6 +22,6 @@ class ExportedTypesModule extends CJSModule {
     public $just_const;
 
     private function __construct() {
-        $this->just_const= 1;
+        $this->just_const = 1;
     }
 }
