@@ -122,6 +122,34 @@ class Stdlib {
     }
 
     /**
+     * @param string $pattern
+     * @param string $subject
+     * @return string[]|null
+     */
+    public static function strMatch($pattern, $subject) {
+        $matches = [];
+        if (preg_match($pattern, $subject, $matches)) {
+            return $matches;
+        }
+        return null;
+    }
+
+    /**
+     * Mimic String.match(/.../g)
+     *
+     * @param string $pattern
+     * @param string $subject
+     * @return string[]|null
+     */
+    public static function strMatchG($pattern, $subject) {
+        $matches = [];
+        if (preg_match_all($pattern, $subject, $matches)) {
+            return $matches[0];
+        }
+        return null;
+    }
+
+    /**
      * @param mixed $var
      * @return string
      */

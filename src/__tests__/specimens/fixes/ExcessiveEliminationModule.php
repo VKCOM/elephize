@@ -25,10 +25,9 @@ class ExcessiveEliminationModule extends CJSModule {
             $t = explode("[style", $title);
             $parsed_title = array_reduce(
                 $t,
-                /* _4dbfdc8 */ function ($acc, $raw_sub_string) {
+                /* _4876d8c */ function ($acc, $raw_sub_string) {
                 if (strpos($raw_sub_string, "[/style]") !== -1) {
-                    $re = "/\](.*?)\[\/style\]/";
-                    $found_text = $raw_sub_string["match"]($re);
+                    $found_text = Stdlib::strMatch("/\](.*?)\[\/style\]/u", $raw_sub_string);
                     $text_content = substr(explode("[/style]", $found_text[0])[0], 1);
                     $raw_style_string = explode("]", explode("[/style]", $raw_sub_string)[0])[0];
                     $key_value_pairs =
@@ -45,7 +44,7 @@ class ExcessiveEliminationModule extends CJSModule {
                         /* _51b824c */ function ($acc, $raw_style) {
                         $_c70ca84 = explode("=", $raw_style);
                         $value = $_c70ca84[1];
-                        $acc[$key] = preg_replace("/['\"]+/", "", $value);
+                        $acc[$key] = preg_replace("/['\"]+/u", "", $value);
                         return $acc;
                     },
                         []

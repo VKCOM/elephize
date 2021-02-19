@@ -25,6 +25,7 @@ test('ts2php.stdlibMethods', () => {
     ['stringMethods', 'strSlice.ts'],
     ['stringMethods', 'split.ts'],
     ['stringMethods', 'replace.ts'],
+    ['stringMethods', 'match.ts'],
     ['stringMethods', 'join.ts'],
     ['stringMethods', 'trim.ts'],
     ['stringMethods', 'startsWith.ts'],

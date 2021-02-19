@@ -17,6 +17,7 @@ import { NodeFlagStore } from './nodeFlagStore';
  * @param nodeFlagsStore
  * @param baseDir - Note! This should be the SAME baseDir as passed into typescript as compilerOptions.baseUrl!
  * @param namespaces
+ * @param encoding
  * @param registry
  * @param currentModule
  * @param log
@@ -29,6 +30,7 @@ export function renderModule(
   nodeFlagsStore: NodeFlagStore,
   baseDir: string,
   namespaces: NsMap,
+  encoding: string,
   registry: ModuleRegistry,
   currentModule: CommonjsModule,
   log: LogObj,
@@ -53,6 +55,7 @@ export function renderModule(
     true,
     baseDir,
     namespaces,
+    encoding,
     registry,
     log
   );
@@ -80,6 +83,7 @@ export function renderModule(
     false,
     baseDir,
     namespaces,
+    encoding,
     registry,
     log
   );
