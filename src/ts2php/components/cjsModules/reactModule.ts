@@ -32,6 +32,7 @@ export class ReactModule extends CommonjsModule {
   public generateContent() {
     return `<?php
 /* NOTICE: Generated file; Do not edit by hand */
+namespace ${this._namespaces.root};
 use ${this._namespaces.builtins}\\RenderableComponent;
 use ${this._namespaces.builtins}\\IntrinsicElement;
 use ${this._namespaces.builtins}\\Stdlib;

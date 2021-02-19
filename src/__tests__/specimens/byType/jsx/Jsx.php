@@ -1,5 +1,6 @@
 <?php
 /* NOTICE: Generated file; Do not edit by hand */
+namespace VK\Elephize;
 use VK\Elephize\Builtins\RenderableComponent;
 use VK\Elephize\Builtins\IntrinsicElement;
 use VK\Elephize\Builtins\Stdlib;
@@ -37,11 +38,10 @@ class Jsx extends RenderableComponent {
             "id" => "test",
             "className" => "test2",
         ];
-        $jsxc = IntrinsicElement::get("div")->render(array_merge(["aria-atomic" => true, "title" => "testtitle"], $jsxprops, $jsxprops), [
-            "Oh my ",
-            $jsxb,
-            " my oh",
-        ]);
+        $jsxc = IntrinsicElement::get("div")->render(
+            array_merge(["aria-atomic" => true, "title" => "testtitle"], $jsxprops, $jsxprops),
+            ["Oh my ", $jsxb, " my oh"]
+        );
         return $jsxc;
     }
 }

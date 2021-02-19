@@ -1,5 +1,6 @@
 <?php
 /* NOTICE: Generated file; Do not edit by hand */
+namespace VK\Elephize;
 use VK\Elephize\Builtins\Stdlib;
 use VK\Elephize\Builtins\CJSModule;
 
@@ -40,7 +41,7 @@ class ForEachModule extends CJSModule {
         }
         $this->afo = [
             "a" => 1,
-            "b" => 2
+            "b" => 2,
         ];
         foreach (array_keys($this->afo) as $val) {
             \VK\Elephize\Builtins\Console::log($this->afo[$val]);

@@ -1,5 +1,6 @@
 <?php
 /* NOTICE: Generated file; Do not edit by hand */
+namespace VK\Elephize;
 use VK\Elephize\Builtins\RenderableComponent;
 use VK\Elephize\Builtins\IntrinsicElement;
 use VK\Elephize\Builtins\Stdlib;
@@ -26,9 +27,6 @@ class InnerHtmlComponent extends RenderableComponent {
      */
     public function render(array $props, array $children) {
         $inner = "<b><i><u>ololo!</u></i></b>";
-        return IntrinsicElement::get("div")->render(
-            [],
-            [$inner]
-        );
+        return IntrinsicElement::get("div")->render([], [$inner]);
     }
 }
