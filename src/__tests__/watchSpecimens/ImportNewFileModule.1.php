@@ -1,6 +1,6 @@
 <?php
 /* NOTICE: Generated file; Do not edit by hand */
-namespace VK\Elephize;
+namespace VK\Elephize\src\__tests__\watchSpecimens___;
 use VK\Elephize\Builtins\Stdlib;
 use VK\Elephize\Builtins\CJSModule;
 
@@ -28,6 +28,6 @@ class ImportNewFileModule extends CJSModule {
 
     private function __construct() {
         \VK\Elephize\Builtins\Console::log($this->inftest2(1));
-        \VK\Elephize\Builtins\Console::log(ImportNewFileToImportModule::getInstance()->inftest1(1));
+        \VK\Elephize\Builtins\Console::log(\VK\Elephize\src\__tests__\watchSpecimens___\ImportNewFileToImportModule::getInstance()->inftest1(1));
     }
 }

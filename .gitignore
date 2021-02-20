@@ -9,6 +9,7 @@ demo/public/dist
 # misc
 .DS_Store
 *.~
+watchSpecimens___
 
 npm-debug.log*
 yarn-debug.log*
