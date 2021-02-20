@@ -1,6 +1,6 @@
 <?php
 /* NOTICE: Generated file; Do not edit by hand */
-namespace VK\Elephize;
+namespace VK\Elephize\src\__tests__\specimens\components\ComponentWithOuterFunction;
 use VK\Elephize\Builtins\RenderableComponent;
 use VK\Elephize\Builtins\IntrinsicElement;
 use VK\Elephize\Builtins\Stdlib;
@@ -31,8 +31,10 @@ class ComponentWithOuterFunction extends RenderableComponent {
         $classes = $props["classes"];
         return IntrinsicElement::get("div")->render(
             [
-                "className" => ComponentWithOuterFunctionModule::getInstance()->prepareClasses(
-                    ComponentWithOuterFunctionModule::getInstance()->morePrepare($classes)
+                "className" => \VK\Elephize\src\__tests__\specimens\components\ComponentWithOuterFunctionModule::getInstance()->prepareClasses(
+                    \VK\Elephize\src\__tests__\specimens\components\ComponentWithOuterFunctionModule::getInstance()->morePrepare(
+                        $classes
+                    )
                 ),
             ],
             [$children]

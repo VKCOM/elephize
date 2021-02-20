@@ -1,6 +1,6 @@
 <?php
 /* NOTICE: Generated file; Do not edit by hand */
-namespace VK\Elephize;
+namespace VK\Elephize\src\__tests__\specimens\components\TypedComponent;
 use VK\Elephize\Builtins\RenderableComponent;
 use VK\Elephize\Builtins\IntrinsicElement;
 use VK\Elephize\Builtins\Stdlib;

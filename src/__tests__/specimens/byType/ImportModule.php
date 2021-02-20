@@ -1,6 +1,6 @@
 <?php
 /* NOTICE: Generated file; Do not edit by hand */
-namespace VK\Elephize;
+namespace VK\Elephize\src\__tests__\specimens\byType;
 use VK\Elephize\Builtins\Stdlib;
 use VK\Elephize\Builtins\CJSModule;
 
@@ -24,10 +24,10 @@ class ImportModule extends CJSModule {
     public $a;
 
     private function __construct() {
-        ExportModule::getInstance()->test();
-        ExportModule::getInstance()->test();
-        ExportModule::getInstance()->test();
-        $this->a = ExportModule::getInstance()->test2;
+        \VK\Elephize\src\__tests__\specimens\byType\ExportModule::getInstance()->test();
+        \VK\Elephize\src\__tests__\specimens\byType\ExportModule::getInstance()->test();
+        \VK\Elephize\src\__tests__\specimens\byType\ExportModule::getInstance()->test();
+        $this->a = \VK\Elephize\src\__tests__\specimens\byType\ExportModule::getInstance()->test2;
         \VK\Elephize\Builtins\Console::log($this->a, $f);
     }
 }
