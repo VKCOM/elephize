@@ -28,6 +28,8 @@ class ImportNewFileModule extends CJSModule {
 
     private function __construct() {
         \VK\Elephize\Builtins\Console::log($this->inftest2(1));
-        \VK\Elephize\Builtins\Console::log(\VK\Elephize\src\__tests__\watchSpecimens___\ImportNewFileToImportModule::getInstance()->inftest1(1));
+        \VK\Elephize\Builtins\Console::log(
+            \VK\Elephize\src\__tests__\watchSpecimens___\ImportNewFileToImportModule::getInstance()->inftest1(1)
+        );
     }
 }

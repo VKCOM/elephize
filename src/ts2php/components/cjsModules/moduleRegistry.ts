@@ -282,6 +282,8 @@ export class ModuleRegistry {
   }
 
   public static pathToNamespace(path: string) {
-    return path.split('/').reverse().slice(1).reverse().join('\\');
+    return path.split('/').reverse().slice(1).reverse().map((pathElement) => {
+      return pathElement.replace(/[^a-z0-9_]/ig, '_');
+    }).join('\\');
   }
 }
