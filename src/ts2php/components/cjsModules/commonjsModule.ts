@@ -1,6 +1,7 @@
 import * as ts from 'typescript';
 import { LogObj } from '../../utils/log';
 import { MethodsTypes, NsMap, SpecialVars } from '../../types';
+import { ModuleRegistry } from './moduleRegistry';
 
 export class CommonjsModule {
   public readonly isDerived: boolean = false;
@@ -109,9 +110,10 @@ export class CommonjsModule {
   }
 
   public generateContent() {
+    const fullyQualifiedNamespace = ModuleRegistry.pathToNamespace(this.targetFileName);
     return `<?php
 /* NOTICE: Generated file; Do not edit by hand */
-namespace ${this._namespaces.root};
+namespace ${this._namespaces.root}\\${fullyQualifiedNamespace};
 use ${this._namespaces.builtins}\\Stdlib;
 use ${this._namespaces.builtins}\\CJSModule;
 

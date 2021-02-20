@@ -1,4 +1,5 @@
 import { CommonjsModule } from './commonjsModule';
+import { ModuleRegistry } from './moduleRegistry';
 
 export class ReactModule extends CommonjsModule {
   public readonly isDerived: boolean = true;
@@ -30,9 +31,10 @@ export class ReactModule extends CommonjsModule {
   }
 
   public generateContent() {
+    const fullyQualifiedNamespace = ModuleRegistry.pathToNamespace(this.targetFileName);
     return `<?php
 /* NOTICE: Generated file; Do not edit by hand */
-namespace ${this._namespaces.root};
+namespace ${this._namespaces.root}\\${fullyQualifiedNamespace};
 use ${this._namespaces.builtins}\\RenderableComponent;
 use ${this._namespaces.builtins}\\IntrinsicElement;
 use ${this._namespaces.builtins}\\Stdlib;

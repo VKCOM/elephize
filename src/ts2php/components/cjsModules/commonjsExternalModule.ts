@@ -2,6 +2,7 @@ import { CommonjsModule } from './commonjsModule';
 import { NsMap } from '../../types';
 import { PhpParsedStruct } from './phpParser';
 import { LogObj } from '../../utils/log';
+import { ModuleRegistry } from './moduleRegistry';
 
 export class CommonjsExternalModule extends CommonjsModule {
   public readonly isDerived: boolean = false;
@@ -48,9 +49,10 @@ export class CommonjsExternalModule extends CommonjsModule {
   }
 
   public generateContent() {
+    const fullyQualifiedNamespace = ModuleRegistry.pathToNamespace(this.targetFileName);
     return `<?php
 /* NOTICE: Generated file; Do not edit by hand */
-namespace ${this._namespaces.root};
+namespace ${this._namespaces.root}\\${fullyQualifiedNamespace};
 use ${this._namespaces.builtins}\\Stdlib;
 use ${this._namespaces.builtins}\\CJSModule;
 
