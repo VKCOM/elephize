@@ -27,6 +27,9 @@ class InnerHtmlComponent extends RenderableComponent {
      */
     public function render(array $props, array $children) {
         $inner = "<b><i><u>ololo!</u></i></b>";
-        return IntrinsicElement::get("div")->render([], [$inner]);
+        return $this->frg([
+            IntrinsicElement::get("div")->render([], [$inner]),
+            IntrinsicElement::get("i")->render([], [$inner]),
+        ]);
     }
 }
