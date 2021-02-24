@@ -6,13 +6,16 @@ import { renderNode } from '../components/codegen/renderNodes';
 
 export function tJsxSelfClosingElement(node: ts.JsxSelfClosingElement, context: Context<Declaration>) {
   const attrs = renderNode(node.attributes, context);
+  // support for dangerouslySetInnerHtml; don't render children if we have some prerendered data for node
+  const innerhtml = context.nodeFlagsStore.get(node)?.prerenderedData || [];
+
   if (node.tagName.kind !== ts.SyntaxKind.Identifier) {
     context.log.error('Non-identifiers are not supported as jsx elements', [], context.log.ctx(node));
     return 'null';
   }
 
   if (intrinsicElements[node.tagName.getText()]) {
-    return `IntrinsicElement::get("${node.tagName.getText()}")->render(${attrs || '[]'}, [])`;
+    return `IntrinsicElement::get("${node.tagName.getText()}")->render(${attrs || '[]'}, [${innerhtml.join(', ')}])`;
   } else {
     const decl = context.scope.findByIdent(node.tagName.getText());
     if (!decl) {
@@ -32,6 +35,6 @@ export function tJsxSelfClosingElement(node: ts.JsxSelfClosingElement, context: 
       context.log.error('Component not found neither in exports, nor in local scope: %s', [node.tagName.getText()], context.log.ctx(node));
       return '';
     }
-    return `${component}->render(${attrs || '[]'}, [])`;
+    return `${component}->render(${attrs || '[]'}, [${innerhtml.join(', ')}])`;
   }
 }
