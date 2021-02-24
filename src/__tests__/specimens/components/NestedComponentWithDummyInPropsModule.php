@@ -1,6 +1,6 @@
 <?php
 /* NOTICE: Generated file; Do not edit by hand */
-namespace VK\Elephize;
+namespace VK\Elephize\src\__tests__\specimens\components;
 use VK\Elephize\Builtins\Stdlib;
 use VK\Elephize\Builtins\CJSModule;
 
@@ -23,8 +23,13 @@ class NestedComponentWithDummyInPropsModule extends CJSModule {
      * @return string
      */
     public function test() {
-        return NestedComponentWithDummyInProps::getInstance()->render(
-            ["componentToRender" => DummyComponent::getInstance()->render(["count" => 1], [])],
+        return \VK\Elephize\src\__tests__\specimens\components\NestedComponentWithDummyInProps\NestedComponentWithDummyInProps::getInstance()->render(
+            [
+                "componentToRender" => \VK\Elephize\src\__tests__\specimens\components\DummyComponent\DummyComponent::getInstance()->render(
+                    ["count" => 1],
+                    []
+                ),
+            ],
             []
         );
     }

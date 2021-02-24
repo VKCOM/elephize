@@ -275,6 +275,15 @@ export class ModuleRegistry {
       return '';
     }
 
-    return `${this._targetFilenameToModule.get(filename)?.className}::getInstance()`;
+    const fullyQualifiedNamespace = ModuleRegistry.pathToNamespace(filename);
+    const className = this._targetFilenameToModule.get(filename)?.className;
+
+    return `\\${this._namespaces.root}\\${fullyQualifiedNamespace}\\${className}::getInstance()`;
+  }
+
+  public static pathToNamespace(path: string) {
+    return path.split('/').reverse().slice(1).reverse().map((pathElement) => {
+      return pathElement.replace(/[^a-z0-9_]/ig, '_');
+    }).join('\\');
   }
 }

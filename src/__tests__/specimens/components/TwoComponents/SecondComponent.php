@@ -1,6 +1,6 @@
 <?php
 /* NOTICE: Generated file; Do not edit by hand */
-namespace VK\Elephize;
+namespace VK\Elephize\src\__tests__\specimens\components\TwoComponents;
 use VK\Elephize\Builtins\RenderableComponent;
 use VK\Elephize\Builtins\IntrinsicElement;
 use VK\Elephize\Builtins\Stdlib;
@@ -28,7 +28,13 @@ class SecondComponent extends RenderableComponent {
      * @return string
      */
     public function render(array $initial_props, array $children) {
-        $props = array_merge([], TwoComponentsModule::getInstance()->default_props, [], $initial_props, []);
+        $props = array_merge(
+            [],
+            \VK\Elephize\src\__tests__\specimens\components\TwoComponentsModule::getInstance()->default_props,
+            [],
+            $initial_props,
+            []
+        );
         $count = $props["count"];
         return IntrinsicElement::get("div")->render(
             [],

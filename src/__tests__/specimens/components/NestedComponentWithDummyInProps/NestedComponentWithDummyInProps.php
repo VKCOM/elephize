@@ -1,6 +1,6 @@
 <?php
 /* NOTICE: Generated file; Do not edit by hand */
-namespace VK\Elephize;
+namespace VK\Elephize\src\__tests__\specimens\components\NestedComponentWithDummyInProps;
 use VK\Elephize\Builtins\RenderableComponent;
 use VK\Elephize\Builtins\IntrinsicElement;
 use VK\Elephize\Builtins\Stdlib;
@@ -35,11 +35,17 @@ class NestedComponentWithDummyInProps extends RenderableComponent {
             [],
             [
                 $props["componentToRender"],
-                DummyComponent::getInstance()->render(["count" => $count], []),
+                \VK\Elephize\src\__tests__\specimens\components\DummyComponent\DummyComponent::getInstance()->render(
+                    ["count" => $count],
+                    []
+                ),
                 Stdlib::arrayMap1(
                     $arr,
                     /* _b4f3ee1 */ function ($val) use ($count) {
-                        return DummyComponent::getInstance()->render(["key" => $val, "count" => $count], []);
+                        return \VK\Elephize\src\__tests__\specimens\components\DummyComponent\DummyComponent::getInstance()->render(
+                            ["key" => $val, "count" => $count],
+                            []
+                        );
                     }
                 ),
             ]

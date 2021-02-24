@@ -1,6 +1,6 @@
 <?php
 /* NOTICE: Generated file; Do not edit by hand */
-namespace VK\Elephize;
+namespace VK\Elephize\src\__tests__\specimens\misc;
 use VK\Elephize\Builtins\Stdlib;
 use VK\Elephize\Builtins\CJSModule;
 
@@ -29,8 +29,12 @@ class CustomIsomorphicsModule extends CJSModule {
             "b" => 2,
         ];
         do {
-            \VK\Elephize\Builtins\Console::log(ToReplaceCjsWrapper::getInstance()->getLang("lol!"));
-            \VK\Elephize\Builtins\Console::log(ToReplaceCjsWrapper::getInstance()->getLangStatic("lol!"));
+            \VK\Elephize\Builtins\Console::log(
+                \VK\Elephize\src\__tests__\specimens\misc\ToReplaceCjsWrapper::getInstance()->getLang("lol!")
+            );
+            \VK\Elephize\Builtins\Console::log(
+                \VK\Elephize\src\__tests__\specimens\misc\ToReplaceCjsWrapper::getInstance()->getLangStatic("lol!")
+            );
             if ($this->obj4) {
                 break;
             }

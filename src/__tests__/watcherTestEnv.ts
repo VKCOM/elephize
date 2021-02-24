@@ -14,6 +14,8 @@ export type WatcherTestQueueItem = {
   expectError?: number;
 };
 
+const testResultPostfix = '___'; // This must contain only valid symbols for namespace naming
+
 const baseDir = path.resolve(__dirname, '..', '..');
 const namespaces = {
   root: 'VK\\Elephize',
@@ -37,7 +39,7 @@ export function runWatcherTests(watcherTestConfig: WatcherTestQueueItem[]) {
 
   return new Promise((resolve) => {
     const bSrc = pResolve(__dirname, 'watchSpecimens');
-    const bTgt = pResolve(__dirname, 'watchSpecimens.~');
+    const bTgt = pResolve(__dirname, 'watchSpecimens' + testResultPostfix);
     rimraf(bTgt, (err) => {
       if (err) {
         throw err;
@@ -56,7 +58,7 @@ export function runWatcherTests(watcherTestConfig: WatcherTestQueueItem[]) {
         let close = () => {};
 
         console.info('Triggering watcher tests for: \n   %s', [files.map((f) => f.replace(__dirname, '')).join('\n   ')]);
-        translateCodeAndWatch(files.map((f) => pResolve(__dirname, 'watchSpecimens.~', f)), importRules, compilerOptions.paths, log,{
+        translateCodeAndWatch(files.map((f) => pResolve(__dirname, 'watchSpecimens' + testResultPostfix, f)), importRules, compilerOptions.paths, log,{
           baseDir,
           aliases: {},
           namespaces,
@@ -92,9 +94,9 @@ function applyNextDiff(nextDiff: WatcherTestQueueItem) {
     return;
   }
   console.info('Applying diff %s @ %s',  nextDiff.diff, nextDiff.entry);
-  const diff = pResolve(__dirname, 'watchSpecimens.~', nextDiff.diff);
+  const diff = pResolve(__dirname, 'watchSpecimens' + testResultPostfix, nextDiff.diff);
   const cwd = process.cwd();
-  process.chdir(pResolve(__dirname, 'watchSpecimens.~'));
+  process.chdir(pResolve(__dirname, 'watchSpecimens' + testResultPostfix));
   applyPatch(diff);
   process.chdir(cwd);
 }
@@ -107,7 +109,7 @@ function verifyDiff(targetFilename: string, content: string, error: number | und
     return;
   }
   const checkedFile = diff.checkFiles[checkedFileIndex];
-  const expectedContent = readFileSync(pResolve(__dirname, 'watchSpecimens.~', checkedFile[1]), { encoding: 'utf-8' });
+  const expectedContent = readFileSync(pResolve(__dirname, 'watchSpecimens' + testResultPostfix, checkedFile[1]), { encoding: 'utf-8' });
   try {
     expect(content).toEqual(expectedContent);
     if (diff.expectError) {
