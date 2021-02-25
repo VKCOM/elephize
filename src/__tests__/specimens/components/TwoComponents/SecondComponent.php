@@ -2,7 +2,6 @@
 /* NOTICE: Generated file; Do not edit by hand */
 namespace VK\Elephize\src\__tests__\specimens\components\TwoComponents;
 use VK\Elephize\Builtins\RenderableComponent;
-use VK\Elephize\Builtins\IntrinsicElement;
 use VK\Elephize\Builtins\Stdlib;
 
 require_once __DIR__ . '/../TwoComponentsModule.php';
@@ -36,12 +35,12 @@ class SecondComponent extends RenderableComponent {
             []
         );
         $count = $props["count"];
-        return IntrinsicElement::get("div")->render(
+        return \VK\Elephize\Builtins\IntrinsicElement::get("div")->render(
             [],
             [
-                IntrinsicElement::get("p")->render([], ["You clicked ", $count, " times"]),
-                IntrinsicElement::get("button")->render([], [" Click me "]),
-                IntrinsicElement::get("button")->render(["disabled" => true], [" Click me "]),
+                \VK\Elephize\Builtins\IntrinsicElement::get("p")->render([], ["You clicked ", $count, " times"]),
+                \VK\Elephize\Builtins\IntrinsicElement::get("button")->render([], [" Click me "]),
+                \VK\Elephize\Builtins\IntrinsicElement::get("button")->render(["disabled" => true], [" Click me "]),
             ]
         );
     }

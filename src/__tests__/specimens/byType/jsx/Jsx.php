@@ -2,7 +2,6 @@
 /* NOTICE: Generated file; Do not edit by hand */
 namespace VK\Elephize\src\__tests__\specimens\byType\jsx;
 use VK\Elephize\Builtins\RenderableComponent;
-use VK\Elephize\Builtins\IntrinsicElement;
 use VK\Elephize\Builtins\Stdlib;
 
 class Jsx extends RenderableComponent {
@@ -27,18 +26,18 @@ class Jsx extends RenderableComponent {
      */
     public function render(array $props, array $children) {
         $jsxa = $this->frg([
-            IntrinsicElement::get("div")->render(
+            \VK\Elephize\Builtins\IntrinsicElement::get("div")->render(
                 ["id" => "test"],
-                [IntrinsicElement::get("b")->render([], ["ololo"]), "test"]
+                [\VK\Elephize\Builtins\IntrinsicElement::get("b")->render([], ["ololo"]), "test"]
             ),
-            IntrinsicElement::get("i")->render([], ["test1"]),
+            \VK\Elephize\Builtins\IntrinsicElement::get("i")->render([], ["test1"]),
         ]);
-        $jsxb = IntrinsicElement::get("b")->render([], [$jsxa]);
+        $jsxb = \VK\Elephize\Builtins\IntrinsicElement::get("b")->render([], [$jsxa]);
         $jsxprops = [
             "id" => "test",
             "className" => "test2",
         ];
-        $jsxc = IntrinsicElement::get("div")->render(
+        $jsxc = \VK\Elephize\Builtins\IntrinsicElement::get("div")->render(
             array_merge(["aria-atomic" => true, "title" => "testtitle"], $jsxprops, $jsxprops),
             ["Oh my ", $jsxb, " my oh"]
         );

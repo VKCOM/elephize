@@ -2,7 +2,6 @@
 /* NOTICE: Generated file; Do not edit by hand */
 namespace VK\Elephize\src\__tests__\specimens\components\BasicComponentWithViewLogic;
 use VK\Elephize\Builtins\RenderableComponent;
-use VK\Elephize\Builtins\IntrinsicElement;
 use VK\Elephize\Builtins\Stdlib;
 
 class BasicComponentWithViewLogic extends RenderableComponent {
@@ -36,14 +35,14 @@ class BasicComponentWithViewLogic extends RenderableComponent {
         $hr_str = $hr < 10 ? "0" . (string) $hr : (string) $hr;
         $time = $hr_str . ":" . $min_str . ":" . $sec_str;
         $keys = [$hr_str, $min_str, $sec_str];
-        return IntrinsicElement::get("div")->render(
+        return \VK\Elephize\Builtins\IntrinsicElement::get("div")->render(
             [],
             [
-                IntrinsicElement::get("p")->render(
+                \VK\Elephize\Builtins\IntrinsicElement::get("p")->render(
                     [],
                     ["You clicked ", $count, " times starting at ", $props["count"], "."]
                 ),
-                IntrinsicElement::get("button")->render(
+                \VK\Elephize\Builtins\IntrinsicElement::get("button")->render(
                     [],
                     [
                         $time,
@@ -51,19 +50,19 @@ class BasicComponentWithViewLogic extends RenderableComponent {
                         Stdlib::arrayMap1(
                             $keys,
                             /* _1100a5a */ function ($c) {
-                                return IntrinsicElement::get("b")->render(["key" => "b"], [$c]);
+                                return \VK\Elephize\Builtins\IntrinsicElement::get("b")->render(["key" => "b"], [$c]);
                             }
                         ),
-                        IntrinsicElement::get("table")->render(
+                        \VK\Elephize\Builtins\IntrinsicElement::get("table")->render(
                             [],
                             [
-                                IntrinsicElement::get("tbody")->render(
+                                \VK\Elephize\Builtins\IntrinsicElement::get("tbody")->render(
                                     [],
                                     [
                                         Stdlib::arrayMap2(
                                             $props["children"],
                                             /* _28597c3 */ function ($row, $idx) {
-                                                return IntrinsicElement::get("tr")->render(
+                                                return \VK\Elephize\Builtins\IntrinsicElement::get("tr")->render(
                                                     ["key" => "tr" . (string) $idx],
                                                     ["test"]
                                                 );

@@ -2,7 +2,6 @@
 /* NOTICE: Generated file; Do not edit by hand */
 namespace VK\Elephize\src\__tests__\specimens\components\ReactSupport2;
 use VK\Elephize\Builtins\RenderableComponent;
-use VK\Elephize\Builtins\IntrinsicElement;
 use VK\Elephize\Builtins\Stdlib;
 
 class ReactSupport2 extends RenderableComponent {
@@ -36,6 +35,6 @@ class ReactSupport2 extends RenderableComponent {
         $memoized_callback();
         \VK\Elephize\Builtins\Console::log($memoized);
         \VK\Elephize\Builtins\Console::log($ref);
-        return IntrinsicElement::get("div")->render([], []);
+        return \VK\Elephize\Builtins\IntrinsicElement::get("div")->render([], []);
     }
 }

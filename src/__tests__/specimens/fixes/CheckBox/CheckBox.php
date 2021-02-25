@@ -2,7 +2,6 @@
 /* NOTICE: Generated file; Do not edit by hand */
 namespace VK\Elephize\src\__tests__\specimens\fixes\CheckBox;
 use VK\Elephize\Builtins\RenderableComponent;
-use VK\Elephize\Builtins\IntrinsicElement;
 use VK\Elephize\Builtins\Stdlib;
 
 class CheckBox extends RenderableComponent {
@@ -31,10 +30,10 @@ class CheckBox extends RenderableComponent {
         $name = $props["name"];
         $id = $props["id"];
         $native_props = Stdlib::objectOmit($props, ["children", "checked", "disabled", "indeterminate", "name", "id"]);
-        return IntrinsicElement::get("label")->render(
+        return \VK\Elephize\Builtins\IntrinsicElement::get("label")->render(
             ["className" => "CheckBox--disabled"],
             [
-                IntrinsicElement::get("input")->render(
+                \VK\Elephize\Builtins\IntrinsicElement::get("input")->render(
                     array_merge($native_props, [
                         "className" => "CheckBox__input",
                         "id" => (string) $id,
@@ -45,7 +44,7 @@ class CheckBox extends RenderableComponent {
                     ]),
                     []
                 ),
-                IntrinsicElement::get("span")->render(
+                \VK\Elephize\Builtins\IntrinsicElement::get("span")->render(
                     ["className" => "CheckBox__indicator", "aria-hidden" => true],
                     []
                 ),

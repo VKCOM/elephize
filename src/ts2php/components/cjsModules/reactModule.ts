@@ -36,7 +36,6 @@ export class ReactModule extends CommonjsModule {
 /* NOTICE: Generated file; Do not edit by hand */
 namespace ${this._namespaces.root}\\${fullyQualifiedNamespace};
 use ${this._namespaces.builtins}\\RenderableComponent;
-use ${this._namespaces.builtins}\\IntrinsicElement;
 use ${this._namespaces.builtins}\\Stdlib;
 
 ${this._getRequiredFiles()}

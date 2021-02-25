@@ -15,7 +15,7 @@ export function tJsxSelfClosingElement(node: ts.JsxSelfClosingElement, context: 
   }
 
   if (intrinsicElements[node.tagName.getText()]) {
-    return `IntrinsicElement::get("${node.tagName.getText()}")->render(${attrs || '[]'}, [${innerhtml.join(', ')}])`;
+    return `\\${context.namespaces.builtins}\\IntrinsicElement::get("${node.tagName.getText()}")->render(${attrs || '[]'}, [${innerhtml.join(', ')}])`;
   } else {
     const decl = context.scope.findByIdent(node.tagName.getText());
     if (!decl) {
