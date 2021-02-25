@@ -232,12 +232,13 @@ export class ModuleRegistry {
 
   private _makeNewFileName(fullyQualifiedFilename: string, className: string, addDir = false) {
     const name = normalizeFileExt(normalizeBasePath(fullyQualifiedFilename, this._baseDir, this._aliases));
-    const pieces = name.split('/');
+    let pieces = name.split('/');
     const filename = (pieces.pop() || '').replace(/\.php$/, '');
     if (addDir) {
       pieces.push(filename);
     }
 
+    pieces = pieces.map((n) => ModuleRegistry.replaceInvalidNamespaceSymbols(n));
     pieces.push(className + '.php');
     return pieces.join('/');
   }
@@ -281,9 +282,16 @@ export class ModuleRegistry {
     return `\\${this._namespaces.root}\\${fullyQualifiedNamespace}\\${className}::getInstance()`;
   }
 
+  public static replaceInvalidNamespaceSymbols(name: string) {
+    return name.replace(/[^a-z0-9_]/ig, '_');
+  }
+
   public static pathToNamespace(path: string) {
-    return path.split('/').reverse().slice(1).reverse().map((pathElement) => {
-      return pathElement.replace(/[^a-z0-9_]/ig, '_');
-    }).join('\\');
+    return path.split('/')
+      .reverse()
+      .slice(1)
+      .reverse()
+      .map((n) => ModuleRegistry.replaceInvalidNamespaceSymbols(n))
+      .join('\\');
   }
 }
