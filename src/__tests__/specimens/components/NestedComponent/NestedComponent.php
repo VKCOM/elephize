@@ -2,7 +2,6 @@
 /* NOTICE: Generated file; Do not edit by hand */
 namespace VK\Elephize\src\__tests__\specimens\components\NestedComponent;
 use VK\Elephize\Builtins\RenderableComponent;
-use VK\Elephize\Builtins\IntrinsicElement;
 use VK\Elephize\Builtins\Stdlib;
 
 require_once __DIR__ . '/../DummyComponent/DummyComponent.php';
@@ -31,7 +30,7 @@ class NestedComponent extends RenderableComponent {
         $_3b2ed12 = [0];
         $count = $_3b2ed12[0];
         $arr = [1, 2, 3];
-        return IntrinsicElement::get("div")->render(
+        return \VK\Elephize\Builtins\IntrinsicElement::get("div")->render(
             [],
             [
                 \VK\Elephize\src\__tests__\specimens\components\DummyComponent\DummyComponent::getInstance()->render(

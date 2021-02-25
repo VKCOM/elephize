@@ -26,7 +26,7 @@ export function tJsxElement(node: ts.JsxElement, context: Context<Declaration>) 
   }
 
   if (intrinsicElements[node.openingElement.tagName.getText()]) {
-    return `IntrinsicElement::get("${node.openingElement.tagName.getText().toLowerCase()}")->render(${attrs || '[]'}, ${children || '[]'})`;
+    return `\\${context.namespaces.builtins}\\IntrinsicElement::get("${node.openingElement.tagName.getText().toLowerCase()}")->render(${attrs || '[]'}, ${children || '[]'})`;
   } else {
     const declData = context.scope.findByIdent(node.openingElement.tagName.getText());
     if (!declData) {

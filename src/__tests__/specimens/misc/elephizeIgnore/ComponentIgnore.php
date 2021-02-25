@@ -2,7 +2,6 @@
 /* NOTICE: Generated file; Do not edit by hand */
 namespace VK\Elephize\src\__tests__\specimens\misc\elephizeIgnore;
 use VK\Elephize\Builtins\RenderableComponent;
-use VK\Elephize\Builtins\IntrinsicElement;
 use VK\Elephize\Builtins\Stdlib;
 
 class ComponentIgnore extends RenderableComponent {
@@ -26,6 +25,6 @@ class ComponentIgnore extends RenderableComponent {
      * @return string
      */
     public function render(array $props, array $children) {
-        return IntrinsicElement::get("div")->render([], ["test"]);
+        return \VK\Elephize\Builtins\IntrinsicElement::get("div")->render([], ["test"]);
     }
 }
