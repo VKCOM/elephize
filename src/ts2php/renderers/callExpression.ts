@@ -1,10 +1,7 @@
 import * as ts from 'typescript';
 import { Declaration, DeclFlag } from '../types';
 import { hookStdlib } from './stdlib';
-import {
-  flagParentOfType,
-  getLeftExpr
-} from '../utils/ast';
+import { getLeftExpr } from '../utils/ast';
 import { Context } from '../components/context';
 import { reactHooksSupport } from '../components/react/reactHooks';
 import { insideComponent } from '../components/unusedCodeElimination/usageGraph/nodeData';
@@ -34,16 +31,7 @@ export function tCallExpression(node: ts.CallExpression, context: Context<Declar
   const usedVars = new Set<string>();
   const onUsage = (ident: string) => usedVars.add(ident);
   context.scope.addEventListener(Scope.EV_USAGE, onUsage);
-
-  if (node.expression.kind === ts.SyntaxKind.PropertyAccessExpression
-    && (node.expression as ts.PropertyAccessExpression).name.escapedText === 'hasOwnProperty') {
-    // Object {}.hasOwnProperty() support for For-In loops; not a general support!
-    flagParentOfType(node, [ts.SyntaxKind.IfStatement], { drop: true }, context.nodeFlagsStore);
-    flagParentOfType(node, [ts.SyntaxKind.ForInStatement], { validated: true }, context.nodeFlagsStore);
-    args = renderNodes([...node.arguments], context);
-  } else {
-    args = renderNodes([...node.arguments], context);
-  }
+  args = renderNodes([...node.arguments], context);
 
   context.scope.removeEventListener(Scope.EV_USAGE, onUsage);
 

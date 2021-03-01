@@ -15,13 +15,9 @@ export function tForInStatement(node: ts.ForInStatement, context: Context<Declar
   context.scope.removeEventListener(Scope.EV_DECL, onDecl);
 
   let statement = renderNode(node.statement, context);
-  const flags = context.nodeFlagsStore.get(node);
-  if (flags?.validated) {
-    const expr = `foreach (${expression} as ${initializer} => $_tmpVal) ${statement}`;
-    if (isTopLevel(node, context)) {
-      context.moduleDescriptor.addStatement(expr);
-    }
-    return expr;
+  const expr = `foreach (${expression} as ${initializer} => $_tmpVal) ${statement}`;
+  if (isTopLevel(node, context)) {
+    context.moduleDescriptor.addStatement(expr);
   }
-  throw new Error('For-In statement should have the .hasOwnProperty check: \n' + node.getFullText().substr(0, 200));
+  return expr;
 }

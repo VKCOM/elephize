@@ -27,6 +27,7 @@ import { stringReplace } from './stringReplace';
 import { stringMatch } from './stringMatch';
 import { arrayIsArray } from './arrayIsArray';
 import { parse } from './parse';
+import { hasOwnProperty } from './hasOwnProperty';
 import { Scope } from '../../components/unusedCodeElimination/usageGraph';
 import { markUsedVars } from '../../components/unusedCodeElimination/varsUsage';
 import { getLeftExpr } from '../../utils/ast';
@@ -36,7 +37,7 @@ const stdlibHooks: ExpressionHook[] = [
   arrayPop, arrayPush, arrayReduce, arraySome, arraySplice,
   arrayStringIncludes, arrayStringLastIndexOf, arrayStringIndexOf, arrayStringSlice,
   math, objectKeys, toString, stringSplit, stringStartsWith, stringSubstr, stringTrim,
-  stringReplace, stringMatch, arrayIsArray, typecastConstructors, parse
+  stringReplace, stringMatch, arrayIsArray, typecastConstructors, parse, hasOwnProperty
 ];
 
 export const hookStdlib: ExpressionHook = (node: ts.CallExpression, context: Context<Declaration>) => {

@@ -69,7 +69,8 @@
 - Math: все методы и константы.
 - String: includes, indexOf, join, slice, split (в т.ч. по регулярке), startsWith, substr, trim, replace (в т.ч. по регулярке, но поддерживаем только флаги /i и /g).
 - Array: filter, find, forEach, includes, indexOf, map, push, pop, reduce, slice, some, splice.
-- Прочее: Object.keys, Array.isArray
+- Object: hasOwnProperty.  
+- Прочее: Object.keys, Array.isArray.
 
 ### React
 
