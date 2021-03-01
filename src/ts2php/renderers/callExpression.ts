@@ -37,7 +37,7 @@ export function tCallExpression(node: ts.CallExpression, context: Context<Declar
 
   if (node.expression.kind === ts.SyntaxKind.PropertyAccessExpression
     && (node.expression as ts.PropertyAccessExpression).name.escapedText === 'hasOwnProperty') {
-    // Object {}.hasOwnProperty() support for For-In loops; not a general support!
+    // Object {}.hasOwnProperty() support for For-In loops; for general support see renderers/stdlib/hasOwnProperty.ts
     flagParentOfType(node, [ts.SyntaxKind.IfStatement], { drop: true }, context.nodeFlagsStore);
     flagParentOfType(node, [ts.SyntaxKind.ForInStatement], { validated: true }, context.nodeFlagsStore);
     args = renderNodes([...node.arguments], context);
