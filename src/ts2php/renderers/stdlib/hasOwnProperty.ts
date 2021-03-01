@@ -30,5 +30,5 @@ export const hasOwnProperty: ExpressionHook = (node: ts.CallExpression, context:
     return 'null';
   }
 
-  return `isset(${varName}[${args[0]}])`;
+  return `array_key_exists(${args[0]}, ${varName})`;
 };
