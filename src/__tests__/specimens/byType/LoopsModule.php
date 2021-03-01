@@ -34,7 +34,7 @@ class LoopsModule extends CJSModule {
             "b" => 2,
         ];
         foreach ($this->obj as $i => $_tmpVal) {
-            if (!isset($this->obj[$i])) {
+            if (!array_key_exists($i, $this->obj)) {
                 continue;
             }
             \VK\Elephize\Builtins\Console::log($i);

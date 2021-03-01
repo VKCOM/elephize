@@ -31,7 +31,7 @@ class HasOwnPropertyModule extends CJSModule {
             "test" => 321,
             23 => 1111,
         ];
-        $this->hop = isset($this->hopobj["test"]);
+        $this->hop = array_key_exists("test", $this->hopobj);
         \VK\Elephize\Builtins\Console::log($this->hop);
     }
 }
