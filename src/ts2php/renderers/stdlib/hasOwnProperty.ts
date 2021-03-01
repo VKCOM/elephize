@@ -8,7 +8,6 @@ import { renderNode, renderNodes } from '../../components/codegen/renderNodes';
 
 /**
  * Object.prototype.hasOwnProperty support
- * @see also renderers/callExpression.ts for partial support inside for/in loops
  *
  * @param node
  * @param context
