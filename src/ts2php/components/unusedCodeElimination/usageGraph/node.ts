@@ -174,7 +174,7 @@ export class ScopeNode<T extends { [key: string]: any }> {
         this.log.error('Undeclared or dropped identifier encountered: %s', [node.ident], this.log.shortCtx(this.homeScope.sourceFile));
       }
       return true;
-    });
+    }, false);
   }
 }
 

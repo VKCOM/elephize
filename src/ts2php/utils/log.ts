@@ -138,7 +138,7 @@ export class Logger implements LogObj {
     return hash.digest('hex').substr(0, 5);
   }
 
-  protected _printLog(message: string, msgid: string, params: string[], severity: LogSeverity, context = '') {
+  public _printLog(message: string, msgid: string, params: string[], severity: LogSeverity, context = '') {
     if (this.baseDir && severity !== LogSeverity.SPECIAL) {
       message = message.replace(this.baseDir, '[base]');
     }
