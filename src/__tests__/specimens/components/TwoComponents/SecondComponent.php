@@ -24,7 +24,7 @@ class SecondComponent extends RenderableComponent {
     /**
      * @param array $initial_props
      * @param array $children
-     * @return string
+     * @return ?string
      */
     public function render(array $initial_props, array $children) {
         $props = array_merge(

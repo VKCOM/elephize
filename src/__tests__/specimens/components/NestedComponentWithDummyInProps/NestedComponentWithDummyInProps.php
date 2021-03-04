@@ -24,7 +24,7 @@ class NestedComponentWithDummyInProps extends RenderableComponent {
     /**
      * @param array $props
      * @param array $children
-     * @return string
+     * @return ?string
      */
     public function render(array $props, array $children) {
         $_3b2ed12 = [0];

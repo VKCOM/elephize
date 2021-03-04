@@ -61,7 +61,7 @@ class ${this.className} extends RenderableComponent {
     /**
     ${this._phpdoc.join('\n')}
      * @param array $children
-     * @return string
+     * @return ?string
      */
     public function render(array ${this.args}, array $children) ${this.block}
 }

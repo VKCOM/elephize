@@ -22,7 +22,7 @@ class DummyComponent extends RenderableComponent {
     /**
      * @param array $props
      * @param array $children
-     * @return string
+     * @return ?string
      */
     public function render(array $props, array $children) {
         return \VK\Elephize\Builtins\IntrinsicElement::get("div")->render(
