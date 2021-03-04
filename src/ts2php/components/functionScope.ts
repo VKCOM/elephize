@@ -53,6 +53,12 @@ export function getRenderedBlock(
   });
 
   context.popScope(`function__${stackCtr}`, bodyBlock?.getLastToken());
+
+  // Mark closure vars as used in current scope too. This will prevent their elimination and also promote to upper closure.
+  idMap.forEach((_val, ident) => {
+    context.scope.addUsage(ident, [], { dryRun: context.dryRun });
+  });
+
   return { syntaxList, block, idMap };
 }
 

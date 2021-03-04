@@ -10,4 +10,10 @@ const artest = (b: number) => {
   return nested(b) + nested2(b);
 };
 
-console.log(artest(1));
+const nestedClosureVars = () => {
+  let v = 0;
+  const inc = () => () => () => () => v + v;
+  return inc()()()();
+};
+
+console.log(artest(1), nestedClosureVars());

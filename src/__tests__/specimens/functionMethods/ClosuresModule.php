@@ -31,8 +31,24 @@ class ClosuresModule extends CJSModule {
         };
         return $nested($b) + $nested2($b);
     }
+    /**
+     * @return float
+     */
+    public function nestedClosureVars() {
+        $v = 0;
+        $inc = /* inc */ function () use ($v) {
+            return /* _afc2866 */ function () use ($v) {
+                return /* _f5227be */ function () use ($v) {
+                    return /* _17a5f2c */ function () use ($v) {
+                        return $v + $v;
+                    };
+                };
+            };
+        };
+        return $inc()()()();
+    }
 
     private function __construct() {
-        \VK\Elephize\Builtins\Console::log($this->artest(1));
+        \VK\Elephize\Builtins\Console::log($this->artest(1), $this->nestedClosureVars());
     }
 }
