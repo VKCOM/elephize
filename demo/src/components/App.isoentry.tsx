@@ -18,8 +18,11 @@ export const App: React.FunctionComponent = () => {
     'Сидоров С.С.': 40000
   });
 
+  let [countClick, updateCountClick] = useState(0);
+
   function saveData() {
     console.log('Lol!');
+    updateCountClick(countClick + 1);
   }
 
   return <div className={'elephize-test'}>
@@ -30,6 +33,7 @@ export const App: React.FunctionComponent = () => {
       <span className={'elephize-test-title-head'}>Действия</span>
     </div>
     {window._elephizeIsServer ? <div>It's PHP!</div> : <div>It's JS!</div>}
+    {countClick % 2 === 0 ? null : <div>Azaza</div>}
 
     {Object.keys(data).map((key, idx) => <div key={`id-${idx}`} className={'elephize-test-row'}>
       <span className={'elephize-test-title'}>Lol {key} kek</span>

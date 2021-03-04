@@ -36,7 +36,7 @@ export const math: ExpressionHook = (node: ts.CallExpression, context: Context<D
       let varName = renderNode(getCallExpressionArg(node), context);
       return `${operation}(${varName})`;
     case 'random':
-      return 'mt_rand(0, PHP_INT_MAX) / (float)PHP_INT_MAX';
+      return '(mt_rand(0, PHP_INT_MAX) / (float)PHP_INT_MAX)';
     case 'pow':
     case 'max':
     case 'min':

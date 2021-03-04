@@ -1,17 +1,17 @@
 <?php
 /* NOTICE: Generated file; Do not edit by hand */
-namespace VK\Elephize\src\__tests__\watchSpecimens___\elephizeAnnotationTarget_entry;
+namespace VK\Elephize\src\__tests__\specimens\components\NullReturnInComponent;
 use VK\Elephize\Builtins\RenderableComponent;
 use VK\Elephize\Builtins\Stdlib;
 
-class ElephizeAnnotationTarget extends RenderableComponent {
+class NullReturnInComponent extends RenderableComponent {
     /**
-     * @var ElephizeAnnotationTarget $_mod
+     * @var NullReturnInComponent $_mod
      */
     private static $_mod;
-    public static function getInstance(): ElephizeAnnotationTarget {
+    public static function getInstance(): NullReturnInComponent {
         if (!self::$_mod) {
-            self::$_mod = new ElephizeAnnotationTarget();
+            self::$_mod = new NullReturnInComponent();
         }
         return self::$_mod;
     }
@@ -25,14 +25,17 @@ class ElephizeAnnotationTarget extends RenderableComponent {
      * @return ?string
      */
     public function render(array $props, array $children) {
-        $_3b2ed12 = [0];
-        $count = $_3b2ed12[0];
+        if ($props["count"] % 2) {
+            return null;
+        }
         return \VK\Elephize\Builtins\IntrinsicElement::get("div")->render(
             [],
             [
-                \VK\Elephize\Builtins\IntrinsicElement::get("p")->render([], ["You clicked ", $count, " times "]),
+                \VK\Elephize\Builtins\IntrinsicElement::get("p")->render(
+                    [],
+                    ["You clicked ", $props["count"], " times"]
+                ),
                 \VK\Elephize\Builtins\IntrinsicElement::get("button")->render([], [" Click me "]),
-                \VK\Elephize\Builtins\IntrinsicElement::get("button")->render(["disabled" => true], [" Click me "]),
             ]
         );
     }
