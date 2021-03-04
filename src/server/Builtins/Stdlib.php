@@ -124,7 +124,7 @@ class Stdlib {
     /**
      * @param string $pattern
      * @param string $subject
-     * @return string[]|null
+     * @return mixed|null
      */
     public static function strMatch($pattern, $subject) {
         $matches = [];
@@ -139,7 +139,7 @@ class Stdlib {
      *
      * @param string $pattern
      * @param string $subject
-     * @return string[]|null
+     * @return mixed|null
      */
     public static function strMatchG($pattern, $subject) {
         $matches = [];

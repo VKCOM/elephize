@@ -23,11 +23,11 @@ abstract class RenderableComponent extends CJSModule {
     /**
      * React.Fragment support
      *
-     * @param string[] $rendered_components
+     * @param array $rendered_components
      * @return string
      */
     protected function frg(array $rendered_components) {
-        return implode("\n", $rendered_components);
+        return implode("\n", $this->flatten($rendered_components));
     }
 
     /**
