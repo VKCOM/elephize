@@ -22,7 +22,7 @@ class ReactSupport2 extends RenderableComponent {
     /**
      * @param array $props
      * @param array $children
-     * @return string
+     * @return ?string
      */
     public function render(array $props, array $children) {
         $_18b93da = [1];

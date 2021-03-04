@@ -22,7 +22,7 @@ class BasicComponentWithViewLogic extends RenderableComponent {
     /**
      * @param array $props
      * @param array $children
-     * @return string
+     * @return ?string
      */
     public function render(array $props, array $children) {
         $_e8afc0c = [$props["count"]];

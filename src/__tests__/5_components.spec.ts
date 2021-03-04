@@ -20,6 +20,7 @@ const testSuiteConfig: Array<{file: string[]; failOnErrors: string[]}> = [
   { file: ['components', 'TwoComponents.tsx'], failOnErrors: ['384ae'] },
   { file: ['components', 'NestedComponentWithDummyInProps.tsx'], failOnErrors: ['384ae'] },
   { file: ['components', 'InnerHtmlComponent.tsx'], failOnErrors: ['384ae'] },
+  { file: ['components', 'NullReturnInComponent.tsx'], failOnErrors: ['384ae'] },
 
   { file: ['fixes', 'CheckBox.tsx'], failOnErrors: ['384ae'] },
 ];

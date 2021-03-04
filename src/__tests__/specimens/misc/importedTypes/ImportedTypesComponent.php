@@ -22,7 +22,7 @@ class ImportedTypesComponent extends RenderableComponent {
     /**
      * @param array $__param_destruct_1
      * @param array $children
-     * @return string
+     * @return ?string
      */
     public function render(array $__param_destruct_1, array $children) {
         $lol = $__param_destruct_1["lol"];

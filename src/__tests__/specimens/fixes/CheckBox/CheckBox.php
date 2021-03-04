@@ -22,7 +22,7 @@ class CheckBox extends RenderableComponent {
     /**
      * @param array $props
      * @param array $children
-     * @return string
+     * @return ?string
      */
     public function render(array $props, array $children) {
         $checked = $props["checked"];
