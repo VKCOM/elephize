@@ -7,7 +7,7 @@ import { identifyAnonymousNode } from '../components/unusedCodeElimination/usage
 import { Scope } from '../components/unusedCodeElimination/usageGraph';
 import { renderPattern } from '../utils/renderBindingPatterns';
 import { renderNodes } from '../components/codegen/renderNodes';
-import { getPhpPrimitiveType, getPossibleCastingType } from '../components/typeInference/basicTypes';
+import { getPossibleCastingType } from '../components/typeInference/basicTypes';
 
 function renderBindingElement(el: ts.BindingElement | ts.OmittedExpression, index: number, context: Context<Declaration>) {
   if (el.kind === ts.SyntaxKind.OmittedExpression) {
