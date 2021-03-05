@@ -21,7 +21,7 @@ class ElephizeAnnotationTargetModule extends CJSModule {
      */
     public function ElephizeAnnotationTarget() {
         $_3b2ed12 = [0];
-        $count = $_3b2ed12[0];
+        $count = (float) $_3b2ed12[0];
         return \VK\Elephize\Builtins\IntrinsicElement::get("div")->render(
             [],
             [

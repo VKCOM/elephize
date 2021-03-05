@@ -26,7 +26,7 @@ class CheckBox extends RenderableComponent {
      */
     public function render(array $props, array $children) {
         $checked = $props["checked"];
-        $disabled = $props["disabled"];
+        $disabled = (bool) $props["disabled"];
         $name = $props["name"];
         $id = $props["id"];
         $native_props = Stdlib::objectOmit($props, ["children", "checked", "disabled", "indeterminate", "name", "id"]);

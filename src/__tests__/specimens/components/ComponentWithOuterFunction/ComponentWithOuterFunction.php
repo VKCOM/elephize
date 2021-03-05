@@ -27,7 +27,7 @@ class ComponentWithOuterFunction extends RenderableComponent {
      * @return ?string
      */
     public function render(array $props, array $children) {
-        $classes = $props["classes"];
+        $classes = (string) $props["classes"];
         return \VK\Elephize\Builtins\IntrinsicElement::get("div")->render(
             [
                 "className" => \VK\Elephize\src\__tests__\specimens\components\ComponentWithOuterFunctionModule::getInstance()->prepareClasses(

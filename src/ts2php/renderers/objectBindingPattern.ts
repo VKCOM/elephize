@@ -7,6 +7,7 @@ import { identifyAnonymousNode, insideComponent } from '../components/unusedCode
 import { Scope } from '../components/unusedCodeElimination/usageGraph';
 import { renderPattern } from '../utils/renderBindingPatterns';
 import { renderNodes } from '../components/codegen/renderNodes';
+import { getPossibleCastingType } from '../components/typeInference/basicTypes';
 
 function renderBindingElement(el: ts.BindingElement | ts.OmittedExpression, index: number, destructured: Set<string>, context: Context<Declaration>) {
   if (el.kind === ts.SyntaxKind.OmittedExpression) {
@@ -42,7 +43,7 @@ function renderBindingElement(el: ts.BindingElement | ts.OmittedExpression, inde
     }
     return {
       identifier: el.name,
-      initializer: `%placeholder%["${(el.propertyName || el.name).getText()}"]`
+      initializer: `${getPossibleCastingType(el.name, context.checker, context.log)}%placeholder%["${(el.propertyName || el.name).getText()}"]`
     };
   }
 }

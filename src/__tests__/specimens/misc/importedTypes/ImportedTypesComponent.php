@@ -25,8 +25,8 @@ class ImportedTypesComponent extends RenderableComponent {
      * @return ?string
      */
     public function render(array $__param_destruct_1, array $children) {
-        $lol = $__param_destruct_1["lol"];
-        $flex = $__param_destruct_1["flex"];
+        $lol = (float) $__param_destruct_1["lol"];
+        $flex = (float) $__param_destruct_1["flex"];
         return \VK\Elephize\Builtins\IntrinsicElement::get("div")->render(
             [
                 "className" => "table-item--container",

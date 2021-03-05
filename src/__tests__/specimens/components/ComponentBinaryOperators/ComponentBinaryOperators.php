@@ -26,7 +26,7 @@ class ComponentBinaryOperators extends RenderableComponent {
      */
     public function render(array $props, array $children) {
         $_a01e27a = [$props["initialValue"] ?: ""];
-        $input_value = $_a01e27a[0];
+        $input_value = (string) $_a01e27a[0];
         return \VK\Elephize\Builtins\IntrinsicElement::get("div")->render(
             [],
             [

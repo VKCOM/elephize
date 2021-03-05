@@ -21,11 +21,11 @@ class ParameterDestructuringModule extends CJSModule {
      * @return string
      */
     public function pdf1($__param_destruct_1, $__param_destruct_2, $param3) {
-        $p1 = $__param_destruct_1["param1"];
-        $p2 = $__param_destruct_1["param2"];
+        $p1 = (float) $__param_destruct_1["param1"];
+        $p2 = (string) $__param_destruct_1["param2"];
         $other = Stdlib::objectOmit($__param_destruct_1, ["param1", "param2"]);
-        $p3 = $__param_destruct_2["param1"];
-        $p4 = $__param_destruct_2["param2"];
+        $p3 = (float) $__param_destruct_2["param1"];
+        $p4 = (string) $__param_destruct_2["param2"];
         return (string) $p1 .
             $p2 .
             (string) $other["param3"] .
@@ -39,11 +39,11 @@ class ParameterDestructuringModule extends CJSModule {
      * @return string
      */
     public function pdf2($__param_destruct_1, $__param_destruct_2, $param3) {
-        $param1 = $__param_destruct_1[0];
-        $param2 = $__param_destruct_1[1];
+        $param1 = (float) $__param_destruct_1[0];
+        $param2 = (string) $__param_destruct_1[1];
         $other = array_slice($__param_destruct_1, 2);
-        $param4 = $__param_destruct_2[0];
-        $param5 = $__param_destruct_2[1];
+        $param4 = (float) $__param_destruct_2[0];
+        $param5 = (string) $__param_destruct_2[1];
         return (string) $param1 .
             $param2 .
             (string) $other[0] .

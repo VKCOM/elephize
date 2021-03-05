@@ -67,13 +67,13 @@ class TsInternalsModule extends CJSModule {
             "d" => 4,
             "e" => 5,
         ]);
-        $this->tic = $this->tib["c"];
-        $this->tie = $this->tib["e"];
+        $this->tic = (float) $this->tib["c"];
+        $this->tie = (float) $this->tib["e"];
         $this->others = Stdlib::objectOmit($this->tib, ["c", "e"]);
         $this->tid = [1, 2, 3];
         $this->tif = array_merge([5], $this->tid, [6]);
-        $this->tig = $this->tif[0];
-        $this->tih = $this->tif[1];
+        $this->tig = (float) $this->tif[0];
+        $this->tih = (float) $this->tif[1];
         $this->others2 = array_slice($this->tif, 2);
         \VK\Elephize\Builtins\Console::log($this->tic, $this->tie, $this->others);
         \VK\Elephize\Builtins\Console::log($this->tig, $this->tih, $this->others2);

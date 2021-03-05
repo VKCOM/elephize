@@ -34,7 +34,7 @@ class SecondComponent extends RenderableComponent {
             $initial_props,
             []
         );
-        $count = $props["count"];
+        $count = (float) $props["count"];
         return \VK\Elephize\Builtins\IntrinsicElement::get("div")->render(
             [],
             [
