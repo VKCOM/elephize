@@ -26,7 +26,7 @@ class BasicComponentWithViewLogic extends RenderableComponent {
      */
     public function render(array $props, array $children) {
         $_e8afc0c = [$props["count"]];
-        $count = $_e8afc0c[0];
+        $count = (float) $_e8afc0c[0];
         $sec = $props["timestampInSeconds"] % 60;
         $min = floor($props["timestampInSeconds"] / 60) % 60;
         $hr = floor($props["timestampInSeconds"] / (60 * 60)) % 24;
