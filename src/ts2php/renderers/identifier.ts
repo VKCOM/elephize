@@ -5,6 +5,7 @@ import { flagParentOfType } from '../utils/ast';
 import { Context } from '../components/context';
 import { snakify } from '../utils/pathsAndNames';
 import { insideComponent } from '../components/unusedCodeElimination/usageGraph/nodeData';
+import { typeCast } from '../components/typeInference/basicTypes';
 
 export function tIdentifier(node: ts.Identifier, context: Context<Declaration>) {
   const builtin = node.escapedText && builtins.has(node.escapedText.toString());
@@ -36,7 +37,7 @@ export function tIdentifier(node: ts.Identifier, context: Context<Declaration>) 
       // It might be difficult to debug import failures, though, we consider it typescript compiler/checker business.
       return 'null';
     }
-    return context.registry.getExportedIdentifier(context.moduleDescriptor, decl.targetModulePath, decl.propName || node.escapedText.toString(), !isCallableIdent);
+    return typeCast(node) + context.registry.getExportedIdentifier(context.moduleDescriptor, decl.targetModulePath, decl.propName || node.escapedText.toString(), !isCallableIdent);
   }
 
   if (node.escapedText.toString() === 'undefined' || node.escapedText.toString() === 'null') {
@@ -74,12 +75,12 @@ export function tIdentifier(node: ts.Identifier, context: Context<Declaration>) 
     }
 
     if (isCallableIdent) {
-      return `$this->${decl.propName || node.escapedText.toString()}`;
+      return typeCast(node) + `$this->${decl.propName || node.escapedText.toString()}`;
     }
 
     const varName = decl.propName || node.escapedText.toString();
     context.scope.addUsage(node.getText(), [], { dryRun: context.dryRun });
-    return `$this->${snakify(varName)}`;
+    return typeCast(node) + `$this->${snakify(varName)}`;
   }
 
   if (
@@ -87,7 +88,7 @@ export function tIdentifier(node: ts.Identifier, context: Context<Declaration>) 
     || node.parent.kind === ts.SyntaxKind.FunctionDeclaration // declared func name
   ) {
     // if it's function call, don't add to closure and just return the identifier
-    return `$${snakify(decl?.propName || node.escapedText.toString())}`;
+    return typeCast(node) + `$${snakify(decl?.propName || node.escapedText.toString())}`;
   }
 
   if (node.parent.kind === ts.SyntaxKind.PropertyAccessExpression) {
@@ -108,5 +109,5 @@ export function tIdentifier(node: ts.Identifier, context: Context<Declaration>) 
     context.scope.addUsage(node.getText(), [], { dryRun: context.dryRun });
   }
 
-  return `$${snakify(node.escapedText.toString())}`;
+  return typeCast(node) + `$${snakify(node.escapedText.toString())}`;
 }
