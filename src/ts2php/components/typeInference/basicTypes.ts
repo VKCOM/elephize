@@ -5,6 +5,11 @@ import { typeMap } from './basicTypesMap';
 import { mixedTypehintId } from './customTypehintsList';
 import { LogObj } from '../../utils/log';
 
+/**
+ * Return custom forced type cast clause based on used-defined commentsconst type = getPhpPrimitiveType(el.name, context.checker, context.log);
+ *
+ * @param node
+ */
 export function typeCast(node: ts.Identifier): string {
   const trivia = node.getFullText().substr(0, node.getLeadingTriviaWidth());
   if (trivia.includes('@elephizeTypecast')) {
@@ -55,6 +60,21 @@ export function hasArrayType(node: ts.Node, checker: ts.TypeChecker, log: LogObj
 export function getPhpPrimitiveType(node: ts.Node, checker: ts.TypeChecker, log: LogObj) {
   const type = checker.getTypeAtLocation(node);
   return _describeNodeType(node, type, checker, log);
+}
+
+/**
+ * Get basic type casting clause based on inferred type
+ *
+ * @param node
+ * @param checker
+ * @param log
+ */
+export function getPossibleCastingType(node: ts.Node, checker: ts.TypeChecker, log: LogObj): string {
+  const type = getPhpPrimitiveType(node, checker, log);
+  if (['array', 'string', 'boolean', 'float'].includes(type)) {
+    return `(${type})`;
+  }
+  return '';
 }
 
 /**

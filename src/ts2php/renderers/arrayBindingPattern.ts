@@ -7,6 +7,7 @@ import { identifyAnonymousNode } from '../components/unusedCodeElimination/usage
 import { Scope } from '../components/unusedCodeElimination/usageGraph';
 import { renderPattern } from '../utils/renderBindingPatterns';
 import { renderNodes } from '../components/codegen/renderNodes';
+import { getPhpPrimitiveType, getPossibleCastingType } from '../components/typeInference/basicTypes';
 
 function renderBindingElement(el: ts.BindingElement | ts.OmittedExpression, index: number, context: Context<Declaration>) {
   if (el.kind === ts.SyntaxKind.OmittedExpression) {
@@ -26,7 +27,9 @@ function renderBindingElement(el: ts.BindingElement | ts.OmittedExpression, inde
 
   return {
     identifier: el.name,
-    initializer: el.dotDotDotToken ? `array_slice(%placeholder%, ${index})` : `%placeholder%[${index}]`
+    initializer: el.dotDotDotToken
+      ? `array_slice(%placeholder%, ${index})`
+      : `${getPossibleCastingType(el.name, context.checker, context.log)}%placeholder%[${index}]`
   };
 }
 
