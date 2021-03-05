@@ -26,7 +26,7 @@ class ElephizeAnnotationTarget extends RenderableComponent {
      */
     public function render(array $props, array $children) {
         $_3b2ed12 = [0];
-        $count = $_3b2ed12[0];
+        $count = (float) $_3b2ed12[0];
         return \VK\Elephize\Builtins\IntrinsicElement::get("div")->render(
             [],
             [
