@@ -64,5 +64,32 @@ export function tPropertyAccessExpression(node: ts.PropertyAccessExpression, con
       ' won\'t work on server! Use object dereferencing instead.', [ident], context.log.ctx(node));
   }
 
+  const isDirectPropAccess = node.parent.kind !== ts.SyntaxKind.PropertyAccessExpression;
+  const isPropCallAccess = (
+    node.parent.kind === ts.SyntaxKind.PropertyAccessExpression && node.parent.parent.kind === ts.SyntaxKind.CallExpression
+  ) || node.parent.kind === ts.SyntaxKind.CallExpression;
+
+  if (isDirectPropAccess || isPropCallAccess) { // check for optional chaining in top-level expr
+    let hasOptionalChaining = false;
+    let exprNode = node;
+    while (exprNode.kind === ts.SyntaxKind.PropertyAccessExpression) {
+      if (exprNode.questionDotToken) {
+        hasOptionalChaining = true;
+        break;
+      }
+      exprNode = exprNode.expression as any;
+    }
+
+    if (hasOptionalChaining) {
+      if (isPropCallAccess) {
+        context.nodeFlagsStore.upsert(node.parent.parent, {
+          optionalGuard: `isset(${ident}["${accessor}"])`
+        });
+        return `${ident}["${accessor}"]`;
+      }
+      return `(isset(${ident}["${accessor}"]) ? ${ident}["${accessor}"] : null)`;
+    }
+  }
+
   return `${ident}["${accessor}"]`;
 }
