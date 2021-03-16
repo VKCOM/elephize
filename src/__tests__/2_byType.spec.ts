@@ -15,6 +15,8 @@ test('ts2php.byType', () => {
     ['byType', 'binaryExpression.ts'],
     ['byType', 'block.ts'],
     ['byType', 'callExpression.ts'],
+    ['byType', 'enum.ts'],
+    ['byType', 'enumImport.ts'],
     ['byType', 'elementAccessExpression.ts'],
     ['byType', 'export.ts'],
     ['byType', 'functionDeclaration.ts'],

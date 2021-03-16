@@ -6,6 +6,7 @@ import { insideComponent } from '../components/unusedCodeElimination/usageGraph/
 import { supportedMathMethods } from './stdlib/math';
 import { renderNodes } from '../components/codegen/renderNodes';
 import { builtins } from '../internalConfig/jsBuiltins';
+import { handleEnumMemberAccess } from '../utils/enumAccess';
 
 export function tPropertyAccessExpression(node: ts.PropertyAccessExpression, context: Context<Declaration>) {
   let [ident, accessor] = renderNodes([node.expression, node.name], context);
@@ -13,6 +14,14 @@ export function tPropertyAccessExpression(node: ts.PropertyAccessExpression, con
   if (ident === '$exports' && !context.scope.getClosure().has('exports')) {
     context.log.error('You should use `export` instead of `module.exports = `', [], context.log.ctx(node));
     return '';
+  }
+
+  const enumAccess = handleEnumMemberAccess(node, context);
+  if (enumAccess) {
+    if (enumAccess === true) { // error: message logged inside access func
+      return '';
+    }
+    return enumAccess; // output handled by access func
   }
 
   let lExp = getLeftExpr(node.expression);

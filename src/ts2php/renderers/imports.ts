@@ -20,9 +20,9 @@ export function tImportDeclaration(node: ts.ImportDeclaration, context: Context<
 
     if (sourceFilename === null) {
       if (moduleSpec.includes('/')) {
-        context.log.error('Module not found: tried to find ' + moduleSpec, [], context.log.ctx(node));
+        context.log.error('Module not found: tried to find %s', [moduleSpec], context.log.ctx(node));
       } else {
-        context.log.error('Importing arbitrary node modules is not supported. Only "react" module is allowed at the moment.', [], context.log.ctx(node));
+        context.log.error('Importing arbitrary node modules is not supported. Only "react" module is allowed at the moment. Also you may want to import specific file from module - this is supported.', [], context.log.ctx(node));
       }
       return '';
     }
