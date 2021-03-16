@@ -4,6 +4,7 @@ enum NumberedEnum {
   'azaza'
 }
 
+// This should produce an error
 enum ForcedNumberedEnum {
   'kek' = 45,
   'lol',
