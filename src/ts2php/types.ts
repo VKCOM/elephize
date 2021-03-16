@@ -27,6 +27,7 @@ export type NodeFlags = {
     regStatements: string[];
   };
   addExpressions?: string[]; // use this to add some expressions before rendering statement.
+  optionalGuard?: string; // extra condition check to be appended to call expressions enclosing optional chaining operators
 };
 
 export enum DeclFlag {

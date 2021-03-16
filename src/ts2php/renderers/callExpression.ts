@@ -10,11 +10,19 @@ import { markUsedVars } from '../components/unusedCodeElimination/varsUsage';
 import { isBound } from '../components/unusedCodeElimination/usageGraph/node';
 import { renderNode, renderNodes } from '../components/codegen/renderNodes';
 
+function encloseOptional(expression: string, node: ts.CallExpression, context: Context<Declaration>) {
+  const optionalCondition = context.nodeFlagsStore.get(node)?.optionalGuard;
+  if (optionalCondition) {
+    return `${optionalCondition} ? ${expression} : null`;
+  }
+  return expression;
+}
+
 export function tCallExpression(node: ts.CallExpression, context: Context<Declaration>) {
   // Support js stdlib objects methods, see stdlibSupport for details
   let hookResult = hookStdlib(node, context);
   if (hookResult !== undefined) {
-    return hookResult;
+    return encloseOptional(hookResult, node, context);
   }
 
   let reactHooks = reactHooksSupport(context, node);
@@ -74,7 +82,7 @@ export function tCallExpression(node: ts.CallExpression, context: Context<Declar
   ) {
     return context.registry.callExportedCallable(context.moduleDescriptor, decl.targetModulePath, decl.propName!, args);
   }
-  return `${ident}(${args.join(', ')})`;
+  return encloseOptional(`${ident}(${args.join(', ')})`, node, context);
 }
 
 function makeCallArgs(nodes: ts.Node[], args: string[]) {
