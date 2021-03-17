@@ -16,7 +16,7 @@ export function tObjectLiteralExpression(node: ts.ObjectLiteralExpression, conte
       const nodes = renderNodes(toRender, context).join(',\n');
       synList = synList.concat(nodes.length > 0 ? '[\n' + nodes + '\n]' : '[]');
       toRender = [];
-      synList.push(renderNode(node.properties[i], context));
+      synList.push('(' + renderNode(node.properties[i], context) + ') ?: []');
     } else {
       toRender.push(node.properties[i]);
     }
