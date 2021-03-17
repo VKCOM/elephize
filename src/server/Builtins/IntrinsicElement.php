@@ -37,6 +37,59 @@ class IntrinsicElement extends RenderableComponent {
     ];
     private $_tag_name = '';
 
+    private $_unitless_css_properties = [
+        'animationIterationCount' => true,
+        'borderImageOutset' => true,
+        'borderImageSlice' => true,
+        'borderImageWidth' => true,
+        'boxFlex' => true,
+        'boxFlexGroup' => true,
+        'boxOrdinalGroup' => true,
+        'columnCount' => true,
+        'columns' => true,
+        'flex' => true,
+        'flexGrow' => true,
+        'flexPositive' => true,
+        'flexShrink' => true,
+        'flexNegative' => true,
+        'flexOrder' => true,
+        'gridRow' => true,
+        'gridRowEnd' => true,
+        'gridRowSpan' => true,
+        'gridRowStart' => true,
+        'gridColumn' => true,
+        'gridColumnEnd' => true,
+        'gridColumnSpan' => true,
+        'gridColumnStart' => true,
+        'fontWeight' => true,
+        'lineClamp' => true,
+        'lineHeight' => true,
+        'opacity' => true,
+        'order' => true,
+        'orphans' => true,
+        'tabSize' => true,
+        'widows' => true,
+        'zIndex' => true,
+        'zoom' => true,
+        
+        // SVG-related properties
+        'fillOpacity' => true,
+        'floodOpacity' => true,
+        'stopOpacity' => true,
+        'strokeDasharray' => true,
+        'strokeDashoffset' => true,
+        'strokeMiterlimit' => true,
+        'strokeOpacity' => true,
+        'strokeWidth' => true,
+    ];
+
+    private $_vendor_prefixes = [
+        'webkit' => true,
+        'ms' => true,
+        'moz' => true,
+        'o' => true,
+    ];
+
     /**
      * IntrinsicElement constructor.
      * @param string $tag_name
@@ -98,7 +151,26 @@ class IntrinsicElement extends RenderableComponent {
             if ($value === true) {
                 $value = 'true';
             }
-            $attrs[] = $name . '="' . htmlspecialchars($value) . '"';
+
+            if ($name === 'style' && is_array($value)) {
+                $css = [];
+                foreach ($value as $css_name => $css_value) {
+                    $kebab_name = strtolower(preg_replace(
+                        '#[\s_]+#', '-',
+                        preg_replace('#([a-z])([A-Z])#', '$1-$2', $css_name)
+                    ));
+                    if ($this->_vendor_prefixes[explode('-', $kebab_name)[0]]) {
+                        $kebab_name = '-' . $kebab_name;
+                    }
+                    $attr_value = (is_numeric($css_value) && !$this->_unitless_css_properties[$css_name])
+                        ? $css_value . 'px'
+                        : htmlspecialchars($css_value);
+                    $css []= $kebab_name . ':' . $attr_value;
+                }
+                $attrs[] = 'style="' . implode(';', $css) . '"';
+            } else {
+                $attrs[] = $name . '="' . htmlspecialchars($value) . '"';
+            }
         }
 
         $att_string = empty($attrs) ? '' : (' ' . implode(' ', $attrs));
