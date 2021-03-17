@@ -29,9 +29,9 @@ class SecondComponent extends RenderableComponent {
     public function render(array $initial_props, array $children) {
         $props = array_merge(
             [],
-            \VK\Elephize\src\__tests__\specimens\components\TwoComponentsModule::getInstance()->default_props,
+            \VK\Elephize\src\__tests__\specimens\components\TwoComponentsModule::getInstance()->default_props ?: [],
             [],
-            $initial_props,
+            $initial_props ?: [],
             []
         );
         $count = (float) $props["count"];

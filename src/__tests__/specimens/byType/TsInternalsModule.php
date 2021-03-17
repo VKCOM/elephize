@@ -63,7 +63,7 @@ class TsInternalsModule extends CJSModule {
             "b" => 2,
             "c" => 3,
         ];
-        $this->tib = array_merge([], $this->tia, [
+        $this->tib = array_merge([], $this->tia ?: [], [
             "d" => 4,
             "e" => 5,
         ]);

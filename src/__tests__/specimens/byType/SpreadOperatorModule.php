@@ -41,7 +41,7 @@ class SpreadOperatorModule extends CJSModule {
      * @return array
      */
     public function ssff(...$args) {
-        return array_merge([], $args, [
+        return array_merge([], $args ?: [], [
             "ssd" => $this->ssd,
         ]);
     }
@@ -80,7 +80,7 @@ class SpreadOperatorModule extends CJSModule {
             [
                 "d" => 4,
             ],
-            $this->ssc,
+            $this->ssc ?: [],
             [
                 "e" => 5,
             ]
@@ -89,7 +89,7 @@ class SpreadOperatorModule extends CJSModule {
             [
                 "h" => 6,
             ],
-            $this->ssff(),
+            $this->ssff() ?: [],
             [
                 "j" => 8,
             ]
