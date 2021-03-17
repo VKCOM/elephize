@@ -46,7 +46,7 @@ export const App: React.FunctionComponent = () => {
         <Radio name={'el-test'} value={'3'}>3x</Radio>
         <CheckBox name={'test2'} />
       </span>
-      <span className={'elephize-test-actions'}>
+      <span className={'elephize-test-actions'} style={{ backgroundColor: '#a22', fontWeight: 'bold', marginTop: 12, WebkitTransition: 'all', msTransition: 'all' }}>
         <Button appearance={'primary'} size={'m'} wide={false} disabled={false} onClick={saveData}>
           Сохранить
         </Button>
