@@ -11,6 +11,7 @@ import {
 } from '../../utils/pathsAndNames';
 import { ImportReplacementRule, NsMap } from '../../types';
 import { CommonjsExternalModule } from './commonjsExternalModule';
+import { EnumModule } from './enumModule';
 
 export class ModuleRegistry {
   /**
@@ -141,6 +142,19 @@ export class ModuleRegistry {
     return this._getInstance(module.targetFileName, identifier);
   }
 
+  public getEnumConst(declModuleFilename: string, enumName: string, enumMember: string): string {
+    const enumModule = (this._sourceFilenameToModule.get(declModuleFilename) || [])
+      .find((el) => el.originalIdentName === enumName);
+
+    if (!enumModule) {
+      this.log.error('Enum %s access attempt failed in file %s', [enumName, declModuleFilename]);
+      return 'null';
+    }
+
+    const fullyQualifiedNamespace = ModuleRegistry.pathToNamespace(enumModule.targetFileName);
+    return `\\${this._namespaces.root}\\${fullyQualifiedNamespace}\\${enumModule.className}::${enumMember}`;
+  }
+
   protected _registerCommonModule(className: string, fullyQualifiedSourceFilename: string, newFilename: string, external = false, implPath?: string) {
     let moduleDescriptor;
     if (external) {
@@ -223,6 +237,29 @@ export class ModuleRegistry {
       originalModule
     );
     moduleDescriptor._specialVars = originalModule._specialVars;
+
+    const mods = (this._sourceFilenameToModule.get(originalModule.sourceFileName) || []).concat(moduleDescriptor);
+    this._sourceFilenameToModule.set(originalModule.sourceFileName, mods);
+    this._targetFilenameToModule.set(newFilename, moduleDescriptor);
+    return moduleDescriptor;
+  }
+
+  public deriveEnumComponent(className: string, originalModule: CommonjsModule): EnumModule | null {
+    const originalIdent = className;
+    this._registeredComponents.add(`${originalModule.sourceFileName}__${originalIdent}`);
+    className = this._makeUniqueClassName(className);
+    const newFilename = this._makeNewFileName(originalModule.sourceFileName, className, true);
+    this._registeredModuleClasses.add(className);
+    this._derivedComponentsPathMap.set(originalModule.sourceFileName, newFilename);
+    const moduleDescriptor = new EnumModule(
+      className,
+      originalModule.sourceFileName,
+      newFilename,
+      this._namespaces,
+      this.log,
+      originalIdent,
+      originalModule
+    );
 
     const mods = (this._sourceFilenameToModule.get(originalModule.sourceFileName) || []).concat(moduleDescriptor);
     this._sourceFilenameToModule.set(originalModule.sourceFileName, mods);
