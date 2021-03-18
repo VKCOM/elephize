@@ -9,7 +9,7 @@
   },
   "scripts": {
     "lint": "eslint . --ext ts,tsx",
-    "test": "jest -i",
+    "test": "yon testcheck && jest -i",
     "test_all": "yon build && yon demo_build && yon test",
     "sniff": "yon lint && yon test_all",
     "_reactgen": "ts-node src/ts2php/utils/parseReact.ts",
@@ -31,6 +31,7 @@
     "demo_outphp": "cd demo/public && php index.php | ../../external/htmlformat",
     "prepack": "sh external/prepack.sh",
     "postpack": "sh external/postpack.sh",
+    "testcheck": "sh external/check_specimens.sh",
     "prepare": "yon build",
     "_update_test_specimens": "for i in `git commit --dry-run --short | grep result | awk '{ gsub(\".result\", \"\", $2); print $2 }'`; do mv \"$i.result\" \"$i\"; done"
   },
