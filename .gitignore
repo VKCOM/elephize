@@ -5,6 +5,7 @@ node_modules/
 demo/node_modules
 demo/public/build
 demo/public/dist
+demo/public/compiled_demo
 
 # misc
 .DS_Store

@@ -10,5 +10,5 @@ if ! docker pull vkcom/kphp; then
   exit 1
 fi
 
-docker run -v `pwd`/demo/public:/tmp/dev:rw -p 8080:8080 vkcom/kphp kphp /tmp/dev/index.php
+docker run -v `pwd`/demo/public:/tmp/dev:rw vkcom/kphp /bin/sh -c 'kphp /tmp/dev/index.php -o /tmp/dev/compiled_demo'
 exit $?

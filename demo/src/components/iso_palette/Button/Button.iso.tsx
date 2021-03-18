@@ -15,15 +15,6 @@ interface Props extends React.ButtonHTMLAttributes<any> {
   before?: React.ReactElement;
 }
 
-// Непонятный костыль, не уверен что это корректно, что может прийти массив вообще
-function getAppearanceClasses(appearance: string | string[]) {
-  if (Array.isArray(appearance)) {
-    return appearance.map((el) => `Button--${el}`);
-  } else {
-    return [`Button--${appearance}`];
-  }
-}
-
 const buttonDefaultProps: Props = {
   appearance: 'primary',
   size: 'm',
@@ -45,7 +36,7 @@ export const Button: React.FunctionComponent<Props> = (inputProps) => {
 
   const classnames = cx(
     'Button',
-    ...getAppearanceClasses(appearance),
+    `Button--${appearance}`,
     `Button--size-${size}`,
     {
       'Button--wide': wide,

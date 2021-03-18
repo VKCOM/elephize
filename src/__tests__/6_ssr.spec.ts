@@ -24,7 +24,9 @@ test('ts2php.SSR', async () => {
   }
   const reactData = await getFromProcess('yon', ['--silent', 'demo_outreact']);
   const phpData = await getFromProcess('yon', ['--silent', 'demo_outphp']);
+  const kphpData = await getFromProcess('yon', ['--silent', 'demo_outkphp']);
   expect(reactData).toBeTruthy();
   expect(phpData).toBeTruthy();
   expect(reactData).toEqual(phpData);
+  expect(reactData).toEqual(kphpData);
 });

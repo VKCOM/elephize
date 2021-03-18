@@ -10,8 +10,8 @@
   "scripts": {
     "lint": "eslint . --ext ts,tsx",
     "test": "yon testcheck && jest -i",
-    "test_all": "yon build && yon demo_build && yon test",
-    "sniff": "yon lint && yon test_all && yon kphpcheck",
+    "test_all": "yon build && yon demo_build && yon kphpbuild && yon test",
+    "sniff": "yon lint && yon test_all",
     "_reactgen": "ts-node src/ts2php/utils/parseReact.ts",
     "_compile": "tsc -p .",
     "_copy-base": "cp -R src/server dist/src/",
@@ -29,10 +29,11 @@
     "demo_watchphp": "cd demo && ../bin/elephize -c .elephizerc --watch",
     "demo_outreact": "cd demo && ts-node -r tsconfig-paths/register src/render.tsx | sed 's/ data-reactroot=\"\"//' | ../external/htmlformat",
     "demo_outphp": "cd demo/public && php index.php | ../../external/htmlformat",
+    "demo_outkphp": "cd demo/public && ./compiled_demo --once | ../../external/htmlformat",
     "prepack": "sh external/prepack.sh",
     "postpack": "sh external/postpack.sh",
     "testcheck": "sh external/check_specimens.sh",
-    "kphpcheck": "sh external/check_kphp.sh",
+    "kphpbuild": "sh external/check_kphp.sh",
     "prepare": "yon build",
     "_update_test_specimens": "for i in `git commit --dry-run --short | grep result | awk '{ gsub(\".result\", \"\", $2); print $2 }'`; do mv \"$i.result\" \"$i\"; done"
   },
