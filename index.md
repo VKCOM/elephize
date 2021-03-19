@@ -1,37 +1,51 @@
-## Welcome to GitHub Pages
+# Elephize
 
-You can use the [editor on GitHub](https://github.com/VKCOM/elephize/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+Library and tool for transpiling limited set of React & Typescript constructions into PHP for use in server-side rendering.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+### Документация
 
-### Markdown
+- [Использование CLI](doc/usage-cli.md)
+- [Модульная структура транспилируемого кода](doc/modules.md)
+- [Поддержка синтаксиса и стандартной библиотеки](doc/support.md)
+- [Unused code elimination](doc/code-elimination.md)
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+### Usage
 
-```markdown
-Syntax highlighted code block
+**NPM**:
 
-# Header 1
-## Header 2
-### Header 3
+`npm install -D @vkontakte/elephize`
+or
+`yarn add -D @vkontakte/elephize`
 
-- Bulleted
-- List
+Check error messages for peerDependencies errors, as elephize requires typescript to work.
 
-1. Numbered
-2. List
+**Play with lib and demo (github)**:
 
-**Bold** and _Italic_ and `Code` text
+`git clone https://github.com/VKCOM/elephize.git`
 
-[Link](url) and ![Image](src)
-```
+`cd elephize && yarn`
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+`yarn demo_start`
 
-### Jekyll Themes
+This will set up demo files in demo/public folder and run two servers:
+- React node server with native ReactDOM on port 3000
+- Php simple server with transpiled sources on port 8000
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/VKCOM/elephize/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+To see help, use `bin/elephize --help` or `./node_modules/.bin/elephize --help` if you've installed elephize as a module.
 
-### Support or Contact
+### Contributing
 
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+Source files are located in `src/` folder. Also there are generated files for distribution (`dist/`) and demo files is separate `demo/` folder. Before making a commit, you should ensure all the files are in sync with originals using command `yarn sniff` - this also will run unit tests and code style checks.
+
+Separate commands for debugging are available:
+- `yarn lint`: run codestyle checks only
+- `yarn test`: run unit tests of the library WITHOUT server-side rendering compliance test
+- `yarn test_all`: run ALL unit tests. This will also build dist & demo as dependencies for SSR compliance test.
+- `yarn build`: compile dist files
+- `yarn demo_build`: compile all demo files
+- `yarn demo_genjs`: compile client-side bundle for demo
+- `yarn demo_genphp`: compile demo files from js to php
+- `yarn demo_outreact`: print react-server output to stdout (without running server, may be useful for debugging)
+- `yarn demo_outphp`: print php output to stdout (without running server, may be useful for debugging)
+
+Use `VERBOSE=true` environment setting to print out detailed messages from transpiler.
