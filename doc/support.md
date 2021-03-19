@@ -1,108 +1,143 @@
-## Поддержка синтаксиса и стандартной библиотеки
+## Supported syntax and standard library functions
 
-### Общие ограничения в поддержке изоморфоного кода
+### Common restrictions
 
-- Поддерживается транспиляция только typescript-файлов.
-- Предполагается, что покрытие типами достаточно полное, в частности его достаточно для правильной подстановки соответствующих функций (например substr или array_slice - зависит от типа).
-- Не поддерживаются асинхронные элементы и всё, что связано с event loop, т.к. в мире бэкенда нет соответствующих аналогов. В обозримом будущем может появиться поддержка получения данных по сети, как максимум.
-- Не поддерживается и не будет поддерживаться взаимодействие с любыми браузерными API, в т.ч. DOM, WebWorkers, LocalStorage, etc, т.к. в мире бэкенда это не имеет смысла.
-- Не поддерживается изменение переменных внешнего scope внутри замыканий.
-- Не поддерживается `this` в любом виде: затранспилируется, но работать не будет.
-- Не поддерживаются классы и прототипы.
-- Не поддерживаются commonjs require конструкции (используем import/export вместо них).
-
-Дополнительные особенности:
-
-- Экспортируемые переменные (export const) должны иметь явный инициализатор, чтобы можно было однозначно вывести их тип, это необходимо для внутренних механик по пробросу их между модулями и внутри модуля.
-- Переменные, объявленные на уровне модуля, должны иметь явный инициализатор по той же причине.
-
-### Typescript
-
-На данный момент поддерживаем следующие инструкции и выражения:
-
-- Операторы:
-  - Логические (в т.ч. с присваиванием)
-  - Арифметические (в т.ч. с присваиванием)
-  - Тернарный оператор
-  - Rest-оператор, в том числе в параметрах функций
-  - Spread-оператор, в том числе в параметрах функций
-- Условные конструкции - if/else, switch/case 
-- Циклы - for, for-in, for-of, while, do-while
-- Optional chaining: ограниченная поддержка
-  - Доступ к вложенным свойствам объекта - поддерживается.
-  - Доступ к вложенным элементам массива по индексу - не поддерживается (возможно будет позже).
-  - Доступ к вложенным свойствам объекта по вычисляемому - не поддерживается (возможно будет позже).
-  - Вызов функции в середине цепочки - не поддерживается (и не будет).
-  - Вызов вложенной функции в конце цепочки - на ваш страх и риск, т.к. существование функции в объекте нижнего уровня не проверяется.
-  - Тем не менее в конце цепочки поддерживается вызов стандартных функций типа .toString(), .map()/.reduce() и им подобных.
-- Переменные - var, let, const
-  - С уточнением, что переменные имеют функциональную область видимости, но не допускается их использование до инициализации. Другими словами, let и const семантически будут иметь смысл и попадать под соответствующие проверки только на стороне фронтенда. 
-- Функции
-  - Именованные объявления (например, `function foo {}`)
-  - Функциональные выражения (в том числе именованные, однако в выходном коде имена не сохраняются)
-  - Стрелочные функции.
-- Template strings (кроме тегированных)
-- Enums:
-  - базовая поддержка локальных и импортируемых enum-ов.
-  - Приватные и вычислимые ключи не поддерживаются.
-  - Enum должен быть либо полностью определен (каждый ключ имеет заданное значение), либо полностью неопределен (значения рассчитываются автоматически).
-- JSX
-  - Встроенные элементы
-  - Кастомные компоненты (глупые, но могут содержать некоторую вью-логику)
-  - Фрагменты в сокращенной форме (<> </>)
-- Модули
-  - Поддержка import (в т.ч. import * as ...)
-  - Поддержка модификатора export для функций и переменных.
-  - Поддержка алиасов в путях а-ля webpack.
+- Only .ts/.tsx files are supported in general.
+- Type coverage in your code is considered to be enough to make proper choices when transpiling function calls and operators
+  (e.g., to make choice between substr and array_slice depending on object type when calling .slice())
+- Asynchronous code is not supported at all, as well as everything connected to event loop (because there is no event
+  loop or any similar entity in backend code). Support of data fetching from remote sources may emerge eventually, now it's not possible though.
+- Browser APIs (like DOM, WebWorkers, LocalStorage, etc.) are not supported.
+- Classes and prototypes are not supported - we expect procedural code (with little bit of FP) as input. 
+- `this` keyword is not supported either.
+- CommonJS `require` is not supported: use `import`/`export` instead.
   
-Неподдерживаемые элементы синтаксиса, которые не имеют особого смысла (например, объявления типов и интерфейсов) молча игнорируются.
-Использование каких-либо элементов неподобающим образом сопровождается ошибкой в консоли - читайте внимательнее терминал.
+Other gotchas:
+- Changing outer scope variables from inside closure is not supported - use pure functions in your .map/.reduce/etc calls.
+- Exported identifiers (e.g. `export const ...`) should have explicit initializer to ensure type inference. This is required by internal
+  magic related to cross-module interactions.
+- Variables defined in module scope should have explicit initializer too.
+
+### Typescript syntax support
+
+In general, next statements and expressions are supported now:
+
+- Operators:
+  - Logical (including assignment)
+  - Arithmetic (including assignment)
+  - Ternary conditional operator
+  - Rest and spread operators, including rest/spread in function signatures
+- Conditionals: if/else, switch/case
+- Loops: for, for-in, for-of, while, do-while
+- Optional chaining: limited support
+  - Object nested properties - supported
+  - Array nested members - not supported
+  - Computed properties access - not supported
+  - Function call in the middle of a chain - not supported
+  - Function call at the end of a chain - generally unsupported but may work in some cases
+  - Stdlib function calls at the end of a chain are supported (e.g., .toString(), .map()/.reduce())
+- Variable declarations: var, let, const
+- Functions:
+  - Named declarations (e.g. `function foo() {}`)
+  - Functional expressions (including named ones like `const foo = function bar() {}`, but these names will not be kept in output code)
+  - Arrow functions
+- Template strings (except tagged ones)
+- Enums: limited support
+  - local and imported enums are generally supported
+  - Private and computed names are not supported
+  - Whole enumeration should be either fully defined (every key has a defined value), or fully undefined (to calculate values automatically).
+- JSX: limited support
+  - Intrinsic elements (<div>, <br />, etc)
+  - Custom components (only dumb components with simple view logic are supported)
+  - React fragments in short form (<> </>)
+- Modules support
+  - imports (including `import * as ...`)
+  - `export` modifier support for functions and variables
+  - Webpack-like path aliases are supported in import instructions
+
+Note: unsupported syntax that does not make sense on backend side (like interfaces or type declarations) are silently ignored. Incorrect 
+usage of supported elements leads to errors printed to the console.
 
 #### Custom type hints
 
-Чтобы использовать подсказки при формировании типов в phpdoc, подключите `./node_modules/@vkontakte/elephize/types` в раздел typeRoots вашего tsconfig.json. После этого вы сможете использовать хинты int и mixed: `const a: int = 1` и `let b: mixed = getSomeMiscVars()`.
+Some custom types in generated phpdoc can be forced used custom type hints. Just include `./node_modules/@vkontakte/elephize/types` in 
+`typeRoots` part of your `tsconfig.json` to enable `int` and `mixed` type casts like this: `const a: int = 1`,
+`let b: mixed = getSomeMiscVars()`. Note that custom typehints are still experimental, so you may encounter tooling 
+failures (e.g. typescript-eslint/restrict-plus-operands rule do not understand custom typehints). 
   
-### Условный рендеринг
+### Conditional code rendering
 
-Для разделения клиентской и серверной логики помимо директивы `importRules` в конфигурационном файле можно также использовать **особую константу** `window._elephizeIsServer`.
-Обратите внимание, что переменная работает **только в составе тернарного оператора** - это сделано намеренно, поскольку чем меньше будет разница - тем лучше для дальнейшей поддержки.
-Рекомендуется сочетать использование константы с конфигурацией через `importRules` - игнорирование чисто клиентских импортов ускорит транспиляцию.
+If you need to separate client-side and server-side implementations from each other, you may use **special constant**
+`window._elephizeIsServer`. Note that the constant only works when used in a ternary condition - this is intentional, aimed to reduce 
+code divergence. It's recommended to use both `window._elephizeIsServer` constant and `importRules` configuration option, as
+ignoring client-only imports can speed up the translation process greatly.
 
-#### Как это работает?
+#### How it works?
 
-Когда elephize встречает конструкцию вида `window._elephizeIsServer ? serverCode : clientCode`, он полностью игнорирует код `clientCode` и заменяет всё тернарное выражение целиком на результат транспиляции кода `serverCode`.
-Обратите внимание, что на клиентской стороне на данный момент нет возможности проигнорировать `serverCode`, т.е. нетранспилированный код, предназначенный для сервера, так или иначе попадет в клиентский бандл. Если это видится недопустимым, можно использовать константу `window._elephizeIsServer` совместно с заменой имплементации модуля при помощи конфигурационной директивы `importRules`.
+When syntax construction like `window._elephizeIsServer ? serverCode : clientCode` is encountered, elephize ignores `clientCode` completely
+and replaces the whole ternary expression with `serverCode` translation result. Note that you can't just ignore `serverCode` on client side, so
+it will be included in client-side bundle. If this is unacceptable, you probably want to use `importRules` configuration option to replace 
+server-side module implementation completely.
 
-### Стандартная библиотека
+### Standard library support
 
-На данный момент поддерживаем следующие элементы:
+The following methods and constants are supported at the moment:
 
-- Math: все методы и константы.
-- String: includes, indexOf, join, slice, split (в т.ч. по регулярке), startsWith, substr, trim, replace (в т.ч. по регулярке, но поддерживаем только флаги /i и /g).
-- Array: filter, find, forEach, includes, indexOf, map, push, pop, reduce, slice, some, splice.
-- Object: hasOwnProperty.  
-- Прочее: Object.keys, Array.isArray.
+- `Math`: all methods and constants.
+- Strings: includes, indexOf, join, slice, split (including split by regexp), startsWith, substr, trim, replace (including replace by regexp, 
+  but only with /i and /g flags supported).
+- Arrays: filter, find, forEach, includes, indexOf, map, push, pop, reduce, slice, some, splice.
+- Objects: hasOwnProperty.
+- Misc: Object.keys, Array.isArray.
 
 ### React
 
-Ограничения на работу с React:
+React constraints:
 
-- **Поддерживается только следующий синтаксис импорта:** `import * as React from 'react';`
-- Для использования хуков можно использовать любой из двух способов (в области модуля, или в области функции-компонента):
+- **Only the following import syntax is supported for React library:** `import * as React from 'react';`
+- The following two ways are acceptable to use React hooks functions:
   - `const { useState: us } = React;`
   - `const st = React.useState;`
-- Поддерживаются только функциональные компоненты на основе react-hooks. **Компоненты, основанные на классах, не поддерживаются.**
-- Предполагается, что изоморфные компоненты являются dumb-компонентами (в терминах smart/dumb компонентного подхода).
+- Only react-hooks-based functional components are supported. **Class-based components are not supported** (and probably will never be).
+- Only dumb components with simple view logic are supported. Presentational state is allowed, the less is the better, though. 
+  ([What are smart and dumb components?](https://medium.com/@thejasonfile/dumb-components-and-smart-components-e7b33a698d43))
 
-Все стандартные обработчики событий игнорируются при транспиляции. 
+All event handlers in components are ignored during the translation, and then all [unused code is eliminated](./code-elimination.md).
 
-### Ремарки про kphp
+### Notes about [kphp](https://github.com/VKCOM/kphp)
 
-- Чем однозначнее типы, которые вы используете - тем лучше, т.к. меньше шанс того, что kphp запутается при выводе типов в транспилированном коде.
-- kphp не умеет в union/intersection в общем случае, поэтому не стоит полагаться на union-типы в TS.
-  - union скалярных типов точно будет работать.
-  - union вида type | Array<...> точно НЕ будет работать.
-  - также не будут работать union-типы из объектов, в том числе discriminated unions.
-- kphp требует, чтобы все типы были известны на этапе компиляции, поэтому в общем случае нельзя рекомендовать какой бы то ни было функциональный стиль написания кода. В частности, функции высшего порядка после транспиляции в php скорее всего не смогут быть корректно оттранслированы через kphp, за исключением самых простых случаев.
-- Обратите внимание на custom type hints - они могут сильно облегчить жизнь.
-- Поскольку исходный ts-код может быть слишком динамическим и согласовать его по типам может оказаться довольно сложно (часто случается так, что тип теряется на полпути, преобразуясь в mixed), добавлена возможность кастить переменные к нужному типу через комментарии особого вида: `/* @elephizeTypecast TYPE */`. В качестве TYPE могут быть следующие ключевые слова: array, int, float, string, boolean. Комментарий нужно разместить непосредственно перед идентификатором переменной. Пример: `console.log(/* @elephizeTypecast array */ tca, /* @elephizeTypecast boolean */ tcb);` будет преобразовано в `\VK\Elephize\Builtins\Console::log((array) $tca, (bool) $tcb);`. Обратите внимание, что тайпкасты в общем случае **небезопасны**, т.е. правильность их использования следует тщательно проверять. Другими словами, соблюдать строгое соответствие типа - это ваша ответственность.
+- Code generated with elephize is expected to be compiled with kphp without any extra modifications.
+- It's recommended to avoid ambiguity in your types - chances are kphp will fail to compile ambiguously typed code.
+- kphp can't process union/intersection types, so in general you shouldn't rely on such types.
+  - Scalar types union should work.
+  - `type | Array<...>`-like union will definitely NOT work.
+  - Object-based unions and discriminated union types also won't work.
+- kphp requires all types to be known during the compilation, so we can't recommend you to use complex functional code style, in particular -
+  only very simple higher order functions may work with kphp.
+- Note the custom type hints section above - it might help a lot with type inference.
+
+#### Forced typecasts
+
+As we all know, typescript code may have a strongly dynamic nature, so it may be difficult to infer conformant types on php side. 
+Sometimes types may be lost half-way and be casted to `mixed`. For this case, we have some kind of unsafe cast to ensure proper typing on php
+side without affecting the typescript side using special comments like `/* @elephizeTypecast TYPE */`. TYPE can be any of these: array, int, 
+float, string, boolean. The comment should be placed right before the usage of variable identifier.
+
+- Example input: `console.log(/* @elephizeTypecast array */ tca, /* @elephizeTypecast boolean */ tcb);`
+- Example output: `\VK\Elephize\Builtins\Console::log((array) $tca, (bool) $tcb);`
+
+Note that forced typecasts are considered **UNSAFE** in general, so you are responsible for their correct usage. When used incorrectly,
+forced typecasts may cause your server and client code output to diverge, so e.g. React will rerender the whole mismatched component tree
+making server-side rendering useless. Note the example of incorrect usage:
+
+Client side:
+```
+const a = 4;
+console.log(/* @elephizeTypecast array */ tca); // Note forced typecast to array
+```
+Server side after translation will have following lines:
+```
+$a = 4;
+\VK\Elephize\Builtins\Console::log((array) $a);
+```
+Note the difference: in php side we cast integer to array, thus creating an array with single integer element. 

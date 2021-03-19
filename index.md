@@ -6,7 +6,7 @@ Library and tool for transpiling limited set of React & Typescript constructions
 
 - [Использование CLI](doc/usage-cli.md)
 - [Модульная структура транспилируемого кода](doc/modules.md)
-- [Поддержка синтаксиса и стандартной библиотеки](doc/support.md)
+- [General support for syntax and stdlib](doc/support.md)
 - [Unused code elimination](doc/code-elimination.md)
 
 ### Usage
