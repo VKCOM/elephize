@@ -20,6 +20,7 @@
     "demo/**/*",
     "dist/**/*",
     "src/__tests__/watchSpecimens.~/**/*",
+    "src/__tests__/watchSpecimens___/**/*",
     "src/__tests__/watchSpecimens/**/*",
     "src/__tests__/specimens/**/*",
     "node_modules/**/*"
