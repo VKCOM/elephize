@@ -1,1 +1,39 @@
-theme: jekyll-theme-minimal
+title: Elephize - typescript to php transpiler
+lang: en
+description: Elephize compiles a limited subset of Typescript into PHP for faster server-side rendering
+
+remote_theme: pmarsceill/just-the-docs@0.3.3
+edit: false
+color_scheme: dark
+heading_anchors: true
+
+# Aux links for the upper right navigation
+aux_links:
+  "Elephize on GitHub":
+    - "//github.com/VKCOM/elephize"
+
+# Makes Aux links open in a new tab. Default is false
+aux_links_new_tab: true
+
+copyright:
+  revision: false
+author: «V Kontakte» LLC
+github_metadata: false
+footer_content: "Copyright &copy; 2020-now, «V Kontakte» LLC. Distributed by an <a href=\"https://github.com/VKCOM/elephize/tree/master/LICENSE.txt\">MIT license.</a>"
+
+# Footer last edited timestamp
+last_edit_timestamp: true
+last_edit_time_format: "%b %e %Y at %I:%M %p"
+
+# Footer "Edit this page on GitHub" link text
+gh_edit_link: false # show or hide edit this page link
+
+addons: []
+
+sass:
+  style: compressed
+
+exclude:
+  - .idea
+
+plugins: []
