@@ -21,18 +21,18 @@ class ExcessiveEliminationModule extends CJSModule {
      * @return string
      */
     public function parseTitle($title) {
-        $has_inline_style = strpos($title, "[/style]") !== -1;
+        $has_inline_style = strpos($title, "[/style]") !== false;
         if ($has_inline_style) {
             $t = explode("[style", $title);
             $parsed_title = array_reduce(
                 $t,
                 /* _4876d8c */ function ($acc, $raw_sub_string) {
-                    if (strpos($raw_sub_string, "[/style]") !== -1) {
+                    if (strpos($raw_sub_string, "[/style]") !== false) {
                         $found_text = Stdlib::strMatch("/\](.*?)\[\/style\]/u", $raw_sub_string);
                         $text_content = substr(explode("[/style]", $found_text[0])[0], 1);
                         $raw_style_string = explode("]", explode("[/style]", $raw_sub_string)[0])[0];
                         $key_value_pairs =
-                            strpos($raw_style_string, ";") !== -1
+                            strpos($raw_style_string, ";") !== false
                                 ? Stdlib::arrayMap1(
                                     explode(";", $raw_style_string),
                                     /* _d34c464 */ function ($el) {

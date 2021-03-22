@@ -35,8 +35,8 @@ class StrIndexOfModule extends CJSModule {
 
     private function __construct() {
         $this->aios = "12345";
-        $this->bios = strpos($this->aios, "2");
-        $this->cios = strpos($this->aios, "2", 2);
+        $this->bios = Stdlib::stringIndexOf($this->aios, "2");
+        $this->cios = Stdlib::stringIndexOf($this->aios, "2", 2);
         $this->dios = strrpos($this->aios, "2", -2);
         \VK\Elephize\Builtins\Console::log($this->bios, $this->cios, $this->dios);
     }

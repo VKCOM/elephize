@@ -31,8 +31,8 @@ class StrIncludesModule extends CJSModule {
 
     private function __construct() {
         $this->ainc = "12345";
-        $this->binc = strpos($this->ainc, "2") !== -1;
-        $this->cinc = strpos($this->ainc, "2", 2) !== -1;
+        $this->binc = strpos($this->ainc, "2") !== false;
+        $this->cinc = strpos($this->ainc, "2", 2) !== false;
         \VK\Elephize\Builtins\Console::log($this->binc, $this->cinc);
     }
 }
