@@ -29,9 +29,9 @@ export const arrayStringIncludes: ExpressionHook = (node: ts.CallExpression, con
       return 'null';
     }
     if (args[1]) {
-      return `strpos(${varName}, ${args[0]}, ${args[1]}) !== -1`;
+      return `strpos(${varName}, ${args[0]}, ${args[1]}) !== false`;
     } else {
-      return `strpos(${varName}, ${args[0]}) !== -1`;
+      return `strpos(${varName}, ${args[0]}) !== false`;
     }
   } else {
     if (!hasArrayType(node.expression, context.checker, context.log)) {

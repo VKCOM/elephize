@@ -88,6 +88,21 @@ class Stdlib {
     }
 
     /**
+     * @param string $needle
+     * @param string $haystack
+     * @param int $start_from
+     * @return int
+     */
+    public static function stringIndexOf($needle, $haystack, $start_from = 0) {
+        $pos = strpos($needle, $haystack, $start_from);
+        if ($pos === false) {
+            return -1;
+        } else {
+            return $pos;
+        }
+    }
+
+    /**
      * @param mixed $needle
      * @param array $haystack
      * @param int|null $start_from

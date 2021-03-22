@@ -28,7 +28,7 @@ export const arrayStringIndexOf: ExpressionHook = (node: ts.CallExpression, cont
       context.log.error('String.prototype.indexOf: can\'t find searchable element in call.', [], context.log.ctx(node));
       return 'null';
     }
-    return `strpos(${varName}, ${args.join(', ')})`;
+    return `Stdlib::stringIndexOf(${varName}, ${args.join(', ')})`;
   } else {
     if (!hasArrayType(node.expression, context.checker, context.log)) {
       context.log.error('Left-hand expression must have string, array-like or iterable inferred type', [], context.log.ctx(node));
