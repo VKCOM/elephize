@@ -127,6 +127,15 @@ class IntrinsicElement extends RenderableComponent {
     }
 
     /**
+     * @param mixed $val
+     * @return bool
+     */
+    private function _empty($val): bool
+    {
+        return $val === null || $val === '' || $val === 0 || $val === false;
+    }
+
+    /**
      * @param array $props
      * @param array $children
      * @return string
@@ -139,7 +148,7 @@ class IntrinsicElement extends RenderableComponent {
         }
 
         foreach ($props as $name => $value) {
-            if (empty($value) || $name === 'key' || $name === 'ref') {
+            if ($this->_empty($value) || $name === 'key' || $name === 'ref') {
                 // key is not required in server rendering at all;
                 // ref is client-only thing
                 // also we don't render empty attrs
