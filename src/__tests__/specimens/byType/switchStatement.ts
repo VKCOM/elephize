@@ -1,6 +1,6 @@
-let as: any = 1;
+let as: any = { v: 1 };
 
-switch (as) {
+switch (as.v) {
   case 1:
     console.log('lol');
     break;

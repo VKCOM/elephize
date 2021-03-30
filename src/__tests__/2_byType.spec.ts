@@ -26,7 +26,7 @@ const testSuiteConfig: Array<{file: string[]; failOnErrors: string[]; expectedEr
   { file: ['byType', 'propertyAccessExpression.ts'], failOnErrors: [], expectedErrors: [] },
   { file: ['byType', 'restOperator.ts'], failOnErrors: [], expectedErrors: [] },
   { file: ['byType', 'spreadOperator.ts'], failOnErrors: [], expectedErrors: ['7e4a6'] },
-  { file: ['byType', 'switchStatement.ts'], failOnErrors: [], expectedErrors: [] },
+  { file: ['byType', 'switchStatement.ts'], failOnErrors: ['6554c'], expectedErrors: [] },
   { file: ['byType', 'templateString.ts'], failOnErrors: [], expectedErrors: ['7cebf'] },
   { file: ['byType', 'tsInternals.ts'], failOnErrors: [], expectedErrors: [] },
 

@@ -19,8 +19,10 @@ class SwitchStatementModule extends CJSModule {
     public $as;
 
     private function __construct() {
-        $this->as = 1;
-        switch ($this->as) {
+        $this->as = [
+            "v" => 1
+        ];
+        switch ($this->as["v"]) {
             case 1:
                 \VK\Elephize\Builtins\Console::log("lol");
                 break;
