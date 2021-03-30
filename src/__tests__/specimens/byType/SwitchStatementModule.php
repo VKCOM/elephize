@@ -17,10 +17,37 @@ class SwitchStatementModule extends CJSModule {
     }
 
     public $as;
+    /**
+     * @param mixed ...$args
+     * @return string
+     */
+    public function classNames(...$args) {
+        $result = [];
+        foreach ($args as $item) {
+            if (!$item) {
+                break;
+            }
+            switch (Stdlib::typeof($item)) {
+                case "string":
+                    array_push($result, $item);
+                    break;
+                case "object":
+                    foreach (array_keys($item) as $key) {
+                        if ($item[$key]) {
+                            array_push($result, $key);
+                        }
+                    }
+                    break;
+                default:
+                    array_push($result, (string) $item);
+            }
+        }
+        return implode(" ", $result);
+    }
 
     private function __construct() {
         $this->as = [
-            "v" => 1
+            "v" => 1,
         ];
         switch ($this->as["v"]) {
             case 1:

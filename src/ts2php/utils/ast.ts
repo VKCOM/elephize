@@ -18,6 +18,38 @@ export function getLeftExpr(exp: ts.Expression, srcFile?: ts.SourceFile): ts.Ide
   return e as ts.Identifier;
 }
 
+/**
+ * Get identifiers used inside expression and all sub-expressions.
+ * Sub-expressions type set is limited to mostly common use cases. If further support is required, add it here.
+ * @param exp
+ * @param srcFile
+ */
+export function getIdentities(exp: ts.Expression, srcFile?: ts.SourceFile): ts.Identifier[] {
+  if (!exp) {
+    return [];
+  }
+
+  const idents: ts.Identifier[] = [];
+
+  function _traverse(child: ts.Node) {
+    if (ts.isIdentifier(child)) {
+      idents.push(child);
+    } else if (ts.isCallExpression(child)) {
+      idents.push(getLeftExpr(child, srcFile)!);
+      child.arguments.forEach((arg) => _traverse(arg));
+    } else if (ts.isTypeOfExpression(child)) {
+      idents.push(getLeftExpr(child.expression, srcFile)!);
+    } else if (ts.isPropertyAccessExpression(child)) {
+      idents.push(getLeftExpr(child, srcFile)!);
+    } else if (ts.isElementAccessExpression(child)) {
+      idents.push(getLeftExpr(child, srcFile)!);
+    }
+  }
+
+  _traverse(exp);
+  return idents;
+}
+
 export function fetchAllBindingIdents(binding: ts.BindingName | ts.ParameterDeclaration): ts.Identifier[] {
   if (binding.kind === ts.SyntaxKind.Identifier) {
     return [binding];
