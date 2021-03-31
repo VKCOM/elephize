@@ -40,7 +40,7 @@ export class EnumModule extends CommonjsModule {
   }
 
   public addStaticConst(identifier: string, value: string, inferredType: string) {
-    const doc = inferredType === 'var' ? '' : `/**
+    const doc = `/**
      * @var ${inferredType} ${identifier}
      */`;
     this._hoistedContent.add(`${doc ? doc + '\n' : ''}const ${identifier} = ${value};`);

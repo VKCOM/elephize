@@ -18,7 +18,7 @@ export const hasOwnProperty: ExpressionHook = (node: ts.CallExpression, context:
   }
 
   const primitiveType = getPhpPrimitiveType(node.expression, context.checker, context.log);
-  if (primitiveType === 'array' || primitiveType === 'mixed') {
+  if (primitiveType !== 'array' && primitiveType !== 'mixed') {
     context.log.error('Left-hand expression must have object-like inferred type', [], context.log.ctx(node));
     return 'null';
   }

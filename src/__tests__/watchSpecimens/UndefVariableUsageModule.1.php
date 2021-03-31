@@ -18,7 +18,7 @@ class UndefVariableUsageModule extends CJSModule {
 
     /**
      * @param float $b
-     * @return var
+     * @return mixed
      */
     public function uvutest2($b) {
         $a = 1 + $b;

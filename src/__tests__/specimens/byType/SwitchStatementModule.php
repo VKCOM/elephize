@@ -16,6 +16,9 @@ class SwitchStatementModule extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @var mixed $as
+     */
     public $as;
     /**
      * @param mixed ...$args

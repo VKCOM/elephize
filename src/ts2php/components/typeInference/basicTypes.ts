@@ -98,7 +98,7 @@ export function getPhpPrimitiveTypeForFunc(node: ts.FunctionExpression | ts.Arro
     if (param.kind === ts.SyntaxKind.Identifier) {
       params[argList[i]] = getPhpPrimitiveType(param, checker, log);
     } else {
-      params[argList[i]] = 'var'; // TODO: more specific typing? (applies for destructured objects too!)
+      params[argList[i]] = 'mixed'; // TODO: more specific typing? (applies for destructured objects too!)
     }
   }
 
@@ -199,7 +199,7 @@ const _transformTypeName = (type: ts.Type, checker: ts.TypeChecker, log: LogObj,
   if (t === 'Element' && (type.symbol as any)?.parent?.escapedName === 'JSX') { // Workaround; jsx elements are rendered to strings
     return 'string';
   }
-  return typeMap[t] || 'var';
+  return typeMap[t] || 'mixed';
 };
 
 function _describeNodeType(node: ts.Node | undefined, type: ts.Type, checker: ts.TypeChecker, log: LogObj) {
@@ -225,20 +225,20 @@ function _describeNodeType(node: ts.Node | undefined, type: ts.Type, checker: ts
     .map((t) => t.replace(/^\s+|\s+$/g, ''))
     .map(_transformTypeName(type, checker, log, nodeIdentForLog));
 
-  if (strTypes.includes('var')) {
+  if (strTypes.includes('mixed')) {
     const types = type.isUnionOrIntersection() ? type.types : [type];
 
     const appStrTypes = types.map((t) => {
       return _describeAsApparentType(t, checker, log, nodeIdentForLog);
     });
 
-    if (appStrTypes.includes('var')) {
+    if (appStrTypes.includes('mixed')) {
       log.typehint('Inferred type of node: %s -> var [2]', [nodeIdentForLog || '']);
-      return 'var';
+      return 'mixed';
     }
 
     const typehint = Array.from(new Set((<string[]>[])
-      .concat(strTypes.filter((t) => t !== 'var'))
+      .concat(strTypes.filter((t) => t !== 'mixed'))
       .concat(appStrTypes)))
       .join('|');
 

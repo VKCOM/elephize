@@ -96,7 +96,13 @@ class BasicOperatorsModule extends CJSModule {
      * @var boolean $op25
      */
     public $op25;
+    /**
+     * @var mixed $op26
+     */
     public $op26;
+    /**
+     * @var mixed $op27
+     */
     public $op27;
     /**
      * @var array $op28

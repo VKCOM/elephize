@@ -17,6 +17,8 @@ class ParameterDestructuringModule extends CJSModule {
     }
 
     /**
+     * @param mixed $__param_destruct_1
+     * @param mixed $__param_destruct_2
      * @param boolean $param3
      * @return string
      */
@@ -35,6 +37,8 @@ class ParameterDestructuringModule extends CJSModule {
             $p4;
     }
     /**
+     * @param mixed $__param_destruct_1
+     * @param mixed $__param_destruct_2
      * @param boolean $param3
      * @return string
      */
