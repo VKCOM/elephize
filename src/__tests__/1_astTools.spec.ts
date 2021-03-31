@@ -6,7 +6,7 @@ import {
   flagParentOfType,
   getChildChainByType,
   getClosestParentOfType,
-  getClosestParentOfTypeWithFlag,
+  getClosestParentOfTypeWithFlag, getIdentities,
   getLeftExpr
 } from '../ts2php/utils/ast';
 import { NodeFlagStore } from '../ts2php/components/codegen/nodeFlagStore';
@@ -75,6 +75,20 @@ test('ts2php.AstTools.leftExpr', () => {
   expect(result).toBeTruthy();
   expect(result?.kind).toEqual(ts.SyntaxKind.Identifier);
   expect(result?.escapedText).toEqual('ident');
+});
+
+test('ts2php.AstTools.getIdentities', () => {
+  const srcNode = compile([path.resolve(__dirname, 'specimens', 'astTools', 'identities.ts')]);
+  if (!srcNode) {
+    throw new Error('File not found');
+  }
+
+  const [ expr ] = srcNode.statements.slice(4, 5);
+  const lExp = (expr as ts.SwitchStatement).expression;
+
+  const result = getIdentities(lExp as ts.LeftHandSideExpression).map((ident) => ident.getText(srcNode));
+  expect(result).toBeTruthy();
+  expect(result).toMatchObject(['callexp', 'ident1', 'ident2', 'call2', 'ident3', 'ident4', 'ident5', 'ident6']);
 });
 
 test('ts2php.AstTools.flagParentOfType', () => {
