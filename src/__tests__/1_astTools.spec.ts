@@ -86,7 +86,7 @@ test('ts2php.AstTools.getIdentities', () => {
   const [ expr ] = srcNode.statements.slice(4, 5);
   const lExp = (expr as ts.SwitchStatement).expression;
 
-  const result = getIdentities(lExp as ts.LeftHandSideExpression, srcNode).map((ident) => ident.getText(srcNode));
+  const result = getIdentities(lExp as ts.LeftHandSideExpression).map((ident) => ident.getText(srcNode));
   expect(result).toBeTruthy();
   expect(result).toMatchObject(['callexp', 'ident1', 'ident2', 'call2', 'ident3', 'ident4', 'ident5', 'ident6']);
 });
