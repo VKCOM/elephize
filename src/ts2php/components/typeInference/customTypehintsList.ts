@@ -4,7 +4,7 @@ export const customTypehints: { [key: string]: { replacement: string; drop: stri
   // Special one! Checked separately in the code.
   [mixedTypehintId]: {
     replacement: 'mixed',
-    drop: ['var']
+    drop: ['mixed']
   },
 
 

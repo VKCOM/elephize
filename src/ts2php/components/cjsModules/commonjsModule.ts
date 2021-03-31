@@ -29,7 +29,7 @@ export class CommonjsModule {
   }
 
   public addProperty(identifier: string, inferredType: string, visibility: 'public' | 'private' = 'public') {
-    const doc = inferredType === 'var' ? '' : `/**
+    const doc = `/**
      * @var ${inferredType} ${identifier}
      */`;
     this._hoistedContent.add(`${doc ? doc + '\n' : ''}${visibility} ${identifier};`);
@@ -39,7 +39,6 @@ export class CommonjsModule {
     let phpdoc = '';
     if (inferredTypes) {
       const params = Object.keys(inferredTypes.args)
-        .filter((arg) => inferredTypes.args[arg] !== 'var')
         .map((arg) => `     * @param ${inferredTypes.args[arg]} ${arg}`).join('\n');
       phpdoc = `/**${params ? '\n' + params : ''}
      * @return ${inferredTypes.return}
