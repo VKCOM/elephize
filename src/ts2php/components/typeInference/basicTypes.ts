@@ -58,7 +58,13 @@ export function hasArrayType(node: ts.Node, checker: ts.TypeChecker, log: LogObj
  * @param log
  */
 export function getPhpPrimitiveType(node: ts.Node, checker: ts.TypeChecker, log: LogObj) {
-  const type = checker.getTypeAtLocation(node);
+  let type = checker.getTypeAtLocation(node);
+  if (type.flags === ts.TypeFlags.Any) { // error? try another way
+    const typeContextual = checker.getContextualType(node as ts.Expression);
+    if (typeContextual && typeContextual.flags !== ts.TypeFlags.Any) {
+      type = typeContextual;
+    }
+  }
   return _describeNodeType(node, type, checker, log);
 }
 

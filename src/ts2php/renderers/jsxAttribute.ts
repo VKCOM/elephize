@@ -1,7 +1,10 @@
 import * as ts from 'typescript';
 import { Declaration } from '../types';
 import { Context } from '../components/context';
+import { intrinsicElements } from '../internalConfig/intrinsicElements';
+import * as callbackAttrs from '../../../data/domattrs.json';
 import { renderNode } from '../components/codegen/renderNodes';
+import { getPhpPrimitiveType } from '../components/typeInference/basicTypes';
 
 export function tJsxAttribute(node: ts.JsxAttribute, context: Context<Declaration>) {
   if (node.name.getText() === 'dangerouslySetInnerHTML') {
@@ -21,6 +24,20 @@ export function tJsxAttribute(node: ts.JsxAttribute, context: Context<Declaratio
 
   if (!node.initializer) { // react boolean attribute
     return `"${node.name.getText()}" => true`;
+  }
+
+  const jsxel = node.parent.parent; // opening jsx / self-closing jsx
+  if (intrinsicElements[jsxel.tagName.getText()] && node.name.getText() !== 'style' && !callbackAttrs.includes(node.name.getText())) {
+    // validate intrinsic attributes: now we support only strings, with exception of 'object' for 'style' attr
+    const attrInitializer = (node.initializer as any).expression || node.initializer; // 1st for attr={'test'}, 2nd for attr="test"
+    const attrType = getPhpPrimitiveType(attrInitializer, context.checker, context.log);
+    if (attrType === 'array' || attrType === 'mixed') {
+      context.log.error(
+        'Unsupported type of attribute %s: inferred type is %s, but only scalars are supported',
+        [jsxel.tagName.getText() + '::' + node.getText(), attrType],
+        context.log.ctx(node)
+      );
+    }
   }
 
   const expr = renderNode(node.initializer, context);
