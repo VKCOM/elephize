@@ -14,7 +14,7 @@ const replace = require('stream-replace');
 export function transpile(options: CliOptions, baseDir: string, outDir: string, log: LogObj) {
   const namespaces = {
     root: options.rootNs,
-    builtins: options.rootNs + '\\Builtins',
+    builtins: options.builtinsNs || options.rootNs + '\\Builtins',
   };
 
   glob(options.src, (e: Error, matches: string[]) => {

@@ -24,6 +24,7 @@ Options:
    -e / --bail none|warn|error   Return error code if warning/error occurred
                                  during transpilation. Defaults to none.
    -n / --rootNs NAME            Root namespace name for generated classes.
+   -n / --builtinsNs NAME        Define namespace name for rewritten builtins classes.
    -z / --noZap                  Do not remove unused variables from resulting
                                  code. May be useful for debug.
    -v / --verbose                Show more verbose output from transpiler.

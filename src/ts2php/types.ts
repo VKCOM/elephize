@@ -117,6 +117,7 @@ export type CliOptions = {
     [moduleIdentifier: string]: ImportRule;
   };
   rootNs: string;
+  builtinsNs?: string;
   src: string;
   tsPaths: { [key: string]: string[] };
   verbose: boolean;
