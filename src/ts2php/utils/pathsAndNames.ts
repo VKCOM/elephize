@@ -25,6 +25,10 @@ export function normalizeFileExt(filename: string, replaceWith = '.php') {
   return filename.replace(/(\.php)?\.(ts|tsx|js|jsx)$/g, replaceWith);
 }
 
+export function buildBuiltinsPath(rootPath: string): string {
+  return rootPath + '\\Builtins';
+}
+
 /**
  * Output: no leading slash!
  *

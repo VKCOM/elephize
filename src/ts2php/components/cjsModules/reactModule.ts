@@ -1,3 +1,4 @@
+import { buildBuiltinsPath } from '../../utils/pathsAndNames';
 import { CommonjsModule } from './commonjsModule';
 import { ModuleRegistry } from './moduleRegistry';
 
@@ -32,6 +33,8 @@ export class ReactModule extends CommonjsModule {
 
   public generateContent() {
     const fullyQualifiedNamespace = ModuleRegistry.pathToNamespace(this.targetFileName);
+    const isBuiltinsOverrided = this._namespaces.builtins !== buildBuiltinsPath(this._namespaces.root);
+
     return `<?php
 /* NOTICE: Generated file; Do not edit by hand */
 namespace ${this._namespaces.root}\\${fullyQualifiedNamespace};
@@ -61,7 +64,7 @@ class ${this.className} extends RenderableComponent {
     /**
     ${this._phpdoc.join('\n')}
      * @param array $children
-     * @return ?string
+     * @return ${isBuiltinsOverrided ? 'mixed' : '?string'}
      */
     public function render(array ${this.args}, array $children) ${this.block}
 }

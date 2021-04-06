@@ -9,12 +9,13 @@ import ncp = require('ncp');
 import { makeBootstrap } from '../codegen/makeBootstrap';
 import { CliOptions } from '../../types';
 import { resolveRulePaths } from '../cjsModules/resolveModules';
+import { buildBuiltinsPath } from '../../utils/pathsAndNames';
 const replace = require('stream-replace');
 
 export function transpile(options: CliOptions, baseDir: string, outDir: string, log: LogObj) {
   const namespaces = {
     root: options.rootNs,
-    builtins: options.builtinsNs || options.rootNs + '\\Builtins',
+    builtins: options.builtinsNs || buildBuiltinsPath(options.rootNs),
   };
 
   glob(options.src, (e: Error, matches: string[]) => {
