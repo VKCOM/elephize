@@ -20,7 +20,8 @@ export class Context<T> {
     public readonly namespaces: NsMap,
     public readonly encoding: string,
     public readonly registry: ModuleRegistry,
-    public readonly log: LogObj
+    public readonly log: LogObj,
+    public readonly builtinsNs: string,
   ) { }
 
   public get scope() {

@@ -34,7 +34,8 @@ export function renderModule(
   registry: ModuleRegistry,
   currentModule: CommonjsModule,
   log: LogObj,
-  disableCodeElimination = false
+  disableCodeElimination = false,
+  builtinsNs = ''
 ): void {
   Scope._forceDisableUnusedVarsElimination = disableCodeElimination;
   const moduleScope = Scope.newRootScope<Declaration>({flags: 0}, currentModule.sourceFileName, log, [
@@ -57,7 +58,8 @@ export function renderModule(
     namespaces,
     encoding,
     registry,
-    log
+    log,
+    builtinsNs
   );
 
   // First pass: build trees and collect var usage info
@@ -85,7 +87,8 @@ export function renderModule(
     namespaces,
     encoding,
     registry,
-    log
+    log,
+    builtinsNs
   );
 
   // Second pass: build code with cleaned unused vars
