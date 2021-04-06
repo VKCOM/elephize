@@ -17,6 +17,7 @@ export type WatcherTestQueueItem = {
 const testResultPostfix = '___'; // This must contain only valid symbols for namespace naming
 
 const baseDir = path.resolve(__dirname, '..', '..');
+const serverFilesRoot = path.resolve(__dirname, '..', '..', 'src', 'server');
 const namespaces = {
   root: 'VK\\Elephize',
   builtins: 'VK\\Elephize\\Builtins'
@@ -62,6 +63,7 @@ export function runWatcherTests(watcherTestConfig: WatcherTestQueueItem[]) {
           baseDir,
           aliases: {},
           namespaces,
+          serverFilesRoot,
           encoding: 'utf-8',
           options: compilerOptions,
           getCloseHandle: (handle) => close = handle,

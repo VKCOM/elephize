@@ -10,6 +10,7 @@ import { CliOptions } from '../ts2php/types';
 import { LogObj } from '../ts2php/utils/log';
 
 const baseDir = path.resolve(__dirname, '..', '..');
+const serverFilesRoot = path.resolve(__dirname, '..', '..', 'src', 'server');
 const namespaces = {
   root: 'VK\\Elephize',
   builtins: 'VK\\Elephize\\Builtins'
@@ -38,6 +39,7 @@ export function runBatch(basePath: string[], testSuite: string[][], log: LogObj)
     baseDir,
     aliases: {},
     namespaces,
+    serverFilesRoot,
     encoding: 'utf-8',
     options: compilerOptions,
     onData: (sourceFilename: string, targetFilename: string, content: string) => onData(basePath, promises, targetFilename, content)

@@ -1,11 +1,21 @@
 import { CommonjsModule } from './commonjsModule';
 import { ModuleRegistry } from './moduleRegistry';
+import { PhpParsedStruct } from './phpParser';
 
 export class ReactModule extends CommonjsModule {
   public readonly isDerived: boolean = true;
   private _phpdoc: string[] = [];
   protected args: string;
   protected block: string;
+
+  protected static _intrinsicReturnType = '';
+  public static getIntrinsicReturnType(pathToModuleImpl: string) {
+    if (!ReactModule._intrinsicReturnType) {
+      const parser = new PhpParsedStruct(pathToModuleImpl);
+      ReactModule._intrinsicReturnType = parser.getRetval('render') || 'mixed'; // Hardcoded function name
+    }
+    return ReactModule._intrinsicReturnType;
+  }
 
   public setArgs(args: string) {
     // Support different var name for props:
@@ -32,6 +42,12 @@ export class ReactModule extends CommonjsModule {
 
   public generateContent() {
     const fullyQualifiedNamespace = ModuleRegistry.pathToNamespace(this.targetFileName);
+    const builtinIntrinsicClass = this._namespaces.builtins + '\\IntrinsicElement';
+    const builtinIntrinsicFile = builtinIntrinsicClass
+      .replace(this._namespaces.root, this._serverFilesRoot)
+      .replace(/\\/g, '/') + '.php'
+    ;
+    const renderRetval = ReactModule.getIntrinsicReturnType(builtinIntrinsicFile);
     return `<?php
 /* NOTICE: Generated file; Do not edit by hand */
 namespace ${this._namespaces.root}\\${fullyQualifiedNamespace};
@@ -61,7 +77,7 @@ class ${this.className} extends RenderableComponent {
     /**
     ${this._phpdoc.join('\n')}
      * @param array $children
-     * @return ?string
+     * @return ${renderRetval === 'mixed' ? 'mixed' : ('?' + renderRetval)}
      */
     public function render(array ${this.args}, array $children) ${this.block}
 }

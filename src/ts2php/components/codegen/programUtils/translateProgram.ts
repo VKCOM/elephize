@@ -33,6 +33,7 @@ export function translateProgram(program: ts.Program, replacements: ImportReplac
   baseDir,
   disableCodeElimination = false,
   aliases = {},
+  serverFilesRoot,
   namespaces,
   encoding,
   options = defaultOptions,
@@ -47,6 +48,7 @@ export function translateProgram(program: ts.Program, replacements: ImportReplac
     aliases,
     options.paths || {},
     namespaces,
+    serverFilesRoot,
     replacements,
     log
   );
