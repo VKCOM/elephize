@@ -25,8 +25,8 @@ class BasicComponentWithViewLogic extends RenderableComponent {
      * @return ?string
      */
     public function render(array $props, array $children) {
-        $_e8afc0c = [$props["count"]];
-        $count = (float) $_e8afc0c[0];
+        $anon_e8afc0c = [$props["count"]];
+        $count = (float) $anon_e8afc0c[0];
         $sec = $props["timestampInSeconds"] % 60;
         $min = floor($props["timestampInSeconds"] / 60) % 60;
         $hr = floor($props["timestampInSeconds"] / (60 * 60)) % 24;
@@ -49,7 +49,7 @@ class BasicComponentWithViewLogic extends RenderableComponent {
                         " Click me @ ",
                         Stdlib::arrayMap1(
                             $keys,
-                            /* _1100a5a */ function ($c) {
+                            /* anon_1100a5a */ function ($c) {
                                 return \VK\Elephize\Builtins\IntrinsicElement::get("b")->render(["key" => "b"], [$c]);
                             }
                         ),
@@ -61,7 +61,7 @@ class BasicComponentWithViewLogic extends RenderableComponent {
                                     [
                                         Stdlib::arrayMap2(
                                             $props["children"],
-                                            /* _28597c3 */ function ($row, $idx) {
+                                            /* anon_28597c3 */ function ($row, $idx) {
                                                 return \VK\Elephize\Builtins\IntrinsicElement::get("tr")->render(
                                                     ["key" => "tr" . (string) $idx],
                                                     ["test"]

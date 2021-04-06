@@ -27,8 +27,8 @@ class NestedComponentWithDummyInProps extends RenderableComponent {
      * @return ?string
      */
     public function render(array $props, array $children) {
-        $_3b2ed12 = [0];
-        $count = (float) $_3b2ed12[0];
+        $anon_3b2ed12 = [0];
+        $count = (float) $anon_3b2ed12[0];
         $arr = [1, 2, 3];
         return \VK\Elephize\Builtins\IntrinsicElement::get("div")->render(
             [],
@@ -40,7 +40,7 @@ class NestedComponentWithDummyInProps extends RenderableComponent {
                 ),
                 Stdlib::arrayMap1(
                     $arr,
-                    /* _b4f3ee1 */ function ($val) use ($count) {
+                    /* anon_b4f3ee1 */ function ($val) use ($count) {
                         return \VK\Elephize\src\__tests__\specimens\components\DummyComponent\DummyComponent::getInstance()->render(
                             ["key" => $val, "count" => $count],
                             []

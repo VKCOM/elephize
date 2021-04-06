@@ -21,5 +21,5 @@ export function usedInNestedScope(decl: Declaration | undefined, declScope: Scop
 }
 
 export function identifyAnonymousNode(node: ts.Node): string {
-  return '_' + sha1(node.getText()).substr(0, 7);
+  return 'anon_' + sha1(node.getText()).substr(0, 7);
 }

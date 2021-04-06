@@ -33,13 +33,13 @@ class SomeModule extends CJSModule {
         $this->asm = [1, 2, 3];
         $this->bsm = Stdlib::arraySome(
             $this->asm,
-            /* _d473ed2 */ function ($val) {
+            /* anon_d473ed2 */ function ($val) {
                 return $val > 1;
             }
         );
         $this->csm = Stdlib::arraySome(
             $this->asm,
-            /* _5e02223 */ function ($val, $idx) {
+            /* anon_5e02223 */ function ($val, $idx) {
                 return ($val * $idx) % 2;
             }
         );

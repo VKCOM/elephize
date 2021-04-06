@@ -25,7 +25,7 @@ class ComplexObjectFuncsModule extends CJSModule {
             " ",
             array_filter(
                 array_keys($names),
-                /* _e8959da */ function ($name) use ($names) {
+                /* anon_e8959da */ function ($name) use ($names) {
                     return $names[$name];
                 }
             )

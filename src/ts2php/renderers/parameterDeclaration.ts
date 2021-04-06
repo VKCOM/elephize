@@ -21,7 +21,7 @@ export function tParameterDeclaration(node: ts.ParameterDeclaration, context: Co
     }
 
     const index = context.nodeFlagsStore.get(parentFunc)?.elIndex || 1;
-    const varName = `__param_destruct_${index}`;
+    const varName = `anon_deref_${index}`;
     context.nodeFlagsStore.upsert(parentFunc, { elIndex: index + 1 });
 
     const { renderedString, identList } = node.name.kind === ts.SyntaxKind.ObjectBindingPattern

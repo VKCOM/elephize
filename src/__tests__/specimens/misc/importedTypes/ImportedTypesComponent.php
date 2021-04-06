@@ -20,13 +20,13 @@ class ImportedTypesComponent extends RenderableComponent {
     }
 
     /**
-     * @param array $__param_destruct_1
+     * @param array $anon_deref_1
      * @param array $children
      * @return ?string
      */
-    public function render(array $__param_destruct_1, array $children) {
-        $lol = (float) $__param_destruct_1["lol"];
-        $flex = (float) $__param_destruct_1["flex"];
+    public function render(array $anon_deref_1, array $children) {
+        $lol = (float) $anon_deref_1["lol"];
+        $flex = (float) $anon_deref_1["flex"];
         return \VK\Elephize\Builtins\IntrinsicElement::get("div")->render(
             [
                 "className" => "table-item--container",

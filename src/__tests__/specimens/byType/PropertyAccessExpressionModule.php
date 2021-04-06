@@ -74,7 +74,7 @@ class PropertyAccessExpressionModule extends CJSModule {
                     "c" => [
                         "d" => [
                             "e" => 2,
-                            "f" => /* _10a1a4c */ function () {
+                            "f" => /* anon_10a1a4c */ function () {
                                 return 1;
                             },
                         ],

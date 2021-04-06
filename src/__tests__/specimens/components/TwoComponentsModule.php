@@ -23,7 +23,7 @@ class TwoComponentsModule extends CJSModule {
 
     private function __construct() {
         $this->default_props = [
-            "onClick" => /* _e8c52de */ function () {
+            "onClick" => /* anon_e8c52de */ function () {
                 return;
             },
             "initialValue" => "",

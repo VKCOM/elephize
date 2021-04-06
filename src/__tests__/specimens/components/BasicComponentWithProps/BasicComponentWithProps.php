@@ -25,8 +25,8 @@ class BasicComponentWithProps extends RenderableComponent {
      * @return ?string
      */
     public function render(array $props, array $children) {
-        $_e8afc0c = [$props["count"]];
-        $count = (float) $_e8afc0c[0];
+        $anon_e8afc0c = [$props["count"]];
+        $count = (float) $anon_e8afc0c[0];
         return \VK\Elephize\Builtins\IntrinsicElement::get("div")->render(
             [],
             [

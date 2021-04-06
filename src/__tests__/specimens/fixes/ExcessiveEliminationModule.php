@@ -26,7 +26,7 @@ class ExcessiveEliminationModule extends CJSModule {
             $t = explode("[style", $title);
             $parsed_title = array_reduce(
                 $t,
-                /* _4876d8c */ function ($acc, $raw_sub_string) {
+                /* anon_4876d8c */ function ($acc, $raw_sub_string) {
                     if (strpos($raw_sub_string, "[/style]") !== false) {
                         $found_text = Stdlib::strMatch("/\](.*?)\[\/style\]/u", $raw_sub_string);
                         $text_content = substr(explode("[/style]", $found_text[0])[0], 1);
@@ -35,17 +35,17 @@ class ExcessiveEliminationModule extends CJSModule {
                             strpos($raw_style_string, ";") !== false
                                 ? Stdlib::arrayMap1(
                                     explode(";", $raw_style_string),
-                                    /* _d34c464 */ function ($el) {
+                                    /* anon_d34c464 */ function ($el) {
                                         return trim($el);
                                     }
                                 )
                                 : [trim($raw_style_string)];
                         $styles = array_reduce(
                             $key_value_pairs,
-                            /* _51b824c */ function ($acc, $raw_style) {
-                                $_c70ca84 = explode("=", $raw_style);
-                                $key = (string) $_c70ca84[0];
-                                $value = (string) $_c70ca84[1];
+                            /* anon_51b824c */ function ($acc, $raw_style) {
+                                $anon_c70ca84 = explode("=", $raw_style);
+                                $key = (string) $anon_c70ca84[0];
+                                $value = (string) $anon_c70ca84[1];
                                 $acc[$key] = preg_replace("/['\"]+/u", "", $value);
                                 return $acc;
                             },
@@ -53,7 +53,7 @@ class ExcessiveEliminationModule extends CJSModule {
                         );
                         $style_string = array_reduce(
                             array_keys($styles),
-                            /* _4b73782 */ function ($acc, $key) use ($styles) {
+                            /* anon_4b73782 */ function ($acc, $key) use ($styles) {
                                 $acc .= $key . ": var(--" . $key . "-" . $styles[$key] . ");";
                                 return $acc;
                             },
