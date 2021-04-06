@@ -65,7 +65,7 @@ class SpreadOperatorModule extends CJSModule {
             [4, 5],
             Stdlib::arrayMap1(
                 $this->sso,
-                /* _3b28198 */ function ($c) {
+                /* anon_3b28198 */ function ($c) {
                     return $c * 2;
                 }
             ),

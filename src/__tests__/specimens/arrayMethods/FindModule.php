@@ -33,13 +33,13 @@ class FindModule extends CJSModule {
         $this->aff = [1, 2, 3];
         $this->bff = Stdlib::arrayFind(
             $this->aff,
-            /* _dbfe777 */ function ($el) {
+            /* anon_dbfe777 */ function ($el) {
                 return $el % 2;
             }
         );
         $this->cff = Stdlib::arrayFind(
             $this->aff,
-            /* _cc7ba3f */ function ($el, $idx) {
+            /* anon_cc7ba3f */ function ($el, $idx) {
                 return ($el * $idx) % 2;
             }
         );

@@ -75,7 +75,7 @@ class RestOperatorModule extends CJSModule {
             $b +
             array_reduce(
                 $c,
-                /* _9cb15a0 */ function ($acc, $v) {
+                /* anon_9cb15a0 */ function ($acc, $v) {
                     return $acc + $v;
                 },
                 0
@@ -86,10 +86,10 @@ class RestOperatorModule extends CJSModule {
         $this->raa = [1, 2, 3, 4];
         $this->ra1 = (float) $this->raa[0];
         $this->ra2 = array_slice($this->raa, 2);
-        $_e37647f = [1, 2, 3, 4, 5];
-        $this->ra3 = (float) $_e37647f[0];
-        $this->ra5 = (float) $_e37647f[2];
-        $this->ra4 = array_slice($_e37647f, 3);
+        $anon_e37647f = [1, 2, 3, 4, 5];
+        $this->ra3 = (float) $anon_e37647f[0];
+        $this->ra5 = (float) $anon_e37647f[2];
+        $this->ra4 = array_slice($anon_e37647f, 3);
         $this->rab = [
             "a" => 1,
             "b" => 2,
@@ -97,15 +97,15 @@ class RestOperatorModule extends CJSModule {
         ];
         $this->rb1 = (float) $this->rab["a"];
         $this->rest1 = Stdlib::objectOmit($this->rab, ["a"]);
-        $_3e8f851 = [
+        $anon_3e8f851 = [
             "a" => 1,
             "rb3" => 2,
             "c" => 3,
             "d" => 4,
         ];
-        $this->rb2 = (float) $_3e8f851["a"];
-        $this->rb3 = (float) $_3e8f851["rb3"];
-        $this->rest2 = Stdlib::objectOmit($_3e8f851, ["a", "rb3"]);
+        $this->rb2 = (float) $anon_3e8f851["a"];
+        $this->rb3 = (float) $anon_3e8f851["rb3"];
+        $this->rest2 = Stdlib::objectOmit($anon_3e8f851, ["a", "rb3"]);
         \VK\Elephize\Builtins\Console::log(
             $this->ra1,
             $this->ra2,

@@ -33,7 +33,7 @@ class FilterModule extends CJSModule {
         $this->afl = [1, 2, 3];
         $this->bfl = array_filter(
             $this->afl,
-            /* _dbfe777 */ function ($el) {
+            /* anon_dbfe777 */ function ($el) {
                 return $el % 2;
             }
         );

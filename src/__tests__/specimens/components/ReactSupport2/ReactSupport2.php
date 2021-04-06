@@ -25,12 +25,12 @@ class ReactSupport2 extends RenderableComponent {
      * @return ?string
      */
     public function render(array $props, array $children) {
-        $_18b93da = [1];
-        $cnt = (float) $_18b93da[0];
+        $anon_18b93da = [1];
+        $cnt = (float) $anon_18b93da[0];
         \VK\Elephize\Builtins\Console::log($cnt);
         \VK\Elephize\Builtins\Console::log($theme);
-        $_2e8ff8c = [[1, 2, 3, 4]];
-        $state = (array) $_2e8ff8c[0];
+        $anon_2e8ff8c = [[1, 2, 3, 4]];
+        $state = (array) $anon_2e8ff8c[0];
         \VK\Elephize\Builtins\Console::log($state);
         $memoized_callback();
         \VK\Elephize\Builtins\Console::log($memoized);

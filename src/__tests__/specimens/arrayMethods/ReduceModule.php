@@ -37,14 +37,14 @@ class ReduceModule extends CJSModule {
         $this->ar = [1, 2, 3];
         $this->br = array_reduce(
             $this->ar,
-            /* _9f0b917 */ function ($acc, $el) {
+            /* anon_9f0b917 */ function ($acc, $el) {
                 return $acc + $el;
             },
             10
         );
         $this->dr = array_reduce(
             $this->ar,
-            /* _9aa5c73 */ function ($acc, $el) {
+            /* anon_9aa5c73 */ function ($acc, $el) {
                 return $acc + $el * $this->ar[0];
             },
             20
