@@ -12,6 +12,7 @@ export class PhpParsedStruct extends SyntaxWalker {
   protected _className = '';
   protected _src: string;
   protected _decls: { [key: string]: string } = {};
+  protected _retvals: { [key: string]: string } = {};
 
   public constructor(protected _filename: string) {
     super();
@@ -22,6 +23,10 @@ export class PhpParsedStruct extends SyntaxWalker {
 
   public getDecl(name: string) {
     return this._decls[name];
+  }
+
+  public getRetval(name: string) {
+    return this._retvals[name];
   }
 
   public getClassName() {
@@ -40,8 +45,18 @@ export class PhpParsedStruct extends SyntaxWalker {
 
   public visitMethodDeclaration(node: MethodDeclarationSyntaxNode) {
     const mods = node.modifiers?.allChildren().map((c: ISyntaxNode | ISyntaxToken) => this._get(c.span)) || [];
+    const name = this._get(node.identifierOrKeyword.span);
+    for (let triv of (node.leadingTrivia || [])) {
+      if (!this._get(triv.span).includes('@return')) {
+        continue;
+      }
+
+      const matches = this._get(triv.span).match(/@return ([?a-z]+)/);
+      if (matches) {
+        this._retvals[name] = matches[1];
+      }
+    }
     if (mods.includes('public')) {
-      const name = this._get(node.identifierOrKeyword.span);
       const args = node.parameters?.allChildren().map((c: ISyntaxNode | ISyntaxToken) => this._get(c.span)).join(', ') || '';
       this._decls[name] = this._get(node.leadingTrivia?.span) + `public function ${name}(${args}) {
         return ${mods.includes('static') ? `${this._className}::` : '$this->_impl->'}${name}(${args});

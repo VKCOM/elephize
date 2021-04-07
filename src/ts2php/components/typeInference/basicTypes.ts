@@ -210,6 +210,17 @@ const _transformTypeName = (type: ts.Type, checker: ts.TypeChecker, log: LogObj,
 
 function _describeNodeType(node: ts.Node | undefined, type: ts.Type, checker: ts.TypeChecker, log: LogObj) {
   const nodeIdentForLog = node?.getText();
+
+  if (node && ts.isStringLiteral(node)) {
+    log.typehint('Inferred type of literal node: %s -> %s [5]', [nodeIdentForLog || '', 'string']);
+    return 'string';
+  }
+
+  if (node && ts.isNumericLiteral(node)) {
+    log.typehint('Inferred type of literal node: %s -> %s [5]', [nodeIdentForLog || '', 'float']);
+    return 'float';
+  }
+
   const customTypehints = checkCustomTypehints(type, checker);
   if (customTypehints) {
     const types = customTypehints.foundTypes.map((t) => {
@@ -239,7 +250,7 @@ function _describeNodeType(node: ts.Node | undefined, type: ts.Type, checker: ts
     });
 
     if (appStrTypes.includes('mixed')) {
-      log.typehint('Inferred type of node: %s -> var [2]', [nodeIdentForLog || '']);
+      log.typehint('Inferred type of node: %s -> mixed [2]', [nodeIdentForLog || '']);
       return 'mixed';
     }
 

@@ -38,6 +38,7 @@ export class ModuleRegistry {
     public readonly _aliases: { [key: string]: string },
     private readonly _tsPaths: { [key: string]: string[] },
     private readonly _namespaces: NsMap,
+    private readonly _serverFilesRoot: string,
     private readonly _replacements: ImportReplacementRule[],
     protected readonly log: LogObj
   ) {
@@ -164,6 +165,7 @@ export class ModuleRegistry {
         fullyQualifiedSourceFilename,
         newFilename,
         this._namespaces,
+        this._serverFilesRoot,
         this.log
       );
 
@@ -178,6 +180,7 @@ export class ModuleRegistry {
         fullyQualifiedSourceFilename,
         newFilename,
         this._namespaces,
+        this._serverFilesRoot,
         this.log
       );
     }
@@ -232,6 +235,7 @@ export class ModuleRegistry {
       originalModule.sourceFileName,
       newFilename,
       this._namespaces,
+      this._serverFilesRoot,
       this.log,
       originalIdent,
       originalModule
@@ -256,6 +260,7 @@ export class ModuleRegistry {
       originalModule.sourceFileName,
       newFilename,
       this._namespaces,
+      this._serverFilesRoot,
       this.log,
       originalIdent,
       originalModule

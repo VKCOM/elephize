@@ -16,6 +16,7 @@ export class CommonjsModule {
     public readonly sourceFileName: string,
     public readonly targetFileName: string,
     protected readonly _namespaces: NsMap,
+    protected readonly _serverFilesRoot: string,
     public readonly log: LogObj,
     public readonly originalIdentName?: string,
     public readonly ancestorModule?: CommonjsModule
