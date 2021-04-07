@@ -78,11 +78,7 @@ class ${this.className} extends RenderableComponent {
     /**
     ${this._phpdoc.join('\n')}
      * @param array $children
-<<<<<<< HEAD
-     * @return ${isBuiltinsOverrided ? 'mixed' : '?string'}
-=======
      * @return ${renderRetval === 'mixed' ? 'mixed' : ('?' + renderRetval)}
->>>>>>> eeda492658e1b17b809f11665df337a3b2b2e08a
      */
     public function render(array ${this.args}, array $children) ${this.block}
 }
