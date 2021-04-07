@@ -29,7 +29,7 @@ export const CheckBox: React.FC<Props> = (props) => {
 
   const { children, checked, disabled, indeterminate, name, id, ...nativeProps } = props;
 
-  return <label className={'CheckBox--disabled'}>
+  return <label className={'CheckBox--disabled'} data-type="scrolling-container" aria-details="test">
     <input {...nativeProps} className="CheckBox__input" id={id?.toString()} type="checkbox"
            checked={!!checked} name={name?.toString()} disabled={disabled} onChange={onChange} />
     <span className="CheckBox__indicator" aria-hidden={true} />
