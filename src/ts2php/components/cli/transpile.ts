@@ -16,6 +16,7 @@ export function transpile(options: CliOptions, baseDir: string, outDir: string, 
     root: options.rootNs,
     builtins: options.builtinsNs || options.rootNs + '\\Builtins',
   };
+  const serverFilesRoot = path.resolve(__dirname, '..', '..', '..', 'server');
 
   glob(options.src, (e: Error, matches: string[]) => {
     if (e) {
@@ -32,6 +33,7 @@ export function transpile(options: CliOptions, baseDir: string, outDir: string, 
     (options.watch ? translateCodeAndWatch : translateCode)(
       matches.map((p) => path.resolve('./', p)), resolveRulePaths(options.importRules, baseDir), options.tsPaths, log, {
         baseDir,
+        serverFilesRoot,
         aliases: options.aliases,
         namespaces,
         encoding: options.encoding || 'utf-8',
@@ -73,14 +75,13 @@ export function transpile(options: CliOptions, baseDir: string, outDir: string, 
       });
     }
 
-    const bSrc = path.resolve(__dirname, '..', '..', '..', 'server');
     const bTgt = outDir;
 
     log.special('Copying server-side base files', []);
-    log.special('From: %s', [bSrc]);
+    log.special('From: %s', [serverFilesRoot]);
     log.special('To: %s', [bTgt]);
 
-    ncp(bSrc, bTgt, {
+    ncp(serverFilesRoot, bTgt, {
       transform: function(read, write) {
         read.pipe(replace(/__ROOTNS__/g, namespaces.root)).pipe(write);
       }

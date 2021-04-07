@@ -11,11 +11,12 @@ export class EnumModule extends CommonjsModule {
     sourceFileName: string,
     targetFileName: string,
     _namespaces: NsMap,
+    serverFilesRoot: string,
     log: LogObj,
     originalIdentName?: string,
     ancestorModule?: CommonjsModule
   ) {
-    super(className + 'Enum', sourceFileName, targetFileName, _namespaces, log, originalIdentName, ancestorModule);
+    super(className + 'Enum', sourceFileName, targetFileName, _namespaces, serverFilesRoot, log, originalIdentName, ancestorModule);
   }
 
   // For removing dupes during second pass of codegen

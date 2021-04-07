@@ -25,6 +25,7 @@ export const translateCode: TranslatorFunc = (
     disableCodeElimination = false,
     namespaces,
     encoding,
+    serverFilesRoot,
     onBeforeRender = () => undefined,
     onData,
     onFinish = () => undefined,
@@ -45,7 +46,7 @@ export const translateCode: TranslatorFunc = (
     log
   );
 
-  translateProgram(program, replacements, nodeFlagStore, log, { onData, onBeforeRender, baseDir, disableCodeElimination, aliases, namespaces, encoding, options, onFinish });
+  translateProgram(program, replacements, nodeFlagStore, log, { onData, onBeforeRender, baseDir, disableCodeElimination, aliases, namespaces, serverFilesRoot, encoding, options, onFinish });
   return nodeFlagStore;
 };
 
@@ -63,6 +64,7 @@ export const translateCodeAndWatch: TranslatorFunc = (
     encoding,
     onBeforeRender = () => undefined,
     onData,
+    serverFilesRoot,
     onFinish = () => undefined,
     options = defaultOptions,
   }: TranslateOptions
@@ -74,6 +76,7 @@ export const translateCodeAndWatch: TranslatorFunc = (
       baseDir,
       disableCodeElimination,
       namespaces,
+      serverFilesRoot,
       encoding,
       onBeforeRender,
       onData: (sourceFilename: string, targetFilename: string, content: string) => onData(sourceFilename, targetFilename, content, errcode),

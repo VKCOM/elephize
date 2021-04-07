@@ -15,11 +15,12 @@ export class CommonjsExternalModule extends CommonjsModule {
     sourceFileName: string,
     targetFileName: string,
     _namespaces: NsMap,
+    serverFilesRoot: string,
     log: LogObj,
     originalIdentName?: string,
     ancestorModule?: CommonjsModule
   ) {
-    super(className + 'CjsWrapper', sourceFileName, targetFileName, _namespaces, log, originalIdentName, ancestorModule);
+    super(className + 'CjsWrapper', sourceFileName, targetFileName, _namespaces, serverFilesRoot, log, originalIdentName, ancestorModule);
   }
 
   public useImplementationFromPath(path: string) {

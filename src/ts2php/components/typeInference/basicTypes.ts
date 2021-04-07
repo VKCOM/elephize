@@ -239,7 +239,7 @@ function _describeNodeType(node: ts.Node | undefined, type: ts.Type, checker: ts
     });
 
     if (appStrTypes.includes('mixed')) {
-      log.typehint('Inferred type of node: %s -> var [2]', [nodeIdentForLog || '']);
+      log.typehint('Inferred type of node: %s -> mixed [2]', [nodeIdentForLog || '']);
       return 'mixed';
     }
 
