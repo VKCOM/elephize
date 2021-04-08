@@ -60,6 +60,6 @@ function onData(basePath: string[], promises: Array<Promise<any>>, filename: str
       .toEqual(prettier.format(readFileSync(resultFileName, 'utf-8'), phpPrettierOptions));
     process.stdout.write('[test ok] ' + filename.replace(pResolve(...basePath), '') + '\n');
     unlinkSync(resultFileName + '.result');
-    resolve();
+    resolve(null);
   }));
 }

@@ -82,7 +82,7 @@ export function runWatcherTests(watcherTestConfig: WatcherTestQueueItem[]) {
 
             if (lastDiffApplied === watcherTestConfig.length) {
               close();
-              resolve();
+              resolve(null);
             }
           }
         });
