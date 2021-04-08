@@ -71,7 +71,7 @@ class IntrinsicElement extends RenderableComponent {
         'widows' => true,
         'zIndex' => true,
         'zoom' => true,
-        
+
         // SVG-related properties
         'fillOpacity' => true,
         'floodOpacity' => true,
