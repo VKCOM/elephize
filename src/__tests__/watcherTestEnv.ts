@@ -5,6 +5,7 @@ import { readFileSync, writeFileSync } from 'fs';
 import * as diff from 'diff';
 import * as rimraf from 'rimraf';
 import ncp = require('ncp');
+import DoneCallback = jest.DoneCallback;
 
 export type WatcherTestQueueItem = {
   entry: string;
@@ -34,7 +35,7 @@ const log = configureLogging({
 });
 
 let lastDiffApplied = 0;
-export function runWatcherTests(watcherTestConfig: WatcherTestQueueItem[]) {
+export function runWatcherTests(watcherTestConfig: WatcherTestQueueItem[], done: DoneCallback) {
   jest.setTimeout(200000);
 
   return new Promise((resolve) => {
@@ -68,7 +69,7 @@ export function runWatcherTests(watcherTestConfig: WatcherTestQueueItem[]) {
           getCloseHandle: (handle) => close = handle,
           onData: (sourceFilename: string, targetFilename: string, content: string, error?: number) => {
             if (allFilesCollected) {
-              verifyDiff(targetFilename, content, error, watcherTestConfig);
+              verifyDiff(targetFilename, content, error, watcherTestConfig, done);
             }
           },
           onFinish: () => {
@@ -82,6 +83,7 @@ export function runWatcherTests(watcherTestConfig: WatcherTestQueueItem[]) {
             if (lastDiffApplied === watcherTestConfig.length) {
               close();
               resolve(null);
+              done();
             }
           },
         });
@@ -102,7 +104,7 @@ function applyNextDiff(nextDiff: WatcherTestQueueItem) {
   process.chdir(cwd);
 }
 
-function verifyDiff(targetFilename: string, content: string, error: number | undefined, conf: WatcherTestQueueItem[]) {
+function verifyDiff(targetFilename: string, content: string, error: number | undefined, conf: WatcherTestQueueItem[], done: DoneCallback) {
   const diff = conf[lastDiffApplied];
   const checkedFileIndex = diff.checkFiles.findIndex((el) => el[0] === pBasename(targetFilename));
   if (checkedFileIndex === -1) {
@@ -121,7 +123,7 @@ function verifyDiff(targetFilename: string, content: string, error: number | und
     console.info('[VERIFIED] %s after %s', checkedFile[0], diff.diff);
   } catch (e) {
     console.error('[FAILED] %s after %s', checkedFile[0], diff.diff);
-    throw e;
+    done.fail(e);
   }
 }
 

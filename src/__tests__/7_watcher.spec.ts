@@ -1,6 +1,6 @@
 import { runWatcherTests } from './watcherTestEnv';
 
-test('ts2php.watcher', () => {
+test('ts2php.watcher', (done) => {
   return runWatcherTests([
     {
       entry: 'modifyFile.entry.ts',
@@ -102,5 +102,5 @@ test('ts2php.watcher', () => {
         ['ElephizeAnnotationTargetModule.php', 'ElephizeAnnotationTargetModule.2.php'],
       ],
     },
-  ]);
+  ], done);
 });
