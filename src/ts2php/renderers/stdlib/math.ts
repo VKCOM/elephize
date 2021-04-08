@@ -11,14 +11,14 @@ import { renderNode, renderNodes } from '../../components/codegen/renderNodes';
  * @param context
  */
 export const math: ExpressionHook = (node: ts.CallExpression, context: Context<Declaration>) => {
-  const toCheck = node.expression.kind === ts.SyntaxKind.PropertyAccessExpression
-    && (node.expression as ts.PropertyAccessExpression).expression.getText() === 'Math';
+  const toCheck = node.expression.kind === ts.SyntaxKind.PropertyAccessExpression &&
+    (node.expression as ts.PropertyAccessExpression).expression.getText() === 'Math';
 
   if (!toCheck) {
     return undefined;
   }
 
-  let operation = (node.expression as ts.PropertyAccessExpression).name.escapedText.toString();
+  const operation = (node.expression as ts.PropertyAccessExpression).name.escapedText.toString();
   switch (operation) {
     case 'abs':
     case 'round':
@@ -33,14 +33,14 @@ export const math: ExpressionHook = (node: ts.CallExpression, context: Context<D
     case 'exp':
     case 'log':
     case 'sqrt':
-      let varName = renderNode(getCallExpressionArg(node), context);
+      const varName = renderNode(getCallExpressionArg(node), context);
       return `${operation}(${varName})`;
     case 'random':
       return '(mt_rand(0, PHP_INT_MAX) / (float)PHP_INT_MAX)';
     case 'pow':
     case 'max':
     case 'min':
-      let nodes = renderNodes([...node.arguments], context);
+      const nodes = renderNodes([...node.arguments], context);
       return `${operation}(${nodes.join(', ')})`;
     case 'log2':
       return `log(${renderNode(getCallExpressionArg(node), context)}, 2)`;

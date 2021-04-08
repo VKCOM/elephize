@@ -9,7 +9,7 @@ import { identifyAnonymousNode } from '../components/unusedCodeElimination/usage
 export function tFunctionExpression(node: ts.FunctionExpression, context: Context<Declaration>) {
   const parentStmt = getClosestParentOfType(node, ts.SyntaxKind.VariableStatement);
   if (parentStmt) {
-    let handledContent = handleComponent(context, node);
+    const handledContent = handleComponent(context, node);
     if (handledContent) {
       // component is written to different file, so we should not output anything here
       return 'null';
@@ -29,6 +29,6 @@ export function tFunctionExpression(node: ts.FunctionExpression, context: Contex
 
   return functionExpressionGen(node, funcIdent)({
     synList: node.parameters,
-    blockNode: node.body
+    blockNode: node.body,
   }, context);
 }

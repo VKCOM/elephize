@@ -22,8 +22,8 @@ export const stringSubstr: ExpressionHook = (node: ts.CallExpression, context: C
   }
 
   const varNameNode = getCallExpressionLeftSide(node);
-  let args = renderNodes([...node.arguments], context);
-  let varName = renderNode(varNameNode, context);
+  const args = renderNodes([...node.arguments], context);
+  const varName = renderNode(varNameNode, context);
   if (!args || !args[0]) {
     context.log.error('String.prototype.substr: can\'t find index in call.', [], context.log.ctx(node));
     return 'null';

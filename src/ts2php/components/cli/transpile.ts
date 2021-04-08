@@ -27,7 +27,7 @@ export function transpile(options: CliOptions, baseDir: string, outDir: string, 
 
     const compilerOptions = {
       baseUrl: baseDir,
-      paths: options.tsPaths || {}
+      paths: options.tsPaths || {},
     };
 
     (options.watch ? translateCodeAndWatch : translateCode)(
@@ -40,7 +40,7 @@ export function transpile(options: CliOptions, baseDir: string, outDir: string, 
         disableCodeElimination: options.noZap,
         options: compilerOptions,
         onData: (sourceFilename: string, targetFilename: string, content: string) => onData(targetFilename, content),
-        onFinish
+        onFinish,
       }
     );
   });
@@ -84,7 +84,7 @@ export function transpile(options: CliOptions, baseDir: string, outDir: string, 
     ncp(serverFilesRoot, bTgt, {
       transform: function(read, write) {
         read.pipe(replace(/__ROOTNS__/g, namespaces.root)).pipe(write);
-      }
+      },
     }, (err) => {
       if (!err) {
         log.special('Server-side base files successfully copied', []);

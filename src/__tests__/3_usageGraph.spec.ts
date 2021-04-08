@@ -1,7 +1,7 @@
 import { Scope } from '../ts2php/components/unusedCodeElimination/usageGraph';
 import { configureLogging } from '../ts2php/components/cli/configureLogging';
 const log = configureLogging({
-  baseDir: '', output: '', outDir: ''
+  baseDir: '', output: '', outDir: '',
 });
 
 test('ts2php.UsageGraph.NewScope', () => {
@@ -100,7 +100,7 @@ test('ts2php.UsageGraph.ChildScope_UsageInLowerContext', () => {
   const rootScope = Scope.newRootScope({ flag1: true, flag2: 'false' }, '', log);
   const node1 = rootScope.addDeclaration('test1', [], { dryRun: true });
   const node2 = rootScope.addDeclaration('test2', [], { dryRun: true });
-  const localScope = node2!.spawnScope('',true);
+  const localScope = node2!.spawnScope('', true);
   const node3 = localScope.addDeclaration('test3', ['test1'], { terminateLocally: true, dryRun: true });
   const node4 = rootScope.addDeclaration('test4', ['test2'], { terminateGlobally: true, dryRun: true });
   expect(rootScope.declarations.size).toEqual(4);

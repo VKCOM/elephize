@@ -6,17 +6,16 @@ import { collectVars } from '../components/unusedCodeElimination/varsUsage';
 import { renderNode, renderNodes } from '../components/codegen/renderNodes';
 
 export function tIfStatement(node: ts.IfStatement, context: Context<Declaration>) {
-
-  let [usedVars, condition] = collectVars(() => renderNode(node.expression, context), context);
-  let [ifTrue, ifFalse] = renderNodes([node.thenStatement, node.elseStatement], context);
+  const [usedVars, condition] = collectVars(() => renderNode(node.expression, context), context);
+  const [ifTrue, ifFalse] = renderNodes([node.thenStatement, node.elseStatement], context);
 
   const flags = context.nodeFlagsStore.get(node);
   if (flags?.drop) {
     return flags?.dropReplacement || '';
   }
 
-  for (let ident of Array.from(usedVars)) {
-    context.scope.addUsage(ident, [], {terminateLocally: true, dryRun: context.dryRun});
+  for (const ident of Array.from(usedVars)) {
+    context.scope.addUsage(ident, [], { terminateLocally: true, dryRun: context.dryRun });
   }
 
   let expr;

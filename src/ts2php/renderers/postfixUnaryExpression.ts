@@ -7,7 +7,7 @@ import { checkModificationInNestedScope } from '../components/functionScope';
 export function tPostfixUnaryExpression(node: ts.PostfixUnaryExpression, context: Context<Declaration>) {
   if (node.operand.kind === ts.SyntaxKind.Identifier) {
     checkModificationInNestedScope(node.operand as ts.Identifier, context);
-    let type = context.checker.getTypeAtLocation(node.operand);
+    const type = context.checker.getTypeAtLocation(node.operand);
     if (context.checker.typeToString(type, node.operand, ts.TypeFormatFlags.None) !== 'number') {
       context.log.error('Trying to apply unary inc/dec operator to non-number variable. This is probably an error.', [], context.log.ctx(node));
     }

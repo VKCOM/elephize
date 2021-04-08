@@ -37,13 +37,13 @@ export function translateProgram(program: ts.Program, replacements: ImportReplac
   namespaces,
   encoding,
   options = defaultOptions,
-  onFinish = () => undefined
+  onFinish = () => undefined,
 }: TranslateOptions) {
   if (typeof jest === 'undefined') {
     console.time('Elephize recompilation done');
   }
 
-  let registry = new ModuleRegistry(
+  const registry = new ModuleRegistry(
     baseDir,
     aliases,
     options.paths || {},
@@ -52,10 +52,10 @@ export function translateProgram(program: ts.Program, replacements: ImportReplac
     replacements,
     log
   );
-  let checker = program.getTypeChecker();
+  const checker = program.getTypeChecker();
   for (const sourceFile of program.getSourceFiles()) {
     if (!sourceFile.isDeclarationFile) { // skip .d.ts if any
-      let currentModule = registry.registerClass(sourceFile.fileName);
+      const currentModule = registry.registerClass(sourceFile.fileName);
       if (!currentModule) {
         continue;
       }

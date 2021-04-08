@@ -3,5 +3,5 @@ export const typeMap: { [key: string]: string } = {
   'string': 'string',
   'boolean': 'boolean',
   'true': 'boolean',
-  'false': 'boolean'
+  'false': 'boolean',
 };

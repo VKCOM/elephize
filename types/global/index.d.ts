@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-empty-interface,@typescript-eslint/camelcase,@typescript-eslint/class-name-casing */
+/* eslint-disable @typescript-eslint/no-empty-interface */
 
 // If you need to add more custom typehints,
 // see also: components/typeInference/customTypehintsList.ts
@@ -42,5 +42,3 @@ interface String {
   // eslint-disable-next-line @typescript-eslint/unified-signatures
   replaceAll(searchValue: string | RegExp, replacer: (substring: string, ...args: any[]) => string): string;
 }
-
-declare var window: Window & typeof globalThis;

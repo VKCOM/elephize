@@ -24,7 +24,7 @@ export const builtins: Set<string> = new Set([
   'SyntaxError',
   'TypeError',
   'URIError',
-  
+
   'Number',
   'Date',
   'String',
@@ -39,5 +39,5 @@ export const builtins: Set<string> = new Set([
   'Promise',
 
   'console',
-  'document'
+  'document',
 ]);

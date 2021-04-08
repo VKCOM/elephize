@@ -29,6 +29,6 @@ export const arraySome: ExpressionHook = (node: ts.CallExpression, context: Cont
   }
 
   const varNode = getCallExpressionLeftSide(node);
-  let [renderedFunc, varName] = renderNodes([funcNode, varNode], context);
+  const [renderedFunc, varName] = renderNodes([funcNode, varNode], context);
   return `Stdlib::arraySome(${varName}, ${renderedFunc})`;
 };

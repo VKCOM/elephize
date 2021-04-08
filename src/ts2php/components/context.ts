@@ -39,7 +39,7 @@ export class Context<T> {
     }
 
     if (!node || node.homeScope !== this._scope) {
-      this.log.warn('Failed to push scope into stack, this may lead to errors; (%s / %s)',  [ownerIdent, uniqid]);
+      this.log.warn('Failed to push scope into stack, this may lead to errors; (%s / %s)', [ownerIdent, uniqid]);
       return;
     }
 

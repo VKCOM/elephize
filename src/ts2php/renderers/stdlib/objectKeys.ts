@@ -11,12 +11,12 @@ import { renderNode } from '../../components/codegen/renderNodes';
  * @param context
  */
 export const objectKeys: ExpressionHook = (node: ts.CallExpression, context: Context<Declaration>) => {
-  const toCheck = node.expression.kind === ts.SyntaxKind.PropertyAccessExpression
-    && (node.expression as ts.PropertyAccessExpression).expression.getText() === 'Object'
-    && (node.expression as ts.PropertyAccessExpression).name.escapedText === 'keys';
+  const toCheck = node.expression.kind === ts.SyntaxKind.PropertyAccessExpression &&
+    (node.expression as ts.PropertyAccessExpression).expression.getText() === 'Object' &&
+    (node.expression as ts.PropertyAccessExpression).name.escapedText === 'keys';
 
   if (toCheck) {
-    let varName = renderNode(getCallExpressionArg(node), context);
+    const varName = renderNode(getCallExpressionArg(node), context);
     return `array_keys(${varName})`;
   }
 };

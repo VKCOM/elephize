@@ -193,21 +193,21 @@ export const RightHandExpressionLike = [
   ts.SyntaxKind.TrueKeyword,
   ts.SyntaxKind.JsxFragment,
   ts.SyntaxKind.JsxElement,
-  ts.SyntaxKind.JsxSelfClosingElement
+  ts.SyntaxKind.JsxSelfClosingElement,
   // TODO: more expressions?
 ];
 
 export function getCallExpressionLeftSide(node: ts.Node) {
   return getChildChainByType(node, [
     ts.SyntaxKind.PropertyAccessExpression,
-    RightHandExpressionLike
+    RightHandExpressionLike,
   ]);
 }
 
 export function getCallExpressionArg(node: ts.Node) {
   return getChildChainByType(node, [
     ts.SyntaxKind.SyntaxList,
-    RightHandExpressionLike
+    RightHandExpressionLike,
   ]);
 }
 
@@ -216,8 +216,8 @@ export function getCallExpressionCallbackArg(node: ts.Node) {
     ts.SyntaxKind.SyntaxList,
     [
       ts.SyntaxKind.FunctionExpression,
-      ts.SyntaxKind.ArrowFunction
-    ]
+      ts.SyntaxKind.ArrowFunction,
+    ],
   ]);
 }
 

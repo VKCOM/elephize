@@ -4,12 +4,11 @@ export const customTypehints: { [key: string]: { replacement: string; drop: stri
   // Special one! Checked separately in the code.
   [mixedTypehintId]: {
     replacement: 'mixed',
-    drop: ['mixed']
+    drop: ['mixed'],
   },
-
 
   '$__ElephizeTypehint__Int__$': {
     replacement: 'int',
-    drop: ['float']
-  }
+    drop: ['float'],
+  },
 };

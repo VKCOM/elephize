@@ -1,6 +1,6 @@
 import * as ts from 'typescript';
-import {Context} from './components/context';
-import {ModuleRegistry} from './components/cjsModules/moduleRegistry';
+import { Context } from './components/context';
+import { ModuleRegistry } from './components/cjsModules/moduleRegistry';
 import { NodeFlagStore } from './components/codegen/nodeFlagStore';
 
 export type Dict<T> = { [key: string]: T };

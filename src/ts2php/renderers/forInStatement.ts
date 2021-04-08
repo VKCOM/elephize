@@ -11,10 +11,10 @@ export function tForInStatement(node: ts.ForInStatement, context: Context<Declar
     context.scope.addUsage(ident, [], { terminateLocally: true, dryRun: context.dryRun });
   };
   context.scope.addEventListener(Scope.EV_DECL, onDecl);
-  let [initializer, expression] = renderNodes([node.initializer, node.expression], context);
+  const [initializer, expression] = renderNodes([node.initializer, node.expression], context);
   context.scope.removeEventListener(Scope.EV_DECL, onDecl);
 
-  let statement = renderNode(node.statement, context);
+  const statement = renderNode(node.statement, context);
   const expr = `foreach (${expression} as ${initializer} => $_tmpVal) ${statement}`;
   if (isTopLevel(node, context)) {
     context.moduleDescriptor.addStatement(expr);

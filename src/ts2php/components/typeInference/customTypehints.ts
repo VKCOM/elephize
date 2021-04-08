@@ -2,12 +2,12 @@ import * as ts from 'typescript';
 import { customTypehints, mixedTypehintId } from './customTypehintsList';
 
 export function checkCustomTypehints(type: ts.Type, checker: ts.TypeChecker) {
-  let typeNode = checker.typeToTypeNode(type, undefined, undefined);
+  const typeNode = checker.typeToTypeNode(type, undefined, undefined);
   if (!typeNode) {
     return false;
   }
 
-  let typeRefs = traverseReferences(type, checker);
+  const typeRefs = traverseReferences(type, checker);
   if (typeRefs.length === 1 && typeRefs[0] === type) {
     return false;
   }
@@ -18,7 +18,7 @@ export function checkCustomTypehints(type: ts.Type, checker: ts.TypeChecker) {
 
   let typesToDrop: any[] = [];
   const foundTypes = typeRefs.map((t) => {
-    let typeNode = checker.typeToTypeNode(t, undefined, undefined);
+    const typeNode = checker.typeToTypeNode(t, undefined, undefined);
     if (!typeNode) {
       return t;
     }
@@ -40,7 +40,7 @@ export function checkCustomTypehints(type: ts.Type, checker: ts.TypeChecker) {
     return t;
   });
 
-  return {foundTypes, typesToDrop};
+  return { foundTypes, typesToDrop };
 }
 
 export function traverseReferences(type: ts.Type, checker: ts.TypeChecker): ts.Type[] {
@@ -49,8 +49,8 @@ export function traverseReferences(type: ts.Type, checker: ts.TypeChecker): ts.T
   }
 
   let types: ts.Type[] = [];
-  for (let t of type.types) {
-    let typeNode = checker.typeToTypeNode(t, undefined, undefined);
+  for (const t of type.types) {
+    const typeNode = checker.typeToTypeNode(t, undefined, undefined);
     if (typeNode) {
       if (typeNode.kind === ts.SyntaxKind.TypeReference || typeNode.kind === ts.SyntaxKind.TypeAliasDeclaration) {
         types = types.concat(traverseReferences(t, checker));

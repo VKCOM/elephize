@@ -174,7 +174,14 @@ export class Scope<NodeData extends { [key: string]: any }> {
     return child;
   }
 
-  protected _logAction(action: string, traceSourceIdent: string, dryRun: boolean, traceTargetIdents: Array<string | undefined>, terminateLocally: boolean, terminateGlobally: boolean) {
+  protected _logAction(
+    action: string,
+    traceSourceIdent: string,
+    dryRun: boolean,
+    traceTargetIdents: Array<string | undefined>,
+    terminateLocally: boolean,
+    terminateGlobally: boolean
+  ) {
     if (!(this.log.verbosity & LogVerbosity.WITH_ELIMINATION_HINTS)) {
       return;
     }
@@ -211,7 +218,15 @@ export class Scope<NodeData extends { [key: string]: any }> {
    * @param terminateLocally  Set this to true if variable or result of function call is returned as result.
    * @param dryRun  First pass of codegen?
    */
-  public addDeclaration(traceSourceIdent: string, traceTargetIdents: Array<string | undefined>, { terminateGlobally = false, terminateLocally = false, dryRun = false } = {}): BoundNode<NodeData> | null {
+  public addDeclaration(
+    traceSourceIdent: string,
+    traceTargetIdents: Array<string | undefined>,
+    {
+      terminateGlobally = false,
+      terminateLocally = false,
+      dryRun = false,
+    } = {}
+  ): BoundNode<NodeData> | null {
     let node: BoundNode<NodeData>;
     // To make sure we're creating a new node and not binding lately-bound one, we should check every child
     // scope (recursively) for existence of node with current identifier.
@@ -284,7 +299,7 @@ export class Scope<NodeData extends { [key: string]: any }> {
       return;
     }
 
-    let traceSourceNode = this._findOrInsertNode(traceSourceIdent);
+    const traceSourceNode = this._findOrInsertNode(traceSourceIdent);
     this.identsUsed.add(traceSourceNode);
     this._callListeners(Scope.EV_USAGE, traceSourceIdent);
 

@@ -13,8 +13,8 @@ export function tIdentifier(node: ts.Identifier, context: Context<Declaration>) 
 
   if (builtin) {
     if (
-      node.parent.kind === ts.SyntaxKind.PropertyAccessExpression && (node.parent as ts.PropertyAccessExpression).expression === node
-      || isCallableIdent
+      node.parent.kind === ts.SyntaxKind.PropertyAccessExpression && (node.parent as ts.PropertyAccessExpression).expression === node ||
+      isCallableIdent
     ) {
       if (node.escapedText === 'console') {
         return `\\${context.namespaces.builtins}\\Console`; // to make more consistent classes on server side
@@ -28,7 +28,7 @@ export function tIdentifier(node: ts.Identifier, context: Context<Declaration>) 
     context.log.error('Special variable \'window._elephizeIsServer\' should be used in ternary conditions only!', [], context.log.ctx(node));
   }
 
-  const [decl, ] = context.scope.findByIdent(node.escapedText.toString()) || [];
+  const [decl] = context.scope.findByIdent(node.escapedText.toString()) || [];
 
   if (decl && decl.flags & DeclFlag.DereferencedImport) {
     if (!decl.targetModulePath) {
@@ -84,8 +84,8 @@ export function tIdentifier(node: ts.Identifier, context: Context<Declaration>) 
   }
 
   if (
-    isCallableIdent // called func name
-    || node.parent.kind === ts.SyntaxKind.FunctionDeclaration // declared func name
+    isCallableIdent || // called func name
+    node.parent.kind === ts.SyntaxKind.FunctionDeclaration // declared func name
   ) {
     // if it's function call, don't add to closure and just return the identifier
     return typeCast(node) + `$${snakify(decl?.propName || node.escapedText.toString())}`;

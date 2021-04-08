@@ -6,7 +6,7 @@ import { retrieveConfig } from './ts2php/components/cli/retrieveConfig';
 import { configureLogging } from './ts2php/components/cli/configureLogging';
 import { transpile } from './ts2php/components/cli/transpile';
 
-let _options = cli.parse({
+const _options = cli.parse({
   config: ['c', 'Configuration file path', 'string', undefined],
   src: ['s', 'An entry point (file or glob) to process', 'string', undefined],
   outDir: ['d', 'Directory for generated php files', 'string', undefined],
@@ -34,7 +34,7 @@ const log = configureLogging({
   verbose: options.verbose,
   verboseTypehints: options.verboseTypehints,
   verboseUsage: options.verboseUsage,
-  quiet: options.quiet
+  quiet: options.quiet,
 });
 
 log.info('Running with configuration: %s', [JSON.stringify(options, null, '  ')]);

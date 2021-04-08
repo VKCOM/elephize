@@ -24,7 +24,7 @@ export function tVariableDeclaration(node: ts.VariableDeclaration, context: Cont
     return renderNodes([identifierNode], context)[0]; // render only binding form, it will take all names from parent
   }
 
-  let [identifier] = renderNodes([identifierNode], context);
+  const [identifier] = renderNodes([identifierNode], context);
   const parentStatement = getClosestParentOfType(node, ts.SyntaxKind.VariableStatement);
 
   const isTop = isTopLevel(node, context);
@@ -41,7 +41,7 @@ export function tVariableDeclaration(node: ts.VariableDeclaration, context: Cont
 
   // Declaration-only
   if (!node.initializer) { // Single var declaration without initialization
-    let decl = context.scope.addDeclaration(
+    const decl = context.scope.addDeclaration(
       node.name.getText(), [],
       { terminateGlobally: isExportedVar(node.name), dryRun: context.dryRun }
     );
@@ -92,7 +92,14 @@ export function tVariableDeclaration(node: ts.VariableDeclaration, context: Cont
   return `${identifier} = ${initializer}`;
 }
 
-function topStatements(node: ts.VariableDeclaration, initializerNode: ts.Node | undefined, addIdent: (ident: string) => Set<string>, usedIdents: Set<string>, isFuncDeclaration: boolean, context: Context<Declaration> ) {
+function topStatements(
+  node: ts.VariableDeclaration,
+  initializerNode: ts.Node | undefined,
+  addIdent: (ident: string) => Set<string>,
+  usedIdents: Set<string>,
+  isFuncDeclaration: boolean,
+  context: Context<Declaration>
+) {
   if (!node.initializer) {
     context.scope.removeEventListener(Scope.EV_USAGE, addIdent);
     context.log.error('Module scope variables should have initializers to ensure proper type detection', [], context.log.ctx(node));
@@ -108,7 +115,7 @@ function topStatements(node: ts.VariableDeclaration, initializerNode: ts.Node | 
         nodeIdent: node.name.getText(),
         context,
         origDecl: node,
-        origStatement: node.initializer
+        origStatement: node.initializer,
       });
 
       // Previous call sets isComponent flag, so it's required for this check to be exactly after generate..()
@@ -131,7 +138,7 @@ function topStatements(node: ts.VariableDeclaration, initializerNode: ts.Node | 
       }
     }
   } else {
-    let [initializer] = renderNodes([initializerNode], context);
+    const [initializer] = renderNodes([initializerNode], context);
 
     const nameIdent = node.name;
     // We expect plain identifier as name here
@@ -175,7 +182,7 @@ function topStatements(node: ts.VariableDeclaration, initializerNode: ts.Node | 
     decl.data.flags |= DeclFlag.HoistedToModule;
     decl.data.targetModulePath = context.moduleDescriptor.targetFileName;
     if (isExportedVar(node.name)) {
-      context.scope.terminateCall(node.name.getText(), {dryRun: context.dryRun});
+      context.scope.terminateCall(node.name.getText(), { dryRun: context.dryRun });
     }
   }
 

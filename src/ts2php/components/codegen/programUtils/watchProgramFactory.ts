@@ -1,15 +1,14 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 
 import * as ts from 'typescript';
-import { getDefaultCompilerOptions } from 'typescript';
 import { LogObj } from '../../../utils/log';
 import { CliOptions, ImportReplacementRule } from '../../../types';
 import { resolveModules } from '../../cjsModules/resolveModules';
 
 const formatHost: ts.FormatDiagnosticsHost = {
-  getCanonicalFileName: path => path,
+  getCanonicalFileName: (path) => path,
   getCurrentDirectory: ts.sys.getCurrentDirectory,
-  getNewLine: () => ts.sys.newLine
+  getNewLine: () => ts.sys.newLine,
 };
 let lastDiagCode: number | undefined;
 
@@ -35,10 +34,10 @@ export function getWatchProgram(
   log: LogObj,
   getCloseHandle?: (closeHandle: () => void) => void
 ) {
-  const options: ts.CompilerOptions = {...compilerOptions || {}};
+  const options: ts.CompilerOptions = { ...compilerOptions || {} };
 
   // mix in default options
-  const defaultOptions = getDefaultCompilerOptions();
+  const defaultOptions = ts.getDefaultCompilerOptions();
   for (const key in defaultOptions) {
     if (defaultOptions.hasOwnProperty(key) && options[key] === undefined) {
       options[key] = defaultOptions[key];

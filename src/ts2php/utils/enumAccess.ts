@@ -5,7 +5,7 @@ import { resolveAliasesAndPaths } from './pathsAndNames';
 import { Context } from '../components/context';
 import { Declaration } from '../types';
 
-export function handleEnumMemberAccess(node: ts.PropertyAccessExpression,  context: Context<Declaration>): string | boolean {
+export function handleEnumMemberAccess(node: ts.PropertyAccessExpression, context: Context<Declaration>): string | boolean {
   const symAccessor = context.checker.getSymbolAtLocation(node.name);
   // Note: we check node.name first, because it will be EnumMember in both local and imported enum cases.
   if (symAccessor && symAccessor.valueDeclaration?.kind === ts.SyntaxKind.EnumMember) {
@@ -20,15 +20,26 @@ export function handleEnumMemberAccess(node: ts.PropertyAccessExpression,  conte
         return true; // error, outer code should return ''
       }
 
-      let currentFilePath = node.getSourceFile().fileName;
+      const currentFilePath = node.getSourceFile().fileName;
       const moduleSpec = (importDecl.moduleSpecifier as ts.StringLiteral).text;
-      let sourceFilename = resolveAliasesAndPaths(context.log, moduleSpec, path.dirname(currentFilePath), context.baseDir, context.compilerOptions.paths || {}, context.registry._aliases);
+      const sourceFilename = resolveAliasesAndPaths(
+        context.log, moduleSpec,
+        path.dirname(currentFilePath),
+        context.baseDir,
+        context.compilerOptions.paths || {},
+        context.registry._aliases
+      );
 
       if (sourceFilename === null) {
         if (moduleSpec.includes('/')) {
           context.log.error('Module not found: tried to find %s', [moduleSpec], context.log.ctx(node));
         } else {
-          context.log.error('Importing arbitrary node modules is not supported. Only "react" module is allowed at the moment. Also you may want to import specific file from module - this is supported.', [], context.log.ctx(node));
+          context.log.error(
+            'Importing arbitrary node modules is not supported. Only "react" module is allowed at the moment.' +
+            ' Also you may want to import specific file from module - this is supported.',
+            [],
+            context.log.ctx(node)
+          );
         }
         return true; // error, outer code should return ''
       }

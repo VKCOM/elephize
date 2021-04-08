@@ -21,7 +21,7 @@ type HookRenderers = Dict<HookRenderer>;
 const dropRender: HookRenderer = (node, context) => {
   flagParentOfType(node, [
     ts.SyntaxKind.VariableDeclaration,
-    ts.SyntaxKind.BinaryExpression // assignment with no declaration
+    ts.SyntaxKind.BinaryExpression, // assignment with no declaration
   ], { drop: true }, context.nodeFlagsStore);
   return null;
 };
@@ -97,7 +97,7 @@ export function checkReactAssignment(node: ts.VariableDeclaration, context: Cont
   // Check dereferenced assignment
   if (context.moduleDescriptor.checkSpecialVarIdentifier(node.initializer, 'react')) {
     if (node.name.kind === ts.SyntaxKind.ObjectBindingPattern) {
-      for (let n of node.name.elements) {
+      for (const n of node.name.elements) {
         registerHookInContext((n.propertyName || n.name).getText(), n.name.getText(), context, node);
       }
     }

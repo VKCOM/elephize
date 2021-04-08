@@ -56,7 +56,7 @@ const log = configureLogging({
     if (context && expectedErrContext[context.split(':')[0]] && !expectedErrContext[context.split(':')[0]].includes(msgid)) {
       Logger.prototype._printLog.bind(log)(message, msgid, params, severity, context);
     }
-  }
+  },
 });
 
 test('ts2php.byType', () => {

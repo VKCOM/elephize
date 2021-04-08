@@ -12,12 +12,12 @@ type ConfigureLoggingParams = {
 };
 
 export function configureLogging(options: ConfigureLoggingParams): Logger {
-  let opts: LogOptions = {
+  const opts: LogOptions = {
     noOutput: false,
     baseDir: options.baseDir,
     outDir: options.outDir,
     verbosity: LogVerbosity.ERROR | LogVerbosity.WARN | LogVerbosity.WITH_CONTEXT,
-    forceStderr: options.output === '__stdout' // stdout used to print bootstrap file, force use stderr for debug messages
+    forceStderr: options.output === '__stdout', // stdout used to print bootstrap file, force use stderr for debug messages
   };
 
   if (options.quiet) {

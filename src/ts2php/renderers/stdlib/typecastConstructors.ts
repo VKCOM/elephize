@@ -11,11 +11,11 @@ import { renderNode } from '../../components/codegen/renderNodes';
  * @param context
  */
 export const typecastConstructors: ExpressionHook = (node: ts.CallExpression, context: Context<Declaration>) => {
-  const toCheck = node.expression.kind === ts.SyntaxKind.Identifier
-    && ['Number', 'String', 'Boolean'].includes(node.expression.getText());
+  const toCheck = node.expression.kind === ts.SyntaxKind.Identifier &&
+    ['Number', 'String', 'Boolean'].includes(node.expression.getText());
 
   if (toCheck) {
-    let varName = renderNode(getCallExpressionArg(node), context);
+    const varName = renderNode(getCallExpressionArg(node), context);
     switch (node.expression.getText()) {
       case 'Number':
         return `+${varName}`;

@@ -12,7 +12,7 @@ export function tParameterDeclaration(node: ts.ParameterDeclaration, context: Co
     const parentFunc = getClosestParentOfAnyType(node, [
       ts.SyntaxKind.FunctionExpression,
       ts.SyntaxKind.FunctionDeclaration,
-      ts.SyntaxKind.ArrowFunction
+      ts.SyntaxKind.ArrowFunction,
     ]);
 
     if (!parentFunc) {
@@ -24,15 +24,15 @@ export function tParameterDeclaration(node: ts.ParameterDeclaration, context: Co
     const varName = `anon_deref_${index}`;
     context.nodeFlagsStore.upsert(parentFunc, { elIndex: index + 1 });
 
-    const { renderedString, identList } = node.name.kind === ts.SyntaxKind.ObjectBindingPattern
-      ? renderObjectBinding(node.name, varName, context)
-      : renderArrayBinding(node.name, varName, context);
+    const { renderedString, identList } = node.name.kind === ts.SyntaxKind.ObjectBindingPattern ?
+      renderObjectBinding(node.name, varName, context) :
+      renderArrayBinding(node.name, varName, context);
 
     identList.forEach((ident) => context.scope.addDeclaration(ident.getText(), [], { dryRun: context.dryRun }));
 
     const vars = context.nodeFlagsStore.get(parentFunc)?.destructuringInfo?.vars || '';
     context.nodeFlagsStore.upsert(parentFunc, {
-      destructuringInfo: { vars: [vars, renderedString].filter((el) => !!el).join('\n') }
+      destructuringInfo: { vars: [vars, renderedString].filter((el) => !!el).join('\n') },
     });
 
     return `$${snakify(varName)}`;

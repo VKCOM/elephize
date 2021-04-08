@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import { SyntaxWalker } from '../../../vendor/php-parser/language/syntax/SyntaxWalker';
 import {
   ClassDeclarationSyntaxNode,
-  MethodDeclarationSyntaxNode
+  MethodDeclarationSyntaxNode,
 } from '../../../vendor/php-parser/language/syntax/SyntaxNode.Generated';
 import { ISyntaxNode } from '../../../vendor/php-parser/language/syntax/ISyntaxNode';
 import { ISyntaxToken } from '../../../vendor/php-parser/language/syntax/ISyntaxToken';
@@ -34,7 +34,7 @@ export class PhpParsedStruct extends SyntaxWalker {
   }
 
   protected _get(span?: TextSpan): string {
-    if (!span) return '';
+    if (!span) { return ''; }
     return this._src.slice(span.start, span.start + span.length);
   }
 
@@ -46,7 +46,7 @@ export class PhpParsedStruct extends SyntaxWalker {
   public visitMethodDeclaration(node: MethodDeclarationSyntaxNode) {
     const mods = node.modifiers?.allChildren().map((c: ISyntaxNode | ISyntaxToken) => this._get(c.span)) || [];
     const name = this._get(node.identifierOrKeyword.span);
-    for (let triv of (node.leadingTrivia || [])) {
+    for (const triv of (node.leadingTrivia || [])) {
       if (!this._get(triv.span).includes('@return')) {
         continue;
       }

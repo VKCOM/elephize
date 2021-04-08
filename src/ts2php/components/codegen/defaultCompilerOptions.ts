@@ -10,7 +10,7 @@ export const defaultOptions: ts.CompilerOptions = {
     'lib.es2015.d.ts',
     'lib.es2016.d.ts',
 
-    path.resolve(__dirname, '..', '..', '..', '..', 'types', 'global', 'index.d.ts')
+    path.resolve(__dirname, '..', '..', '..', '..', 'types', 'global', 'index.d.ts'),
   ],
   moduleResolution: ts.ModuleResolutionKind.NodeJs,
   module: ts.ModuleKind.CommonJS,

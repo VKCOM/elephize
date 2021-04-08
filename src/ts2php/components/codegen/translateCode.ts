@@ -34,19 +34,35 @@ export const translateCode: TranslatorFunc = (
 ): NodeFlagStore => {
   // Enable more logging using env var
   const nodeFlagStore = new NodeFlagStore();
-  let [program, replacements] = getBuildProgram(
+  const [program, replacements] = getBuildProgram(
     fileNames,
     importRules,
     baseDir,
     tsPaths,
     {
-      compilerOptions: {...defaultOptions, ...options}
+      compilerOptions: { ...defaultOptions, ...options },
     },
     () => null,
     log
   );
 
-  translateProgram(program, replacements, nodeFlagStore, log, { onData, onBeforeRender, baseDir, disableCodeElimination, aliases, namespaces, serverFilesRoot, encoding, options, onFinish });
+  translateProgram(
+    program,
+    replacements,
+    nodeFlagStore,
+    log,
+    {
+      onData,
+      onBeforeRender,
+      baseDir,
+      disableCodeElimination,
+      aliases,
+      namespaces,
+      serverFilesRoot,
+      encoding,
+      options,
+      onFinish,
+    });
   return nodeFlagStore;
 };
 
@@ -70,7 +86,7 @@ export const translateCodeAndWatch: TranslatorFunc = (
   }: TranslateOptions
 ): NodeFlagStore => {
   const nodeFlagStore = new NodeFlagStore(); // TODO: check! this may lead to unforeseen consequences in sequential rebuilds
-  getWatchProgram(fileNames, importRules, baseDir, tsPaths, {...defaultOptions, ...options}, (program, replacements, errcode) => {
+  getWatchProgram(fileNames, importRules, baseDir, tsPaths, { ...defaultOptions, ...options }, (program, replacements, errcode) => {
     translateProgram(program, replacements, nodeFlagStore, log, {
       aliases,
       baseDir,
@@ -81,7 +97,7 @@ export const translateCodeAndWatch: TranslatorFunc = (
       onBeforeRender,
       onData: (sourceFilename: string, targetFilename: string, content: string) => onData(sourceFilename, targetFilename, content, errcode),
       onFinish,
-      options: {...defaultOptions, ...options},
+      options: { ...defaultOptions, ...options },
     });
   }, log, getCloseHandle);
   return nodeFlagStore;

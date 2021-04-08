@@ -19,7 +19,7 @@ export const stringTrim: ExpressionHook = (node: ts.CallExpression, context: Con
       return 'null';
     }
     const varNameNode = getCallExpressionLeftSide(node);
-    let varName = renderNode(varNameNode, context);
+    const varName = renderNode(varNameNode, context);
     return `trim(${varName})`;
   }
 };

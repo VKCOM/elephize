@@ -5,5 +5,5 @@ export const phpPrettierOptions = {
   plugins: [phpPlugin],
   parser: 'php',
   printWidth: 120,
-  braceStyle: '1tbs'
+  braceStyle: '1tbs',
 } as any;

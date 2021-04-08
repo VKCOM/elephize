@@ -29,7 +29,7 @@ export function getBuildProgram(
   log: LogObj
 ): [ts.Program, ImportReplacementRule[]] {
   const diagnostics: ts.Diagnostic[] = [];
-  const options: ts.CompilerOptions = {...transpileOptions.compilerOptions || {}};
+  const options: ts.CompilerOptions = { ...transpileOptions.compilerOptions || {} };
 
   // mix in default options
   const defaultOptions = ts.getDefaultCompilerOptions();
@@ -58,7 +58,7 @@ export function getBuildProgram(
     writeFile,
     getDefaultLibFileName: () => 'lib.d.ts',
     useCaseSensitiveFileNames: () => false,
-    getCanonicalFileName: fileName => fileName,
+    getCanonicalFileName: (fileName) => fileName,
     getCurrentDirectory: () => '',
     getNewLine: () => '\n',
     fileExists: (fileName): boolean => {
@@ -66,14 +66,14 @@ export function getBuildProgram(
     },
     readFile: () => '',
     directoryExists: () => true,
-    getDirectories: () => []
+    getDirectories: () => [],
   };
 
   const program = ts.createProgram(filenames, options, compilerHost);
 
   if (transpileOptions.reportDiagnostics) {
-    addRange(/*to*/ diagnostics, /*from*/ program.getSyntacticDiagnostics());
-    addRange(/*to*/ diagnostics, /*from*/ program.getOptionsDiagnostics());
+    addRange(/* to*/ diagnostics, /* from*/ program.getSyntacticDiagnostics());
+    addRange(/* to*/ diagnostics, /* from*/ program.getOptionsDiagnostics());
   }
 
   return [program, replacements];

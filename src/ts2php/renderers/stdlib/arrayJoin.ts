@@ -23,8 +23,8 @@ export const arrayJoin: ExpressionHook = (node: ts.CallExpression, context: Cont
 
   const varNameNode = getCallExpressionLeftSide(node);
 
-  let args = renderNodes([...node.arguments], context);
-  let varName = renderNode(varNameNode, context);
+  const args = renderNodes([...node.arguments], context);
+  const varName = renderNode(varNameNode, context);
   if (!args || !args[0]) {
     return `implode(${varName})`;
   }

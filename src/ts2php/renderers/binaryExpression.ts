@@ -16,7 +16,7 @@ export function tBinaryExpression(node: ts.BinaryExpression, context: Context<De
     ts.SyntaxKind.SlashEqualsToken,
     ts.SyntaxKind.PercentEqualsToken,
     ts.SyntaxKind.BarEqualsToken,
-    ts.SyntaxKind.AmpersandEqualsToken
+    ts.SyntaxKind.AmpersandEqualsToken,
   ].includes(node.operatorToken.kind)) {
     checkModificationInNestedScope(node.left as ts.Identifier, context);
   }
@@ -29,7 +29,7 @@ export function tBinaryExpression(node: ts.BinaryExpression, context: Context<De
     ts.SyntaxKind.SlashEqualsToken,
     ts.SyntaxKind.PercentEqualsToken,
     ts.SyntaxKind.BarEqualsToken,
-    ts.SyntaxKind.AmpersandEqualsToken
+    ts.SyntaxKind.AmpersandEqualsToken,
   ].includes(node.operatorToken.kind)) {
     checkModificationInNestedScope(getLeftExpr(node.left) as ts.Identifier, context);
   }
@@ -37,25 +37,25 @@ export function tBinaryExpression(node: ts.BinaryExpression, context: Context<De
   let replaceLiteral: string | null = null;
   if (node.operatorToken.kind === ts.SyntaxKind.PlusToken) {
     // php needs . for concatenation so we should check inferred types.
-    let typeLeft = context.checker.getTypeAtLocation(node.left);
-    let typeRight = context.checker.getTypeAtLocation(node.right);
+    const typeLeft = context.checker.getTypeAtLocation(node.left);
+    const typeRight = context.checker.getTypeAtLocation(node.right);
     if (
-      typeLeft.isStringLiteral()
-      || typeRight.isStringLiteral()
-      || context.checker.typeToString(typeLeft, node.left, ts.TypeFormatFlags.None) === 'string'
-      || context.checker.typeToString(typeRight, node.right, ts.TypeFormatFlags.None) === 'string'
+      typeLeft.isStringLiteral() ||
+      typeRight.isStringLiteral() ||
+      context.checker.typeToString(typeLeft, node.left, ts.TypeFormatFlags.None) === 'string' ||
+      context.checker.typeToString(typeRight, node.right, ts.TypeFormatFlags.None) === 'string'
     ) {
       replaceLiteral = '.';
     }
   } else if (node.operatorToken.kind === ts.SyntaxKind.PlusEqualsToken) {
     // php needs .= for concatenation so we should check inferred types.
-    let typeLeft = context.checker.getTypeAtLocation(node.left);
-    let typeRight = context.checker.getTypeAtLocation(node.right);
+    const typeLeft = context.checker.getTypeAtLocation(node.left);
+    const typeRight = context.checker.getTypeAtLocation(node.right);
     if (
-      typeLeft.isStringLiteral()
-      || typeRight.isStringLiteral()
-      || context.checker.typeToString(typeLeft, node.left, ts.TypeFormatFlags.None) === 'string'
-      || context.checker.typeToString(typeRight, node.right, ts.TypeFormatFlags.None) === 'string'
+      typeLeft.isStringLiteral() ||
+      typeRight.isStringLiteral() ||
+      context.checker.typeToString(typeLeft, node.left, ts.TypeFormatFlags.None) === 'string' ||
+      context.checker.typeToString(typeRight, node.right, ts.TypeFormatFlags.None) === 'string'
     ) {
       replaceLiteral = '.=';
     }
@@ -63,7 +63,7 @@ export function tBinaryExpression(node: ts.BinaryExpression, context: Context<De
 
   // Elvis operator for simple expressions
   if (node.operatorToken.kind === ts.SyntaxKind.BarBarToken) {
-    let typeRight = context.checker.getTypeAtLocation(node.right);
+    const typeRight = context.checker.getTypeAtLocation(node.right);
     if (context.checker.typeToString(typeRight, node.right, ts.TypeFormatFlags.None) !== 'boolean') {
       let kind = node.parent?.kind;
       if (kind === ts.SyntaxKind.SyntaxList) {
@@ -76,7 +76,7 @@ export function tBinaryExpression(node: ts.BinaryExpression, context: Context<De
           ts.SyntaxKind.VariableDeclaration,
           ts.SyntaxKind.ParenthesizedExpression,
           ts.SyntaxKind.JsxExpression,
-          ts.SyntaxKind.CallExpression
+          ts.SyntaxKind.CallExpression,
         ].includes(kind)) {
           replaceLiteral = '?:';
         }
@@ -89,7 +89,7 @@ export function tBinaryExpression(node: ts.BinaryExpression, context: Context<De
 
   // Make ternary expression from && operator
   if (node.operatorToken.kind === ts.SyntaxKind.AmpersandAmpersandToken) {
-    let typeRight = context.checker.getTypeAtLocation(node.right);
+    const typeRight = context.checker.getTypeAtLocation(node.right);
     if (context.checker.typeToString(typeRight, node.right, ts.TypeFormatFlags.None) !== 'boolean') {
       let kind = node.parent?.kind;
       if (kind === ts.SyntaxKind.SyntaxList) {
@@ -102,10 +102,9 @@ export function tBinaryExpression(node: ts.BinaryExpression, context: Context<De
             ts.SyntaxKind.VariableDeclaration,
             ts.SyntaxKind.ParenthesizedExpression,
             ts.SyntaxKind.JsxExpression,
-            ts.SyntaxKind.CallExpression
+            ts.SyntaxKind.CallExpression,
           ].includes(kind)
         ) {
-
           const leftExpr = renderLeftExpr(node, context);
           const rightExpr = renderRightExpr(node, context);
           return `${leftExpr} ? ${rightExpr} : ${leftExpr}`;
@@ -154,7 +153,7 @@ function markVarsUsage(origExpr: ts.BinaryExpression, usedVars: Set<string>, onU
   const leftVal = getLeftExpr(origExpr.left);
   if (leftVal) {
     // also connect all used vars to varname node as side-effect usage
-    for (let ident of Array.from(usedVars)) {
+    for (const ident of Array.from(usedVars)) {
       context.scope.terminateCall(ident, { traceSourceIdent: leftVal.getText(), dryRun: context.dryRun });
     }
   }
@@ -162,7 +161,7 @@ function markVarsUsage(origExpr: ts.BinaryExpression, usedVars: Set<string>, onU
 
 function renderLeftExpr(origExpr: ts.BinaryExpression, context: Context<Declaration>) {
   let [usedVarsLeft, onUsageLeft] = startVarsCollecting(context);
-  let leftExpr = renderNode(origExpr.left, context);
+  const leftExpr = renderNode(origExpr.left, context);
   const leftVal = getLeftExpr(origExpr.left);
   if (leftVal) {
     usedVarsLeft.delete(leftVal.getText());
@@ -174,8 +173,8 @@ function renderLeftExpr(origExpr: ts.BinaryExpression, context: Context<Declarat
 }
 
 function renderRightExpr(origExpr: ts.BinaryExpression, context: Context<Declaration>) {
-  let [usedVarsRight, onUsageRight] = startVarsCollecting(context);
-  let rightExpr = renderNode(origExpr.right, context);
+  const [usedVarsRight, onUsageRight] = startVarsCollecting(context);
+  const rightExpr = renderNode(origExpr.right, context);
   markVarsUsage(origExpr, usedVarsRight, onUsageRight, context);
   return rightExpr;
 }

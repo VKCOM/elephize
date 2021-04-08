@@ -118,17 +118,17 @@ export class Logger implements LogObj {
     if (!node) {
       return '';
     }
-    let { line, character } = node.getSourceFile().getLineAndCharacterOfPosition(node.getStart());
-    const filename = this.baseDir
-      ? node.getSourceFile().fileName.replace(this.baseDir, '[base]')
-      : node.getSourceFile().fileName;
+    const { line, character } = node.getSourceFile().getLineAndCharacterOfPosition(node.getStart());
+    const filename = this.baseDir ?
+      node.getSourceFile().fileName.replace(this.baseDir, '[base]') :
+      node.getSourceFile().fileName;
     return `@${filename}:${line + 1}:${character + 1}`;
   }
 
   public shortCtx(fn: string): string {
-    const filename = this.baseDir
-      ? fn.replace(this.baseDir, '[base]')
-      : fn;
+    const filename = this.baseDir ?
+      fn.replace(this.baseDir, '[base]') :
+      fn;
     return `@${filename}`;
   }
 

@@ -11,12 +11,12 @@ import { renderNodes } from '../../components/codegen/renderNodes';
  * @param context
  */
 export const arrayIsArray: ExpressionHook = (node: ts.CallExpression, context: Context<Declaration>) => {
-  const toCheck = node.expression.kind === ts.SyntaxKind.PropertyAccessExpression
-    && (node.expression as ts.PropertyAccessExpression).expression.getText() === 'Array'
-    && (node.expression as ts.PropertyAccessExpression).name.escapedText === 'isArray';
+  const toCheck = node.expression.kind === ts.SyntaxKind.PropertyAccessExpression &&
+    (node.expression as ts.PropertyAccessExpression).expression.getText() === 'Array' &&
+    (node.expression as ts.PropertyAccessExpression).name.escapedText === 'isArray';
 
   if (toCheck) {
-    let varName = renderNodes([getCallExpressionArg(node)], context);
+    const varName = renderNodes([getCallExpressionArg(node)], context);
     return `Stdlib::arrayIsArray(${varName})`;
   }
 };

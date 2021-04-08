@@ -9,7 +9,7 @@ export const tThis = (node: ts.ThisExpression, context: Context<Declaration>) =>
   flagParentOfType(node, [
     ts.SyntaxKind.ExpressionStatement,
     ts.SyntaxKind.VariableDeclaration,
-    ts.SyntaxKind.IfStatement
+    ts.SyntaxKind.IfStatement,
   ], { drop: true, dropReplacement: '/* ERROR: `this` keyword used in expression */' }, context.nodeFlagsStore);
   return '';
 };

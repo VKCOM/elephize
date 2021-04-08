@@ -29,6 +29,6 @@ export const arrayMap: ExpressionHook = (node: ts.CallExpression, context: Conte
   }
 
   const varNode = getCallExpressionLeftSide(node);
-  let [renderedFunction, varName] = renderNodes([funcNode, varNode], context);
+  const [renderedFunction, varName] = renderNodes([funcNode, varNode], context);
   return `Stdlib::arrayMap${funcArgsCount}(${varName}, ${renderedFunction})`;
 };

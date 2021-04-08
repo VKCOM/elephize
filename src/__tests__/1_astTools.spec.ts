@@ -1,4 +1,4 @@
-import { translateCode} from '../ts2php/components/codegen/translateCode';
+import { translateCode } from '../ts2php/components/codegen/translateCode';
 import * as path from 'path';
 import { getBuildProgram } from '../ts2php/components/codegen/programUtils/buildProgramFactory';
 import * as ts from 'typescript';
@@ -7,20 +7,20 @@ import {
   getChildChainByType,
   getClosestParentOfType,
   getClosestParentOfTypeWithFlag, getIdentities,
-  getLeftExpr
+  getLeftExpr,
 } from '../ts2php/utils/ast';
 import { NodeFlagStore } from '../ts2php/components/codegen/nodeFlagStore';
 import { defaultOptions } from '../ts2php/components/codegen/defaultCompilerOptions';
 import { configureLogging } from '../ts2php/components/cli/configureLogging';
 
 const log = configureLogging({
-  baseDir: '', output: '', outDir: ''
+  baseDir: '', output: '', outDir: '',
 });
 
 function compile(files: string[]): ts.SourceFile | undefined {
-  let [program] = getBuildProgram(files, {}, '', {},
+  const [program] = getBuildProgram(files, {}, '', {},
     {
-      compilerOptions: defaultOptions
+      compilerOptions: defaultOptions,
     },
     () => null,
     log
@@ -38,7 +38,7 @@ function findFirstNode(where: ts.Node, type: ts.SyntaxKind) {
       return where;
     }
 
-    for (let child of where.getChildren()) {
+    for (const child of where.getChildren()) {
       const result = _traverse(child, type);
       if (result) {
         return result;
@@ -59,7 +59,7 @@ function recompile(fileNames: string[], onData: (filename: string, rootNode: ts.
     serverFilesRoot: '',
     encoding: 'utf-8',
     onBeforeRender: onData,
-    onData: () => undefined
+    onData: () => undefined,
   });
 }
 
@@ -69,7 +69,7 @@ test('ts2php.AstTools.leftExpr', () => {
     throw new Error('File not found');
   }
 
-  const [ expr ] = srcNode.statements.slice(1, 2);
+  const [expr] = srcNode.statements.slice(1, 2);
   const lExp = (expr.getChildren(srcNode)[0] as ts.BinaryExpression).left;
 
   const result = getLeftExpr(lExp as ts.LeftHandSideExpression, srcNode);
@@ -84,7 +84,7 @@ test('ts2php.AstTools.getIdentities', () => {
     throw new Error('File not found');
   }
 
-  const [ expr ] = srcNode.statements.slice(4, 5);
+  const [expr] = srcNode.statements.slice(4, 5);
   const lExp = (expr as ts.SwitchStatement).expression;
 
   const result = getIdentities(lExp as ts.LeftHandSideExpression).map((ident) => ident.getText(srcNode));
@@ -168,7 +168,7 @@ test('ts2php.AstTools.getChildChainByType', () => {
       ts.SyntaxKind.VariableDeclarationList,
       ts.SyntaxKind.SyntaxList,
       ts.SyntaxKind.VariableDeclaration,
-      ts.SyntaxKind.CallExpression
+      ts.SyntaxKind.CallExpression,
     ]);
     expect(call).toBeTruthy();
     expect(call!.kind).toEqual(ts.SyntaxKind.CallExpression);

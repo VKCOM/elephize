@@ -27,10 +27,10 @@ export const stringReplace: ExpressionHook = (node: ts.CallExpression, context: 
   const varNameNode = (node.expression as ts.PropertyAccessExpression).expression;
   const [pattern, replacement] = renderNodes([...node.arguments], context);
 
-  let varName = renderNode(varNameNode, context);
+  const varName = renderNode(varNameNode, context);
   // replace can use string or regexp as pattern, so we should check inferred type of argument.
-  let nd: ts.Node = node.arguments[0];
-  let type = context.checker.getTypeAtLocation(nd);
+  const nd: ts.Node = node.arguments[0];
+  const type = context.checker.getTypeAtLocation(nd);
   if (type.isStringLiteral() || context.checker.typeToString(type, nd, ts.TypeFormatFlags.None) === 'string') {
     // string literals as pattern
     if (propReplaceAll) {

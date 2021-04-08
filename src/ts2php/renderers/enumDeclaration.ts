@@ -42,9 +42,9 @@ export const tEnumDeclaration = (node: ts.EnumDeclaration, context: Context<Decl
         .replace(/^['"]|['"]$/g, '')
         .toUpperCase(),
       val,
-      member.initializer
-        ? getPhpPrimitiveType(member.initializer, context.checker, context.log)
-        : 'int'
+      member.initializer ?
+        getPhpPrimitiveType(member.initializer, context.checker, context.log) :
+        'int'
     );
   });
 

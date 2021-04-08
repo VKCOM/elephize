@@ -6,7 +6,7 @@ import { Context } from '../../components/context';
 import {
   flagParentOfType,
   getCallExpressionLeftSide,
-  getLeftExpr
+  getLeftExpr,
 } from '../../utils/ast';
 import { renderNode, renderNodes } from '../../components/codegen/renderNodes';
 
@@ -35,12 +35,12 @@ export const arrayStringSlice: ExpressionHook = (node: ts.CallExpression, contex
   if (!propNameIs('slice', node)) {
     return undefined;
   }
-  let nd: ts.Node = (node.expression as ts.PropertyAccessExpression).expression;
-  let type = context.checker.getTypeAtLocation(nd);
+  const nd: ts.Node = (node.expression as ts.PropertyAccessExpression).expression;
+  const type = context.checker.getTypeAtLocation(nd);
   const varNameNode = getCallExpressionLeftSide(node);
   if (type.isStringLiteral() || context.checker.typeToString(type, nd, ts.TypeFormatFlags.None) === 'string') {
-    let args = renderNodes([...node.arguments], context);
-    let varName = renderNode(varNameNode, context);
+    const args = renderNodes([...node.arguments], context);
+    const varName = renderNode(varNameNode, context);
     if (!args || !args[0]) {
       return varName;
     }
@@ -61,8 +61,8 @@ export const arrayStringSlice: ExpressionHook = (node: ts.CallExpression, contex
       flagParentOfType(node, [ts.SyntaxKind.VariableDeclarationList], { forceType: 'split' }, context.nodeFlagsStore);
     }
 
-    let args = renderNodes([...node.arguments], context);
-    let varName = renderNode(varNameNode, context);
+    const args = renderNodes([...node.arguments], context);
+    const varName = renderNode(varNameNode, context);
     if (!args || !args[0]) {
       return `array_slice(${varName}, 0)`;
     }

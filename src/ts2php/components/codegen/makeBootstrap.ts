@@ -4,7 +4,7 @@ import { normalizeBasePath, normalizeFileExt } from '../../utils/pathsAndNames';
 import { CommonjsExternalModule } from '../cjsModules/commonjsExternalModule';
 
 export function makeBootstrap(registry: ModuleRegistry, baseDir: string, aliases?: Dict<string>) {
-  let names: string[] = [];
+  const names: string[] = [];
   registry.forEachModule((m) => {
     if (!m.isEmpty() || m instanceof CommonjsExternalModule) {
       names.push(m.targetFileName);
