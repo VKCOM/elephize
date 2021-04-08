@@ -9,7 +9,7 @@ const getFromProcess = (command: string, args: string[]): Promise<string> => {
     let cont = '';
     child.stdout.on('data', (data) => cont += data);
     child.on('close', (code) => {
-      if (code > 0) {
+      if (code && code > 0) {
         reject();
       } else {
         resolve(cont);
