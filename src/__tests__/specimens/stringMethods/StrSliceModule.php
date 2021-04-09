@@ -36,8 +36,8 @@ class StrSliceModule extends CJSModule {
     private function __construct() {
         $this->asls = "12345";
         $this->a1sls = $this->asls;
-        $this->bsls = substr($this->asls, 2);
-        $this->csls = substr($this->asls, 2, 4 - 2);
+        $this->bsls = Stdlib::stringSlice($this->asls, 2);
+        $this->csls = Stdlib::stringSlice($this->asls, 2, 4);
         \VK\Elephize\Builtins\Console::log($this->a1sls, $this->bsls, $this->csls);
     }
 }

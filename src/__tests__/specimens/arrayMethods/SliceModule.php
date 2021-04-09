@@ -35,9 +35,9 @@ class SliceModule extends CJSModule {
 
     private function __construct() {
         $this->a_sl = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-        $this->b_sl = array_slice($this->a_sl, 0);
-        $this->c_sl = array_slice($this->a_sl, 1);
-        $this->d_sl = array_slice($this->a_sl, 1, 2 - 1);
+        $this->b_sl = Stdlib::arraySlice($this->a_sl, 0);
+        $this->c_sl = Stdlib::arraySlice($this->a_sl, 1);
+        $this->d_sl = Stdlib::arraySlice($this->a_sl, 1, 2);
         \VK\Elephize\Builtins\Console::log($this->b_sl, $this->c_sl, $this->d_sl);
     }
 }

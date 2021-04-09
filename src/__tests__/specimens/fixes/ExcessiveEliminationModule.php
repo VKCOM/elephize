@@ -29,7 +29,7 @@ class ExcessiveEliminationModule extends CJSModule {
                 /* anon_4876d8c */ function ($acc, $raw_sub_string) {
                     if (strpos($raw_sub_string, "[/style]") !== false) {
                         $found_text = Stdlib::strMatch("/\](.*?)\[\/style\]/u", $raw_sub_string);
-                        $text_content = substr(explode("[/style]", $found_text[0])[0], 1);
+                        $text_content = Stdlib::stringSlice(explode("[/style]", $found_text[0])[0], 1);
                         $raw_style_string = explode("]", explode("[/style]", $raw_sub_string)[0])[0];
                         $key_value_pairs =
                             strpos($raw_style_string, ";") !== false
