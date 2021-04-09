@@ -121,6 +121,32 @@ class Stdlib {
     }
 
     /**
+     * @param array $arr
+     * @param int $start
+     * @param int|null $end
+     * @return array
+     */
+    public static function arraySlice($arr, $start, $end = null) {
+        if ($end !== null) {
+            return array_slice($arr, $start, abs($end - $start));
+        }
+        return array_slice($arr, $start);
+    }
+
+    /**
+     * @param string $str
+     * @param int $start
+     * @param int|null $end
+     * @return string
+     */
+    public static function stringSlice($str, $start, $end = null) {
+        if ($end !== null) {
+            return substr($str, $start, abs($end - $start)) ?: "";
+        }
+        return substr($str, $start) ?: "";
+    }
+
+    /**
      * @param array $obj
      * @param array $props
      * @return array
