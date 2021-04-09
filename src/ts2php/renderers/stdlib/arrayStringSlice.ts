@@ -46,7 +46,7 @@ export const arrayStringSlice: ExpressionHook = (node: ts.CallExpression, contex
     }
     context.log.warn('Converting String.prototype.substr to substr(): check your encodings twice!', [], context.log.ctx(node));
     if (args[1]) {
-      return `substr(${varName}, ${args[0]}, strlen(${varName}) - ${args[1]} - 1)`;
+      return `substr(${varName}, ${args[0]}, ${args[1]} - ${args[0]})`;
     } else {
       return `substr(${varName}, ${args[0]})`;
     }
@@ -67,7 +67,7 @@ export const arrayStringSlice: ExpressionHook = (node: ts.CallExpression, contex
       return `array_slice(${varName}, 0)`;
     }
     if (args[1]) {
-      return `array_slice(${varName}, ${args[0]}, count(${varName}) - ${args[1]} - 1)`;
+      return `array_slice(${varName}, ${args[0]}, ${args[1]} - ${args[0]})`;
     } else {
       return `array_slice(${varName}, ${args[0]})`;
     }
