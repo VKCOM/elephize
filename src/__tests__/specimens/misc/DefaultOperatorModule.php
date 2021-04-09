@@ -32,6 +32,10 @@ class DefaultOperatorModule extends CJSModule {
      * @var float $dod
      */
     public $dod;
+    /**
+     * @var float|array $doe
+     */
+    public $doe;
 
     private function __construct() {
         $this->doa = [1, 2, 3];
@@ -40,6 +44,7 @@ class DefaultOperatorModule extends CJSModule {
             "a" => true,
         ];
         $this->dod = $this->doa[5] ?: count($this->doa);
-        \VK\Elephize\Builtins\Console::log($this->doc, $this->dod);
+        $this->doe = $this->dob ?: $this->doa[5] ?: $this->doc ?: $this->dod;
+        \VK\Elephize\Builtins\Console::log($this->doc, $this->dod, $this->doe);
     }
 }
