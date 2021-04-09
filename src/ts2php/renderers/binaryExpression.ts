@@ -70,7 +70,10 @@ export function tBinaryExpression(node: ts.BinaryExpression, context: Context<De
         kind = node.parent?.parent?.kind;
       }
       if (kind) {
-        if (kind === ts.SyntaxKind.BinaryExpression && (node.parent as ts.BinaryExpression).operatorToken.kind === ts.SyntaxKind.EqualsToken) {
+        if (kind === ts.SyntaxKind.BinaryExpression && (
+          (node.parent as ts.BinaryExpression).operatorToken.kind === ts.SyntaxKind.EqualsToken || // const a = b || 'test';
+          (node.parent as ts.BinaryExpression).operatorToken.kind === ts.SyntaxKind.BarBarToken // const a = b || c || d;
+        )) {
           replaceLiteral = '?:';
         } else if ([
           ts.SyntaxKind.VariableDeclaration,
