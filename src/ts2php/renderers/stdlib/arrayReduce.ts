@@ -27,8 +27,8 @@ export const arrayReduce: ExpressionHook = (node: ts.CallExpression, context: Co
       ts.SyntaxKind.StringLiteral,
       ts.SyntaxKind.NumericLiteral,
       ts.SyntaxKind.ArrayLiteralExpression,
-      ts.SyntaxKind.ObjectLiteralExpression
-    ]
+      ts.SyntaxKind.ObjectLiteralExpression,
+    ],
   ]);
 
   const funcNode: CallbackType = getCallExpressionCallbackArg(node) as CallbackType;
@@ -45,6 +45,6 @@ export const arrayReduce: ExpressionHook = (node: ts.CallExpression, context: Co
   }
 
   const varNode = getCallExpressionLeftSide(node);
-  let [accumulator, renderedFunction, varName] = renderNodes([initialValue, funcNode, varNode], context);
+  const [accumulator, renderedFunction, varName] = renderNodes([initialValue, funcNode, varNode], context);
   return `array_reduce(${varName}, ${renderedFunction}, ${accumulator})`;
 };

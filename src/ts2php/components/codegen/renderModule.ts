@@ -38,16 +38,16 @@ export function renderModule(
   builtinsNs = ''
 ): void {
   Scope._forceDisableUnusedVarsElimination = disableCodeElimination;
-  const moduleScope = Scope.newRootScope<Declaration>({flags: 0}, currentModule.sourceFileName, log, [
+  const moduleScope = Scope.newRootScope<Declaration>({ flags: 0 }, currentModule.sourceFileName, log, [
     'console',
     'document',
     'window',
     'Math',
     'Object',
-    'Array'
+    'Array',
   ]);
 
-  let contextDry = new Context<Declaration>(
+  const contextDry = new Context<Declaration>(
     moduleScope,
     checker,
     nodeFlagsStore,
@@ -76,7 +76,7 @@ export function renderModule(
   registry.clearClasses();
   nodeFlagsStore.clear();
 
-  let context = new Context(
+  const context = new Context(
     moduleScope,
     checker,
     nodeFlagsStore,

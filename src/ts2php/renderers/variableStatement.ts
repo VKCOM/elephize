@@ -13,13 +13,13 @@ export function tVariableStatement(node: ts.VariableStatement, context: Context<
     const flags = context.nodeFlagsStore.get(node);
 
     return [
-      ...flags?.addExpressions || []
+      ...flags?.addExpressions || [],
     ].join('\n');
   }
 
-  context.nodeFlagsStore.upsert(node, { localsData: { regStatements: []} });
+  context.nodeFlagsStore.upsert(node, { localsData: { regStatements: [] } });
 
-  let content = renderNode(declList, context);
+  const content = renderNode(declList, context);
   if (!content || content.length === 0) {
     return '';
   }

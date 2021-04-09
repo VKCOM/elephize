@@ -3,10 +3,10 @@ import { Node } from 'typescript';
 
 export const extractRegexFlags = (regex: string, log: LogObj, ctx: Node) => {
   let [matched, expression, flags] = regex.match(/^"\/(.*?)\/([a-zA-Z]+)?"$/) || [];
-  let output = {
+  const output = {
     phpFlags: '',
     globalSearch: false,
-    expression
+    expression,
   };
 
   if (!matched) {

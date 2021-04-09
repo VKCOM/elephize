@@ -13,7 +13,7 @@ function getDtsSourceFile(name: string, target?: ScriptTarget) {
       path = require.resolve(name.replace(/^node_modules\//, ''));
     }
     if (existsSync(path)) {
-      let input = readFileSync(path, {encoding: 'utf-8'});
+      const input = readFileSync(path, { encoding: 'utf-8' });
       sourceFiles[name] = createSourceFile(name, input, target!);
     } else {
       sourceFiles[name] = null;
@@ -26,7 +26,7 @@ function getDtsSourceFile(name: string, target?: ScriptTarget) {
 function getSourceFile(path: string, target?: ScriptTarget) {
   if (sourceFiles[path] === undefined) {
     if (existsSync(path)) {
-      let input = readFileSync(path, {encoding: 'utf-8'});
+      const input = readFileSync(path, { encoding: 'utf-8' });
       sourceFiles[path] = createSourceFile(path, input, target!);
     } else {
       sourceFiles[path] = null;

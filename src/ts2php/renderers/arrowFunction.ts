@@ -10,7 +10,7 @@ export function tArrowFunction(node: ts.ArrowFunction, context: Context<Declarat
   // For module-scope see also variableDeclaration transformer and its isCallable section
   const parentStmt = getClosestOrigParentOfType(node, ts.SyntaxKind.VariableStatement);
   if (parentStmt) {
-    let handledContent = handleComponent(context, node);
+    const handledContent = handleComponent(context, node);
     if (handledContent) {
       // component is written to different file, so we should not output anything here
       return 'null';
@@ -33,6 +33,6 @@ export function tArrowFunction(node: ts.ArrowFunction, context: Context<Declarat
   // Also render all other functions as expressions for simplicity
   return `${functionExpressionGen(node, funcIdent)({
     synList: node.parameters,
-    blockNode: node.body
+    blockNode: node.body,
   }, context)}`;
 }

@@ -7,7 +7,7 @@ import {
   classNameFromPath,
   normalizeBasePath,
   normalizeFileExt, resolveAliasesAndPaths,
-  snakify
+  snakify,
 } from '../../utils/pathsAndNames';
 import { ImportReplacementRule, NsMap } from '../../types';
 import { CommonjsExternalModule } from './commonjsExternalModule';
@@ -159,7 +159,6 @@ export class ModuleRegistry {
   protected _registerCommonModule(className: string, fullyQualifiedSourceFilename: string, newFilename: string, external = false, implPath?: string) {
     let moduleDescriptor;
     if (external) {
-
       moduleDescriptor = new CommonjsExternalModule(
         className,
         fullyQualifiedSourceFilename,

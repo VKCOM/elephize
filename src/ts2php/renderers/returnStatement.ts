@@ -20,11 +20,11 @@ export function tReturnStatement(node: ts.ReturnStatement, context: Context<Decl
   const isPropAccess = closestParent && (closestParent as ts.CallExpression).expression.kind === ts.SyntaxKind.PropertyAccessExpression;
   const isForeach = isPropAccess && ((closestParent as ts.CallExpression).expression as ts.PropertyAccessExpression).name.getText() === 'forEach';
 
-  let content = isForeach
-    ? (ret ? `${ret};` : 'break;')
+  const content = isForeach ?
+    (ret ? `${ret};` : 'break;') :
     // ^ we convert function to plain loop body, return should be omitted.
     // ^ if there is just single return, we should emit break statement
-    : `return ${ret};`;
+    `return ${ret};`;
 
   const flags = context.nodeFlagsStore.get(node);
   const additionalExpressions = (flags?.addExpressions || []).join('\n');

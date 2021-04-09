@@ -11,7 +11,7 @@ export function markUsedVars(node: ts.CallExpression, lExp: ts.Identifier, usedV
     ts.SyntaxKind.FunctionDeclaration,
     ts.SyntaxKind.VariableDeclaration,
     ts.SyntaxKind.ArrowFunction,
-    ts.SyntaxKind.SourceFile
+    ts.SyntaxKind.SourceFile,
   ];
   const upperStatement = getClosestOrigParentByPredicate(node, (p: ts.Node) => stopExpressions.includes(p.kind));
   if (upperStatement) {
@@ -27,11 +27,11 @@ export function markUsedVars(node: ts.CallExpression, lExp: ts.Identifier, usedV
         break;
       case ts.SyntaxKind.VariableDeclaration:
         const bindings = fetchAllBindingIdents((upperStatement as ts.VariableDeclaration).name);
-        for (let binding of bindings) {
+        for (const binding of bindings) {
           // connect expression terminal node to varname node (assigned var name)
           context.scope.terminateCall(lExp.getText(), { traceSourceIdent: binding.getText(), dryRun: context.dryRun });
           // also connect all used vars to varname node as side-effect usage
-          for (let ident of Array.from(usedVars)) {
+          for (const ident of Array.from(usedVars)) {
             context.scope.terminateCall(ident, { traceSourceIdent: binding.getText(), dryRun: context.dryRun });
           }
         }

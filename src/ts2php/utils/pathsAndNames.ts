@@ -75,6 +75,10 @@ export function resolveAliasesAndPaths(
 ): string | null {
   originalSourcePath = originalSourcePath.replace(/\.[jt]sx?$/, '');
   for (const pathOrig in tsPaths) {
+    if (!tsPaths.hasOwnProperty(pathOrig)) {
+      continue;
+    }
+
     if (pathOrig === '*') {
       throw new Error('Asterisk-only aliases are not supported');
     }
@@ -88,9 +92,9 @@ export function resolveAliasesAndPaths(
           return acc;
         }
         const target = originalSourcePath.replace(pathToTry, name.replace(/\*$/g, ''));
-        const tPath = target.startsWith('/')
-          ? target // absolute path, no need to resolve
-          : path.resolve(baseDir, target);
+        const tPath = target.startsWith('/') ?
+          target : // absolute path, no need to resolve
+          path.resolve(baseDir, target);
         log.info('Trying to locate file: %s', [tPath]);
         const fn = _lookupFile(tPath);
         if (fn) {

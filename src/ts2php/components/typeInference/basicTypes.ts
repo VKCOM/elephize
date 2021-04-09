@@ -29,8 +29,8 @@ export function typeCast(node: ts.Identifier): string {
  * @param typeString
  */
 export function hasType(node: ts.Node, checker: ts.TypeChecker, typeString: string): boolean {
-  let nd: ts.Node = (node as ts.PropertyAccessExpression).expression;
-  let type = checker.getTypeAtLocation(nd);
+  const nd: ts.Node = (node as ts.PropertyAccessExpression).expression;
+  const type = checker.getTypeAtLocation(nd);
   return typeString === checker.typeToString(type, nd, ts.TypeFormatFlags.None);
 }
 
@@ -43,11 +43,11 @@ export function hasType(node: ts.Node, checker: ts.TypeChecker, typeString: stri
  */
 export function hasArrayType(node: ts.Node, checker: ts.TypeChecker, log: LogObj): boolean {
   const nodeIdentForLog = node.getText();
-  let nd: ts.Node = (node as ts.PropertyAccessExpression).expression;
+  const nd: ts.Node = (node as ts.PropertyAccessExpression).expression;
   log.typehint('Checking array type of node: %s', [nodeIdentForLog]);
-  let type = checker.getTypeAtLocation(nd);
+  const type = checker.getTypeAtLocation(nd);
   const foundType = _parseArrayType(type, checker, log, true, nodeIdentForLog);
-  return foundType === 'array' || foundType === 'mixed' /* for mixed[] or like that */;
+  return foundType === 'array' || foundType === 'mixed';
 }
 
 /**
@@ -91,7 +91,12 @@ export function getPossibleCastingType(node: ts.Node, checker: ts.TypeChecker, l
  * @param checker
  * @param log
  */
-export function getPhpPrimitiveTypeForFunc(node: ts.FunctionExpression | ts.ArrowFunction | ts.FunctionDeclaration, argList: string[], checker: ts.TypeChecker, log: LogObj): MethodsTypes | undefined {
+export function getPhpPrimitiveTypeForFunc(
+  node: ts.FunctionExpression | ts.ArrowFunction | ts.FunctionDeclaration,
+  argList: string[],
+  checker: ts.TypeChecker,
+  log: LogObj
+): MethodsTypes | undefined {
   const signature = checker.getSignatureFromDeclaration(node);
   if (!signature) {
     // Not functional type?
@@ -113,12 +118,12 @@ export function getPhpPrimitiveTypeForFunc(node: ts.FunctionExpression | ts.Arro
 
   return {
     args: params,
-    return: rettype
+    return: rettype,
   };
 }
 
 function _parseArrayType(node: ts.Type, checker: ts.TypeChecker, log: LogObj, excludeObjects = true, nodeIdentForLog?: string) {
-  let typeNode = checker.typeToTypeNode(node, undefined, undefined);
+  const typeNode = checker.typeToTypeNode(node, undefined, undefined);
   if (!typeNode) {
     log.typehint('No type node found for symbol: %s', [nodeIdentForLog || '']);
     return false;
@@ -176,7 +181,7 @@ function _parseArrayType(node: ts.Type, checker: ts.TypeChecker, log: LogObj, ex
 const checkArrMixedNode = (typeNode: ts.TypeNode) => {
   if (typeNode.kind === ts.SyntaxKind.TupleType) {
     // For [mixed, any]
-    const types = (typeNode as any).elementTypes /* ts < 4 */ || (typeNode as any).elements /* ts 4+ */;
+    const types = (typeNode as any).elementTypes /* ts < 4 */ || (typeNode as any).elements;
     if (types.some((t: any) => t.typeName?.symbol?.declarations[0].type?.types.some((t: any) => t.typeName?.escapedText === mixedTypehintId))) {
       return true;
     }

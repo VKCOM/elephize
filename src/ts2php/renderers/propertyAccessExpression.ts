@@ -9,7 +9,7 @@ import { builtins } from '../internalConfig/jsBuiltins';
 import { handleEnumMemberAccess } from '../utils/enumAccess';
 
 export function tPropertyAccessExpression(node: ts.PropertyAccessExpression, context: Context<Declaration>) {
-  let [ident, accessor] = renderNodes([node.expression, node.name], context);
+  const [ident, accessor] = renderNodes([node.expression, node.name], context);
 
   if (ident === '$exports' && !context.scope.getClosure().has('exports')) {
     context.log.error('You should use `export` instead of `module.exports = `', [], context.log.ctx(node));
@@ -24,19 +24,19 @@ export function tPropertyAccessExpression(node: ts.PropertyAccessExpression, con
     return enumAccess; // output handled by access func
   }
 
-  let lExp = getLeftExpr(node.expression);
+  const lExp = getLeftExpr(node.expression);
   if (lExp) {
-    let [decl] = context.scope.findByIdent(lExp.getText()) || [];
+    const [decl] = context.scope.findByIdent(lExp.getText()) || [];
     if (decl && decl.flags & DeclFlag.External) {
       return context.registry.getExportedIdentifier(context.moduleDescriptor, decl.targetModulePath, node.name.text);
     }
   }
 
   if (accessor === 'length' && node.parent.kind !== ts.SyntaxKind.PropertyAccessExpression) {
-    let type = context.checker.getTypeAtLocation(node.expression);
+    const type = context.checker.getTypeAtLocation(node.expression);
     if (
-      type.isStringLiteral()
-      || context.checker.typeToString(type, node.expression, ts.TypeFormatFlags.None) === 'string'
+      type.isStringLiteral() ||
+      context.checker.typeToString(type, node.expression, ts.TypeFormatFlags.None) === 'string'
     ) {
       context.log.warn('Converting .length to strlen(): check your encodings!', []);
       return `strlen(${ident})`;
@@ -92,7 +92,7 @@ export function tPropertyAccessExpression(node: ts.PropertyAccessExpression, con
     if (hasOptionalChaining) {
       if (isPropCallAccess) {
         context.nodeFlagsStore.upsert(node.parent.parent, {
-          optionalGuard: `isset(${ident}["${accessor}"])`
+          optionalGuard: `isset(${ident}["${accessor}"])`,
         });
         return `${ident}["${accessor}"]`;
       }

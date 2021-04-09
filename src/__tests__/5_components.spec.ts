@@ -7,7 +7,7 @@ const testSuiteConfig: Array<{file: string[]; failOnErrors: string[]}> = [
   { file: ['components', 'ReactSupport.tsx'], failOnErrors: [] },
   { file: ['components', 'ReactSupport2.tsx'], failOnErrors: [] },
   { file: ['components', 'BasicComponent.tsx'], failOnErrors: [
-    '384ae' // Identifier "props" was used but was never declared. This is compile error
+    '384ae', // Identifier "props" was used but was never declared. This is compile error
   ] },
   { file: ['components', 'BasicComponentWithProps.tsx'], failOnErrors: ['384ae'] },
   { file: ['components', 'BasicComponentWithViewLogic.tsx'], failOnErrors: ['384ae'] },
@@ -41,7 +41,7 @@ const log = configureLogging({
       throw new Error(`Compile error #${msgid} is not acceptable in test ${context}`);
     }
     Logger.prototype._printLog.bind(log)(message, msgid, params, severity, context);
-  }
+  },
 });
 
 test('ts2php.components', () => {

@@ -14,16 +14,16 @@ export function retrieveConfig(options: any): CliOptions {
   try {
     const haveDefinedConfig = options.config && fs.existsSync(path.resolve(options.config));
     const haveDefaultConfig = fs.existsSync(path.resolve(defaultOptions.config));
-    const cfgName = haveDefinedConfig
-      ? path.resolve(options.config)
-      : haveDefaultConfig
-        ? path.resolve(defaultOptions.config)
-        : null;
+    const cfgName = haveDefinedConfig ?
+      path.resolve(options.config) :
+      haveDefaultConfig ?
+        path.resolve(defaultOptions.config) :
+        null;
 
     if (cfgName) {
       rcOptions = JSON.parse(fs.readFileSync(cfgName, { encoding: 'utf-8' }));
     }
-  } catch(e) {
+  } catch (e) {
     console.error('Failed to parse elephize config file: ', e.toString());
     process.exit(1);
   }

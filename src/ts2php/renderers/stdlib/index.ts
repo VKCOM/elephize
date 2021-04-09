@@ -37,13 +37,13 @@ const stdlibHooks: ExpressionHook[] = [
   arrayPop, arrayPush, arrayReduce, arraySome, arraySplice,
   arrayStringIncludes, arrayStringLastIndexOf, arrayStringIndexOf, arrayStringSlice,
   math, objectKeys, toString, stringSplit, stringStartsWith, stringSubstr, stringTrim,
-  stringReplace, stringMatch, arrayIsArray, typecastConstructors, parse, hasOwnProperty
+  stringReplace, stringMatch, arrayIsArray, typecastConstructors, parse, hasOwnProperty,
 ];
 
 export const hookStdlib: ExpressionHook = (node: ts.CallExpression, context: Context<Declaration>) => {
   let result = undefined;
 
-  let lExp = getLeftExpr(node.expression);
+  const lExp = getLeftExpr(node.expression);
   if (!lExp) {
     return undefined; // will be checked in base callExpression handler
   }

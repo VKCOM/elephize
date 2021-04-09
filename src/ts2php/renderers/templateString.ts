@@ -16,7 +16,7 @@ export function tTemplateSpan(node: ts.TemplateSpan, context: Context<Declaratio
 export function tTemplateStatic(node: ts.TemplateHead | ts.TemplateMiddle | ts.TemplateTail | ts.NoSubstitutionTemplateLiteral) {
   const str = escapeString(node.text);
   if (str) {
-    return '"' + str +'"';
+    return '"' + str + '"';
   }
   return '';
 }

@@ -1,7 +1,7 @@
 import * as ts from 'typescript';
 import { Declaration, ExpressionHook } from '../../types';
 import { propNameIs } from './_propName';
-import { hasArrayType} from '../../components/typeInference/basicTypes';
+import { hasArrayType } from '../../components/typeInference/basicTypes';
 import { Context } from '../../components/context';
 import { getCallExpressionLeftSide, getLeftExpr } from '../../utils/ast';
 import { renderNode } from '../../components/codegen/renderNodes';
@@ -20,7 +20,7 @@ export const arrayPop: ExpressionHook = (node: ts.CallExpression, context: Conte
       return 'null';
     }
     checkModificationInNestedScope(getLeftExpr(node.expression), context);
-    let varName = renderNode(getCallExpressionLeftSide(node), context);
+    const varName = renderNode(getCallExpressionLeftSide(node), context);
     return `array_pop(${varName})`;
   }
 };

@@ -8,6 +8,6 @@ export function tTernaryOperator(node: ts.ConditionalExpression, context: Contex
     return renderNode(node.whenTrue, context);
   }
 
-  let [condition, ifTrue, ifFalse] = renderNodes([node.condition, node.whenTrue, node.whenFalse], context, false);
+  const [condition, ifTrue, ifFalse] = renderNodes([node.condition, node.whenTrue, node.whenFalse], context, false);
   return `${condition} ? ${ifTrue} : ${ifFalse}`;
 }

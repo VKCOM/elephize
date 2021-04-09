@@ -21,7 +21,7 @@ export const renderPattern = (
   .map((el) => {
     return {
       ...el,
-      initializer: el.initializer.replace(/%placeholder%/g, `$${snakify(placeholder)}`)
+      initializer: el.initializer.replace(/%placeholder%/g, `$${snakify(placeholder)}`),
     };
   })
   .map((el) => {

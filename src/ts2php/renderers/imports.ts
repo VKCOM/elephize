@@ -15,14 +15,25 @@ export function tImportDeclaration(node: ts.ImportDeclaration, context: Context<
       return '';
     }
   } else if (moduleSpec) {
-    let currentFilePath = node.getSourceFile().fileName;
-    let sourceFilename = resolveAliasesAndPaths(context.log, moduleSpec, path.dirname(currentFilePath), context.baseDir, context.compilerOptions.paths || {}, context.registry._aliases);
+    const currentFilePath = node.getSourceFile().fileName;
+    const sourceFilename = resolveAliasesAndPaths(
+      context.log,
+      moduleSpec,
+      path.dirname(currentFilePath),
+      context.baseDir,
+      context.compilerOptions.paths || {},
+      context.registry._aliases
+    );
 
     if (sourceFilename === null) {
       if (moduleSpec.includes('/')) {
         context.log.error('Module not found: tried to find %s', [moduleSpec], context.log.ctx(node));
       } else {
-        context.log.error('Importing arbitrary node modules is not supported. Only "react" module is allowed at the moment. Also you may want to import specific file from module - this is supported.', [], context.log.ctx(node));
+        context.log.error(
+          'Importing arbitrary node modules is not supported. Only "react" module is allowed at the moment.' +
+          ' Also you may want to import specific file from module - this is supported.',
+          [], context.log.ctx(node)
+        );
       }
       return '';
     }
@@ -41,13 +52,13 @@ export function tImportDeclaration(node: ts.ImportDeclaration, context: Context<
         decl.data.propName = '*';
       }
     } else if (importBindings?.kind === ts.SyntaxKind.NamedImports) {
-      for (let imp of importBindings.elements) {
-        const searchForComponent = context.registry.isDerivedComponent(sourceFilename, imp.name.escapedText.toString())
-          ? imp.name.escapedText.toString()
-          : undefined;
+      for (const imp of importBindings.elements) {
+        const searchForComponent = context.registry.isDerivedComponent(sourceFilename, imp.name.escapedText.toString()) ?
+          imp.name.escapedText.toString() :
+          undefined;
         const decl = context.scope.addDeclaration(
           imp.name.getText(), [],
-          {terminateGlobally: isExportedVar(imp.name), dryRun: context.dryRun}
+          { terminateGlobally: isExportedVar(imp.name), dryRun: context.dryRun }
         );
         if (decl) {
           decl.data.flags = DeclFlag.DereferencedImport;

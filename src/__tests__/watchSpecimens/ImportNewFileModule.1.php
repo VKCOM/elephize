@@ -4,7 +4,7 @@ namespace VK\Elephize\src\__tests__\watchSpecimens___;
 use VK\Elephize\Builtins\Stdlib;
 use VK\Elephize\Builtins\CJSModule;
 
-require_once __DIR__ . '/ImportNewFileToImportModule.php';
+require_once __DIR__ . "/ImportNewFileToImportModule.php";
 
 class ImportNewFileModule extends CJSModule {
     /**

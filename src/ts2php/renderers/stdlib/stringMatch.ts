@@ -25,8 +25,8 @@ export const stringMatch: ExpressionHook = (node: ts.CallExpression, context: Co
   const varNameNode = (node.expression as ts.PropertyAccessExpression).expression;
   const pattern = renderNode(node.arguments[0], context);
 
-  let varName = renderNode(varNameNode, context);
-  let nd: ts.Node = node.arguments[0];
+  const varName = renderNode(varNameNode, context);
+  const nd: ts.Node = node.arguments[0];
   if (nd.kind === ts.SyntaxKind.RegularExpressionLiteral) { // we support only regexp literals as pattern
     const reInfo = extractRegexFlags(pattern, context.log, nd);
     const uFlag = context.encoding.includes('utf') ? 'u' : ''; // always append unicode flag if we're outputting unicode

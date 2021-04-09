@@ -12,13 +12,13 @@ export function tJsxElement(node: ts.JsxElement, context: Context<Declaration>) 
   const innerhtml = context.nodeFlagsStore.get(node.openingElement)?.prerenderedData;
 
   // child nodes
-  const childrenRendered = innerhtml
-    ? innerhtml
-    : renderNodes([...node.children], context);
+  const childrenRendered = innerhtml ?
+    innerhtml :
+    renderNodes([...node.children], context);
 
-  const children = childrenRendered && childrenRendered.length
-    ? '[' + childrenRendered.join(', ') + ']'
-    : '[]';
+  const children = childrenRendered && childrenRendered.length ?
+    '[' + childrenRendered.join(', ') + ']' :
+    '[]';
 
   if (node.openingElement.tagName.kind !== ts.SyntaxKind.Identifier) {
     context.log.error('Non-identifiers are not supported as jsx elements', [], context.log.ctx(node));

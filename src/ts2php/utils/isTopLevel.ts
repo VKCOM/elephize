@@ -24,9 +24,9 @@ export function isTopLevel(node: ts.Node, context: Context<Declaration>) {
     node.parent.kind === ts.SyntaxKind.ObjectBindingPattern ||
     node.parent.kind === ts.SyntaxKind.BindingElement
   ) {
-    const stmt = getClosestOrigParentOfType(node, ts.SyntaxKind.VariableStatement)
-      || getClosestOrigParentOfType(node, ts.SyntaxKind.FirstStatement)
-      || getClosestOrigParentOfType(node, ts.SyntaxKind.LastStatement);
+    const stmt = getClosestOrigParentOfType(node, ts.SyntaxKind.VariableStatement) ||
+      getClosestOrigParentOfType(node, ts.SyntaxKind.FirstStatement) ||
+      getClosestOrigParentOfType(node, ts.SyntaxKind.LastStatement);
     // DeclarationList always wrapped into VariableStatement, check it's parent
     return stmt?.parent.kind === ts.SyntaxKind.SourceFile;
   }
@@ -35,9 +35,9 @@ export function isTopLevel(node: ts.Node, context: Context<Declaration>) {
 }
 
 export function isTopLevelComponent(node: ts.Node, nodeFlagStore: NodeFlagStore) {
-  const func = getClosestParentOfType(node, ts.SyntaxKind.FunctionExpression, true)
-    || getClosestParentOfType(node, ts.SyntaxKind.ArrowFunction, true)
-    || getClosestParentOfType(node, ts.SyntaxKind.FunctionDeclaration, true);
+  const func = getClosestParentOfType(node, ts.SyntaxKind.FunctionExpression, true) ||
+    getClosestParentOfType(node, ts.SyntaxKind.ArrowFunction, true) ||
+    getClosestParentOfType(node, ts.SyntaxKind.FunctionDeclaration, true);
 
   return func && nodeFlagStore.get(func)?.isComponent;
 }

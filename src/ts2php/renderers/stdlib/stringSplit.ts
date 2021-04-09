@@ -24,11 +24,11 @@ export const stringSplit: ExpressionHook = (node: ts.CallExpression, context: Co
   const [separator, limit] = renderNodes([...node.arguments], context);
 
   // split can use string or regexp as separator, so we should check inferred type of argument.
-  let nd: ts.Node = node.arguments[0];
-  let type = context.checker.getTypeAtLocation(nd);
+  const nd: ts.Node = node.arguments[0];
+  const type = context.checker.getTypeAtLocation(nd);
   if (type.isStringLiteral() || context.checker.typeToString(type, nd, ts.TypeFormatFlags.None) === 'string') {
     // string literals as separators
-    let varName = renderNode(varNameNode, context);
+    const varName = renderNode(varNameNode, context);
     if (limit) {
       return `explode(${separator}, ${varName}, ${limit})`;
     } else {
@@ -36,7 +36,7 @@ export const stringSplit: ExpressionHook = (node: ts.CallExpression, context: Co
     }
   } else if (nd.kind === ts.SyntaxKind.RegularExpressionLiteral) {
     // regexp instances as separators
-    let varName = renderNode(varNameNode, context);
+    const varName = renderNode(varNameNode, context);
     if (limit) {
       return `preg_split(${separator}, ${varName}, ${limit})`;
     } else {

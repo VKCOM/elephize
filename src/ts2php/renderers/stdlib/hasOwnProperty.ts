@@ -23,8 +23,8 @@ export const hasOwnProperty: ExpressionHook = (node: ts.CallExpression, context:
     return 'null';
   }
   const varNameNode = getCallExpressionLeftSide(node);
-  let args = renderNodes([...node.arguments], context);
-  let varName = renderNode(varNameNode, context);
+  const args = renderNodes([...node.arguments], context);
+  const varName = renderNode(varNameNode, context);
   if (!args || !args[0]) {
     context.log.error('Object.prototype.hasOwnProperty: missing argument in call.', [], context.log.ctx(node));
     return 'null';

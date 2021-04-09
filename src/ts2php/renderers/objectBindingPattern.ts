@@ -2,7 +2,7 @@ import * as ts from 'typescript';
 import { Declaration, DeclFlag } from '../types';
 import { Context } from '../components/context';
 import { isExportedVar } from '../utils/ast';
-import { isTopLevel} from '../utils/isTopLevel';
+import { isTopLevel } from '../utils/isTopLevel';
 import { identifyAnonymousNode, insideComponent } from '../components/unusedCodeElimination/usageGraph/nodeData';
 import { Scope } from '../components/unusedCodeElimination/usageGraph';
 import { renderPattern } from '../utils/renderBindingPatterns';
@@ -32,7 +32,7 @@ function renderBindingElement(el: ts.BindingElement | ts.OmittedExpression, inde
   if (el.dotDotDotToken) {
     return {
       identifier: el.name,
-      initializer: `Stdlib::objectOmit(%placeholder%, [${Array.from(destructured.values()).map((el) => `"${el}"`).join(', ')}])`
+      initializer: `Stdlib::objectOmit(%placeholder%, [${Array.from(destructured.values()).map((el) => `"${el}"`).join(', ')}])`,
     };
   } else {
     if (el.name.getText() === 'children' && insideComponent(context.scope)) {
@@ -43,13 +43,13 @@ function renderBindingElement(el: ts.BindingElement | ts.OmittedExpression, inde
     }
     return {
       identifier: el.name,
-      initializer: `${getPossibleCastingType(el.name, context.checker, context.log)}%placeholder%["${(el.propertyName || el.name).getText()}"]`
+      initializer: `${getPossibleCastingType(el.name, context.checker, context.log)}%placeholder%["${(el.propertyName || el.name).getText()}"]`,
     };
   }
 }
 
 export function renderElements(node: ts.ObjectBindingPattern, placeholder: string, context: Context<Declaration>) {
-  let destructured = new Set<string>();
+  const destructured = new Set<string>();
   const identList: ts.Identifier[] = [];
   const els = node.elements.map((el, index) => renderBindingElement(el, index, destructured, context));
   const renderedString = renderPattern(placeholder, node, els, identList, context);

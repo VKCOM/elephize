@@ -17,13 +17,13 @@ export const arrayStringIndexOf: ExpressionHook = (node: ts.CallExpression, cont
   if (!propNameIs('indexOf', node)) {
     return undefined;
   }
-  let nd: ts.Node = (node.expression as ts.PropertyAccessExpression).expression;
-  let type = context.checker.getTypeAtLocation(nd);
+  const nd: ts.Node = (node.expression as ts.PropertyAccessExpression).expression;
+  const type = context.checker.getTypeAtLocation(nd);
   const varNameNode = getCallExpressionLeftSide(node);
 
   if (type.isStringLiteral() || context.checker.typeToString(type, nd, ts.TypeFormatFlags.None) === 'string') {
-    let args = renderNodes([...node.arguments], context);
-    let varName = renderNode(varNameNode, context);
+    const args = renderNodes([...node.arguments], context);
+    const varName = renderNode(varNameNode, context);
     if (!args || !args[0]) {
       context.log.error('String.prototype.indexOf: can\'t find searchable element in call.', [], context.log.ctx(node));
       return 'null';
@@ -34,8 +34,8 @@ export const arrayStringIndexOf: ExpressionHook = (node: ts.CallExpression, cont
       context.log.error('Left-hand expression must have string, array-like or iterable inferred type', [], context.log.ctx(node));
       return 'null';
     }
-    let args = renderNodes([...node.arguments], context);
-    let varName = renderNode(varNameNode, context);
+    const args = renderNodes([...node.arguments], context);
+    const varName = renderNode(varNameNode, context);
     if (!args || !args[0]) {
       context.log.error('Array.prototype.indexOf: can\'t find searchable element in call.', [], context.log.ctx(node));
       return 'null';

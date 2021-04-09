@@ -5,7 +5,6 @@ import { Context } from '../context';
 import { renderNode, renderNodes } from '../codegen/renderNodes';
 import { getTimeMarker } from '../../utils/hrtime';
 import { prependDestructuredParams } from '../functionScope';
-import { FunctionDeclaration } from 'typescript';
 
 /**
  * Top-level functions marked with IC prefix are expected to be functional Isomorphic Components
@@ -17,25 +16,25 @@ export function handleComponent(context: Context<Declaration>, node: ts.Expressi
   const funcNode = getClosestParentOfAnyType(node, [
     ts.SyntaxKind.FunctionDeclaration,
     ts.SyntaxKind.ArrowFunction,
-    ts.SyntaxKind.FunctionExpression
+    ts.SyntaxKind.FunctionExpression,
   ], true) as ts.FunctionExpression | ts.FunctionDeclaration | ts.ArrowFunction;
 
   const isNestedFunc = !!getClosestParentOfAnyType(node, [
     ts.SyntaxKind.FunctionDeclaration,
     ts.SyntaxKind.ArrowFunction,
-    ts.SyntaxKind.FunctionExpression
+    ts.SyntaxKind.FunctionExpression,
   ]); // note difference: not including self
 
-  const triviaContainer = node.kind === ts.SyntaxKind.FunctionDeclaration
-    ? node
-    : getClosestOrigParentOfType(node, ts.SyntaxKind.VariableStatement);
+  const triviaContainer = node.kind === ts.SyntaxKind.FunctionDeclaration ?
+    node :
+    getClosestOrigParentOfType(node, ts.SyntaxKind.VariableStatement);
 
   const trivia = triviaContainer?.getFullText().substr(0, triviaContainer?.getLeadingTriviaWidth());
   const isElephizedComponent = trivia?.includes('@elephizeTarget');
 
-  const nodeName = node.kind === ts.SyntaxKind.FunctionDeclaration
-    ? (node as ts.FunctionDeclaration).name
-    : (getClosestOrigParentOfType(node, ts.SyntaxKind.VariableDeclaration) as ts.VariableDeclaration)?.name;
+  const nodeName = node.kind === ts.SyntaxKind.FunctionDeclaration ?
+    (node as ts.FunctionDeclaration).name :
+    (getClosestOrigParentOfType(node, ts.SyntaxKind.VariableDeclaration) as ts.VariableDeclaration)?.name;
 
   if (!isNestedFunc && nodeName && nodeName.kind === ts.SyntaxKind.Identifier && isElephizedComponent) {
     const name = nodeName.escapedText.toString();
@@ -59,9 +58,9 @@ export function handleComponent(context: Context<Declaration>, node: ts.Expressi
       ident.getText(), [], { terminateLocally: true, dryRun: context.dryRun }
     ));
 
-    let args = renderNodes([...funcNode.parameters], context);
+    const args = renderNodes([...funcNode.parameters], context);
     let block = renderNode(funcNode.body, context);
-    block = prependDestructuredParams(block, node as FunctionDeclaration, context);
+    block = prependDestructuredParams(block, node as ts.FunctionDeclaration, context);
 
     if (decl && decl.ownedScope) {
       context.scope.terminateToParentTerminalNode(context.dryRun);

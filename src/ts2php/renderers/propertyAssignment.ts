@@ -9,7 +9,7 @@ import { renderNodes } from '../components/codegen/renderNodes';
 
 export function tPropertyAssignment(node: ts.PropertyAssignment, context: Context<Declaration>) {
   // This check should be strictly before render! Otherwise it won't work well with var reference count / unused vars elimination
-  const parentCall = getClosestParentOfTypeWithFlag(node, ts.SyntaxKind.CallExpression, { name: 'ReactCreateElement'}, context.nodeFlagsStore);
+  const parentCall = getClosestParentOfTypeWithFlag(node, ts.SyntaxKind.CallExpression, { name: 'ReactCreateElement' }, context.nodeFlagsStore);
   if (parentCall !== null) {
     if (attrs.includes(node.name.getText())) {
       return '!null'; // special value to omit expression, see renderSupportedNodes

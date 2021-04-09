@@ -74,9 +74,9 @@ export const resolveModules = (options: ts.CompilerOptions, importRules: CliOpti
       }
     } else {
       // try to use standard resolution
-      let result = ts.resolveModuleName(moduleName, containingFile, options, {
+      const result = ts.resolveModuleName(moduleName, containingFile, options, {
         fileExists,
-        readFile
+        readFile,
       });
       if (result.resolvedModule) {
         resolvedModules.push(result.resolvedModule);

@@ -1,11 +1,11 @@
-import * as path from 'path';
-import { resolve as pResolve } from 'path';
+import { resolve as pResolve, basename as pBasename } from 'path';
 import { translateCodeAndWatch } from '../ts2php/components/codegen/translateCode';
 import { configureLogging } from '../ts2php/components/cli/configureLogging';
 import { readFileSync, writeFileSync } from 'fs';
 import * as diff from 'diff';
 import * as rimraf from 'rimraf';
 import ncp = require('ncp');
+import DoneCallback = jest.DoneCallback;
 
 export type WatcherTestQueueItem = {
   entry: string;
@@ -16,26 +16,26 @@ export type WatcherTestQueueItem = {
 
 const testResultPostfix = '___'; // This must contain only valid symbols for namespace naming
 
-const baseDir = path.resolve(__dirname, '..', '..');
-const serverFilesRoot = path.resolve(__dirname, '..', '..', 'src', 'server');
+const baseDir = pResolve(__dirname, '..', '..');
+const serverFilesRoot = pResolve(__dirname, '..', '..', 'src', 'server');
 const namespaces = {
   root: 'VK\\Elephize',
-  builtins: 'VK\\Elephize\\Builtins'
+  builtins: 'VK\\Elephize\\Builtins',
 };
 const importRules = { };
 const compilerOptions = {
   baseUrl: baseDir,
   paths: {
-    '#aliasedTestFolder/*': ['src/__tests__/*']
-  }
+    '#aliasedTestFolder/*': ['src/__tests__/*'],
+  },
 };
 
 const log = configureLogging({
-  baseDir, output: '', outDir: ''
+  baseDir, output: '', outDir: '',
 });
 
 let lastDiffApplied = 0;
-export function runWatcherTests(watcherTestConfig: WatcherTestQueueItem[]) {
+export function runWatcherTests(watcherTestConfig: WatcherTestQueueItem[], done: DoneCallback) {
   jest.setTimeout(200000);
 
   return new Promise((resolve) => {
@@ -59,7 +59,7 @@ export function runWatcherTests(watcherTestConfig: WatcherTestQueueItem[]) {
         let close = () => {};
 
         console.info('Triggering watcher tests for: \n   %s', [files.map((f) => f.replace(__dirname, '')).join('\n   ')]);
-        translateCodeAndWatch(files.map((f) => pResolve(__dirname, 'watchSpecimens' + testResultPostfix, f)), importRules, compilerOptions.paths, log,{
+        translateCodeAndWatch(files.map((f) => pResolve(__dirname, 'watchSpecimens' + testResultPostfix, f)), importRules, compilerOptions.paths, log, {
           baseDir,
           aliases: {},
           namespaces,
@@ -69,7 +69,7 @@ export function runWatcherTests(watcherTestConfig: WatcherTestQueueItem[]) {
           getCloseHandle: (handle) => close = handle,
           onData: (sourceFilename: string, targetFilename: string, content: string, error?: number) => {
             if (allFilesCollected) {
-              verifyDiff(targetFilename, content, error, watcherTestConfig);
+              verifyDiff(targetFilename, content, error, watcherTestConfig, done);
             }
           },
           onFinish: () => {
@@ -82,9 +82,10 @@ export function runWatcherTests(watcherTestConfig: WatcherTestQueueItem[]) {
 
             if (lastDiffApplied === watcherTestConfig.length) {
               close();
-              resolve();
+              resolve(null);
+              done();
             }
-          }
+          },
         });
       });
     });
@@ -95,7 +96,7 @@ function applyNextDiff(nextDiff: WatcherTestQueueItem) {
   if (!nextDiff) {
     return;
   }
-  console.info('Applying diff %s @ %s',  nextDiff.diff, nextDiff.entry);
+  console.info('Applying diff %s @ %s', nextDiff.diff, nextDiff.entry);
   const diff = pResolve(__dirname, 'watchSpecimens' + testResultPostfix, nextDiff.diff);
   const cwd = process.cwd();
   process.chdir(pResolve(__dirname, 'watchSpecimens' + testResultPostfix));
@@ -103,11 +104,11 @@ function applyNextDiff(nextDiff: WatcherTestQueueItem) {
   process.chdir(cwd);
 }
 
-function verifyDiff(targetFilename: string, content: string, error: number | undefined, conf: WatcherTestQueueItem[]) {
+function verifyDiff(targetFilename: string, content: string, error: number | undefined, conf: WatcherTestQueueItem[], done: DoneCallback) {
   const diff = conf[lastDiffApplied];
-  const checkedFileIndex = diff.checkFiles.findIndex((el) => el[0] === path.basename(targetFilename));
+  const checkedFileIndex = diff.checkFiles.findIndex((el) => el[0] === pBasename(targetFilename));
   if (checkedFileIndex === -1) {
-    console.warn('Not found %s in %s', path.basename(targetFilename), diff.checkFiles.join(', '));
+    console.warn('Not found %s in %s', pBasename(targetFilename), diff.checkFiles.join(', '));
     return;
   }
   const checkedFile = diff.checkFiles[checkedFileIndex];
@@ -122,18 +123,14 @@ function verifyDiff(targetFilename: string, content: string, error: number | und
     console.info('[VERIFIED] %s after %s', checkedFile[0], diff.diff);
   } catch (e) {
     console.error('[FAILED] %s after %s', checkedFile[0], diff.diff);
-    fail({
-      name: 'Test failed',
-      message: `${checkedFile[0]} after ${diff.diff}\n`,
-      stack: e.stack
-    });
+    done.fail(e);
   }
 }
 
 function applyPatch(patchFile: string) {
-  let patch = readFileSync(patchFile, { encoding: 'utf8' });
+  const patch = readFileSync(patchFile, { encoding: 'utf8' });
 
-  let sourceFileMatch = /--- ([^ \n\r\t]+).*/.exec(patch);
+  const sourceFileMatch = /--- ([^ \n\r\t]+).*/.exec(patch);
   let sourceFile;
   if (sourceFileMatch && sourceFileMatch[1]) {
     sourceFile = sourceFileMatch[1];
@@ -141,7 +138,7 @@ function applyPatch(patchFile: string) {
     console.error('Unable to find source file in "%s"', patchFile);
     return;
   }
-  let destinationFileMatch = /\+\+\+ ([^ \n\r\t]+).*/.exec(patch);
+  const destinationFileMatch = /\+\+\+ ([^ \n\r\t]+).*/.exec(patch);
   let destinationFile;
   if (destinationFileMatch && destinationFileMatch[1]) {
     destinationFile = destinationFileMatch[1];
@@ -150,8 +147,8 @@ function applyPatch(patchFile: string) {
     return;
   }
 
-  let original = readFileSync(sourceFile, { encoding: 'utf8' });
-  let patched = diff.applyPatch(original, patch);
+  const original = readFileSync(sourceFile, { encoding: 'utf8' });
+  const patched = diff.applyPatch(original, patch);
 
   if (!patched) {
     console.error('Failed to apply patch "%s" to "%s"', patchFile, sourceFile);

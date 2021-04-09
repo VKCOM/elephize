@@ -20,12 +20,12 @@ function encloseOptional(expression: string, node: ts.CallExpression, context: C
 
 export function tCallExpression(node: ts.CallExpression, context: Context<Declaration>) {
   // Support js stdlib objects methods, see stdlibSupport for details
-  let hookResult = hookStdlib(node, context);
+  const hookResult = hookStdlib(node, context);
   if (hookResult !== undefined) {
     return encloseOptional(hookResult, node, context);
   }
 
-  let reactHooks = reactHooksSupport(context, node);
+  const reactHooks = reactHooksSupport(context, node);
   if (reactHooks) {
     if (reactHooks === '!null') {
       return ''; // drop current statement in this special case
@@ -33,7 +33,7 @@ export function tCallExpression(node: ts.CallExpression, context: Context<Declar
     return reactHooks;
   }
 
-  let ident = renderNode(node.expression, context);
+  const ident = renderNode(node.expression, context);
   let args: string[];
 
   const usedVars = new Set<string>();
@@ -58,13 +58,13 @@ export function tCallExpression(node: ts.CallExpression, context: Context<Declar
     }
   }
 
-  let lExp = getLeftExpr(node.expression);
+  const lExp = getLeftExpr(node.expression);
   if (!lExp) {
     context.log.error('Calls of non-identifier expressions are not supported', [], context.log.ctx(node));
     return 'null';
   }
 
-  let [decl, declScope, declNode] = context.scope.findByIdent(lExp.getText()) || [];
+  const [decl, declScope, declNode] = context.scope.findByIdent(lExp.getText()) || [];
   if (!context.dryRun) {
     if (!decl || (declNode && !isBound(declNode))) {
       context.log.error('Call of undeclared or dropped identifier: %s', [lExp.getText()], context.log.ctx(node));
@@ -74,7 +74,7 @@ export function tCallExpression(node: ts.CallExpression, context: Context<Declar
 
   // Similar logic for similar cases, but with slight differences >_<
   if (decl && decl.flags & DeclFlag.External) {
-    let prop = (node.expression as ts.PropertyAccessExpression).name.getText();
+    const prop = (node.expression as ts.PropertyAccessExpression).name.getText();
     return context.registry.callExportedCallable(context.moduleDescriptor, decl.targetModulePath, prop, args);
   } else if (
     (decl && decl.flags & DeclFlag.DereferencedImport) ||

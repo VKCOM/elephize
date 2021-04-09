@@ -1,4 +1,3 @@
-import * as path from 'path';
 import { resolve as pResolve } from 'path';
 import { translateCode } from '../ts2php/components/codegen/translateCode';
 import { readFileSync, writeFileSync, unlinkSync } from 'fs';
@@ -9,31 +8,31 @@ import { resolveRulePaths } from '../ts2php/components/cjsModules/resolveModules
 import { CliOptions } from '../ts2php/types';
 import { LogObj } from '../ts2php/utils/log';
 
-const baseDir = path.resolve(__dirname, '..', '..');
-const serverFilesRoot = path.resolve(__dirname, '..', '..', 'src', 'server');
+const baseDir = pResolve(__dirname, '..', '..');
+const serverFilesRoot = pResolve(__dirname, '..', '..', 'src', 'server');
 const namespaces = {
   root: 'VK\\Elephize',
-  builtins: 'VK\\Elephize\\Builtins'
+  builtins: 'VK\\Elephize\\Builtins',
 };
 const importRules: CliOptions['importRules'] = {
   'src/__tests__/specimens/misc/toReplace.ts': {
     ignore: false,
     implementationPath: 'src/__tests__/specimens/ToReplace.php',
-    implementationClass: 'ToReplace'
+    implementationClass: 'ToReplace',
   },
   'src/__tests__/specimens/misc/__toIgnore.ts': {
-    ignore: true
-  }
+    ignore: true,
+  },
 };
 const compilerOptions = {
   baseUrl: baseDir,
   paths: {
-    '#aliasedTestFolder/*': ['src/__tests__/*']
-  }
+    '#aliasedTestFolder/*': ['src/__tests__/*'],
+  },
 };
 
 export function runBatch(basePath: string[], testSuite: string[][], log: LogObj) {
-  let promises: Array<Promise<any>> = [];
+  const promises: Array<Promise<any>> = [];
 
   translateCode(testSuite.map((path) => pResolve(...basePath, ...path)), resolveRulePaths(importRules, baseDir), compilerOptions.paths, log, {
     baseDir,
@@ -42,7 +41,7 @@ export function runBatch(basePath: string[], testSuite: string[][], log: LogObj)
     serverFilesRoot,
     encoding: 'utf-8',
     options: compilerOptions,
-    onData: (sourceFilename: string, targetFilename: string, content: string) => onData(basePath, promises, targetFilename, content)
+    onData: (sourceFilename: string, targetFilename: string, content: string) => onData(basePath, promises, targetFilename, content),
   });
 
   return Promise.all(promises)
@@ -60,6 +59,6 @@ function onData(basePath: string[], promises: Array<Promise<any>>, filename: str
       .toEqual(prettier.format(readFileSync(resultFileName, 'utf-8'), phpPrettierOptions));
     process.stdout.write('[test ok] ' + filename.replace(pResolve(...basePath), '') + '\n');
     unlinkSync(resultFileName + '.result');
-    resolve();
+    resolve(null);
   }));
 }

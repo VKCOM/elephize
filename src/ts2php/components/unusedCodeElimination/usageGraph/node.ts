@@ -41,7 +41,7 @@ export class ScopeNode<T extends { [key: string]: any }> {
   }
 
   public spawnScope(sourceFile: string, dryRun: boolean): Scope<T> {
-    throw new Error((dryRun ? '[dry]' : '') +'Can\'t spawn new scope on unbound node!');
+    throw new Error((dryRun ? '[dry]' : '') + 'Can\'t spawn new scope on unbound node!');
   }
 
   /**

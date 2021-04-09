@@ -3,7 +3,7 @@ import { configureLogging } from '../ts2php/components/cli/configureLogging';
 import * as path from 'path';
 
 const log = configureLogging({
-  baseDir: path.resolve(__dirname, 'specimens'), output: '', outDir: ''
+  baseDir: path.resolve(__dirname, 'specimens'), output: '', outDir: '',
 });
 
 test('ts2php.stdlibMethods', () => {

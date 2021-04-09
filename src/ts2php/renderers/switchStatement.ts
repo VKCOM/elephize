@@ -6,7 +6,7 @@ import { renderNodes } from '../components/codegen/renderNodes';
 import { getIdentities } from '../utils/ast';
 
 export function tSwitchStatement(node: ts.SwitchStatement, context: Context<Declaration>) {
-  let [arg, block] = renderNodes([node.expression, node.caseBlock], context);
+  const [arg, block] = renderNodes([node.expression, node.caseBlock], context);
   getIdentities(node.expression).forEach((usageIdent) => {
     context.scope.addUsage(usageIdent.getText(), [], { terminateLocally: true, dryRun: context.dryRun });
   });

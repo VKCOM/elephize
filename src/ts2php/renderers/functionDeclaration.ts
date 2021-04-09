@@ -18,7 +18,7 @@ export function tFunctionDeclaration(node: ts.FunctionDeclaration, context: Cont
     return ''; // export default not supported
   }
 
-  let handledContent = handleComponent(context, node);
+  const handledContent = handleComponent(context, node);
   if (handledContent) {
     // component is written to different file, so we should not output anything here
     return 'null';
@@ -42,7 +42,7 @@ export function tFunctionDeclaration(node: ts.FunctionDeclaration, context: Cont
       const els = generateFunctionElements({
         expr: node,
         nodeIdent: node.name.getText(),
-        context
+        context,
       });
 
       if (els) { // should be true for all non-components, this check is only for typescript to be happy
@@ -53,7 +53,7 @@ export function tFunctionDeclaration(node: ts.FunctionDeclaration, context: Cont
         }
 
         if (isExportedFun(node.name)) {
-          context.scope.terminateCall(node.name.getText(), {traceSourceIdent: Scope.tNode, dryRun: context.dryRun});
+          context.scope.terminateCall(node.name.getText(), { traceSourceIdent: Scope.tNode, dryRun: context.dryRun });
           if (decl && decl.ownedScope) {
             decl.ownedScope.terminateToParentTerminalNode(context.dryRun);
           }
@@ -78,7 +78,7 @@ export function tFunctionDeclaration(node: ts.FunctionDeclaration, context: Cont
 
   const initializer = functionExpressionGen(node, funcIdent)({
     synList: node.parameters,
-    blockNode: node.body
+    blockNode: node.body,
   }, context);
 
   if (!node.name) {

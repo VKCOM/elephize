@@ -29,6 +29,6 @@ export const arrayFilter: ExpressionHook = (node: ts.CallExpression, context: Co
     return 'null';
   }
 
-  let [renderedFunction, varName] = renderNodes([funcNode, varNode], context);
+  const [renderedFunction, varName] = renderNodes([funcNode, varNode], context);
   return `array_filter(${varName}, ${renderedFunction})`;
 };

@@ -39,8 +39,8 @@ export function getRenderedBlock(
   if (realParent) {
     context.nodeFlagsStore.upsert(realParent, { destructuringInfo: { vars: '' } });
   }
-  let [...syntaxList] = renderNodes([...argSynList], context, false);
-  let block = renderNode(bodyBlock, context);
+  const [...syntaxList] = renderNodes([...argSynList], context, false);
+  const block = renderNode(bodyBlock, context);
   const idMap = new Map<string, boolean>();
   context.scope.getClosure().forEach((decl, ident) => {
     if ((decl.flags & DeclFlag.External) && decl.propName === '*') {
@@ -67,7 +67,7 @@ export function generateFunctionElements({ expr, nodeIdent, context, origDecl, o
   if (origDecl && origStatement) {
     const parentStmt = getClosestOrigParentOfType(origDecl, ts.SyntaxKind.VariableStatement);
     if (parentStmt) {
-      let handledContent = handleComponent(context, origStatement);
+      const handledContent = handleComponent(context, origStatement);
       if (handledContent) {
         return null; // component is written to different file, so we should not output anything here
       }
@@ -87,7 +87,7 @@ export function generateFunctionElements({ expr, nodeIdent, context, origDecl, o
 }
 
 export function genClosure(idMap: Map<string, boolean>, context: Context<Declaration>, node: ts.Node) {
-  let closureUse: string[] = [];
+  const closureUse: string[] = [];
   idMap.forEach((modifiedInClosure, varName) => {
     if (modifiedInClosure) {
       context.log.error('Closure-scoped variable %s has been modified inside closure, this will not work on server side', [varName], context.log.ctx(node));
@@ -103,9 +103,9 @@ export function genClosure(idMap: Map<string, boolean>, context: Context<Declara
     }
   });
 
-  let closureExpr = closureUse.length > 0
-    ? ` use (${closureUse.join(', ')})`
-    : '';
+  const closureExpr = closureUse.length > 0 ?
+    ` use (${closureUse.join(', ')})` :
+    '';
 
   return { closureExpr };
 }
