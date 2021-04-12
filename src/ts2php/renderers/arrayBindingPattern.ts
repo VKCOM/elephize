@@ -6,7 +6,7 @@ import { isTopLevel } from '../utils/isTopLevel';
 import { identifyAnonymousNode } from '../components/unusedCodeElimination/usageGraph/nodeData';
 import { Scope } from '../components/unusedCodeElimination/usageGraph';
 import { renderPattern } from '../utils/renderBindingPatterns';
-import { renderNodes } from '../components/codegen/renderNodes';
+import { renderNode, renderNodes } from '../components/codegen/renderNodes';
 import { getPossibleCastingType } from '../components/typeInference/basicTypes';
 
 function renderBindingElement(el: ts.BindingElement | ts.OmittedExpression, index: number, context: Context<Declaration>) {
@@ -27,6 +27,7 @@ function renderBindingElement(el: ts.BindingElement | ts.OmittedExpression, inde
 
   return {
     identifier: el.name,
+    defaultValue: el.initializer ? ' ?: ' + renderNode(el.initializer, context) : '',
     initializer: el.dotDotDotToken ?
       `array_slice(%placeholder%, ${index})` :
       `${getPossibleCastingType(el.name, context.checker, context.log)}%placeholder%[${index}]`,

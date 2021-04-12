@@ -7,6 +7,7 @@ import { getPhpPrimitiveType } from '../components/typeInference/basicTypes';
 
 export type ElementDefinition = {
   identifier: ts.Identifier;
+  defaultValue: string;
   initializer: string;
 };
 
@@ -29,10 +30,10 @@ export const renderPattern = (
     const ident = snakify(el.identifier.getText());
     if (isTopLevel(node, context)) { // Top-level declarations transform to properties and construction initializers
       context.moduleDescriptor.addProperty('$' + ident, getPhpPrimitiveType(el.identifier, context.checker, context.log), 'public');
-      context.moduleDescriptor.addStatement(`$this->${ident} = ${el.initializer};`);
+      context.moduleDescriptor.addStatement(`$this->${ident} = ${el.initializer}${el.defaultValue};`);
       return null;
     } else {
-      return `$${ident} = ${el.initializer}`;
+      return `$${ident} = ${el.initializer}${el.defaultValue}`;
     }
   })
   .filter<string>((el): el is string => !!el)

@@ -5,6 +5,7 @@ import { getClosestParentOfAnyType } from '../utils/ast';
 import { renderElements as renderObjectBinding } from './objectBindingPattern';
 import { renderElements as renderArrayBinding } from './arrayBindingPattern';
 import { snakify } from '../utils/pathsAndNames';
+import { renderNode } from '../components/codegen/renderNodes';
 
 export function tParameterDeclaration(node: ts.ParameterDeclaration, context: Context<Declaration>) {
   // Object/array destructuring
@@ -41,5 +42,7 @@ export function tParameterDeclaration(node: ts.ParameterDeclaration, context: Co
   if (node.dotDotDotToken) {
     return `...$${node.name.getText()}`;
   }
-  return `$${snakify(node.name.getText())}`;
+
+  const defaultValue = node.initializer ? ' = ' + renderNode(node.initializer, context) : '';
+  return `$${snakify(node.name.getText()) + defaultValue}`;
 }
