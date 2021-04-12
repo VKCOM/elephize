@@ -38,6 +38,7 @@ test('ts2php.stdlibMethods', () => {
     ['misc', 'unusedVarsElimination.ts'],
     ['misc', 'customIsomorphics.ts'],
     ['misc', 'constructorTypeCast.ts'],
+    ['misc', 'defaultValues.ts'],
     ['mathMethods', 'basic.ts'],
     ['mathMethods', 'trigonometry.ts'],
     ['mathMethods', 'constants.ts'],
