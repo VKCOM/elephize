@@ -23,7 +23,7 @@ export class ReactModule extends CommonjsModule {
       args = '$props'; // Fallback: we should have props at out render method to comply with base class
       this._phpdoc = ['\t * @param array $props'];
     } else {
-      this._phpdoc = args.split(', ').map((v) => `\t * @param array ${v.split(' = ')[0]}`);
+      this._phpdoc = args.split(', ').map((v) => `\t * @param array ${v}`);
       if (this._phpdoc.length > 1) {
         // We dont support react context
         this.log.error('React context is not supported (passed as 2nd argument)', [], this.log.shortCtx(this.sourceFileName));

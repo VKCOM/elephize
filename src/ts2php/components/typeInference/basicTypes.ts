@@ -215,25 +215,29 @@ const _transformTypeName = (type: ts.Type, checker: ts.TypeChecker, log: LogObj,
 
 function _describeNodeType(node: ts.Node | undefined, type: ts.Type, checker: ts.TypeChecker, log: LogObj) {
   const nodeIdentForLog = node?.getText();
+  const optionalMark = (node?.parent.kind === ts.SyntaxKind.Parameter && (
+    (node.parent as ts.ParameterDeclaration).initializer ||
+    (node.parent as ts.ParameterDeclaration).questionToken
+  )) ? '?' : '';
 
   if (node && ts.isStringLiteral(node)) {
     log.typehint('Inferred type of literal node: %s -> %s [5]', [nodeIdentForLog || '', 'string']);
-    return 'string';
+    return optionalMark + 'string';
   }
 
   if (node && ts.isNumericLiteral(node)) {
     log.typehint('Inferred type of literal node: %s -> %s [5]', [nodeIdentForLog || '', 'float']);
-    return 'float';
+    return optionalMark + 'float';
   }
 
   const customTypehints = checkCustomTypehints(type, checker);
   if (customTypehints) {
     const types = customTypehints.foundTypes.map((t) => {
       if (typeof t === 'string') {
-        return t;
+        return optionalMark + t;
       }
       // Some of union members may be literal types
-      return _describeAsApparentType(t, checker, log, nodeIdentForLog);
+      return optionalMark + _describeAsApparentType(t, checker, log, nodeIdentForLog);
     }).filter((t) => !customTypehints.typesToDrop.includes(t));
     const typehint = Array.from(new Set((<string[]>[])
       .concat(types)))
@@ -262,6 +266,7 @@ function _describeNodeType(node: ts.Node | undefined, type: ts.Type, checker: ts
     const typehint = Array.from(new Set((<string[]>[])
       .concat(strTypes.filter((t) => t !== 'mixed'))
       .concat(appStrTypes)))
+      .map((hint) => optionalMark + hint)
       .join('|');
 
     log.typehint('Inferred type of node: %s -> %s [3]', [nodeIdentForLog || '', typehint]);
@@ -270,6 +275,7 @@ function _describeNodeType(node: ts.Node | undefined, type: ts.Type, checker: ts
 
   const typehint = Array.from(new Set((<string[]>[])
     .concat(strTypes)))
+    .map((hint) => optionalMark + hint)
     .join('|');
   log.typehint('Inferred type of node: %s -> %s [4]', [nodeIdentForLog || '', typehint]);
   return typehint;

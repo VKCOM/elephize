@@ -40,7 +40,7 @@ export class CommonjsModule {
     let phpdoc = '';
     if (inferredTypes) {
       const params = Object.keys(inferredTypes.args)
-        .map((arg) => `     * @param ${inferredTypes.args[arg]} ${arg.split(' = ')[0]}`).join('\n');
+        .map((arg) => `     * @param ${inferredTypes.args[arg]} ${arg}`).join('\n');
       phpdoc = `/**${params ? '\n' + params : ''}
      * @return ${inferredTypes.return}
      */`;

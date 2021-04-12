@@ -27,7 +27,7 @@ function renderBindingElement(el: ts.BindingElement | ts.OmittedExpression, inde
 
   return {
     identifier: el.name,
-    defaultValue: el.initializer ? ' ?: ' + renderNode(el.initializer, context) : '',
+    defaultValue: el.initializer ? ' ?? ' + renderNode(el.initializer, context) : '',
     initializer: el.dotDotDotToken ?
       `array_slice(%placeholder%, ${index})` :
       `${getPossibleCastingType(el.name, context.checker, context.log)}%placeholder%[${index}]`,

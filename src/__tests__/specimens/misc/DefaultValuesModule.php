@@ -18,11 +18,14 @@ class DefaultValuesModule extends CJSModule {
 
     /**
      * @param float $a
-     * @param float $b
-     * @param boolean $c
+     * @param ?float $b
+     * @param ?boolean $c
      * @return mixed
      */
-    public function dvf($a, $b = 123, $c = true) {
+    public function dvf($a, $b, $c) {
+        $b = $b ?? 123;
+        $c = $c ?? true;
+
         \VK\Elephize\Builtins\Console::log($a, $b, $c);
     }
     /**
@@ -31,8 +34,8 @@ class DefaultValuesModule extends CJSModule {
      */
     public function dvdo($anon_deref_1) {
         $a = (float) $anon_deref_1["a"];
-        $b = (float) $anon_deref_1["b"] ?: 123;
-        $c = (bool) $anon_deref_1["c"] ?: true;
+        $b = (float) $anon_deref_1["b"] ?? 123;
+        $c = (bool) $anon_deref_1["c"] ?? true;
         \VK\Elephize\Builtins\Console::log($a, $b, $c);
     }
     /**
@@ -41,8 +44,8 @@ class DefaultValuesModule extends CJSModule {
      */
     public function dvda($anon_deref_1) {
         $a = (float) $anon_deref_1[0];
-        $b = (float) $anon_deref_1[1] ?: 123;
-        $c = (bool) $anon_deref_1[2] ?: true;
+        $b = (float) $anon_deref_1[1] ?? 123;
+        $c = (bool) $anon_deref_1[2] ?? true;
         \VK\Elephize\Builtins\Console::log($a, $b, $c);
     }
 

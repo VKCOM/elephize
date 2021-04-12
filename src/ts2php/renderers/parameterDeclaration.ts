@@ -43,6 +43,25 @@ export function tParameterDeclaration(node: ts.ParameterDeclaration, context: Co
     return `...$${node.name.getText()}`;
   }
 
-  const defaultValue = node.initializer ? ' = ' + renderNode(node.initializer, context) : '';
-  return `$${snakify(node.name.getText()) + defaultValue}`;
+  if (node.initializer) {
+    const defaultValue = renderNode(node.initializer, context);
+    const name = snakify(node.name.getText());
+    const statement = `$${name} = $${name} ?? ${defaultValue};\n`;
+    const parentFunc = getClosestParentOfAnyType(node, [
+      ts.SyntaxKind.FunctionExpression,
+      ts.SyntaxKind.FunctionDeclaration,
+      ts.SyntaxKind.ArrowFunction,
+    ]);
+
+    if (!parentFunc) {
+      context.log.error('No function found for parameters declaration: this is unexpected error', [], context.log.ctx(node));
+      return '';
+    }
+    context.nodeFlagsStore.upsert(parentFunc, {
+      destructuringInfo: { // TODO: костыль. Переименовать параметр, либо сделать новый - именно для дефолтных значений
+        vars: (context.nodeFlagsStore.get(parentFunc)?.destructuringInfo?.vars || '') + statement,
+      },
+    });
+  }
+  return `$${snakify(node.name.getText())}`;
 }
