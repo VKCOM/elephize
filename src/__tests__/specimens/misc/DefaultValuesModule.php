@@ -25,7 +25,6 @@ class DefaultValuesModule extends CJSModule {
     public function dvf($a, $b, $c) {
         $b = $b ?? 123;
         $c = $c ?? true;
-
         \VK\Elephize\Builtins\Console::log($a, $b, $c);
     }
     /**

@@ -46,7 +46,7 @@ export function tParameterDeclaration(node: ts.ParameterDeclaration, context: Co
   if (node.initializer) {
     const defaultValue = renderNode(node.initializer, context);
     const name = snakify(node.name.getText());
-    const statement = `$${name} = $${name} ?? ${defaultValue};\n`;
+    const statement = `$${name} = $${name} ?? ${defaultValue};`;
     const parentFunc = getClosestParentOfAnyType(node, [
       ts.SyntaxKind.FunctionExpression,
       ts.SyntaxKind.FunctionDeclaration,
@@ -58,9 +58,7 @@ export function tParameterDeclaration(node: ts.ParameterDeclaration, context: Co
       return '';
     }
     context.nodeFlagsStore.upsert(parentFunc, {
-      destructuringInfo: { // TODO: костыль. Переименовать параметр, либо сделать новый - именно для дефолтных значений
-        vars: (context.nodeFlagsStore.get(parentFunc)?.destructuringInfo?.vars || '') + statement,
-      },
+      optionalParamsWithDefaults: (context.nodeFlagsStore.get(parentFunc)?.optionalParamsWithDefaults || []).concat([statement]),
     });
   }
   return `$${snakify(node.name.getText())}`;
