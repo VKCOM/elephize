@@ -4,7 +4,7 @@ import { getClosestOrigParentOfType, getClosestParentOfAnyType } from '../../uti
 import { Context } from '../context';
 import { renderNode, renderNodes } from '../codegen/renderNodes';
 import { getTimeMarker } from '../../utils/hrtime';
-import { prependDestructuredParams } from '../functionScope';
+import { prependDestructuredParams, prependDefaultParams } from '../functionScope';
 
 /**
  * Top-level functions marked with IC prefix are expected to be functional Isomorphic Components
@@ -61,6 +61,7 @@ export function handleComponent(context: Context<Declaration>, node: ts.Expressi
     const args = renderNodes([...funcNode.parameters], context);
     let block = renderNode(funcNode.body, context);
     block = prependDestructuredParams(block, node as ts.FunctionDeclaration, context);
+    block = prependDefaultParams(block, node as ts.FunctionDeclaration, context);
 
     if (decl && decl.ownedScope) {
       context.scope.terminateToParentTerminalNode(context.dryRun);

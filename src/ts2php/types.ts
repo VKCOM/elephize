@@ -15,7 +15,7 @@ export type NodeFlags = {
   validated?: boolean; // Some cases need this flag to be true after arguments of function are checked to be ok
   childCount?: number; // Pass here arguments count or node children count for some cases
   rawNodes?: ts.Node[]; // Pass here nodes to be rendered on upper level
-  prerenderedData?: string[]; // Some cases use pre-rendered data from the child scope
+  prerenderedData?: string[]; // JSX cases use pre-rendered data from the child scope
   elementName?: string; // Used for passing intrinsic element name to nested context
   forceType?: string; // Mark basic expression type explicitly
   isComponent?: boolean; // true if current function is component function
@@ -23,9 +23,7 @@ export type NodeFlags = {
   destructuringInfo?: { // Used in array/object destructuring to pass rendered params through context
     vars: string;
   };
-  localsData?: {
-    regStatements: string[];
-  };
+  optionalParamsWithDefaults?: string[]; // Used in function declarations to prepend default values assignments to function body
   addExpressions?: string[]; // use this to add some expressions before rendering statement.
   optionalGuard?: string; // extra condition check to be appended to call expressions enclosing optional chaining operators
 };

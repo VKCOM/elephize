@@ -83,6 +83,7 @@ export function generateFunctionElements({ expr, nodeIdent, context, origDecl, o
   );
   block = unwrapArrowBody(block, blockNode);
   block = prependDestructuredParams(block, expr, context);
+  block = prependDefaultParams(block, expr, context);
   return { syntaxList, block };
 }
 
@@ -119,6 +120,15 @@ export function prependDestructuredParams(block: string, func: FunctionalDecl, c
   return block.replace(/^{/, '{\n' + flags.destructuringInfo.vars);
 }
 
+export function prependDefaultParams(block: string, func: FunctionalDecl, context: Context<Declaration>) {
+  const flags = context.nodeFlagsStore.get(func);
+  if (!flags?.optionalParamsWithDefaults) {
+    return block;
+  }
+
+  return block.replace(/^{/, '{\n' + flags.optionalParamsWithDefaults.join('\n'));
+}
+
 export function unwrapArrowBody(block: string, blockNode?: ts.Node, noReturn = false) {
   if (blockNode?.kind !== ts.SyntaxKind.Block) {
     return noReturn ? `{\n${block};\n}` : `{\nreturn ${block};\n}`;
@@ -137,6 +147,7 @@ export const functionExpressionGen = (node: FunctionalDecl, ident: string) => (o
   );
   block = unwrapArrowBody(block, opts.blockNode);
   block = prependDestructuredParams(block, node, context);
+  block = prependDefaultParams(block, node, context);
 
   const { closureExpr } = genClosure(idMap, context, node);
   return `/* ${ident} */ function (${syntaxList})${closureExpr} ${block}`;

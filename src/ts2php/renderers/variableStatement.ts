@@ -17,8 +17,6 @@ export function tVariableStatement(node: ts.VariableStatement, context: Context<
     ].join('\n');
   }
 
-  context.nodeFlagsStore.upsert(node, { localsData: { regStatements: [] } });
-
   const content = renderNode(declList, context);
   if (!content || content.length === 0) {
     return '';

@@ -6,7 +6,7 @@ import { isTopLevel } from '../utils/isTopLevel';
 import { identifyAnonymousNode, insideComponent } from '../components/unusedCodeElimination/usageGraph/nodeData';
 import { Scope } from '../components/unusedCodeElimination/usageGraph';
 import { renderPattern } from '../utils/renderBindingPatterns';
-import { renderNodes } from '../components/codegen/renderNodes';
+import { renderNode, renderNodes } from '../components/codegen/renderNodes';
 import { getPossibleCastingType } from '../components/typeInference/basicTypes';
 
 function renderBindingElement(el: ts.BindingElement | ts.OmittedExpression, index: number, destructured: Set<string>, context: Context<Declaration>) {
@@ -32,6 +32,7 @@ function renderBindingElement(el: ts.BindingElement | ts.OmittedExpression, inde
   if (el.dotDotDotToken) {
     return {
       identifier: el.name,
+      defaultValue: '',
       initializer: `Stdlib::objectOmit(%placeholder%, [${Array.from(destructured.values()).map((el) => `"${el}"`).join(', ')}])`,
     };
   } else {
@@ -43,6 +44,7 @@ function renderBindingElement(el: ts.BindingElement | ts.OmittedExpression, inde
     }
     return {
       identifier: el.name,
+      defaultValue: el.initializer ? ' ?? ' + renderNode(el.initializer, context) : '',
       initializer: `${getPossibleCastingType(el.name, context.checker, context.log)}%placeholder%["${(el.propertyName || el.name).getText()}"]`,
     };
   }
