@@ -22,7 +22,8 @@ const namespaces = {
   root: 'VK\\Elephize',
   builtins: 'VK\\Elephize\\Builtins',
 };
-const importRules = { };
+const ignoreImportRules: Set<string> = new Set();
+const replaceImportRules = { };
 const compilerOptions = {
   baseUrl: baseDir,
   paths: {
@@ -59,7 +60,7 @@ export function runWatcherTests(watcherTestConfig: WatcherTestQueueItem[], done:
         let close = () => {};
 
         console.info('Triggering watcher tests for: \n   %s', [files.map((f) => f.replace(__dirname, '')).join('\n   ')]);
-        translateCodeAndWatch(files.map((f) => pResolve(__dirname, 'watchSpecimens' + testResultPostfix, f)), importRules, compilerOptions.paths, log, {
+        translateCodeAndWatch(files.map((f) => pResolve(__dirname, 'watchSpecimens' + testResultPostfix, f)), ignoreImportRules, replaceImportRules, compilerOptions.paths, log, {
           baseDir,
           aliases: {},
           namespaces,

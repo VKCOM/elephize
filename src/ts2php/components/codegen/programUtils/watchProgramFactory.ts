@@ -16,7 +16,8 @@ let lastDiagCode: number | undefined;
  * Create typescript `Program` object with incremental compilation on any change.
  *
  * @param filenames
- * @param importRules
+ * @param ignoredImports
+ * @param replacedImports
  * @param baseDir
  * @param tsPaths
  * @param compilerOptions
@@ -26,7 +27,8 @@ let lastDiagCode: number | undefined;
  */
 export function getWatchProgram(
   filenames: string[],
-  importRules: CliOptions['importRules'],
+  ignoredImports: CliOptions['ignoreImports'],
+  replacedImports: CliOptions['replaceImports'],
   baseDir: string,
   tsPaths: { [key: string]: string[] },
   compilerOptions: ts.CompilerOptions,
@@ -72,7 +74,7 @@ export function getWatchProgram(
     return origCreateProgram(rootNames, options, host, oldProgram);
   };
   const origPostProgramCreate = host.afterProgramCreate;
-  const resolutionFun = resolveModules(options, importRules, baseDir, tsPaths, log);
+  const resolutionFun = resolveModules(options, ignoredImports, replacedImports, baseDir, tsPaths, log);
   let replacements: ImportReplacementRule[] = [];
   host.resolveModuleNames = (moduleNames: string[], containingFile: string) => {
     const [resolvedModules, importReplacements] = resolutionFun(moduleNames, containingFile);

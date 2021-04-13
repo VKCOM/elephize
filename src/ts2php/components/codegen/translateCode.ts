@@ -8,7 +8,8 @@ import { LogObj } from '../../utils/log';
 
 type TranslatorFunc = (
   filenames: string[],
-  importRules: CliOptions['importRules'],
+  ignoredImports: CliOptions['ignoreImports'],
+  replacedImports: CliOptions['replaceImports'],
   tsPaths: { [key: string]: string[] },
   log: LogObj,
   opts: TranslateOptions
@@ -16,7 +17,8 @@ type TranslatorFunc = (
 
 export const translateCode: TranslatorFunc = (
   fileNames,
-  importRules,
+  ignoredImports,
+  replacedImports,
   tsPaths,
   log,
   {
@@ -36,7 +38,8 @@ export const translateCode: TranslatorFunc = (
   const nodeFlagStore = new NodeFlagStore();
   const [program, replacements] = getBuildProgram(
     fileNames,
-    importRules,
+    ignoredImports,
+    replacedImports,
     baseDir,
     tsPaths,
     {
@@ -68,7 +71,8 @@ export const translateCode: TranslatorFunc = (
 
 export const translateCodeAndWatch: TranslatorFunc = (
   fileNames,
-  importRules,
+  ignoredImports,
+  replacedImports,
   tsPaths,
   log,
   {
@@ -86,7 +90,7 @@ export const translateCodeAndWatch: TranslatorFunc = (
   }: TranslateOptions
 ): NodeFlagStore => {
   const nodeFlagStore = new NodeFlagStore(); // TODO: check! this may lead to unforeseen consequences in sequential rebuilds
-  getWatchProgram(fileNames, importRules, baseDir, tsPaths, { ...defaultOptions, ...options }, (program, replacements, errcode) => {
+  getWatchProgram(fileNames, ignoredImports, replacedImports, baseDir, tsPaths, { ...defaultOptions, ...options }, (program, replacements, errcode) => {
     translateProgram(program, replacements, nodeFlagStore, log, {
       aliases,
       baseDir,

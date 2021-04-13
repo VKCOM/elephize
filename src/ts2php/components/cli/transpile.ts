@@ -8,7 +8,6 @@ import { ModuleRegistry } from '../cjsModules/moduleRegistry';
 import ncp = require('ncp');
 import { makeBootstrap } from '../codegen/makeBootstrap';
 import { CliOptions } from '../../types';
-import { resolveRulePaths } from '../cjsModules/resolveModules';
 const replace = require('stream-replace');
 
 export function transpile(options: CliOptions, baseDir: string, outDir: string, log: LogObj) {
@@ -31,7 +30,12 @@ export function transpile(options: CliOptions, baseDir: string, outDir: string, 
     };
 
     (options.watch ? translateCodeAndWatch : translateCode)(
-      matches.map((p) => path.resolve('./', p)), resolveRulePaths(options.importRules, baseDir), options.tsPaths, log, {
+      matches.map((p) => path.resolve('./', p)),
+      options.ignoreImports,
+      options.replaceImports,
+      options.tsPaths,
+      log,
+      {
         baseDir,
         serverFilesRoot,
         aliases: options.aliases,

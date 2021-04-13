@@ -12,7 +12,8 @@ const { addRange } = require('typescript');
  * Create typescript `Program` object for one-time build.
  *
  * @param filenames
- * @param importRules
+ * @param ignoredImports
+ * @param replacedImports
  * @param baseDir
  * @param tsPaths
  * @param transpileOptions
@@ -21,7 +22,8 @@ const { addRange } = require('typescript');
  */
 export function getBuildProgram(
   filenames: string[],
-  importRules: CliOptions['importRules'],
+  ignoredImports: CliOptions['ignoreImports'],
+  replacedImports: CliOptions['replaceImports'],
   baseDir: string,
   tsPaths: { [key: string]: string[] },
   transpileOptions: ts.TranspileOptions,
@@ -46,7 +48,7 @@ export function getBuildProgram(
   options.allowNonTsExtensions = true;
 
   // Create a compilerHost object to allow the compiler to read and write files
-  const resolutionFun = resolveModules(options, importRules, baseDir, tsPaths, log);
+  const resolutionFun = resolveModules(options, ignoredImports, replacedImports, baseDir, tsPaths, log);
   let replacements: ImportReplacementRule[] = [];
   const compilerHost: ts.CompilerHost = {
     resolveModuleNames: (moduleNames: string[], containingFile: string) => {

@@ -18,7 +18,7 @@ const log = configureLogging({
 });
 
 function compile(files: string[]): ts.SourceFile | undefined {
-  const [program] = getBuildProgram(files, {}, '', {},
+  const [program] = getBuildProgram(files, new Set(), {}, '', {},
     {
       compilerOptions: defaultOptions,
     },
@@ -52,7 +52,7 @@ function findFirstNode(where: ts.Node, type: ts.SyntaxKind) {
 }
 
 function recompile(fileNames: string[], onData: (filename: string, rootNode: ts.Node, nodeFlagStore: NodeFlagStore) => void) {
-  return translateCode(fileNames, {}, {}, log, {
+  return translateCode(fileNames, new Set(), {}, {}, log, {
     baseDir: '',
     aliases: {},
     namespaces: { root: '', builtins: '' },
