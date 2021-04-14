@@ -96,7 +96,7 @@ import { Declaration } from '../../types';
 import { Context } from '../context';
 import { tEnumDeclaration } from '../../renderers/enumDeclaration';
 
-function _renderNode(node: ts.Node | undefined, context: Context<Declaration>): string {
+function render(node: ts.Node | undefined, context: Context<Declaration>): string {
   if (!node) {
     return '';
   }
@@ -203,7 +203,7 @@ function _renderNode(node: ts.Node | undefined, context: Context<Declaration>): 
 }
 
 export function renderNodes(nodes: Array<ts.Node | undefined>, context: Context<Declaration>, filterEmpty = true): string[] {
-  const list = nodes.map((child) => _renderNode(child, context));
+  const list = nodes.map((child) => render(child, context));
 
   if (filterEmpty) {
     return list.filter(function(child): child is string {
@@ -220,7 +220,7 @@ export function renderNodes(nodes: Array<ts.Node | undefined>, context: Context<
 }
 
 export function renderNode(node: ts.Node | undefined, context: Context<Declaration>): string {
-  let rendered = _renderNode(node, context);
+  let rendered = render(node, context);
   if (rendered === '!null') {
     rendered = '';
   }

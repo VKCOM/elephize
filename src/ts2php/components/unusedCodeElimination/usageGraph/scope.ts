@@ -197,14 +197,14 @@ export class Scope<NodeData extends { [key: string]: any }> {
 
   protected collectPendingNodes(scope: Scope<NodeData>, ident: string) {
     const collectedNodes: Array<BindPendingNode<NodeData>> = [];
-    function _collect(scopeC: Scope<NodeData>) {
+    function collect(scopeC: Scope<NodeData>) {
       const pendingNode = scopeC.declarations.get(ident);
       if (pendingNode && isPending(pendingNode)) {
         collectedNodes.push(pendingNode);
       }
-      scopeC.childScopes.forEach(_collect);
+      scopeC.childScopes.forEach(collect);
     }
-    _collect(scope);
+    collect(scope);
     return collectedNodes;
   }
 

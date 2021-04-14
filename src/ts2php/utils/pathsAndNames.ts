@@ -87,7 +87,7 @@ export function resolveAliasesAndPaths(
 
     if (originalSourcePath.startsWith(pathToTry)) {
       log.info('Trying paths for location: %s', [pathToTry]);
-      return _applyOutputAliases(tsPaths[pathOrig].reduce((acc, name) => {
+      return applyOutputAliases(tsPaths[pathOrig].reduce((acc, name) => {
         if (acc) {
           return acc;
         }
@@ -96,7 +96,7 @@ export function resolveAliasesAndPaths(
           target : // absolute path, no need to resolve
           path.resolve(baseDir, target);
         log.info('Trying to locate file: %s', [tPath]);
-        const fn = _lookupFile(tPath);
+        const fn = lookupFile(tPath);
         if (fn) {
           return fn;
         }
@@ -106,10 +106,10 @@ export function resolveAliasesAndPaths(
   }
 
   log.info('Trying non-aliased path: %s', [path.resolve(currentDir, originalSourcePath).replace(baseDir, '[base]')]);
-  return _applyOutputAliases(_lookupFile(path.resolve(currentDir, originalSourcePath)), baseDir, outputAliases, skipOutputAliases);
+  return applyOutputAliases(lookupFile(path.resolve(currentDir, originalSourcePath)), baseDir, outputAliases, skipOutputAliases);
 }
 
-function _applyOutputAliases(path = '', baseDir: string, outputAliases: { [key: string]: string }, skip?: boolean): string {
+function applyOutputAliases(path = '', baseDir: string, outputAliases: { [key: string]: string }, skip?: boolean): string {
   if (!path) {
     return '';
   }
@@ -126,7 +126,7 @@ function _applyOutputAliases(path = '', baseDir: string, outputAliases: { [key: 
   }, path.replace(baseDir, ''));
 }
 
-function _lookupFile(path: string) {
+function lookupFile(path: string) {
   return [
     path + '.js',
     path + '.jsx',

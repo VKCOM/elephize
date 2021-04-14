@@ -30,23 +30,23 @@ export function getIdentities(exp: ts.Expression): ts.Identifier[] {
 
   const idents: Set<ts.Identifier> = new Set();
 
-  function _traverse(child: ts.Node) {
+  function traverse(child: ts.Node) {
     if (ts.isIdentifier(child)) {
       idents.add(child);
     } else if (ts.isCallExpression(child)) {
-      _traverse(child.expression);
-      child.arguments.forEach((arg) => _traverse(arg));
+      traverse(child.expression);
+      child.arguments.forEach((arg) => traverse(arg));
     } else if (ts.isTypeOfExpression(child)) {
-      _traverse(child.expression);
+      traverse(child.expression);
     } else if (ts.isPropertyAccessExpression(child)) {
-      _traverse(child.expression);
+      traverse(child.expression);
     } else if (ts.isElementAccessExpression(child)) {
-      _traverse(child.expression);
-      _traverse(child.argumentExpression);
+      traverse(child.expression);
+      traverse(child.argumentExpression);
     }
   }
 
-  _traverse(exp);
+  traverse(exp);
   return Array.from(idents);
 }
 
