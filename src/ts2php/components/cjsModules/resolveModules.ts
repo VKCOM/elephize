@@ -1,8 +1,9 @@
 import * as ts from 'typescript';
-import { CliOptions, ImportReplacementRule, ImportRule } from '../../types';
+import { CliOptions, ImportReplacementRule } from '../../types';
 import * as path from 'path';
 import { LogObj } from '../../utils/log';
 import { resolveAliasesAndPaths } from '../../utils/pathsAndNames';
+import * as glob from 'glob';
 
 /*
   TODO:
@@ -12,19 +13,6 @@ import { resolveAliasesAndPaths } from '../../utils/pathsAndNames';
    - Нужно где-то иметь список возможных php/kphp типов и соответствия их типам ts (по крайней мере примитивам).
 
  */
-
-export function resolveRulePaths(rules: CliOptions['importRules'], baseDir: string): CliOptions['importRules'] {
-  const resolvedRules: CliOptions['importRules'] = {};
-  Object.keys(rules).forEach((key) => {
-    const p = path.resolve(baseDir, key);
-    if (fileExists(p)) {
-      resolvedRules[p] = rules[key];
-    } else {
-      resolvedRules[key] = rules[key];
-    }
-  });
-  return resolvedRules;
-}
 
 function fileExists(fileName: string): boolean {
   return ts.sys.fileExists(fileName);
@@ -44,16 +32,64 @@ function resolveModulePath(name: string, containingFile: string, baseDir: string
   return name;
 }
 
-function findImportRule(importRules: CliOptions['importRules'], baseDir: string, log: LogObj, path?: string): ImportRule | undefined {
-  if (!path) {
+type ReplacedImportRule = {
+  ignore: false;
+  implementationPath: ImportReplacementRule['implementationPath'];
+  implementationClass: ImportReplacementRule['implementationClass'];
+};
+type IgnoredImportRule = {
+  ignore: true;
+};
+type ImportRule = ReplacedImportRule | IgnoredImportRule;
+
+const resolvedReplaceRules: { [key: string]: ReplacedImportRule } = {};
+const resolvedIgnoreRules: { [key: string]: IgnoredImportRule } = {};
+let lastIgnoredRulesRef: CliOptions['ignoreImports'];
+let lastReplacedRulesRef: CliOptions['replaceImports'];
+function getRules(ignoredImportRules: CliOptions['ignoreImports'], replacedImportRules: CliOptions['replaceImports'], baseDir: string) {
+  if (lastReplacedRulesRef !== replacedImportRules) {
+    Object.keys(replacedImportRules).forEach((key) => {
+      const p = path.resolve(baseDir, key);
+      resolvedReplaceRules[fileExists(p) ? p : key] = { ...replacedImportRules[key], ignore: false };
+    });
+    lastReplacedRulesRef = replacedImportRules;
+  }
+
+  if (lastIgnoredRulesRef !== ignoredImportRules) {
+    ignoredImportRules.forEach((key) => {
+      glob.sync(baseDir + '/' + key)
+        .forEach((fn) => resolvedIgnoreRules[fn] = { ignore: true });
+    });
+    lastIgnoredRulesRef = ignoredImportRules;
+  }
+
+  return { resolvedIgnoreRules, resolvedReplaceRules };
+}
+
+function findImportRule(
+  ignoredImportRules: CliOptions['ignoreImports'],
+  replacedImportRules: CliOptions['replaceImports'],
+  baseDir: string,
+  log: LogObj,
+  filepath?: string
+): ImportRule | undefined {
+  if (!filepath) {
     return undefined;
   }
-  log.info('Checking import override rules for %s', [path]);
-  return importRules[path];
+  log.info('Checking import override rules for %s', [filepath]);
+  const { resolvedIgnoreRules, resolvedReplaceRules } = getRules(ignoredImportRules, replacedImportRules, baseDir);
+  return resolvedIgnoreRules[filepath] || resolvedReplaceRules[filepath] || undefined;
 }
 
 const emptyModule = { resolvedFileName: path.resolve(__dirname, '__empty.ts') };
-export const resolveModules = (options: ts.CompilerOptions, importRules: CliOptions['importRules'], baseDir: string, tsPaths: { [key: string]: string[] }, log: LogObj) => (
+export const resolveModules = (
+  options: ts.CompilerOptions,
+  ignoredImports: CliOptions['ignoreImports'],
+  replacedImports: CliOptions['replaceImports'],
+  baseDir: string,
+  tsPaths: { [key: string]: string[] },
+  log: LogObj
+) => (
   moduleNames: string[],
   containingFile: string
 ): [ts.ResolvedModule[], ImportReplacementRule[]] => {
@@ -63,7 +99,7 @@ export const resolveModules = (options: ts.CompilerOptions, importRules: CliOpti
 
   for (const moduleName of moduleNames) {
     const mPath = resolveModulePath(moduleName, containingFile, baseDir, tsPaths, log);
-    const rule = findImportRule(importRules, baseDir, log, mPath);
+    const rule = findImportRule(ignoredImports, replacedImports, baseDir, log, mPath);
     if (rule) {
       resolvedModules.push(emptyModule);
       if (!rule.ignore) {

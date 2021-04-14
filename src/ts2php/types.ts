@@ -90,16 +90,6 @@ export type ImportReplacementRule = {
   implementationClass: string;
 };
 
-type ReplacedImportRule = {
-  ignore: false;
-  implementationPath: ImportReplacementRule['implementationPath'];
-  implementationClass: ImportReplacementRule['implementationClass'];
-};
-type IgnoredImportRule = {
-  ignore: true;
-};
-export type ImportRule = ReplacedImportRule | IgnoredImportRule;
-
 export type CliOptions = {
   aliases: { [key: string]: string };
   bail: 'none' | 'warn' | 'error';
@@ -111,9 +101,8 @@ export type CliOptions = {
   outDir: string;
   output: string;
   quiet: boolean;
-  importRules: {
-    [moduleIdentifier: string]: ImportRule;
-  };
+  ignoreImports: Set<string>;
+  replaceImports: { [moduleIdentifier: string]: Omit<ImportReplacementRule, 'modulePath'> };
   rootNs: string;
   builtinsNs?: string;
   src: string;

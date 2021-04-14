@@ -22,6 +22,7 @@ export function retrieveConfig(options: any): CliOptions {
 
     if (cfgName) {
       rcOptions = JSON.parse(fs.readFileSync(cfgName, { encoding: 'utf-8' }));
+      rcOptions.ignoreImports = new Set(rcOptions.ignoreImports);
     }
   } catch (e) {
     console.error('Failed to parse elephize config file: ', e.toString());

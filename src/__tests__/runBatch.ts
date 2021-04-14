@@ -4,7 +4,6 @@ import { readFileSync, writeFileSync, unlinkSync } from 'fs';
 import { normalizeFileExt } from '../ts2php/utils/pathsAndNames';
 import * as prettier from 'prettier/standalone';
 import { phpPrettierOptions } from '../ts2php/internalConfig/phpPrettierOptions';
-import { resolveRulePaths } from '../ts2php/components/cjsModules/resolveModules';
 import { CliOptions } from '../ts2php/types';
 import { LogObj } from '../ts2php/utils/log';
 
@@ -14,14 +13,14 @@ const namespaces = {
   root: 'VK\\Elephize',
   builtins: 'VK\\Elephize\\Builtins',
 };
-const importRules: CliOptions['importRules'] = {
+const ignoredImports: CliOptions['ignoreImports'] = new Set([
+  'src/__tests__/specimens/misc/__toIgnore.ts',
+  'src/__tests__/specimens/misc/__toIgnoreFolder/*.ts',
+]);
+const replacedImports: CliOptions['replaceImports'] = {
   'src/__tests__/specimens/misc/toReplace.ts': {
-    ignore: false,
     implementationPath: 'src/__tests__/specimens/ToReplace.php',
     implementationClass: 'ToReplace',
-  },
-  'src/__tests__/specimens/misc/__toIgnore.ts': {
-    ignore: true,
   },
 };
 const compilerOptions = {
@@ -34,7 +33,7 @@ const compilerOptions = {
 export function runBatch(basePath: string[], testSuite: string[][], log: LogObj) {
   const promises: Array<Promise<any>> = [];
 
-  translateCode(testSuite.map((path) => pResolve(...basePath, ...path)), resolveRulePaths(importRules, baseDir), compilerOptions.paths, log, {
+  translateCode(testSuite.map((path) => pResolve(...basePath, ...path)), ignoredImports, replacedImports, compilerOptions.paths, log, {
     baseDir,
     aliases: {},
     namespaces,
