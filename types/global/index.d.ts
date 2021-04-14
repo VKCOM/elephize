@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
+/* eslint-disable @typescript-eslint/naming-convention */
 
 // If you need to add more custom typehints,
 // see also: components/typeInference/customTypehintsList.ts

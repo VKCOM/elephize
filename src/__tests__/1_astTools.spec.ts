@@ -33,13 +33,13 @@ function compile(files: string[]): ts.SourceFile | undefined {
 }
 
 function findFirstNode(where: ts.Node, type: ts.SyntaxKind) {
-  function _traverse(where: ts.Node, type: ts.SyntaxKind): ts.Node | null {
+  function traverse(where: ts.Node, type: ts.SyntaxKind): ts.Node | null {
     if (where.kind === type) {
       return where;
     }
 
     for (const child of where.getChildren()) {
-      const result = _traverse(child, type);
+      const result = traverse(child, type);
       if (result) {
         return result;
       }
@@ -48,7 +48,7 @@ function findFirstNode(where: ts.Node, type: ts.SyntaxKind) {
     return null;
   }
 
-  return _traverse(where, type);
+  return traverse(where, type);
 }
 
 function recompile(fileNames: string[], onData: (filename: string, rootNode: ts.Node, nodeFlagStore: NodeFlagStore) => void) {
