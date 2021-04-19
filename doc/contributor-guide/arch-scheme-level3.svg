@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentScriptType="application/ecmascript" contentStyleType="text/css" height="789px" preserveAspectRatio="none" style="width:1470px;height:789px;" version="1.1" viewBox="0 0 1470 789" width="1470px" zoomAndPan="magnify"><defs><filter height="300%" id="fdzlnq30tg8sd" width="300%" x="-1" y="-1"><feGaussianBlur result="blurOut" stdDeviation="2.0"/><feColorMatrix in="blurOut" result="blurOut2" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .4 0"/><feOffset dx="4.0" dy="4.0" in="blurOut2" result="blurOut3"/><feBlend in="SourceGraphic" in2="blurOut3" mode="normal"/></filter></defs><g><!--MD5=[f2b73aba29a8fc2ce42b63abbb6a8051]
+cluster - --><rect fill="#FFFFFF" filter="url(#fdzlnq30tg8sd)" height="770" style="stroke:#000000;stroke-width:1.5;" width="1451" x="7" y="7"/><path d="M23,7 L23,16.2969 L13,26.2969 L7,26.2969 " fill="none" style="stroke:#000000;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="6" x="10" y="20.9951">-</text><!--MD5=[e0ad2a8157f27a9f4791d506672f22f7]
+cluster renderNode--><polygon fill="#FFFFFF" filter="url(#fdzlnq30tg8sd)" points="31,147,129,147,136,169.2969,1369,169.2969,1369,753,31,753,31,147" style="stroke:#000000;stroke-width:1.5;"/><line style="stroke:#000000;stroke-width:1.5;" x1="31" x2="136" y1="169.2969" y2="169.2969"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="92" x="35" y="161.9951">renderNode</text><!--MD5=[d66ceb09c977e935503ebc2372f0d656]
+cluster renderers--><rect fill="#FFFFFF" filter="url(#fdzlnq30tg8sd)" height="400" style="stroke:#000000;stroke-width:1.5;" width="949" x="63" y="321"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="77" x="499" y="335.9951">renderers</text><!--MD5=[fbcfb0d9237ed5556ff044daa35c5e6b]
+cluster funcDecl--><rect fill="#FFFFFF" filter="url(#fdzlnq30tg8sd)" height="237" style="stroke:#000000;stroke-width:1.5;" width="424" x="220" y="380"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="70" x="397" y="394.9951">funcDecl</text><!--MD5=[83c9690d7d8f006e646b79aaaa67ad1f]
+cluster stdlibRenderers--><rect fill="#FFFFFF" filter="url(#fdzlnq30tg8sd)" height="103" style="stroke:#000000;stroke-width:1.5;" width="173" x="721" y="514"/><text fill="#000000" font-family="sans-serif" font-size="14" font-weight="bold" lengthAdjust="spacing" textLength="128" x="743.5" y="528.9951">stdlibRenderers</text><!--MD5=[addd21e16688006e0e37d9b993deafcb]
+entity call renderNode--><ellipse cx="1117" cy="71" fill="#FEFECE" filter="url(#fdzlnq30tg8sd)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="113" x="1060.5" y="100.9951">call renderNode</text><!--MD5=[8c1e675aa9d98a542eb1eac4e3dc2105]
+entity emit!--><ellipse cx="1415" cy="575" fill="#FEFECE" filter="url(#fdzlnq30tg8sd)" rx="8" ry="8" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="39" x="1395.5" y="604.9951">emit!</text><ellipse cx="1117.1985" cy="208.5236" fill="#FEFECE" filter="url(#fdzlnq30tg8sd)" rx="32.6985" ry="14.5236" style="stroke:#A80036;stroke-width:1.5;"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="30" x="1102.1709" y="211.381">args</text><!--MD5=[0b185c9c01a0040d2df20538df50b7d4]
+entity scopes--><rect fill="#FEFECE" filter="url(#fdzlnq30tg8sd)" height="52.5938" style="stroke:#000000;stroke-width:1.5;" width="183" x="80.5" y="182"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="142" x="90.5" y="204.9951">scopes and closures</text><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="163" x="90.5" y="221.292">(see functionScope.ts)</text><!--MD5=[a50f115a867dd3fe2748e40a31ef2706]
+entity reactModules--><rect fill="#FEFECE" filter="url(#fdzlnq30tg8sd)" height="36.2969" style="stroke:#000000;stroke-width:1.5;" width="116" x="299" y="190.5"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="96" x="309" y="213.4951">reactModules</text><path d="M876.5,196 L876.5,221.1328 L1049.5,221.1328 L1049.5,206 L1039.5,196 L876.5,196 " fill="#FBFB77" filter="url(#fdzlnq30tg8sd)" style="stroke:#A80036;stroke-width:1.0;"/><path d="M1039.5,196 L1039.5,206 L1049.5,206 L1039.5,196 " fill="#FBFB77" style="stroke:#A80036;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="152" x="882.5" y="213.0669">Basic syntax constructs</text><!--MD5=[c8e1724a33ce9b3cedc07b6c64ddee18]
+entity reactHooks support--><rect fill="#FEFECE" filter="url(#fdzlnq30tg8sd)" height="36.2969" style="stroke:#000000;stroke-width:1.5;" width="163" x="1036.5" y="557"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="143" x="1046.5" y="579.9951">reactHooks support</text><!--MD5=[13c9e1858a84b9fcb49ffc61a65c1ac1]
+entity enumModules--><rect fill="#FEFECE" filter="url(#fdzlnq30tg8sd)" height="36.2969" style="stroke:#000000;stroke-width:1.5;" width="118" x="1235" y="557"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="98" x="1245" y="579.9951">enumModules</text><!--MD5=[9f289ca539b650134df838be30977bdf]
+entity comp1--><rect fill="#FEFECE" filter="url(#fdzlnq30tg8sd)" height="36.2969" style="stroke:#000000;stroke-width:1.5;" width="35" x="87.5" y="423"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="15" x="97.5" y="445.9951">...</text><!--MD5=[9ce2ef9ab72501d0b0a005ad96e63d6d]
+entity comp2--><rect fill="#FEFECE" filter="url(#fdzlnq30tg8sd)" height="36.2969" style="stroke:#000000;stroke-width:1.5;" width="35" x="157.5" y="423"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="15" x="167.5" y="445.9951">...</text><!--MD5=[c4193d27c0fd19f0ca502a5eac8f6344]
+entity callExpression--><rect fill="#FEFECE" filter="url(#fdzlnq30tg8sd)" height="36.2969" style="stroke:#000000;stroke-width:1.5;" width="122" x="668" y="423"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="102" x="678" y="445.9951">callExpression</text><!--MD5=[111194a58d4fc64d91bfebd7c720c47f]
+entity enumDeclaration--><rect fill="#FEFECE" filter="url(#fdzlnq30tg8sd)" height="36.2969" style="stroke:#000000;stroke-width:1.5;" width="143" x="825.5" y="423"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="123" x="835.5" y="445.9951">enumDeclaration</text><!--MD5=[872e7249418d416d387577d1a7b264cc]
+entity comp4--><rect fill="#FEFECE" filter="url(#fdzlnq30tg8sd)" height="36.2969" style="stroke:#000000;stroke-width:1.5;" width="35" x="87.5" y="557"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="15" x="97.5" y="579.9951">...</text><!--MD5=[24996672bfb82a698b3a70857e509c72]
+entity comp5--><rect fill="#FEFECE" filter="url(#fdzlnq30tg8sd)" height="36.2969" style="stroke:#000000;stroke-width:1.5;" width="35" x="157.5" y="557"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="15" x="167.5" y="579.9951">...</text><path d="M675,672 L675,697.1328 L783,697.1328 L783,682 L773,672 L675,672 " fill="#FBFB77" filter="url(#fdzlnq30tg8sd)" style="stroke:#A80036;stroke-width:1.0;"/><path d="M773,672 L773,682 L783,682 L773,672 " fill="#FBFB77" style="stroke:#A80036;stroke-width:1.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="87" x="681" y="689.0669">stdlib support</text><!--MD5=[548e600aa1598ffc1049fe7edd0e2561]
+entity functionDeclaration--><rect fill="#FEFECE" filter="url(#fdzlnq30tg8sd)" height="36.2969" style="stroke:#000000;stroke-width:1.5;" width="163" x="263.5" y="423"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="143" x="273.5" y="445.9951">functionDeclaration</text><!--MD5=[cb7782954e76ab3b098a245ea9776a4b]
+entity functionExpression--><rect fill="#FEFECE" filter="url(#fdzlnq30tg8sd)" height="36.2969" style="stroke:#000000;stroke-width:1.5;" width="158" x="462" y="423"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="138" x="472" y="445.9951">functionExpression</text><!--MD5=[bbbafa862cd99f34033dfda661760662]
+entity arrowFunction--><rect fill="#FEFECE" filter="url(#fdzlnq30tg8sd)" height="36.2969" style="stroke:#000000;stroke-width:1.5;" width="122" x="284" y="557"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="102" x="294" y="579.9951">arrowFunction</text><!--MD5=[ce401b0e5fba945cef201a2a42be863b]
+entity comp6--><rect fill="#FEFECE" filter="url(#fdzlnq30tg8sd)" height="36.2969" style="stroke:#000000;stroke-width:1.5;" width="35" x="834.5" y="557"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="15" x="844.5" y="579.9951">...</text><!--MD5=[9536294ddde293d7aa81a19d53abcc56]
+entity comp7--><rect fill="#FEFECE" filter="url(#fdzlnq30tg8sd)" height="36.2969" style="stroke:#000000;stroke-width:1.5;" width="35" x="764.5" y="557"/><text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="15" x="774.5" y="579.9951">...</text><!--MD5=[aefe258baf129beba2dc82ccebec67c8]
+link call renderNode to args--><path d="M1117,80.07 C1117,101.203 1117,158.594 1117,188.618 " fill="none" id="call renderNode-to-args" style="stroke:#A80036;stroke-width:2.0;"/><polygon fill="#A80036" points="1117,193.891,1121,184.891,1117,188.891,1113,184.891,1117,193.891" style="stroke:#A80036;stroke-width:2.0;"/><!--MD5=[cc12c95244faeee295dd38ad988727f8]
+reverse link scopes to funcDecl--><path d="M193.231,239.696 C204.663,257.746 217.685,281.648 224,305 C227.8563,319.2598 230.0568,334.6769 231.1829,349.8183 C231.746,357.389 232.0404,364.8907 232.139,372.1443 C232.1636,373.9577 232.176,375.7555 232.1773,377.5351 C232.1777,377.98 232.1773,378.4238 232.1762,378.8663 C232.1757,379.0876 232.175,379.3086 232.1742,379.5293 " fill="none" id="scopes-backto-funcDecl" style="stroke:#A80036;stroke-width:2.0;"/><polygon fill="#A80036" points="190.364,235.237,191.8671,244.9705,193.0682,239.4426,198.5961,240.6437,190.364,235.237" style="stroke:#A80036;stroke-width:2.0;"/><!--MD5=[a8eddc74b463adbedf27f4d31641d457]
+reverse link reactModules to funcDecl--><path d="M323.071,229.42 C297.738,246.211 264.581,272.652 247,305 C239.8795,318.1013 235.1129,332.9301 231.973,347.8429 C230.403,355.2993 229.2396,362.7766 228.392,370.0694 C228.1801,371.8926 227.988,373.7043 227.8141,375.5013 C227.7272,376.3997 227.6448,377.2945 227.5669,378.1852 C227.5279,378.6306 227.49,379.0749 227.4532,379.5181 " fill="none" id="reactModules-backto-funcDecl" style="stroke:#A80036;stroke-width:2.0;"/><polygon fill="#A80036" points="327.385,226.604,317.6624,228.1757,323.1986,229.3378,322.0365,234.874,327.385,226.604" style="stroke:#A80036;stroke-width:2.0;"/><!--MD5=[7cdb5c90346f6b9b2161825f5fe9bd6f]
+link stdlibRenderers to GMN198052--><path d="M729,617.1424 C729,617.3022 729,617.4622 729,617.6223 C729,617.9426 729,618.2634 729,618.5848 C729,619.8705 729,621.1651 729,622.4654 C729,625.0662 729,627.6901 729,630.3122 C729,635.5564 729,640.7935 729,645.8238 C729,655.8843 729,665.1173 729,671.925 " fill="none" id="stdlibRenderers-GMN198052" style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><!--MD5=[56f95e4abc1c204fbc8dd8e61660c639]
+link GMN198055 to renderers--><path d="M960.186,221.158 C956.557,239.127 952.415,273.925 968,297 C972.674,303.92 980.044,298.279 985,305 C987.2125,308.0003 989.2247,311.1423 991.0528,314.3974 C991.9669,316.0249 992.835,317.6807 993.6591,319.3612 C993.8651,319.7813 994.0684,320.203 994.2689,320.6261 " fill="none" id="GMN198055-renderers" style="stroke:#A80036;stroke-width:1.0;stroke-dasharray:7.0,7.0;"/><!--MD5=[0a67085e6f6a3a4304501a6ba3cd44f3]
+link args to renderers--><path d="M1096.67,220.13 C1087.63,224.788 1076.83,230.262 1067,235 C1037.97,248.99 1018.44,237.909 1001,265 C995.818,273.0478 993.3683,287.7329 992.6198,305.3012 C992.4326,309.6932 992.3518,314.2655 992.3613,318.9593 C992.3624,319.546 992.365,320.1346 992.369,320.7251 " fill="none" id="args-to-renderers" style="stroke:#A80036;stroke-width:2.0;"/><polygon fill="#A80036" points="992.369,320.7251,996.3084,311.6984,992.3354,315.7252,988.3086,311.7521,992.369,320.7251" style="stroke:#A80036;stroke-width:2.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="64" x="1006" y="278.0669">sourceFile</text><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="72" x="1002" y="293.1997">(root node)</text><!--MD5=[0a67085e6f6a3a4304501a6ba3cd44f3]
+link args to renderers--><path d="M1111.51,222.979 C1104.37,240.282 1091.37,271.156 1079,297 C1063.75,328.8615 1045.3425,364.001 1030.58,391.4733 C1023.1988,405.2094 1016.7288,417.0287 1012.0203,425.563 " fill="none" id="args-to-renderers-1" style="stroke:#A80036;stroke-width:2.0;"/><polygon fill="#A80036" points="1012.0203,425.563,1019.8702,419.615,1014.4356,421.1851,1012.8656,415.7505,1012.0203,425.563" style="stroke:#A80036;stroke-width:2.0;"/><text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="49" x="1094" y="285.5669">context</text><!--MD5=[8dbf881c7bc253cbf0d43c61333641fa]
+link callExpression to reactHooks support--><path d="M779.456,459.121 C852.476,483.899 987.119,529.588 1062.74,555.248 " fill="none" id="callExpression-to-reactHooks support" style="stroke:#A80036;stroke-width:2.0;"/><polygon fill="#A80036" points="1067.63,556.909,1060.3844,550.238,1062.8932,555.3082,1057.8231,557.8169,1067.63,556.909" style="stroke:#A80036;stroke-width:2.0;"/><!--MD5=[39aff6bf96380c2ba23243bf21653e01]
+link callExpression to stdlibRenderers--><path d="M729,459.257 C729,468.0623 729,479.4828 729,491.698 C729,497.8057 729,504.112 729,510.3895 C729,511.1742 729,511.9585 729,512.7418 C729,513.1335 729,513.5249 729,513.9161 " fill="none" id="callExpression-to-stdlibRenderers" style="stroke:#A80036;stroke-width:2.0;"/><polygon fill="#A80036" points="729,513.9161,733,504.9161,729,508.9161,725,504.9161,729,513.9161" style="stroke:#A80036;stroke-width:2.0;"/><!--MD5=[66774d6e89116b630ccf6d9aa34c7ba3]
+link enumDeclaration to enumModules--><path d="M942.299,459.119 C973.275,470.009 1015.53,483.283 1054,490 C1089.73,496.238 1183.8,483.413 1217,498 C1243.16,509.492 1265.42,534.159 1279.17,552.287 " fill="none" id="enumDeclaration-to-enumModules" style="stroke:#A80036;stroke-width:2.0;"/><polygon fill="#A80036" points="1282.48,556.743,1280.3228,547.1333,1279.4979,552.7297,1273.9015,551.9047,1282.48,556.743" style="stroke:#A80036;stroke-width:2.0;"/><!--MD5=[8ef3dcf11f95d1bd116f3a3a12485258]
+link renderers to emit!--><path d="M1012.5097,442.3422 C1014.1998,442.415 1016.1243,442.5002 1018.2676,442.5985 C1026.8407,442.9917 1038.9135,443.595 1053.4839,444.4559 C1082.6247,446.1777 1121.7556,448.9296 1162.8588,453.0908 C1245.065,461.413 1335.16,475.372 1369,498 C1391.54,513.072 1404.82,543.288 1410.92,560.738 " fill="none" id="renderers-to-emit!" style="stroke:#A80036;stroke-width:2.0;"/><polygon fill="#A80036" points="1412.59,565.712,1413.5245,555.9076,1411.002,560.9709,1405.9387,558.4484,1412.59,565.712" style="stroke:#A80036;stroke-width:2.0;"/><!--MD5=[ad8e7535f0cc2e02d36f446f28b509f6]
+link comp1 to comp2--><!--MD5=[79cb523487cc3cf6725c135499a60249]
+link comp1 to comp4--><!--MD5=[1ae203f6f4cc3af371b50475e76cbcd6]
+link comp4 to comp5--><!--MD5=[14779cfd7a869e9c3282e03985085b3b]
+link functionDeclaration to functionExpression--><!--MD5=[84e42971afd74b0b19ab508662ac3992]
+link functionDeclaration to arrowFunction--><!--MD5=[9cc812cc3df41117e35c98ff013426ea]
+@startuml
+skinparam componentStyle rectangle
+
+frame "-" {
+() "call renderNode"
+
+package "renderNode" {
+
+  () "call renderNode" ==> (args)
+
+  component [scopes and closures\n(see functionScope.ts)] as scopes
+  component [reactModules]
+
+  component renderers {
+    component [...] as comp1
+    component [...] as comp2
+    component funcDecl {
+        component [functionDeclaration]
+        component [functionExpression]
+        component [arrowFunction]
+    }
+
+    funcDecl =up=> [scopes]
+    funcDecl =up=> [reactModules]
+
+    component [callExpression]
+    component [enumDeclaration]
+    component [...] as comp4
+    component [...] as comp5
+
+
+    component stdlibRenderers {
+      component [...] as comp6
+      component [...] as comp7
+    }
+
+    note bottom of stdlibRenderers : stdlib support
+  }
+
+  note top of renderers : Basic syntax constructs
+
+  (args) =down=> renderers : sourceFile\n(root node)
+  (args) =down=> renderers : context
+
+  [callExpression] ==> [reactHooks support]
+  [callExpression] ==> stdlibRenderers
+
+  [enumDeclaration] ==> [enumModules]
+}
+
+renderers =down=> () "emit!"
+@enduml
+
+PlantUML version 1.2021.5beta3(Unknown compile time)
+(GPL source distribution)
+Java Runtime: Java(TM) SE Runtime Environment
+JVM: Java HotSpot(TM) 64-Bit Server VM
+Default Encoding: UTF-8
+Language: en
+Country: US
+--></g></svg>
