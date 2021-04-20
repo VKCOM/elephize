@@ -1,0 +1,6 @@
+Please use any of PlantUML instances to re-create svg images in this article.
+For example: https://plantuml.com/
+
+Source code for diagrams can be found in the source of svg files. You may just
+copy and paste it to the plantuml web service. Note that '-->' arrows are identified as
+comment end in svg markup, so be careful with these arrows.
