@@ -3,6 +3,8 @@ import { LogObj } from './log';
 import * as path from 'path';
 import * as fs from 'fs';
 
+const PHP_KEYWORDS = ['__halt_compiler', 'abstract', 'and', 'array', 'as', 'break', 'callable', 'case', 'catch', 'class', 'clone', 'const', 'continue', 'declare', 'default', 'die', 'do', 'echo', 'else', 'elseif', 'empty', 'enddeclare', 'endfor', 'endforeach', 'endif', 'endswitch', 'endwhile', 'eval', 'exit', 'extends', 'final', 'for', 'foreach', 'function', 'global', 'goto', 'if', 'implements', 'include', 'include_once', 'instanceof', 'insteadof', 'interface', 'isset', 'list', 'namespace', 'new', 'or', 'print', 'private', 'protected', 'public', 'require', 'require_once', 'return', 'static', 'switch', 'throw', 'trait', 'try', 'unset', 'use', 'var', 'while', 'xor'];
+
 export function camelize(ident: string): string {
   return ident.replace(
     /([a-z])_([a-z])/g,
@@ -25,6 +27,15 @@ export function normalizeFileExt(filename: string, replaceWith = '.php') {
   return filename.replace(/(\.php)?\.(ts|tsx|js|jsx)$/g, replaceWith);
 }
 
+export function escapeKeyword(s: string) {
+  const keywordIndex = PHP_KEYWORDS.indexOf(s.toLowerCase());
+  if (keywordIndex === -1) {
+    return s;
+  }
+
+  return `__${s}__`;
+}
+
 /**
  * Output: no leading slash!
  *
@@ -35,7 +46,10 @@ export function normalizeFileExt(filename: string, replaceWith = '.php') {
 export function normalizeBasePath(filename: string, baseDir: string, aliases?: Dict<string>) {
   const nrm = filename
     .replace(new RegExp('^' + baseDir), '')
-    .replace(/^\/+/, '');
+    .replace(/^\/+/, '')
+    .split('/')
+    .map((n) => escapeKeyword(n))
+    .join('/');
 
   if (aliases) {
     for (let path in aliases) {
