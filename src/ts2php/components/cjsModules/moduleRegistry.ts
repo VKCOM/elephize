@@ -282,7 +282,6 @@ export class ModuleRegistry {
 
     pieces = pieces.map((n) => ModuleRegistry.replaceInvalidNamespaceSymbols(n));
     pieces.push(className + '.php');
-    console.log(222, pieces.join('/'));
     return pieces.join('/');
   }
 

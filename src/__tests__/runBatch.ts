@@ -1,6 +1,6 @@
 import { resolve as pResolve, dirname } from 'path';
 import { translateCode } from '../ts2php/components/codegen/translateCode';
-import { readFileSync, writeFileSync, unlinkSync, mkdir } from 'fs';
+import { readFileSync, writeFileSync, unlinkSync } from 'fs';
 import { normalizeFileExt } from '../ts2php/utils/pathsAndNames';
 import * as prettier from 'prettier/standalone';
 import { phpPrettierOptions } from '../ts2php/internalConfig/phpPrettierOptions';
