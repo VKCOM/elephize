@@ -67,7 +67,6 @@ export class CommonjsModule {
 
     path = path.replace(/\.[jt]sx?$/, '.php');
     currentModulePath = currentModulePath.replace(/\.[jt]sx?$/, '.php');
-    console.log(111, currentModulePath);
     this._requiredFiles.set(this._normalizeRelativePath(path, currentModulePath), originalModule);
   }
 
