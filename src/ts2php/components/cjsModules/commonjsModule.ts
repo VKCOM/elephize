@@ -2,6 +2,7 @@ import * as ts from 'typescript';
 import { LogObj } from '../../utils/log';
 import { MethodsTypes, NsMap, SpecialVars } from '../../types';
 import { ModuleRegistry } from './moduleRegistry';
+import { escapeKeyword } from 'src/ts2php/utils/pathsAndNames';
 
 export class CommonjsModule {
   public readonly isDerived: boolean = false;
@@ -65,14 +66,19 @@ export class CommonjsModule {
       return;
     }
 
-    path = path.replace(/\.[jt]sx?$/, '.php');
+    path = path
+      .replace(/\.[jt]sx?$/, '.php')
+      .split('/')
+      .map((n) => escapeKeyword(n))
+      .join('/');
+
     currentModulePath = currentModulePath.replace(/\.[jt]sx?$/, '.php');
     this._requiredFiles.set(this._normalizeRelativePath(path, currentModulePath), originalModule);
   }
 
   protected _normalizeRelativePath(path: string, currentModulePath: string) {
-    const piecesTarget = path.split('/');
-    const piecesCurrent = currentModulePath.split('/');
+    const piecesTarget = path.split('/').map((n) => escapeKeyword(n));
+    const piecesCurrent = currentModulePath.split('/').map((n) => escapeKeyword(n));
 
     while (piecesTarget[0] === piecesCurrent[0]) {
       piecesTarget.shift();
