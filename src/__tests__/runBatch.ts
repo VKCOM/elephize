@@ -1,11 +1,12 @@
-import { resolve as pResolve } from 'path';
+import { resolve as pResolve, dirname } from 'path';
 import { translateCode } from '../ts2php/components/codegen/translateCode';
-import { readFileSync, writeFileSync, unlinkSync } from 'fs';
+import { readFileSync, writeFileSync, unlinkSync, mkdir } from 'fs';
 import { normalizeFileExt } from '../ts2php/utils/pathsAndNames';
 import * as prettier from 'prettier/standalone';
 import { phpPrettierOptions } from '../ts2php/internalConfig/phpPrettierOptions';
 import { CliOptions } from '../ts2php/types';
 import { LogObj } from '../ts2php/utils/log';
+import { sync as mkdirpSync } from 'mkdirp';
 
 const baseDir = pResolve(__dirname, '..', '..');
 const serverFilesRoot = pResolve(__dirname, '..', '..', 'src', 'server');
@@ -53,6 +54,9 @@ function onData(basePath: string[], promises: Array<Promise<any>>, filename: str
   promises.push(new Promise((resolve) => {
     const resultFileName = normalizeFileExt(filename);
     const cont = prettier.format(content, phpPrettierOptions);
+
+    mkdirpSync(dirname(resultFileName));
+
     writeFileSync(resultFileName + '.result', cont, 'utf-8');
     expect(cont).toBeTruthy();
     expect(cont, 'Failed in file: ' + filename)
