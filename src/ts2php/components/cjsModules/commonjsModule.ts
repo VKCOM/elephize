@@ -2,7 +2,7 @@ import * as ts from 'typescript';
 import { LogObj } from '../../utils/log';
 import { MethodsTypes, NsMap, SpecialVars } from '../../types';
 import { ModuleRegistry } from './moduleRegistry';
-import { escapeKeyword } from 'src/ts2php/utils/pathsAndNames';
+import { escapeKeyword } from '../../utils/pathsAndNames';
 
 export class CommonjsModule {
   public readonly isDerived: boolean = false;
