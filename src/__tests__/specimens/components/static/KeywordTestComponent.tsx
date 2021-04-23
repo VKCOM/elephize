@@ -3,7 +3,7 @@ import * as React from 'react';
 const { useState } = React;
 
 // @elephizeTarget
-export function KeywordTestComponent() { // eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function KeywordTestComponent() {
   const [count, setCount] = useState(0);
 
   return (
