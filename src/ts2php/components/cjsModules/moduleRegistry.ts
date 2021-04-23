@@ -280,7 +280,10 @@ export class ModuleRegistry {
       pieces.push(filename);
     }
 
-    pieces = pieces.map((n) => ModuleRegistry.replaceInvalidNamespaceSymbols(n));
+    pieces = pieces
+      .map((n) => ModuleRegistry.replaceInvalidNamespaceSymbols(n))
+      .map((n) => escapeKeyword(n));
+
     pieces.push(className + '.php');
     return pieces.join('/');
   }
