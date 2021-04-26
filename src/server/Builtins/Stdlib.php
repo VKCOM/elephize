@@ -141,9 +141,11 @@ class Stdlib {
      */
     public static function stringSlice($str, $start, $end = null) {
         if ($end !== null) {
-            return substr($str, $start, abs($end - $start)) ?: "";
+            $ret = substr($str, $start, abs($end - $start));
+        } else {
+            $ret = substr($str, $start);
         }
-        return substr($str, $start) ?: "";
+        return $ret ? $ret : "";
     }
 
     /**
