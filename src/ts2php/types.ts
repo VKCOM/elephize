@@ -111,12 +111,14 @@ export type CliOptions = {
   verboseTypehints: boolean;
   verboseUsage: boolean;
   watch: boolean;
+  preferTernary: boolean;
 };
 
 export type TranslateOptions = {
   aliases: CliOptions['aliases'];
   baseDir: CliOptions['baseDir'];
   disableCodeElimination?: boolean;
+  preferTernary: boolean;
   getCloseHandle?: (handle: () => void) => void; // get function which closes watcher when called
   namespaces: NsMap;
   serverFilesRoot: string;

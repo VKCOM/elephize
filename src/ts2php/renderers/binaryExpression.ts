@@ -61,7 +61,7 @@ export function tBinaryExpression(node: ts.BinaryExpression, context: Context<De
     }
   }
 
-  // Elvis operator for simple expressions
+  // Support for 'default operator' for simple expressions
   if (node.operatorToken.kind === ts.SyntaxKind.BarBarToken) {
     const typeRight = context.checker.getTypeAtLocation(node.right);
     if (context.checker.typeToString(typeRight, node.right, ts.TypeFormatFlags.None) !== 'boolean') {
@@ -70,18 +70,23 @@ export function tBinaryExpression(node: ts.BinaryExpression, context: Context<De
         kind = node.parent?.parent?.kind;
       }
       if (kind) {
-        if (kind === ts.SyntaxKind.BinaryExpression && (
+        const parentIsBinaryExpression = kind === ts.SyntaxKind.BinaryExpression && (
           (node.parent as ts.BinaryExpression).operatorToken.kind === ts.SyntaxKind.EqualsToken || // const a = b || 'test';
           (node.parent as ts.BinaryExpression).operatorToken.kind === ts.SyntaxKind.BarBarToken // const a = b || c || d;
-        )) {
-          replaceLiteral = '?:';
-        } else if ([
+        );
+        const parentIsOtherSupportedExpressions = [
           ts.SyntaxKind.VariableDeclaration,
           ts.SyntaxKind.ParenthesizedExpression,
           ts.SyntaxKind.JsxExpression,
           ts.SyntaxKind.CallExpression,
-        ].includes(kind)) {
-          replaceLiteral = '?:';
+        ].includes(kind);
+
+        if (parentIsBinaryExpression || parentIsOtherSupportedExpressions) {
+          const leftExpr = renderLeftExpr(node, context);
+          const rightExpr = renderRightExpr(node, context);
+          return context.preferTernary
+            ? `${leftExpr} ? ${leftExpr} : ${rightExpr}`
+            : `${leftExpr} ?: ${rightExpr}`;
         }
       }
     }
