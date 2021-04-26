@@ -21,7 +21,9 @@ import { CommonjsExternalModule } from '../../cjsModules/commonjsExternalModule'
  * @param onBeforeRender
  * @param baseDir
  * @param disableCodeElimination
+ * @param preferTernary
  * @param aliases
+ * @param serverFilesRoot
  * @param namespaces
  * @param encoding
  * @param options
@@ -32,6 +34,7 @@ export function translateProgram(program: ts.Program, replacements: ImportReplac
   onBeforeRender = () => undefined,
   baseDir,
   disableCodeElimination = false,
+  preferTernary,
   aliases = {},
   serverFilesRoot,
   namespaces,
@@ -61,7 +64,7 @@ export function translateProgram(program: ts.Program, replacements: ImportReplac
       }
 
       onBeforeRender(sourceFile.fileName, sourceFile, nodeFlagStore);
-      renderModule(checker, options, sourceFile, nodeFlagStore, baseDir, namespaces, encoding, registry, currentModule, log, disableCodeElimination);
+      renderModule(checker, options, sourceFile, nodeFlagStore, baseDir, namespaces, encoding, registry, currentModule, log, preferTernary, disableCodeElimination);
     }
   }
 

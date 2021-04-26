@@ -22,6 +22,8 @@ import { NodeFlagStore } from './nodeFlagStore';
  * @param currentModule
  * @param log
  * @param disableCodeElimination
+ * @param preferTernary
+ * @param builtinsNs
  */
 export function renderModule(
   checker: ts.TypeChecker,
@@ -34,6 +36,7 @@ export function renderModule(
   registry: ModuleRegistry,
   currentModule: CommonjsModule,
   log: LogObj,
+  preferTernary: boolean,
   disableCodeElimination = false,
   builtinsNs = ''
 ): void {
@@ -59,7 +62,8 @@ export function renderModule(
     encoding,
     registry,
     log,
-    builtinsNs
+    builtinsNs,
+    preferTernary,
   );
 
   // First pass: build trees and collect var usage info
@@ -88,7 +92,8 @@ export function renderModule(
     encoding,
     registry,
     log,
-    builtinsNs
+    builtinsNs,
+    preferTernary,
   );
 
   // Second pass: build code with cleaned unused vars

@@ -55,6 +55,7 @@ function recompile(fileNames: string[], onData: (filename: string, rootNode: ts.
   return translateCode(fileNames, new Set(), {}, {}, log, {
     baseDir: '',
     aliases: {},
+    preferTernary: false,
     namespaces: { root: '', builtins: '' },
     serverFilesRoot: '',
     encoding: 'utf-8',
