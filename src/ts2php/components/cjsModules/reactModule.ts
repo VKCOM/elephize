@@ -76,7 +76,7 @@ class ${this.className} extends RenderableComponent {
     /**
     ${this._phpdoc.join('\n')}
      * @param array $children
-     * @return ${renderRetval === 'mixed' ? 'mixed' : ('?' + renderRetval)}
+     * @return ${renderRetval === 'mixed' ? 'mixed' : renderRetval}
      */
     public function render(array ${this.args}, array $children) ${this.block}
 }
