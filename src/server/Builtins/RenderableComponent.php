@@ -6,19 +6,9 @@ abstract class RenderableComponent extends CJSModule {
     /**
      * @param array $props
      * @param array $children
-     * @return string
+     * @return ?string
      */
     abstract public function render(array $props, array $children);
-
-    /**
-     * @param RenderableComponent $component
-     * @param array $attributes
-     * @param array $children
-     * @return string
-     */
-    protected function h(RenderableComponent $component, array $attributes, array $children) {
-        return $component->render($attributes, $children);
-    }
 
     /**
      * React.Fragment support
