@@ -103,6 +103,7 @@ export type CliOptions = {
   quiet: boolean;
   ignoreImports: Set<string>;
   replaceImports: { [moduleIdentifier: string]: Omit<ImportReplacementRule, 'modulePath'> };
+  serverFilesRoot?: string;
   rootNs: string;
   builtinsNs?: string;
   src: string;

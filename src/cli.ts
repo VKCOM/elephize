@@ -19,6 +19,7 @@ const _options = cli.parse({
   bail: ['e', 'Return error code if any error occurred during transpilation', 'string', undefined],
   baseDir: ['b', 'Base src directory for transpiled code', 'string', undefined],
   encoding: ['l', 'Set output encoding for non-ascii symbols', 'string', undefined],
+  serverFilesRoot: ['r', 'Server root files folder path', 'string', undefined],
   rootNs: ['n', 'Root namespace name for generated classes', 'string', undefined],
   watch: ['w', 'Start elephize in watcher mode', 'bool', undefined],
   help: ['h', 'Show some help', 'bool', undefined],
