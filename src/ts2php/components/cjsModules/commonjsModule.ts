@@ -3,6 +3,7 @@ import { LogObj } from '../../utils/log';
 import { MethodsTypes, NsMap, SpecialVars } from '../../types';
 import { ModuleRegistry } from './moduleRegistry';
 import { escapeKeyword } from '../../utils/pathsAndNames';
+import { relative } from 'path';
 
 export class CommonjsModule {
   public readonly isDerived: boolean = false;
@@ -90,7 +91,7 @@ export class CommonjsModule {
       // Files in same folder
       relpath = piecesTarget[0];
     } else {
-      relpath = '../'.repeat(piecesCurrent.length - 1) + piecesTarget.join('/');
+      relpath = relative(currentModulePath, this._serverFilesRoot);
     }
 
     return relpath;
