@@ -15,7 +15,7 @@ export function transpile(options: CliOptions, baseDir: string, outDir: string, 
     root: options.rootNs,
     builtins: options.builtinsNs || options.rootNs + '\\Builtins',
   };
-  const builtinsBasePath = path.resolve(__dirname, '..', '..', '..', 'server', 'VK', 'Elephize', 'Builtins');
+  const builtinsBasePath = path.resolve(__dirname, '..', '..', '..', 'server', 'VK', 'Elephize');
   const serverFilesRoot = options.serverBaseDir ? path.resolve(options.serverBaseDir) : path.resolve(__dirname, '..', '..', '..', 'server');
 
   glob(options.src, (e: Error, matches: string[]) => {
