@@ -52,8 +52,10 @@ export class CommonjsExternalModule extends CommonjsModule {
 
   public generateContent() {
     const fullyQualifiedNamespace = ModuleRegistry.pathToNamespace(this.targetFileName);
-    const implementationClass = 
-      ModuleRegistry.pathToNamespace(relativePath(this._serverFilesRoot, this._implPath)) +
+
+    const implementationPath = relativePath(this._serverFilesRoot, this._implPath);
+    const implementationClass =
+      ModuleRegistry.pathToNamespace(implementationPath) +
       '\\' +
       this._phpStruct.getClassName();
 
@@ -63,6 +65,8 @@ namespace ${this._namespaces.root}\\${fullyQualifiedNamespace};
 use ${this._namespaces.builtins}\\Stdlib;
 use ${this._namespaces.builtins}\\CJSModule;
 use ${implementationClass};
+
+require_once '${implementationPath}';
 
 class ${this.className} extends CJSModule {
   /**
