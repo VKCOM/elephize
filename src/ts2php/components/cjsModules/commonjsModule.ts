@@ -91,7 +91,7 @@ export class CommonjsModule {
       // Files in same folder
       relpath = piecesTarget[0];
     } else {
-      relpath = relative(currentModulePath, this._serverFilesRoot);
+      relpath = relative(path, currentModulePath);
     }
 
     return relpath;
