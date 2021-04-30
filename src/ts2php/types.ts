@@ -93,6 +93,7 @@ export type ImportReplacementRule = {
 export type CliOptions = {
   aliases: { [key: string]: string };
   bail: 'none' | 'warn' | 'error';
+  serverBaseDir: string;
   baseDir: string;
   config: string;
   encoding: string;
