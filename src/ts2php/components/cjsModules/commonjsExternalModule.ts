@@ -3,6 +3,7 @@ import { NsMap } from '../../types';
 import { PhpParsedStruct } from './phpParser';
 import { LogObj } from '../../utils/log';
 import { ModuleRegistry } from './moduleRegistry';
+import { join } from 'path';
 
 export class CommonjsExternalModule extends CommonjsModule {
   public readonly isDerived: boolean = false;
@@ -57,7 +58,7 @@ namespace ${this._namespaces.root}\\${fullyQualifiedNamespace};
 use ${this._namespaces.builtins}\\Stdlib;
 use ${this._namespaces.builtins}\\CJSModule;
 
-require __DIR__ . '/${this._normalizeRelativePath(this._implPath, this._serverFilesRoot)}';
+require ${join(this._serverFilesRoot, this._implPath)};
 
 class ${this.className} extends CJSModule {
   /**
