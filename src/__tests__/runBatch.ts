@@ -38,7 +38,6 @@ export function runBatch(basePath: string[], testSuite: string[][], log: LogObj)
     baseDir,
     aliases: {},
     namespaces,
-    preferTernary: false,
     serverFilesRoot,
     encoding: 'utf-8',
     options: compilerOptions,

@@ -15,7 +15,8 @@ export function transpile(options: CliOptions, baseDir: string, outDir: string, 
     root: options.rootNs,
     builtins: options.builtinsNs || options.rootNs + '\\Builtins',
   };
-  const serverFilesRoot = path.resolve(__dirname, '..', '..', '..', 'server');
+  const builtinsBasePath = path.resolve(__dirname, '..', '..', '..', 'server');
+  const serverFilesRoot = options.serverBaseDir ? path.resolve(options.serverBaseDir) : path.resolve(__dirname, '..', '..', '..', 'server');
 
   glob(options.src, (e: Error, matches: string[]) => {
     if (e) {
@@ -83,10 +84,10 @@ export function transpile(options: CliOptions, baseDir: string, outDir: string, 
     const bTgt = outDir;
 
     log.special('Copying server-side base files', []);
-    log.special('From: %s', [serverFilesRoot]);
+    log.special('From: %s', [builtinsBasePath]);
     log.special('To: %s', [bTgt]);
 
-    ncp(serverFilesRoot, bTgt, {
+    ncp(builtinsBasePath, bTgt, {
       transform: function(read, write) {
         read.pipe(replace(/__ROOTNS__/g, namespaces.root)).pipe(write);
       },

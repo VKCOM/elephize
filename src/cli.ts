@@ -17,6 +17,7 @@ const _options = cli.parse({
   verboseTypehints: ['t', 'Show type hinting tool verbose output', 'bool', undefined],
   noZap: ['z', 'Do not remove unused variables from resulting code', 'bool', undefined],
   bail: ['e', 'Return error code if any error occurred during transpilation', 'string', undefined],
+  serverBaseDir: ['r', 'Server base folder path', 'string', undefined],
   baseDir: ['b', 'Base src directory for transpiled code', 'string', undefined],
   encoding: ['l', 'Set output encoding for non-ascii symbols', 'string', undefined],
   rootNs: ['n', 'Root namespace name for generated classes', 'string', undefined],
