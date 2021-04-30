@@ -57,7 +57,7 @@ namespace ${this._namespaces.root}\\${fullyQualifiedNamespace};
 use ${this._namespaces.builtins}\\Stdlib;
 use ${this._namespaces.builtins}\\CJSModule;
 
-require __DIR__ . '/${this._normalizeRelativePath(this._implPath, this.targetFileName)}';
+require_once __DIR__ . '/${this._normalizeRelativePath(this._implPath, this.targetFileName)}';
 
 class ${this.className} extends CJSModule {
   /**
