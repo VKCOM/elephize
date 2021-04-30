@@ -4,7 +4,7 @@ namespace VK\Elephize\src\__tests__\specimens\byType;
 use VK\Elephize\Builtins\Stdlib;
 use VK\Elephize\Builtins\CJSModule;
 
-require_once __DIR__ . "/../../../../server";
+require_once __DIR__ . "/../../EnumImportModule.php";
 
 class EnumImportModule extends CJSModule {
     /**

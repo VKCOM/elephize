@@ -4,7 +4,7 @@ namespace VK\Elephize\src\__tests__\specimens\misc;
 use VK\Elephize\Builtins\Stdlib;
 use VK\Elephize\Builtins\CJSModule;
 
-require __DIR__ . "/../../../../server";
+require __DIR__ . "/../../ToReplace.php";
 
 class ToReplaceCjsWrapper extends CJSModule {
     /**
