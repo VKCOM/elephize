@@ -10,5 +10,7 @@ if ! docker pull vkcom/kphp; then
   exit 1
 fi
 
-docker run -t -i -v `pwd`/demo/public:/tmp/dev:rw vkcom/kphp /bin/sh -c 'kphp /tmp/dev/index.php -o /tmp/dev/compiled_demo'
+test -t 1 && USE_TTY="-t" 
+
+docker run ${USE_TTY} -i -v `pwd`/demo/public:/tmp/dev:rw vkcom/kphp /bin/sh -c 'kphp /tmp/dev/index.php -o /tmp/dev/compiled_demo'
 exit $?
