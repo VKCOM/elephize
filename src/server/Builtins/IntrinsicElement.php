@@ -7,7 +7,7 @@ class IntrinsicElement extends RenderableComponent {
         // Do nothing
     }
 
-    private static $_store = [];
+    protected static $_store = [];
     public static function get(string $name): IntrinsicElement {
         if (!isset(self::$_store[$name])) {
             self::$_store[$name] = new IntrinsicElement($name);
@@ -16,7 +16,7 @@ class IntrinsicElement extends RenderableComponent {
         return self::$_store[$name];
     }
 
-    private $_empty_tags = [
+    protected $_empty_tags = [
         'area',
         'base',
         'br',
@@ -35,9 +35,9 @@ class IntrinsicElement extends RenderableComponent {
         'track',
         'wbr',
     ];
-    private $_tag_name = '';
+    protected $_tag_name = '';
 
-    private $_unitless_css_properties = [
+    protected $_unitless_css_properties = [
         'animationIterationCount' => true,
         'borderImageOutset' => true,
         'borderImageSlice' => true,
@@ -83,7 +83,7 @@ class IntrinsicElement extends RenderableComponent {
         'strokeWidth' => true,
     ];
 
-    private $_vendor_prefixes = [
+    protected $_vendor_prefixes = [
         'webkit' => true,
         'ms' => true,
         'moz' => true,
@@ -130,7 +130,7 @@ class IntrinsicElement extends RenderableComponent {
      * @param mixed $val
      * @return bool
      */
-    private function _empty($val): bool
+    protected function _empty($val): bool
     {
         return $val === null || $val === '' || $val === 0 || $val === false;
     }
