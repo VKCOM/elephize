@@ -18,7 +18,11 @@ export function transpile(options: CliOptions, baseDir: string, outDir: string, 
   let builtinsRoot: string;
   if (options.rewriteBuiltinsRoot) {
     builtinsRoot = options.rewriteBuiltinsRoot;
+  } else {
+    builtinsRoot = path.resolve(__dirname, '..', '..', '..', 'server');
   }
+
+  const rootRelativePath = ModuleRegistry.namespaceToPath(namespaces.root);
 
   const serverFilesRoot = options.serverBaseDir ?? options.baseDir;
 
@@ -74,7 +78,7 @@ export function transpile(options: CliOptions, baseDir: string, outDir: string, 
       process.exit(1);
     }
 
-    const bootstrapContent = makeBootstrap(registry, baseDir.endsWith('/') ? baseDir : baseDir + '/', options.aliases);
+    const bootstrapContent = makeBootstrap(registry, baseDir.endsWith('/') ? baseDir : baseDir + '/', rootRelativePath, options.aliases);
     if (options.output === '__stdout') {
       console.log(bootstrapContent);
     } else {
@@ -88,7 +92,7 @@ export function transpile(options: CliOptions, baseDir: string, outDir: string, 
 
     const bTgt = outDir;
 
-    log.special('Copying server-side base files', []);
+    log.special('Copying builtins files', []);
     log.special('From: %s', [builtinsRoot]);
     log.special('To: %s', [bTgt]);
 

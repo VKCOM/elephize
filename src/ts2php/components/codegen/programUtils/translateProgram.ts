@@ -49,7 +49,7 @@ export function translateProgram(program: ts.Program, replacements: ImportReplac
   }
 
   if (!builtinsRoot) {
-    builtinsRoot = path.resolve(__dirname, '..', '..', '..', '..', 'server', 'VK', 'Elephize');
+    builtinsRoot = path.resolve(__dirname, '..', '..', '..', '..', 'server');
   }
 
   const registry = new ModuleRegistry(
