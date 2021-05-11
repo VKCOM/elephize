@@ -6,7 +6,7 @@ class Console {
     /**
      * @var ILogFacility
      */
-    private static $_log_facility;
+    protected static $_log_facility;
 
     /**
      * @param ILogFacility $l
