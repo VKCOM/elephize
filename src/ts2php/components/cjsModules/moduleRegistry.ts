@@ -40,6 +40,7 @@ export class ModuleRegistry {
     private readonly _tsPaths: { [key: string]: string[] },
     private readonly _namespaces: NsMap,
     private readonly _serverFilesRoot: string,
+    private readonly _builtinsRoot: string,
     private readonly _replacements: ImportReplacementRule[],
     protected readonly log: LogObj
   ) {
@@ -166,6 +167,7 @@ export class ModuleRegistry {
         newFilename,
         this._namespaces,
         this._serverFilesRoot,
+        this._builtinsRoot,
         this.log
       );
 
@@ -181,6 +183,7 @@ export class ModuleRegistry {
         newFilename,
         this._namespaces,
         this._serverFilesRoot,
+        this._builtinsRoot,
         this.log
       );
     }
@@ -236,6 +239,7 @@ export class ModuleRegistry {
       newFilename,
       this._namespaces,
       this._serverFilesRoot,
+      this._builtinsRoot,
       this.log,
       originalIdent,
       originalModule
@@ -261,6 +265,7 @@ export class ModuleRegistry {
       newFilename,
       this._namespaces,
       this._serverFilesRoot,
+      this._builtinsRoot,
       this.log,
       originalIdent,
       originalModule
@@ -339,5 +344,10 @@ export class ModuleRegistry {
       .map((n) => ModuleRegistry.replaceInvalidNamespaceSymbols(n))
       .map((n) => escapeKeyword(n))
       .join('\\');
+  }
+
+  public static namespaceToPath(namespace: string) {
+    return namespace.split('\\')
+      .join('/');
   }
 }

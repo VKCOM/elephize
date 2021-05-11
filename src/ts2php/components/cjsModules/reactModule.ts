@@ -45,9 +45,11 @@ export class ReactModule extends CommonjsModule {
     const fullyQualifiedNamespace = ModuleRegistry.pathToNamespace(this.targetFileName);
     const builtinIntrinsicClass = this._namespaces.builtins + '\\IntrinsicElement';
     const builtinIntrinsicFile = path.resolve(
-      this._serverFilesRoot,
-      builtinIntrinsicClass.replace(/\\/g, '/') + '.php'
+      this._builtinsRoot,
+      ModuleRegistry.namespaceToPath(builtinIntrinsicClass) + '.php'
     );
+
+    console.log(this._builtinsRoot, builtinIntrinsicFile);
 
     const renderRetval = ReactModule.getIntrinsicReturnType(builtinIntrinsicFile);
     return `<?php

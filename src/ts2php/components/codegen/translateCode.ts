@@ -5,6 +5,7 @@ import { translateProgram } from './programUtils/translateProgram';
 import { defaultOptions } from './defaultCompilerOptions';
 import { getWatchProgram } from './programUtils/watchProgramFactory';
 import { LogObj } from '../../utils/log';
+import { resolve as pathResolve } from 'path';
 
 type TranslatorFunc = (
   filenames: string[],
@@ -29,6 +30,7 @@ export const translateCode: TranslatorFunc = (
     namespaces,
     encoding,
     serverFilesRoot,
+    builtinsRoot,
     onBeforeRender = () => undefined,
     onData,
     onFinish = () => undefined,
@@ -64,6 +66,7 @@ export const translateCode: TranslatorFunc = (
       aliases,
       namespaces,
       serverFilesRoot,
+      builtinsRoot,
       encoding,
       options,
       onFinish,
@@ -88,6 +91,7 @@ export const translateCodeAndWatch: TranslatorFunc = (
     onBeforeRender = () => undefined,
     onData,
     serverFilesRoot,
+    builtinsRoot,
     onFinish = () => undefined,
     options = defaultOptions,
   }: TranslateOptions
@@ -101,6 +105,7 @@ export const translateCodeAndWatch: TranslatorFunc = (
       preferTernary,
       namespaces,
       serverFilesRoot,
+      builtinsRoot,
       encoding,
       onBeforeRender,
       onData: (sourceFilename: string, targetFilename: string, content: string) => onData(sourceFilename, targetFilename, content, errcode),

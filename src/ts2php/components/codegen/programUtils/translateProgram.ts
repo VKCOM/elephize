@@ -9,6 +9,7 @@ import * as prettier from 'prettier/standalone';
 import { phpPrettierOptions } from '../../../internalConfig/phpPrettierOptions';
 import { defaultOptions } from '../defaultCompilerOptions';
 import { CommonjsExternalModule } from '../../cjsModules/commonjsExternalModule';
+import * as path from 'path';
 
 /**
  * Transform typescript `Program` object (build or watch) to php file set.
@@ -37,6 +38,7 @@ export function translateProgram(program: ts.Program, replacements: ImportReplac
   preferTernary,
   aliases = {},
   serverFilesRoot,
+  builtinsRoot,
   namespaces,
   encoding,
   options = defaultOptions,
@@ -46,12 +48,17 @@ export function translateProgram(program: ts.Program, replacements: ImportReplac
     console.time('Elephize recompilation done');
   }
 
+  if (!builtinsRoot) {
+    builtinsRoot = path.resolve(__dirname, '..', '..', '..', '..', 'server', 'VK', 'Elephize');
+  }
+
   const registry = new ModuleRegistry(
     baseDir,
     aliases,
     options.paths || {},
     namespaces,
     serverFilesRoot,
+    builtinsRoot,
     replacements,
     log
   );

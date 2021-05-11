@@ -11,6 +11,7 @@ const _options = cli.parse({
   src: ['s', 'An entry point (file or glob) to process', 'string', undefined],
   outDir: ['d', 'Directory for generated php files', 'string', undefined],
   output: ['o', 'Name for bootstrap file', 'string', undefined],
+  rewriteBuiltinsRoot: [false, 'Rewritten builtins path', 'string', undefined],
   quiet: ['q', 'Do not show error messages from transpiler', 'bool', undefined],
   verbose: ['v', 'Show more verbose output from transpiler', 'bool', undefined],
   verboseUsage: ['u', 'Show var usage stats & eliminator verbose output', 'bool', undefined],
