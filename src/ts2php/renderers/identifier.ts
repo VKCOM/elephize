@@ -17,9 +17,9 @@ export function tIdentifier(node: ts.Identifier, context: Context<Declaration>) 
       isCallableIdent
     ) {
       if (node.escapedText === 'console') {
-        return `\\${context.namespaces.builtins}\\Console`; // to make more consistent classes on server side
+        return `${context.namespaces.builtins}\\Console`; // to make more consistent classes on server side
       }
-      return `\\${context.namespaces.builtins}\\${node.escapedText}`;
+      return `${context.namespaces.builtins}\\${node.escapedText}`;
     }
   }
 

@@ -6,8 +6,8 @@ import * as fs from 'fs';
 import * as iconv from 'iconv-lite';
 import { ModuleRegistry } from '../cjsModules/moduleRegistry';
 import ncp = require('ncp');
-import { makeBootstrap } from '../codegen/makeBootstrap';
 import { CliOptions } from '../../types';
+import { sync as mkdirpSync } from 'mkdirp';
 const replace = require('stream-replace');
 
 export function transpile(options: CliOptions, baseDir: string, outDir: string, log: LogObj) {
@@ -15,14 +15,19 @@ export function transpile(options: CliOptions, baseDir: string, outDir: string, 
     root: options.rootNs,
     builtins: options.builtinsNs || options.rootNs + '\\Builtins',
   };
-  let builtinsRoot: string;
-  if (options.rewriteBuiltinsRoot) {
-    builtinsRoot = options.rewriteBuiltinsRoot;
-  } else {
-    builtinsRoot = path.resolve(__dirname, '..', '..', '..', 'server');
-  }
 
-  const rootRelativePath = ModuleRegistry.namespaceToPath(namespaces.root);
+  const builtinsRelativePath = ModuleRegistry.namespaceToPath(namespaces.builtins);
+
+  let builtinsPath: string;
+  if (options.rewriteBuiltinsRoot) {
+    if (!options.builtinsNs) {
+      log.warn('builtinsNs option should be provided if rewriteBuiltinsRoot is used', []);
+    }
+
+    builtinsPath = path.join(options.rewriteBuiltinsRoot, builtinsRelativePath);
+  } else {
+    builtinsPath = path.resolve(__dirname, '..', '..', '..', 'builtins');
+  }
 
   const serverFilesRoot = options.serverBaseDir ?? options.baseDir;
 
@@ -47,7 +52,7 @@ export function transpile(options: CliOptions, baseDir: string, outDir: string, 
       {
         baseDir,
         serverFilesRoot,
-        builtinsRoot,
+        builtinsPath,
         aliases: options.aliases,
         namespaces,
         encoding: options.encoding || 'utf-8',
@@ -64,13 +69,11 @@ export function transpile(options: CliOptions, baseDir: string, outDir: string, 
     const outputFilename = outDir + '/' + filename;
     log.info('Emitting file: %s', [outputFilename]);
     const outputDir = path.dirname(outputFilename);
-    if (!fs.existsSync(outputDir)) {
-      fs.mkdirSync(outputDir, { recursive: true });
-    }
+    mkdirpSync(outputDir);
     fs.writeFileSync(outputFilename, iconv.encode(content, options.encoding || 'utf-8'));
   }
 
-  function onFinish(registry: ModuleRegistry) {
+  function onFinish() {
     if ((log.errCount || 0) > 0 && options.bail === 'error') {
       process.exit(1);
     }
@@ -78,31 +81,25 @@ export function transpile(options: CliOptions, baseDir: string, outDir: string, 
       process.exit(1);
     }
 
-    const bootstrapContent = makeBootstrap(registry, baseDir.endsWith('/') ? baseDir : baseDir + '/', rootRelativePath, options.aliases);
-    if (options.output === '__stdout') {
-      console.log(bootstrapContent);
-    } else {
-      log.special('Creating bootstrap file', []);
-      fs.writeFile(path.resolve(outDir, options.output), iconv.encode(bootstrapContent, options.encoding || 'utf-8'), (err) => {
-        if (!err) {
-          log.special('Bootstrap file successfully created', []);
-        }
-      });
+    if (options.rewriteBuiltinsRoot) {
+      log.special('Skip builtins copy bacause rewriteBuiltinsRoot options is provided', []);
+      return;
     }
 
-    const bTgt = outDir;
+    const bTgt = path.resolve(outDir, ModuleRegistry.namespaceToPath(namespaces.builtins));
+    console.log('btgt', bTgt);
 
     log.special('Copying builtins files', []);
-    log.special('From: %s', [builtinsRoot]);
+    log.special('From: %s', [builtinsPath]);
     log.special('To: %s', [bTgt]);
 
-    ncp(builtinsRoot, bTgt, {
+    ncp(builtinsPath, bTgt, {
       transform: function(read, write) {
         read.pipe(replace(/__ROOTNS__/g, namespaces.root)).pipe(write);
       },
     }, (err) => {
       if (!err) {
-        log.special('Server-side base files successfully copied', []);
+        log.special('Builtins base files successfully copied', []);
       }
     });
   }

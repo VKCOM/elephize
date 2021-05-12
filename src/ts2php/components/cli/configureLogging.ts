@@ -1,7 +1,6 @@
 import { Logger, LogOptions, LogPrinter, LogVerbosity } from '../../utils/log';
 
 type ConfigureLoggingParams = {
-  output: string;
   quiet?: boolean;
   verbose?: boolean;
   verboseUsage?: boolean;
@@ -17,7 +16,7 @@ export function configureLogging(options: ConfigureLoggingParams): Logger {
     baseDir: options.baseDir,
     outDir: options.outDir,
     verbosity: LogVerbosity.ERROR | LogVerbosity.WARN | LogVerbosity.WITH_CONTEXT,
-    forceStderr: options.output === '__stdout', // stdout used to print bootstrap file, force use stderr for debug messages
+    forceStderr: false,
   };
 
   if (options.quiet) {

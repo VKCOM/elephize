@@ -1,7 +1,7 @@
 import { Scope } from '../ts2php/components/unusedCodeElimination/usageGraph';
 import { configureLogging } from '../ts2php/components/cli/configureLogging';
 const log = configureLogging({
-  baseDir: '', output: '', outDir: '',
+  baseDir: '', outDir: '',
 });
 
 test('ts2php.UsageGraph.NewScope', () => {

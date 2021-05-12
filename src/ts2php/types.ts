@@ -124,7 +124,7 @@ export type TranslateOptions = {
   getCloseHandle?: (handle: () => void) => void; // get function which closes watcher when called
   namespaces: NsMap;
   serverFilesRoot: string;
-  builtinsRoot?: string;
+  builtinsPath?: string;
   encoding: string;
   onBeforeRender?: (filename: string, rootNode: ts.Node, nodeFlagStore: NodeFlagStore) => void; // mainly for testing purposes...
   onData: (sourceFilename: string, targetFilename: string, content: string, error?: number) => void;

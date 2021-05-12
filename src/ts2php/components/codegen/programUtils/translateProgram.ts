@@ -38,7 +38,7 @@ export function translateProgram(program: ts.Program, replacements: ImportReplac
   preferTernary,
   aliases = {},
   serverFilesRoot,
-  builtinsRoot,
+  builtinsPath,
   namespaces,
   encoding,
   options = defaultOptions,
@@ -48,8 +48,8 @@ export function translateProgram(program: ts.Program, replacements: ImportReplac
     console.time('Elephize recompilation done');
   }
 
-  if (!builtinsRoot) {
-    builtinsRoot = path.resolve(__dirname, '..', '..', '..', '..', 'server');
+  if (!builtinsPath) {
+    builtinsPath = path.resolve(__dirname, '..', '..', '..', '..', 'builtins');
   }
 
   const registry = new ModuleRegistry(
@@ -58,7 +58,7 @@ export function translateProgram(program: ts.Program, replacements: ImportReplac
     options.paths || {},
     namespaces,
     serverFilesRoot,
-    builtinsRoot,
+    builtinsPath,
     replacements,
     log
   );

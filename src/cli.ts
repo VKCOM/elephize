@@ -10,7 +10,6 @@ const _options = cli.parse({
   config: ['c', 'Configuration file path', 'string', undefined],
   src: ['s', 'An entry point (file or glob) to process', 'string', undefined],
   outDir: ['d', 'Directory for generated php files', 'string', undefined],
-  output: ['o', 'Name for bootstrap file', 'string', undefined],
   rewriteBuiltinsRoot: [false, 'Rewritten builtins path', 'string', undefined],
   quiet: ['q', 'Do not show error messages from transpiler', 'bool', undefined],
   verbose: ['v', 'Show more verbose output from transpiler', 'bool', undefined],
@@ -32,7 +31,6 @@ const outDir = path.resolve(options.outDir);
 const baseDir = path.resolve(options.baseDir);
 const log = configureLogging({
   baseDir, outDir,
-  output: options.output,
   verbose: options.verbose,
   verboseTypehints: options.verboseTypehints,
   verboseUsage: options.verboseUsage,

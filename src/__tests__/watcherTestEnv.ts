@@ -19,8 +19,8 @@ const testResultPostfix = '___'; // This must contain only valid symbols for nam
 const baseDir = pResolve(__dirname, '..', '..');
 const serverFilesRoot = pResolve(__dirname, '..', '..', 'src', 'server');
 const namespaces = {
-  root: 'VK\\Elephize',
-  builtins: 'VK\\Elephize\\Builtins',
+  root: '\\VK\\Elephize',
+  builtins: '\\VK\\Elephize\\Builtins',
 };
 const ignoreImportRules: Set<string> = new Set();
 const replaceImportRules = { };
@@ -32,7 +32,7 @@ const compilerOptions = {
 };
 
 const log = configureLogging({
-  baseDir, output: '', outDir: '',
+  baseDir, outDir: '',
 });
 
 let lastDiffApplied = 0;

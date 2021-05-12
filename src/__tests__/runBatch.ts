@@ -1,4 +1,4 @@
-import { resolve as pResolve, dirname } from 'path';
+import { resolve as pResolve, dirname, join } from 'path';
 import { translateCode } from '../ts2php/components/codegen/translateCode';
 import { readFileSync, writeFileSync, unlinkSync } from 'fs';
 import { normalizeFileExt } from '../ts2php/utils/pathsAndNames';
@@ -8,11 +8,10 @@ import { CliOptions } from '../ts2php/types';
 import { LogObj } from '../ts2php/utils/log';
 import { sync as mkdirpSync } from 'mkdirp';
 
-const baseDir = pResolve(__dirname, '..', '..');
-const serverFilesRoot = pResolve(__dirname, '..', '..', 'src', 'server');
+const baseDir = pResolve(__dirname);
 const namespaces = {
-  root: 'VK\\Elephize',
-  builtins: 'VK\\Elephize\\Builtins',
+  root: '',
+  builtins: '\\VK\\Elephize\\Builtins',
 };
 const ignoredImports: CliOptions['ignoreImports'] = new Set([
   'src/__tests__/specimens/misc/__toIgnore.ts',
@@ -34,12 +33,14 @@ const compilerOptions = {
 export function runBatch(basePath: string[], testSuite: string[][], log: LogObj) {
   const promises: Array<Promise<any>> = [];
 
+  process.stdout.write(__dirname + '\n');
+
   translateCode(testSuite.map((path) => pResolve(...basePath, ...path)), ignoredImports, replacedImports, compilerOptions.paths, log, {
     baseDir,
     aliases: {},
     namespaces,
     preferTernary: false,
-    serverFilesRoot,
+    serverFilesRoot: baseDir,
     encoding: 'utf-8',
     options: compilerOptions,
     onData: (sourceFilename: string, targetFilename: string, content: string) => onData(basePath, promises, targetFilename, content),
@@ -52,7 +53,7 @@ export function runBatch(basePath: string[], testSuite: string[][], log: LogObj)
 function onData(basePath: string[], promises: Array<Promise<any>>, filename: string, content: string) {
   process.stdout.write('[data received] ' + filename + '\n');
   promises.push(new Promise((resolve) => {
-    const resultFileName = normalizeFileExt(filename);
+    const resultFileName = join(baseDir, normalizeFileExt(filename));
     const cont = prettier.format(content, phpPrettierOptions);
 
     mkdirpSync(dirname(resultFileName));

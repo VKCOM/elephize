@@ -13,7 +13,7 @@ export const defaultOptions: CliOptions = {
   outDir: 'build/',
   output: '__stdout',
   quiet: false,
-  rootNs: 'VK\\Elephize',
+  rootNs: '\\VK\\Elephize',
   src: '**/*.tsx',
   tsPaths: {},
   verbose: false,

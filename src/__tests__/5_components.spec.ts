@@ -39,7 +39,7 @@ const errContext = testSuiteConfig.reduce<{[key: string]: string[]}>((acc, el) =
 
 const log = configureLogging({
   baseDir: path.resolve(__dirname, 'specimens'),
-  output: '', outDir: '',
+  outDir: '',
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   printer: (message: string, msgid: string, params: string[], severity: LogSeverity, context?: string) => {

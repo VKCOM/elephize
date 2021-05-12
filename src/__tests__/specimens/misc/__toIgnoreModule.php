@@ -4,24 +4,25 @@ namespace \specimens\misc;
 use VK\Elephize\Builtins\Stdlib;
 use VK\Elephize\Builtins\CJSModule;
 
-class ElephizeIgnoreModule extends CJSModule {
+class __toIgnoreModule extends CJSModule {
     /**
-     * @var ElephizeIgnoreModule $_mod
+     * @var __toIgnoreModule $_mod
      */
     private static $_mod;
-    public static function getInstance(): ElephizeIgnoreModule {
+    public static function getInstance(): __toIgnoreModule {
         if (!self::$_mod) {
-            self::$_mod = new ElephizeIgnoreModule();
+            self::$_mod = new __toIgnoreModule();
         }
         return self::$_mod;
     }
 
     /**
-     * @var string $eit1
+     * @return string
      */
-    public $eit1;
+    public function getSome() {
+        return null;
+    }
 
     private function __construct() {
-        $this->eit1 = "123";
     }
 }

@@ -14,7 +14,7 @@
     "sniff": "yon lint && yon test_all",
     "_reactgen": "ts-node src/ts2php/utils/parseReact.ts",
     "_compile": "tsc -p .",
-    "_copy-base": "cp -R src/server dist/src/",
+    "_copy-base": "cp -R src/builtins dist/src/",
     "_copy-ext": "cp -R external dist/",
     "_copy-types": "cp -R types dist/",
     "_clear": "rm -rf dist",
