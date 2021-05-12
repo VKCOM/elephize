@@ -1,7 +1,7 @@
 import { spawn } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
-jest.setTimeout(10000);
+jest.setTimeout(20000);
 
 const getFromProcess = (command: string, args: string[]): Promise<string> => {
   return new Promise<string>((resolve, reject) => {

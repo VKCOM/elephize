@@ -20,7 +20,7 @@ const baseDir = pResolve(__dirname);
 const serverFilesRoot = pResolve(__dirname, '..', '..', 'src', 'server');
 const namespaces = {
   root: '',
-  builtins: '\\VK\\Elephize\\Builtins',
+  builtins: 'VK\\Elephize\\Builtins',
 };
 const ignoreImportRules: Set<string> = new Set();
 const replaceImportRules = { };

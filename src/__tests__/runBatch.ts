@@ -11,7 +11,7 @@ import { sync as mkdirpSync } from 'mkdirp';
 const baseDir = pResolve(__dirname);
 const namespaces = {
   root: '',
-  builtins: '\\VK\\Elephize\\Builtins',
+  builtins: 'VK\\Elephize\\Builtins',
 };
 const ignoredImports: CliOptions['ignoreImports'] = new Set([
   'src/__tests__/specimens/misc/__toIgnore.ts',
