@@ -9,7 +9,7 @@
   },
   "scripts": {
     "lint": "eslint . --ext ts,tsx",
-    "test": "yon testcheck && jest -i",
+    "test": "yon demo_clear && yon testcheck && jest -i",
     "test_all": "yon build && yon demo_clear && yon demo_build && yon kphpbuild && yon test",
     "sniff": "yon lint && yon test_all",
     "_reactgen": "ts-node src/ts2php/utils/parseReact.ts",
