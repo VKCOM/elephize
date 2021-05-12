@@ -12,5 +12,5 @@ fi
 
 test -t 1 && USE_TTY="-t" 
 
-docker run ${USE_TTY} -i -v `pwd`/demo/public:/tmp/dev:rw vkcom/kphp /bin/sh -c 'kphp /tmp/dev/index.php -o /tmp/dev/compiled_demo --include-dir "/tmp/dev/build/"'
+docker run ${USE_TTY} -i -v `pwd`/demo/public:/tmp/dev:rw vkcom/kphp /bin/sh -c 'kphp /tmp/dev/index.php -o /tmp/dev/compiled_demo --include-dir "/tmp/dev/build/" --verbosity 3'
 exit $?

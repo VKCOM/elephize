@@ -86,8 +86,7 @@ export function transpile(options: CliOptions, baseDir: string, outDir: string, 
       return;
     }
 
-    const bTgt = path.resolve(outDir, ModuleRegistry.namespaceToPath(namespaces.builtins));
-    console.log('btgt', bTgt);
+    const bTgt = path.join(outDir, ModuleRegistry.namespaceToPath(namespaces.builtins));
 
     log.special('Copying builtins files', []);
     log.special('From: %s', [builtinsPath]);
