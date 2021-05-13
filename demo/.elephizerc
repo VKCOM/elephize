@@ -7,6 +7,8 @@
   "noZap": false,
   "verbose": false,
   "verboseUsage": false,
+  "rootNs": "",
+  "builtinsNs": "Builtins",
   "baseDir": "src/",
   "tsPaths": {
     "#iso_palette/*": ["components/iso_palette/*"],

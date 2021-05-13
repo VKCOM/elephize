@@ -155,7 +155,7 @@ export class ModuleRegistry {
     }
 
     const fullyQualifiedNamespace = ModuleRegistry.pathToNamespace(enumModule.targetFileName);
-    return `${fullyQualifiedNamespace}\\${enumModule.className}::${enumMember}`;
+    return `\\${fullyQualifiedNamespace}\\${enumModule.className}::${enumMember}`;
   }
 
   protected _registerCommonModule(className: string, fullyQualifiedSourceFilename: string, newFilename: string, external = false, implPath?: string) {
@@ -334,7 +334,7 @@ export class ModuleRegistry {
     const fullyQualifiedNamespace = ModuleRegistry.pathToNamespace(filename);
     const className = this._targetFilenameToModule.get(filename)?.className;
 
-    return `${fullyQualifiedNamespace}\\${className}::getInstance()`;
+    return `\\${fullyQualifiedNamespace}\\${className}::getInstance()`;
   }
 
   public static replaceInvalidNamespaceSymbols(name: string) {
@@ -348,6 +348,7 @@ export class ModuleRegistry {
       .reverse()
       .map((n) => ModuleRegistry.replaceInvalidNamespaceSymbols(n))
       .map((n) => escapeKeyword(n))
+      .filter((el) => !!el)
       .join('\\');
   }
 

@@ -7,6 +7,11 @@ import fs from 'fs';
 const server = express();
 const html = fs.readFileSync(__dirname + '/layout.html', { encoding: 'utf-8' });
 
+// @ts-ignore
+global.window = {
+  _elephizeIsServer: false
+};
+
 server.use(express.static('public'));
 
 server.get('/', (req, res) => {

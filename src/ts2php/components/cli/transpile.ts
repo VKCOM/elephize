@@ -13,7 +13,7 @@ const replace = require('stream-replace');
 export function transpile(options: CliOptions, baseDir: string, outDir: string, log: LogObj) {
   const namespaces = {
     root: options.rootNs,
-    builtins: options.builtinsNs || options.rootNs + '\\Builtins',
+    builtins: options.builtinsNs || (options.rootNs ? options.rootNs + '\\Builtins' : 'Builtins'),
   };
 
   const builtinsRelativePath = ModuleRegistry.namespaceToPath(namespaces.builtins);
@@ -94,7 +94,7 @@ export function transpile(options: CliOptions, baseDir: string, outDir: string, 
 
     ncp(builtinsPath, bTgt, {
       transform: function(read, write) {
-        read.pipe(replace(/__ROOTNS__/g, namespaces.root)).pipe(write);
+        read.pipe(replace(/__ROOTNS__\\Builtins/g, namespaces.builtins)).pipe(write);
       },
     }, (err) => {
       if (!err) {
