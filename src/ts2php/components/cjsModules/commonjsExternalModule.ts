@@ -80,7 +80,7 @@ class ${this.className} extends CJSModule {
   ${Array.from(this._hoistedContent.values()).join('\n')}
 
   private function __construct() {
-    $this->_impl = new ${this._phpStruct.getClassName()}();
+    $this->_impl = new \\${this._phpStruct.getNamespace()}\\${this._phpStruct.getClassName()}();
   }
 }
 `;

@@ -13,6 +13,7 @@ import {
 import { ImportReplacementRule, NsMap } from '../../types';
 import { CommonjsExternalModule } from './commonjsExternalModule';
 import { EnumModule } from './enumModule';
+import * as path from 'path';
 
 export class ModuleRegistry {
   /**
@@ -204,9 +205,8 @@ export class ModuleRegistry {
     let className = classNameFromPath(fullyQualifiedSourceFilename, true);
     className = this._makeUniqueClassName(className);
     const newFilename = this._makeNewFileName(fullyQualifiedSourceFilename, className);
-    console.log(className, newFilename, fullyQualifiedSourceFilename);
     this._registeredModuleClasses.add(className);
-    return this._registerCommonModule(rule.implementationClass, rule.modulePath, newFilename, true, rule.implementationPath);
+    return this._registerCommonModule(rule.implementationClass, rule.modulePath, newFilename, true, path.resolve(this._baseDir, rule.implementationPath));
   }
 
   public registerClass(filepath: string): CommonjsModule | null {

@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import { SyntaxWalker } from '../../../vendor/php-parser/language/syntax/SyntaxWalker';
 import {
   ClassDeclarationSyntaxNode,
-  MethodDeclarationSyntaxNode,
+  MethodDeclarationSyntaxNode, NamespaceDeclarationSyntaxNode,
 } from '../../../vendor/php-parser/language/syntax/SyntaxNode.Generated';
 import { ISyntaxNode } from '../../../vendor/php-parser/language/syntax/ISyntaxNode';
 import { ISyntaxToken } from '../../../vendor/php-parser/language/syntax/ISyntaxToken';
@@ -10,6 +10,7 @@ import { PhpSyntaxTree, TextSpan } from '../../../vendor/php-parser/main';
 
 export class PhpParsedStruct extends SyntaxWalker {
   protected _className = '';
+  protected _namespace = '';
   protected _src: string;
   protected _decls: { [key: string]: string } = {};
   protected _retvals: { [key: string]: string } = {};
@@ -33,6 +34,10 @@ export class PhpParsedStruct extends SyntaxWalker {
     return this._className;
   }
 
+  public getNamespace() {
+    return this._namespace;
+  }
+
   protected _get(span?: TextSpan): string {
     if (!span) { return ''; }
     return this._src.slice(span.start, span.start + span.length);
@@ -41,6 +46,11 @@ export class PhpParsedStruct extends SyntaxWalker {
   public visitClassDeclaration(node: ClassDeclarationSyntaxNode) {
     this._className = this._get(node.identifier.span);
     super.visitClassDeclaration(node);
+  }
+
+  public visitNamespaceDeclaration(node: NamespaceDeclarationSyntaxNode) {
+    this._namespace = this._get(node.name.span);
+    super.visitNamespaceDeclaration(node);
   }
 
   public visitMethodDeclaration(node: MethodDeclarationSyntaxNode) {
@@ -59,7 +69,7 @@ export class PhpParsedStruct extends SyntaxWalker {
     if (mods.includes('public')) {
       const args = node.parameters?.allChildren().map((c: ISyntaxNode | ISyntaxToken) => this._get(c.span)).join(', ') || '';
       this._decls[name] = this._get(node.leadingTrivia?.span) + `public function ${name}(${args}) {
-        return ${mods.includes('static') ? `${this._className}::` : '$this->_impl->'}${name}(${args});
+        return ${mods.includes('static') ? `${'\\' + this._namespace + '\\' + this._className}::` : '$this->_impl->'}${name}(${args});
       }\n`;
     }
     super.visitMethodDeclaration(node);

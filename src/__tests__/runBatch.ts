@@ -14,12 +14,12 @@ const namespaces = {
   builtins: 'VK\\Elephize\\Builtins',
 };
 const ignoredImports: CliOptions['ignoreImports'] = new Set([
-  'src/__tests__/specimens/misc/__toIgnore.ts',
-  'src/__tests__/specimens/misc/__toIgnoreFolder/*.ts',
+  'specimens/misc/__toIgnore.ts',
+  'specimens/misc/__toIgnoreFolder/*.ts',
 ]);
 const replacedImports: CliOptions['replaceImports'] = {
-  'src/__tests__/specimens/misc/toReplace.ts': {
-    implementationPath: 'src/__tests__/specimens/ToReplace.php',
+  'specimens/misc/toReplace.ts': {
+    implementationPath: 'specimens/ToReplace.php',
     implementationClass: 'ToReplace',
   },
 };
