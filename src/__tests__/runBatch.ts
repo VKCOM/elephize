@@ -33,8 +33,6 @@ const compilerOptions = {
 export function runBatch(basePath: string[], testSuite: string[][], log: LogObj) {
   const promises: Array<Promise<any>> = [];
 
-  process.stdout.write(__dirname + '\n');
-
   translateCode(testSuite.map((path) => pResolve(...basePath, ...path)), ignoredImports, replacedImports, compilerOptions.paths, log, {
     baseDir,
     aliases: {},
