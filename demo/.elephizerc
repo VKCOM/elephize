@@ -1,13 +1,14 @@
 {
   "src": "src/components/**/*.isoentry.tsx",
   "outDir": "public/build",
-  "output": "bootstrap.php",
   "quiet": false,
   "bail": "none",
   "dump": false,
   "noZap": false,
   "verbose": false,
   "verboseUsage": false,
+  "rootNs": "",
+  "builtinsNs": "Builtins",
   "baseDir": "src/",
   "tsPaths": {
     "#iso_palette/*": ["components/iso_palette/*"],

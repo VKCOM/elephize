@@ -13,6 +13,7 @@ import {
 import { ImportReplacementRule, NsMap } from '../../types';
 import { CommonjsExternalModule } from './commonjsExternalModule';
 import { EnumModule } from './enumModule';
+import * as path from 'path';
 
 export class ModuleRegistry {
   /**
@@ -40,6 +41,7 @@ export class ModuleRegistry {
     private readonly _tsPaths: { [key: string]: string[] },
     private readonly _namespaces: NsMap,
     private readonly _serverFilesRoot: string,
+    private readonly _builtinsPath: string,
     private readonly _replacements: ImportReplacementRule[],
     protected readonly log: LogObj
   ) {
@@ -154,7 +156,7 @@ export class ModuleRegistry {
     }
 
     const fullyQualifiedNamespace = ModuleRegistry.pathToNamespace(enumModule.targetFileName);
-    return `\\${this._namespaces.root}\\${fullyQualifiedNamespace}\\${enumModule.className}::${enumMember}`;
+    return `\\${fullyQualifiedNamespace}\\${enumModule.className}::${enumMember}`;
   }
 
   protected _registerCommonModule(className: string, fullyQualifiedSourceFilename: string, newFilename: string, external = false, implPath?: string) {
@@ -166,6 +168,7 @@ export class ModuleRegistry {
         newFilename,
         this._namespaces,
         this._serverFilesRoot,
+        this._builtinsPath,
         this.log
       );
 
@@ -181,6 +184,7 @@ export class ModuleRegistry {
         newFilename,
         this._namespaces,
         this._serverFilesRoot,
+        this._builtinsPath,
         this.log
       );
     }
@@ -202,7 +206,7 @@ export class ModuleRegistry {
     className = this._makeUniqueClassName(className);
     const newFilename = this._makeNewFileName(fullyQualifiedSourceFilename, className);
     this._registeredModuleClasses.add(className);
-    return this._registerCommonModule(rule.implementationClass, rule.modulePath, newFilename, true, rule.implementationPath);
+    return this._registerCommonModule(rule.implementationClass, rule.modulePath, newFilename, true, path.resolve(this._baseDir, rule.implementationPath));
   }
 
   public registerClass(filepath: string): CommonjsModule | null {
@@ -230,12 +234,14 @@ export class ModuleRegistry {
     const newFilename = this._makeNewFileName(originalModule.sourceFileName, className, true);
     this._registeredModuleClasses.add(className);
     this._derivedComponentsPathMap.set(originalModule.sourceFileName, newFilename);
+
     const moduleDescriptor = new ReactModule(
       className,
       originalModule.sourceFileName,
       newFilename,
       this._namespaces,
       this._serverFilesRoot,
+      this._builtinsPath,
       this.log,
       originalIdent,
       originalModule
@@ -261,6 +267,7 @@ export class ModuleRegistry {
       newFilename,
       this._namespaces,
       this._serverFilesRoot,
+      this._builtinsPath,
       this.log,
       originalIdent,
       originalModule
@@ -274,7 +281,10 @@ export class ModuleRegistry {
 
   private _makeNewFileName(fullyQualifiedFilename: string, className: string, addDir = false) {
     const name = normalizeFileExt(normalizeBasePath(fullyQualifiedFilename, this._baseDir, this._aliases));
-    let pieces = name.split('/');
+
+    const rootPath = ModuleRegistry.namespaceToPath(this._namespaces.root);
+
+    let pieces = `${rootPath}/${name}`.split('/');
     const filename = (pieces.pop() || '').replace(/\.php$/, '');
     if (addDir) {
       pieces.push(filename);
@@ -324,7 +334,7 @@ export class ModuleRegistry {
     const fullyQualifiedNamespace = ModuleRegistry.pathToNamespace(filename);
     const className = this._targetFilenameToModule.get(filename)?.className;
 
-    return `\\${this._namespaces.root}\\${fullyQualifiedNamespace}\\${className}::getInstance()`;
+    return `\\${fullyQualifiedNamespace}\\${className}::getInstance()`;
   }
 
   public static replaceInvalidNamespaceSymbols(name: string) {
@@ -338,6 +348,12 @@ export class ModuleRegistry {
       .reverse()
       .map((n) => ModuleRegistry.replaceInvalidNamespaceSymbols(n))
       .map((n) => escapeKeyword(n))
+      .filter((el) => !!el)
       .join('\\');
+  }
+
+  public static namespaceToPath(namespace: string) {
+    return namespace.split('\\')
+      .join('/');
   }
 }

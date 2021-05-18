@@ -16,10 +16,10 @@ export type WatcherTestQueueItem = {
 
 const testResultPostfix = '___'; // This must contain only valid symbols for namespace naming
 
-const baseDir = pResolve(__dirname, '..', '..');
+const baseDir = pResolve(__dirname);
 const serverFilesRoot = pResolve(__dirname, '..', '..', 'src', 'server');
 const namespaces = {
-  root: 'VK\\Elephize',
+  root: '',
   builtins: 'VK\\Elephize\\Builtins',
 };
 const ignoreImportRules: Set<string> = new Set();
@@ -32,7 +32,7 @@ const compilerOptions = {
 };
 
 const log = configureLogging({
-  baseDir, output: '', outDir: '',
+  baseDir, outDir: '',
 });
 
 let lastDiffApplied = 0;

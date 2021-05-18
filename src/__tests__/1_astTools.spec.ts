@@ -14,7 +14,7 @@ import { defaultOptions } from '../ts2php/components/codegen/defaultCompilerOpti
 import { configureLogging } from '../ts2php/components/cli/configureLogging';
 
 const log = configureLogging({
-  baseDir: '', output: '', outDir: '',
+  baseDir: '', outDir: '',
 });
 
 function compile(files: string[]): ts.SourceFile | undefined {

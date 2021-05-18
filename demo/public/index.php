@@ -1,7 +1,9 @@
 <?php
+error_reporting(E_PARSE);
 
-use VK\Elephize\Components\App_isoentry\App;
+require_once 'autoload.php';
 
-require_once './build/bootstrap.php';
+use Components\App_isoentry\App;
+
 $tpl = file_get_contents('../src/layout.html');
 echo str_replace('{{placeholder}}', App::getInstance()->render([], []), $tpl);

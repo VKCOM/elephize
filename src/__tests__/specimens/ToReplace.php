@@ -1,6 +1,5 @@
 <?php
-use VK\Elephize\Builtins\Stdlib;
-use VK\Elephize\Builtins\CJSModule;
+namespace specimens;
 
 class ToReplace {
     /**

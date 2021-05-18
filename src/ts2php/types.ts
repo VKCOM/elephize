@@ -93,6 +93,8 @@ export type ImportReplacementRule = {
 export type CliOptions = {
   aliases: { [key: string]: string };
   bail: 'none' | 'warn' | 'error';
+  serverBaseDir?: string;
+  rewriteBuiltinsRoot?: string;
   baseDir: string;
   config: string;
   encoding: string;
@@ -122,6 +124,7 @@ export type TranslateOptions = {
   getCloseHandle?: (handle: () => void) => void; // get function which closes watcher when called
   namespaces: NsMap;
   serverFilesRoot: string;
+  builtinsPath?: string;
   encoding: string;
   onBeforeRender?: (filename: string, rootNode: ts.Node, nodeFlagStore: NodeFlagStore) => void; // mainly for testing purposes...
   onData: (sourceFilename: string, targetFilename: string, content: string, error?: number) => void;

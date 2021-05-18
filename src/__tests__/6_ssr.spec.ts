@@ -1,7 +1,7 @@
 import { spawn } from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
-jest.setTimeout(10000);
+jest.setTimeout(20000);
 
 const getFromProcess = (command: string, args: string[]): Promise<string> => {
   return new Promise<string>((resolve, reject) => {
@@ -19,7 +19,7 @@ const getFromProcess = (command: string, args: string[]): Promise<string> => {
 };
 
 test('ts2php.SSR', async () => {
-  if (!fs.existsSync(path.resolve(__dirname, '..', '..', 'demo', 'public', 'build', 'bootstrap.php'))) {
+  if (!fs.existsSync(path.resolve(__dirname, '..', '..', 'demo', 'public', 'build', 'VK', 'Elephize', 'Builtins', 'Stdlib.php'))) {
     await getFromProcess('yon', ['--silent', 'demo_build']);
   }
   const reactData = await getFromProcess('yon', ['--silent', 'demo_outreact']);
