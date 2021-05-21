@@ -20,8 +20,8 @@ class SecondComponent extends RenderableComponent {
     }
 
     /**
-     * @param array $initial_props
-     * @param array $children
+     * @param mixed[] $initial_props
+     * @param mixed[] $children
      * @return ?string
      */
     public function render(array $initial_props, array $children) {

@@ -20,8 +20,8 @@ class ImportedTypesComponent extends RenderableComponent {
     }
 
     /**
-     * @param array $anon_deref_1
-     * @param array $children
+     * @param mixed[] $anon_deref_1
+     * @param mixed[] $children
      * @return ?string
      */
     public function render(array $anon_deref_1, array $children) {
