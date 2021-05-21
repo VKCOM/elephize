@@ -22,9 +22,9 @@ export class ReactModule extends CommonjsModule {
     // Support different var name for props:
     if (args === '') {
       args = '$props'; // Fallback: we should have props at out render method to comply with base class
-      this._phpdoc = ['\t * @param array $props'];
+      this._phpdoc = ['\t * @param mixed[] $props'];
     } else {
-      this._phpdoc = args.split(', ').map((v) => `\t * @param array ${v}`);
+      this._phpdoc = args.split(', ').map((v) => `\t * @param mixed[] ${v}`);
       if (this._phpdoc.length > 1) {
         // We dont support react context
         this.log.error('React context is not supported (passed as 2nd argument)', [], this.log.shortCtx(this.sourceFileName));
@@ -75,7 +75,7 @@ class ${this.className} extends RenderableComponent {
     
     /**
     ${this._phpdoc.join('\n')}
-     * @param array $children
+     * @param mixed[] $children
      * @return ${renderRetval === 'mixed' ? 'mixed' : renderRetval}
      */
     public function render(array ${this.args}, array $children) ${this.block}
