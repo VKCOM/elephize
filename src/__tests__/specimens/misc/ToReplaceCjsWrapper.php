@@ -26,7 +26,7 @@ class ToReplaceCjsWrapper extends CJSModule {
      * @param string $test
      * @return string
      */
-    public function getLang($test) {
+    public function getLang($test): string {
         return $this->_impl->getLang($test);
     }
 
@@ -34,7 +34,7 @@ class ToReplaceCjsWrapper extends CJSModule {
      * @param string $test
      * @return string
      */
-    public function getLangStatic($test) {
+    public function getLangStatic($test): string {
         return \specimens\ToReplace::getLangStatic($test);
     }
 

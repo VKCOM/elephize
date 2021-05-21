@@ -20,8 +20,8 @@ class NestedComponentWithDummyInProps extends RenderableComponent {
     }
 
     /**
-     * @param array $props
-     * @param array $children
+     * @param mixed[] $props
+     * @param mixed[] $children
      * @return ?string
      */
     public function render(array $props, array $children) {
