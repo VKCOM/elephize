@@ -68,9 +68,7 @@ export class PhpParsedStruct extends SyntaxWalker {
     }
     if (mods.includes('public')) {
       const args = node.parameters?.allChildren().map((c: ISyntaxNode | ISyntaxToken) => this._get(c.span)).join(', ') || '';
-      const returnType = this.getRetval(name);
-
-      this._decls[name] = this._get(node.leadingTrivia?.span) + `public function ${name}(${args})${returnType ? `: ${returnType}` : ''} {
+      this._decls[name] = this._get(node.leadingTrivia?.span) + `public function ${name}(${args}) {
         return ${mods.includes('static') ? `${'\\' + this._namespace + '\\' + this._className}::` : '$this->_impl->'}${name}(${args});
       }\n`;
     }
