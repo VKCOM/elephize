@@ -82,7 +82,11 @@ export function capitalize(s: string) {
 
 export function classNameFromPath(normalizedPath: string, external = false) {
   const pieces = normalizedPath.split('/');
-  const fn = capitalize(pieces.pop()?.split('.')[0] || '');
+  let fn = capitalize(pieces.pop()?.split('.')[0] || '');
+  if (fn === 'Index') {
+    fn = capitalize(pieces.pop() || fn);
+  }
+
   return fn.replace(/\./g, '_') + (external ? 'CjsWrapper' : 'Module');
 }
 

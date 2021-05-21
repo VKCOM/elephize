@@ -294,6 +294,9 @@ export class ModuleRegistry {
       .map((n) => ModuleRegistry.replaceInvalidNamespaceSymbols(n))
       .map((n) => escapeKeyword(n));
 
+    process.stdout.write(`class: ${className}\n`);
+    process.stdout.write(`name: ${name}\n`);
+
     pieces.push(className + '.php');
     return pieces.join('/');
   }

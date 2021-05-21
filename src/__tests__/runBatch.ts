@@ -22,6 +22,10 @@ const replacedImports: CliOptions['replaceImports'] = {
     implementationPath: 'specimens/ToReplace.php',
     implementationClass: 'ToReplace',
   },
+  'specimens/misc/toReplaceIndex/index.ts': {
+    implementationPath: 'specimens/ToReplaceSecond.php',
+    implementationClass: 'ToReplaceSecond',
+  },
 };
 const compilerOptions = {
   baseUrl: baseDir,
