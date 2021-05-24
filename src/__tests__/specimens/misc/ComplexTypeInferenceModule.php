@@ -24,10 +24,24 @@ class ComplexTypeInferenceModule extends CJSModule {
         return count(array_keys($dict));
     }
     /**
+     * @param string[] $dict
+     * @return float
+     */
+    public function ctyiaStringDictFun2($dict) {
+        return count(array_keys($dict));
+    }
+    /**
      * @param bool[] $dict
      * @return float
      */
     public function ctyiaBoolDictFun($dict) {
+        return count(array_keys($dict));
+    }
+    /**
+     * @param bool[] $dict
+     * @return float
+     */
+    public function ctyiaBoolDictFun2($dict) {
         return count(array_keys($dict));
     }
     /**
@@ -38,10 +52,24 @@ class ComplexTypeInferenceModule extends CJSModule {
         return count(array_keys($dict));
     }
     /**
+     * @param float[] $dict
+     * @return float
+     */
+    public function ctyiaNumDictFun2($dict) {
+        return count(array_keys($dict));
+    }
+    /**
      * @param mixed[] $dict
      * @return float
      */
     public function ctyiaMixedDictFun($dict) {
+        return count(array_keys($dict));
+    }
+    /**
+     * @param mixed[] $dict
+     * @return float
+     */
+    public function ctyiaMixedDictFun2($dict) {
         return count(array_keys($dict));
     }
     /**
@@ -52,10 +80,24 @@ class ComplexTypeInferenceModule extends CJSModule {
         return count(array_keys($dict));
     }
     /**
+     * @param string[] $dict
+     * @return float
+     */
+    public function ctyiaStringArrFun2($dict) {
+        return count(array_keys($dict));
+    }
+    /**
      * @param bool[] $dict
      * @return float
      */
     public function ctyiaBoolArrFun($dict) {
+        return count(array_keys($dict));
+    }
+    /**
+     * @param bool[] $dict
+     * @return float
+     */
+    public function ctyiaBoolArrFun2($dict) {
         return count(array_keys($dict));
     }
     /**
@@ -66,10 +108,24 @@ class ComplexTypeInferenceModule extends CJSModule {
         return count(array_keys($dict));
     }
     /**
+     * @param float[] $dict
+     * @return float
+     */
+    public function ctyiaNumArrFun2($dict) {
+        return count(array_keys($dict));
+    }
+    /**
      * @param mixed[] $dict
      * @return float
      */
     public function ctyiaMixedArrFun($dict) {
+        return count(array_keys($dict));
+    }
+    /**
+     * @param mixed[] $dict
+     * @return float
+     */
+    public function ctyiaMixedArrFun2($dict) {
         return count(array_keys($dict));
     }
 
@@ -92,6 +148,24 @@ class ComplexTypeInferenceModule extends CJSModule {
             $this->ctyiaStringDictFun([
                 "a" => "a",
                 "b" => "b",
+            ]),
+            $this->ctyiaBoolArrFun2([true, false]),
+            $this->ctyiaBoolDictFun2([
+                "a" => true,
+            ]),
+            $this->ctyiaMixedArrFun2(["2", false]),
+            $this->ctyiaMixedDictFun2([
+                "a" => false,
+                "b" => "2",
+            ]),
+            $this->ctyiaNumArrFun2([1, 3, 4]),
+            $this->ctyiaNumDictFun2([
+                "a" => 1,
+            ]),
+            $this->ctyiaStringArrFun2(["kek", "wow"]),
+            $this->ctyiaStringDictFun2([
+                "a" => "lol",
+                "b" => "kek",
             ])
         );
     }

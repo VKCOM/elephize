@@ -46,7 +46,7 @@ export function hasArrayType(node: ts.Node, checker: ts.TypeChecker, log: LogObj
   const nd: ts.Node = (node as ts.PropertyAccessExpression).expression;
   log.typehint('Checking array type of node: %s', [nodeIdentForLog]);
   const type = checker.getTypeAtLocation(nd);
-  const foundType = parseArrayType(type, checker, log, true, nodeIdentForLog);
+  const foundType = parseArrayType(type, node, checker, log, true, nodeIdentForLog);
   return foundType === 'array' || foundType === 'mixed';
 }
 
@@ -122,7 +122,7 @@ export function getPhpPrimitiveTypeForFunc(
   };
 }
 
-function parseArrayType(node: ts.Type, checker: ts.TypeChecker, log: LogObj, excludeObjects = true, nodeIdentForLog?: string) {
+function parseArrayType(node: ts.Type, baseNode: ts.Node, checker: ts.TypeChecker, log: LogObj, excludeObjects = true, nodeIdentForLog?: string) {
   const typeNode = checker.typeToTypeNode(node, undefined, undefined);
   if (!typeNode) {
     log.typehint('No type node found for symbol: %s', [nodeIdentForLog || '']);
@@ -151,6 +151,7 @@ function parseArrayType(node: ts.Type, checker: ts.TypeChecker, log: LogObj, exc
   }
 
   if (!excludeObjects && typeNode.kind === ts.SyntaxKind.TypeLiteral) {
+    const valueType = checker.getTypeAtLocation(baseNode)?.getStringIndexType(); // TODO: <----- check this.
     log.typehint('Found array literal declaration for symbol: %s', [nodeIdentForLog || '']);
     return 'array';
   }
@@ -202,8 +203,8 @@ const checkArrMixedNode = (typeNode: ts.TypeNode) => {
   return false;
 };
 
-const transformTypeName = (type: ts.Type, checker: ts.TypeChecker, log: LogObj, nodeIdentForLog?: string) => (t: string) => {
-  const arrType = parseArrayType(type, checker, log, false, nodeIdentForLog);
+const transformTypeName = (type: ts.Type, node: ts.Node, checker: ts.TypeChecker, log: LogObj, nodeIdentForLog?: string) => (t: string) => {
+  const arrType = parseArrayType(type, node, checker, log, false, nodeIdentForLog);
   if (arrType) {
     return arrType;
   }
@@ -237,7 +238,7 @@ function describeNodeType(node: ts.Node | undefined, type: ts.Type, checker: ts.
         return optionalMark + t;
       }
       // Some of union members may be literal types
-      return optionalMark + describeAsApparentType(t, checker, log, nodeIdentForLog);
+      return optionalMark + describeAsApparentType(t, node!, checker, log, nodeIdentForLog);
     }).filter((t) => !customTypehints.typesToDrop.includes(t));
     const typehint = Array.from(new Set((<string[]>[])
       .concat(types)))
@@ -249,13 +250,13 @@ function describeNodeType(node: ts.Node | undefined, type: ts.Type, checker: ts.
   const strTypes = checker.typeToString(type, node, ts.TypeFormatFlags.None)
     .split('|')
     .map((t) => t.replace(/^\s+|\s+$/g, ''))
-    .map(transformTypeName(type, checker, log, nodeIdentForLog));
+    .map(transformTypeName(type, node!, checker, log, nodeIdentForLog));
 
   if (strTypes.includes('mixed')) {
     const types = type.isUnionOrIntersection() ? type.types : [type];
 
     const appStrTypes = types.map((t) => {
-      return describeAsApparentType(t, checker, log, nodeIdentForLog);
+      return describeAsApparentType(t, node!, checker, log, nodeIdentForLog);
     });
 
     if (appStrTypes.includes('mixed')) {
@@ -282,10 +283,10 @@ function describeNodeType(node: ts.Node | undefined, type: ts.Type, checker: ts.
 }
 
 // Check parent types: Number for 1, String for "asd" etc
-function describeAsApparentType(t: ts.Type, checker: ts.TypeChecker, log: LogObj, nodeIdentForLog?: string) {
+function describeAsApparentType(t: ts.Type, node: ts.Node, checker: ts.TypeChecker, log: LogObj, nodeIdentForLog?: string) {
   log.typehint('Failed to describe node: %s, checking apparent type', [nodeIdentForLog || '']);
   const appType = t.symbol ? checker.getApparentType(t) : checker.getBaseTypeOfLiteralType(t);
   const appStrType = checker.typeToString(appType).toLowerCase()
     .replace(/^\s+|\s+$/g, '');
-  return transformTypeName(t, checker, log, nodeIdentForLog)(appStrType);
+  return transformTypeName(t, node, checker, log, nodeIdentForLog)(appStrType);
 }
