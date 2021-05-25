@@ -6,7 +6,7 @@ use VK\Elephize\Builtins\CJSModule;
 
 class ToReplaceSecondCjsWrapper extends CJSModule {
     /**
-     * @var ToReplaceSecond $_impl
+     * @var \specimens\ToReplaceSecond $_impl
      */
     private $_impl;
 
