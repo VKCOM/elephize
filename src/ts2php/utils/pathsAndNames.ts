@@ -54,10 +54,7 @@ export function escapeKeyword(s: string) {
 export function normalizeBasePath(filename: string, baseDir: string, aliases?: Dict<string>) {
   const nrm = filename
     .replace(new RegExp('^' + baseDir), '')
-    .replace(/^\/+/, '')
-    .split('/')
-    .map((n) => escapeKeyword(n))
-    .join('/');
+    .replace(/^\/+/, '');
 
   if (aliases) {
     for (let path in aliases) {
