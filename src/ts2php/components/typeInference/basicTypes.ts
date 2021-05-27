@@ -162,30 +162,21 @@ function parseArrayType(node: ts.Type, baseNode: ts.Node, checker: ts.TypeChecke
     }
   }
 
-  if (typeNode.kind === ts.SyntaxKind.ArrayType) {
+  if (typeNode.kind === ts.SyntaxKind.ArrayType || typeNode.kind === ts.SyntaxKind.TupleType) {
     if (checkArrMixedNode(typeNode)) {
-      log.typehint('Found MIXED in array type declaration for symbol: %s', [nodeIdentForLog || '']);
+      log.typehint('Found MIXED in array/tuple type declaration for symbol: %s', [nodeIdentForLog || '']);
       return 'mixed';
     }
 
     const valueType = checker.getTypeAtLocation(baseNode)?.getNumberIndexType();
     const literalType = checkComplexLiteralType(valueType, checker);
     if (literalType) {
-      log.typehint('Found array literal declaration of type %s for symbol: %s', [literalType, nodeIdentForLog || '']);
+      log.typehint('Found array/tuple literal declaration of type %s for symbol: %s', [literalType, nodeIdentForLog || '']);
       return literalType;
     } else {
-      log.typehint('Failed to infer array type, using MIXED for symbol: %s', [nodeIdentForLog || '']);
+      log.typehint('Failed to infer array/tuple type, using MIXED for symbol: %s', [nodeIdentForLog || '']);
       return 'mixed[]';
     }
-  }
-
-  if (typeNode.kind === ts.SyntaxKind.TupleType) {
-    if (checkArrMixedNode(typeNode)) {
-      log.typehint('Found MIXED in tuple type declaration for symbol: %s', [nodeIdentForLog || '']);
-      return 'mixed';
-    }
-    log.typehint('Found tuple type declaration for symbol: %s', [nodeIdentForLog || '']);
-    return 'array';
   }
 
   return false;
