@@ -17,23 +17,23 @@ class SpliceModule extends CJSModule {
     }
 
     /**
-     * @var array $a_spl
+     * @var float[] $a_spl
      */
     public $a_spl;
     /**
-     * @var array $b_spl
+     * @var float[] $b_spl
      */
     public $b_spl;
     /**
-     * @var array $c_spl
+     * @var float[] $c_spl
      */
     public $c_spl;
     /**
-     * @var array $d_spl
+     * @var float[] $d_spl
      */
     public $d_spl;
     /**
-     * @var array $e_spl
+     * @var float[] $e_spl
      */
     public $e_spl;
 

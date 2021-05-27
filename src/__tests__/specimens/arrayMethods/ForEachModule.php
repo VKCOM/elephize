@@ -17,11 +17,11 @@ class ForEachModule extends CJSModule {
     }
 
     /**
-     * @var array $af
+     * @var float[] $af
      */
     public $af;
     /**
-     * @var array $afo
+     * @var float[] $afo
      */
     public $afo;
 

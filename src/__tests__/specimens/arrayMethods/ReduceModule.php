@@ -17,7 +17,7 @@ class ReduceModule extends CJSModule {
     }
 
     /**
-     * @var array $ar
+     * @var float[] $ar
      */
     public $ar;
     /**

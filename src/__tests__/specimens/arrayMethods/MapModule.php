@@ -17,23 +17,23 @@ class MapModule extends CJSModule {
     }
 
     /**
-     * @var array $am
+     * @var float[] $am
      */
     public $am;
     /**
-     * @var array $bm
+     * @var float[] $bm
      */
     public $bm;
     /**
-     * @var array $cm
+     * @var float[] $cm
      */
     public $cm;
     /**
-     * @var array $dm
+     * @var float[] $dm
      */
     public $dm;
     /**
-     * @var array $em
+     * @var float[] $em
      */
     public $em;
     /**
@@ -41,7 +41,7 @@ class MapModule extends CJSModule {
      */
     public $fmc;
     /**
-     * @var array $fm
+     * @var float[] $fm
      */
     public $fm;
     /**
@@ -49,7 +49,7 @@ class MapModule extends CJSModule {
      */
     public $gmc;
     /**
-     * @var array $gm
+     * @var float[] $gm
      */
     public $gm;
 

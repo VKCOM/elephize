@@ -105,7 +105,7 @@ class BasicOperatorsModule extends CJSModule {
      */
     public $op27;
     /**
-     * @var array $op28
+     * @var mixed[] $op28
      */
     public $op28;
     /**

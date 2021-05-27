@@ -17,19 +17,19 @@ class SliceModule extends CJSModule {
     }
 
     /**
-     * @var array $a_sl
+     * @var float[] $a_sl
      */
     public $a_sl;
     /**
-     * @var array $b_sl
+     * @var float[] $b_sl
      */
     public $b_sl;
     /**
-     * @var array $c_sl
+     * @var float[] $c_sl
      */
     public $c_sl;
     /**
-     * @var array $d_sl
+     * @var float[] $d_sl
      */
     public $d_sl;
 

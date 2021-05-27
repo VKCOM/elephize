@@ -17,11 +17,11 @@ class TsInternalsModule extends CJSModule {
     }
 
     /**
-     * @var array $tia
+     * @var mixed[] $tia
      */
     public $tia;
     /**
-     * @var array $tib
+     * @var mixed[] $tib
      */
     public $tib;
     /**
@@ -33,15 +33,15 @@ class TsInternalsModule extends CJSModule {
      */
     public $tie;
     /**
-     * @var array $others
+     * @var mixed[] $others
      */
     public $others;
     /**
-     * @var array $tid
+     * @var float[] $tid
      */
     public $tid;
     /**
-     * @var array $tif
+     * @var float[] $tif
      */
     public $tif;
     /**
@@ -53,7 +53,7 @@ class TsInternalsModule extends CJSModule {
      */
     public $tih;
     /**
-     * @var array $others2
+     * @var float[] $others2
      */
     public $others2;
 

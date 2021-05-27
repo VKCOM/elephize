@@ -17,28 +17,28 @@ class SpreadOperatorModule extends CJSModule {
     }
 
     /**
-     * @var array $sso
+     * @var float[] $sso
      */
     public $sso;
     /**
-     * @var array $ssb
+     * @var float[] $ssb
      */
     public $ssb;
     /**
-     * @var array $sse
+     * @var float[] $sse
      */
     public $sse;
     /**
-     * @var array $ssc
+     * @var mixed[] $ssc
      */
     public $ssc;
     /**
-     * @var array $ssd
+     * @var mixed[] $ssd
      */
     public $ssd;
     /**
-     * @param array ...$args
-     * @return array
+     * @param mixed[] ...$args
+     * @return mixed[]
      */
     public function ssff(...$args) {
         return array_merge([], $args ?: [], [
@@ -46,15 +46,15 @@ class SpreadOperatorModule extends CJSModule {
         ]);
     }
     /**
-     * @var array $ssf
+     * @var mixed[] $ssf
      */
     public $ssf;
     /**
-     * @var array $ssg
+     * @var mixed[] $ssg
      */
     public $ssg;
     /**
-     * @var array $ssgg
+     * @var mixed[] $ssgg
      */
     public $ssgg;
 

@@ -17,7 +17,7 @@ class ElementAccessExpressionModule extends CJSModule {
     }
 
     /**
-     * @var array $b
+     * @var float[] $b
      */
     public $b;
     /**

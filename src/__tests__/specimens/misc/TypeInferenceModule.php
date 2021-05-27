@@ -49,7 +49,7 @@ class TypeInferenceModule extends CJSModule {
      */
     public $tyih;
     /**
-     * @var array $tyij
+     * @var mixed[] $tyij
      */
     public $tyij;
     /**

@@ -17,7 +17,7 @@ class SomeModule extends CJSModule {
     }
 
     /**
-     * @var array $asm
+     * @var float[] $asm
      */
     public $asm;
     /**

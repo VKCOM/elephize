@@ -17,7 +17,7 @@ class ObjectLiteralExpressionModule extends CJSModule {
     }
 
     /**
-     * @var array $e
+     * @var mixed[] $e
      */
     public $e;
 

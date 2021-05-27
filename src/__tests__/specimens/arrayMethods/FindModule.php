@@ -17,7 +17,7 @@ class FindModule extends CJSModule {
     }
 
     /**
-     * @var array $aff
+     * @var float[] $aff
      */
     public $aff;
     /**

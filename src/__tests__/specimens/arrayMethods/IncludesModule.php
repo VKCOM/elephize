@@ -17,7 +17,7 @@ class IncludesModule extends CJSModule {
     }
 
     /**
-     * @var array $ain
+     * @var float[] $ain
      */
     public $ain;
     /**

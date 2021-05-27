@@ -17,7 +17,7 @@ class IndexOfModule extends CJSModule {
     }
 
     /**
-     * @var array $aio
+     * @var float[] $aio
      */
     public $aio;
     /**

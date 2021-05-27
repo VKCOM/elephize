@@ -17,7 +17,7 @@ class TypecastModule extends CJSModule {
     }
 
     /**
-     * @var array $tca
+     * @var float[] $tca
      */
     public $tca;
     /**

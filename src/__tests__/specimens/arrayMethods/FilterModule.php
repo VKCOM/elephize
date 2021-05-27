@@ -17,15 +17,15 @@ class FilterModule extends CJSModule {
     }
 
     /**
-     * @var array $afl
+     * @var float[] $afl
      */
     public $afl;
     /**
-     * @var array $bfl
+     * @var float[] $bfl
      */
     public $bfl;
     /**
-     * @var array $cfl
+     * @var float[] $cfl
      */
     public $cfl;
 

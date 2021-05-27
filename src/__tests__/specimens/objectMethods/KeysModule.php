@@ -17,11 +17,11 @@ class KeysModule extends CJSModule {
     }
 
     /**
-     * @var array $ok
+     * @var mixed[] $ok
      */
     public $ok;
     /**
-     * @var array $okkeys
+     * @var string[] $okkeys
      */
     public $okkeys;
 

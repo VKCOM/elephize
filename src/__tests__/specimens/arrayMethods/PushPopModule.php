@@ -17,7 +17,7 @@ class PushPopModule extends CJSModule {
     }
 
     /**
-     * @var array $a_st
+     * @var float[] $a_st
      */
     public $a_st;
     /**
