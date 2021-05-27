@@ -29,7 +29,7 @@ class ConstructorTypeCastModule extends CJSModule {
      */
     public $tcc;
     /**
-     * @var boolean $tcd
+     * @var bool $tcd
      */
     public $tcd;
 

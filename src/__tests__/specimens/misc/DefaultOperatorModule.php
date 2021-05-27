@@ -21,7 +21,7 @@ class DefaultOperatorModule extends CJSModule {
      */
     public $doa;
     /**
-     * @var boolean $dob
+     * @var bool $dob
      */
     public $dob;
     /**

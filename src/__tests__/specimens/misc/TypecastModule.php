@@ -21,7 +21,7 @@ class TypecastModule extends CJSModule {
      */
     public $tca;
     /**
-     * @var boolean $tcb
+     * @var bool $tcb
      */
     public $tcb;
     /**

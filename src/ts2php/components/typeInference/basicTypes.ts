@@ -165,16 +165,20 @@ function parseArrayType(node: ts.Type, baseNode: ts.Node, checker: ts.TypeChecke
           });
         const uniq = new Set(apparentTypes);
         if (uniq.size === 1) { // all apparent types of union are the same
-          return apparentTypes[0];
+          log.typehint('Found array literal declaration of type %s for symbol: %s', [apparentTypes[0], nodeIdentForLog || '']);
+          return `${typeMap[apparentTypes[0]]}[]`;
         } else {
+          log.typehint('Found MIXED in array type declaration for symbol: %s', [nodeIdentForLog || '']);
           return 'mixed[]'; // have more than one different apparent type.
         }
       }
       const typeStr = checker.typeToString(valueType);
       log.typehint('Found array literal declaration of type %s for symbol: %s', [typeStr, nodeIdentForLog || '']);
-      return `${typeStr}[]`;
+      return `${typeMap[typeStr]}[]`;
     }
-    return 'array';
+
+    log.typehint('Found MIXED array type declaration for symbol: %s', [nodeIdentForLog || '']);
+    return 'mixed[]';
   }
 
   if (typeNode.kind === ts.SyntaxKind.ArrayType) {
@@ -182,8 +186,8 @@ function parseArrayType(node: ts.Type, baseNode: ts.Node, checker: ts.TypeChecke
       log.typehint('Found MIXED in array type declaration for symbol: %s', [nodeIdentForLog || '']);
       return 'mixed';
     }
-    log.typehint('Found array type declaration for symbol: %s', [nodeIdentForLog || '']);
-    return 'array';
+    log.typehint('Found MIXED array type declaration for symbol: %s', [nodeIdentForLog || '']);
+    return 'mixed[]';
   }
 
   if (typeNode.kind === ts.SyntaxKind.TupleType) {

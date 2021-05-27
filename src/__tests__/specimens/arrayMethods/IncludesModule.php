@@ -21,11 +21,11 @@ class IncludesModule extends CJSModule {
      */
     public $ain;
     /**
-     * @var boolean $bin
+     * @var bool $bin
      */
     public $bin;
     /**
-     * @var boolean $cin
+     * @var bool $cin
      */
     public $cin;
 

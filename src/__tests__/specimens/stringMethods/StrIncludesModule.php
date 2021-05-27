@@ -21,11 +21,11 @@ class StrIncludesModule extends CJSModule {
      */
     public $ainc;
     /**
-     * @var boolean $binc
+     * @var bool $binc
      */
     public $binc;
     /**
-     * @var boolean $cinc
+     * @var bool $cinc
      */
     public $cinc;
 

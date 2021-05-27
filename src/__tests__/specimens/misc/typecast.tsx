@@ -5,7 +5,7 @@ let tcd = 'asdf';
 let tce = 1234.123;
 console.log(
   /* @elephizeTypecast array */ tca,
-  /* @elephizeTypecast boolean */ tcb,
+  /* @elephizeTypecast bool */ tcb,
   /* @elephizeTypecast int */ tcc,
   /* @elephizeTypecast string */ tcd,
   /* @elephizeTypecast float */ tce
