@@ -128,45 +128,109 @@ class ComplexTypeInferenceModule extends CJSModule {
     public function ctyiaMixedArrFun2($dict) {
         return count(array_keys($dict));
     }
+    /**
+     * @param string[] $dict
+     * @return float
+     */
+    public function ctyiaStringTupleFun($dict) {
+        return count(array_keys($dict));
+    }
+    /**
+     * @param string[] $dict
+     * @return float
+     */
+    public function ctyiaStringTupleFun2($dict) {
+        return count(array_keys($dict));
+    }
+    /**
+     * @param bool[] $dict
+     * @return float
+     */
+    public function ctyiaBoolTupleFun($dict) {
+        return count(array_keys($dict));
+    }
+    /**
+     * @param bool[] $dict
+     * @return float
+     */
+    public function ctyiaBoolTupleFun2($dict) {
+        return count(array_keys($dict));
+    }
+    /**
+     * @param float[] $dict
+     * @return float
+     */
+    public function ctyiaNumTupleFun($dict) {
+        return count(array_keys($dict));
+    }
+    /**
+     * @param float[] $dict
+     * @return float
+     */
+    public function ctyiaNumTupleFun2($dict) {
+        return count(array_keys($dict));
+    }
+    /**
+     * @param mixed[] $dict
+     * @return float
+     */
+    public function ctyiaMixedTupleFun($dict) {
+        return count(array_keys($dict));
+    }
+    /**
+     * @param mixed[] $dict
+     * @return float
+     */
+    public function ctyiaMixedTupleFun2($dict) {
+        return count(array_keys($dict));
+    }
 
     private function __construct() {
         \VK\Elephize\Builtins\Console::log(
             $this->ctyiaBoolArrFun([true, false]),
+            $this->ctyiaBoolArrFun2([true, false]),
+            $this->ctyiaMixedArrFun(["a", true]),
+            $this->ctyiaMixedArrFun2(["2", false]),
+            $this->ctyiaNumArrFun([1, 3, 4]),
+            $this->ctyiaNumArrFun2([1, 3, 4]),
+            $this->ctyiaStringArrFun(["a", "b"]),
+            $this->ctyiaStringArrFun2(["kek", "wow"]),
             $this->ctyiaBoolDictFun([
                 "a" => true,
             ]),
-            $this->ctyiaMixedArrFun(["a", true]),
+            $this->ctyiaBoolDictFun2([
+                "a" => true,
+            ]),
             $this->ctyiaMixedDictFun([
                 "a" => true,
                 "b" => "a",
             ]),
-            $this->ctyiaNumArrFun([1, 3, 4]),
-            $this->ctyiaNumDictFun([
-                "a" => 1,
-            ]),
-            $this->ctyiaStringArrFun(["a", "b"]),
-            $this->ctyiaStringDictFun([
-                "a" => "a",
-                "b" => "b",
-            ]),
-            $this->ctyiaBoolArrFun2([true, false]),
-            $this->ctyiaBoolDictFun2([
-                "a" => true,
-            ]),
-            $this->ctyiaMixedArrFun2(["2", false]),
             $this->ctyiaMixedDictFun2([
                 "a" => false,
                 "b" => "2",
             ]),
-            $this->ctyiaNumArrFun2([1, 3, 4]),
+            $this->ctyiaNumDictFun([
+                "a" => 1,
+            ]),
             $this->ctyiaNumDictFun2([
                 "a" => 1,
             ]),
-            $this->ctyiaStringArrFun2(["kek", "wow"]),
+            $this->ctyiaStringDictFun([
+                "a" => "a",
+                "b" => "b",
+            ]),
             $this->ctyiaStringDictFun2([
                 "a" => "lol",
                 "b" => "kek",
-            ])
+            ]),
+            $this->ctyiaBoolTupleFun([true, false, false]),
+            $this->ctyiaBoolTupleFun2([true, false, false]),
+            $this->ctyiaMixedTupleFun(["true", true, 1]),
+            $this->ctyiaMixedTupleFun2(["2", false, 1]),
+            $this->ctyiaNumTupleFun([1, 2, 3]),
+            $this->ctyiaNumTupleFun2([1, 2, 3]),
+            $this->ctyiaStringTupleFun(["a", "b", "c"]),
+            $this->ctyiaStringTupleFun2(["kek", "wow", "lol"])
         );
     }
 }
