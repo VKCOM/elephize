@@ -47,7 +47,9 @@ export function hasArrayType(node: ts.Node, checker: ts.TypeChecker, log: LogObj
   log.typehint('Checking array type of node: %s', [nodeIdentForLog]);
   const type = checker.getTypeAtLocation(nd);
   const foundType = parseArrayType(type, node, checker, log, true, nodeIdentForLog);
-  return foundType === 'array' || foundType === 'mixed';
+  return foundType
+    ? (foundType.includes('[]') || foundType.includes('mixed'))
+    : false;
 }
 
 /**
@@ -77,8 +79,11 @@ export function getPhpPrimitiveType(node: ts.Node, checker: ts.TypeChecker, log:
  */
 export function getPossibleCastingType(node: ts.Node, checker: ts.TypeChecker, log: LogObj): string {
   const type = getPhpPrimitiveType(node, checker, log);
-  if (['array', 'string', 'boolean', 'float'].includes(type)) {
+  if (['string', 'bool', 'float'].includes(type)) {
     return `(${type})`;
+  }
+  if (type.includes('[]')) {
+    return '(array)';
   }
   return '';
 }
@@ -146,7 +151,7 @@ function parseArrayType(node: ts.Type, baseNode: ts.Node, checker: ts.TypeChecke
     }
     if (isObjectType || (ifaceDecl as ts.InterfaceDeclaration).name.text === 'Array') {
       log.typehint('Found array-like interface declaration for symbol: %s', [nodeIdentForLog || '']);
-      return 'array';
+      return 'mixed[]';
     }
   }
 

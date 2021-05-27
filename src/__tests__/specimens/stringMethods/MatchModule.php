@@ -21,11 +21,11 @@ class MatchModule extends CJSModule {
      */
     public $amat;
     /**
-     * @var array $dmat
+     * @var mixed[] $dmat
      */
     public $dmat;
     /**
-     * @var array $emat
+     * @var mixed[] $emat
      */
     public $emat;
 

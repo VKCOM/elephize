@@ -17,7 +17,7 @@ class CallExpressionModule extends CJSModule {
     }
 
     /**
-     * @var array $c
+     * @var mixed[] $c
      */
     public $c;
 

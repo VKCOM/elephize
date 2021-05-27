@@ -17,7 +17,7 @@ class TwoComponentsModule extends CJSModule {
     }
 
     /**
-     * @var array $default_props
+     * @var mixed[] $default_props
      */
     public $default_props;
 
