@@ -151,34 +151,15 @@ function parseArrayType(node: ts.Type, baseNode: ts.Node, checker: ts.TypeChecke
   }
 
   if (!excludeObjects && typeNode.kind === ts.SyntaxKind.TypeLiteral) {
-    const valueType: any = checker.getTypeAtLocation(baseNode)?.getStringIndexType();
-    if (valueType) {
-      if (valueType.types) { // union type
-        const apparentTypes = valueType.types
-          .map((tp: ts.Type) => checker.getApparentType(tp))
-          .map((tp: ts.Type) => checker.typeToString(tp))
-          .map((tp: string) => {
-            if (['String', 'Boolean', 'Number'].includes(tp)) { // constructor names to primitive names
-              return tp.toLowerCase();
-            }
-            return tp;
-          });
-        const uniq = new Set(apparentTypes);
-        if (uniq.size === 1) { // all apparent types of union are the same
-          log.typehint('Found array literal declaration of type %s for symbol: %s', [apparentTypes[0], nodeIdentForLog || '']);
-          return `${typeMap[apparentTypes[0]]}[]`;
-        } else {
-          log.typehint('Found MIXED in array type declaration for symbol: %s', [nodeIdentForLog || '']);
-          return 'mixed[]'; // have more than one different apparent type.
-        }
-      }
-      const typeStr = checker.typeToString(valueType);
-      log.typehint('Found array literal declaration of type %s for symbol: %s', [typeStr, nodeIdentForLog || '']);
-      return `${typeMap[typeStr]}[]`;
+    const valueType = checker.getTypeAtLocation(baseNode)?.getStringIndexType();
+    const literalType = checkComplexLiteralType(valueType, checker);
+    if (literalType) {
+      log.typehint('Found array literal declaration of type %s for symbol: %s', [literalType, nodeIdentForLog || '']);
+      return literalType;
+    } else {
+      log.typehint('Failed to infer array type, using MIXED for symbol: %s', [nodeIdentForLog || '']);
+      return 'mixed[]';
     }
-
-    log.typehint('Found MIXED array type declaration for symbol: %s', [nodeIdentForLog || '']);
-    return 'mixed[]';
   }
 
   if (typeNode.kind === ts.SyntaxKind.ArrayType) {
@@ -186,8 +167,16 @@ function parseArrayType(node: ts.Type, baseNode: ts.Node, checker: ts.TypeChecke
       log.typehint('Found MIXED in array type declaration for symbol: %s', [nodeIdentForLog || '']);
       return 'mixed';
     }
-    log.typehint('Found MIXED array type declaration for symbol: %s', [nodeIdentForLog || '']);
-    return 'mixed[]';
+
+    const valueType = checker.getTypeAtLocation(baseNode)?.getNumberIndexType();
+    const literalType = checkComplexLiteralType(valueType, checker);
+    if (literalType) {
+      log.typehint('Found array literal declaration of type %s for symbol: %s', [literalType, nodeIdentForLog || '']);
+      return literalType;
+    } else {
+      log.typehint('Failed to infer array type, using MIXED for symbol: %s', [nodeIdentForLog || '']);
+      return 'mixed[]';
+    }
   }
 
   if (typeNode.kind === ts.SyntaxKind.TupleType) {
@@ -201,6 +190,32 @@ function parseArrayType(node: ts.Type, baseNode: ts.Node, checker: ts.TypeChecke
 
   return false;
 }
+
+const checkComplexLiteralType = (valueType: ts.Type | undefined, checker: ts.TypeChecker) => {
+  if (!valueType) {
+    return;
+  }
+
+  if (valueType.isUnionOrIntersection()) { // union type
+    const apparentTypes = valueType.types
+      .map((tp: ts.Type) => checker.getApparentType(tp))
+      .map((tp: ts.Type) => checker.typeToString(tp))
+      .map((tp: string) => {
+        if (['String', 'Boolean', 'Number'].includes(tp)) { // constructor names to primitive names
+          return tp.toLowerCase();
+        }
+        return tp;
+      });
+    const uniq = new Set(apparentTypes);
+    if (uniq.size === 1) { // all apparent types of union are the same
+      return `${typeMap[apparentTypes[0]]}[]`;
+    } else {
+      return; // have more than one different apparent type.
+    }
+  }
+  const typeStr = checker.typeToString(valueType);
+  return `${typeMap[typeStr]}[]`;
+};
 
 // Such kludge, much bugs, wow.
 // Workaround for proper mixed hint recognition.
