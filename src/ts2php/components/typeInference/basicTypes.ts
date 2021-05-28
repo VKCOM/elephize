@@ -13,7 +13,7 @@ import { LogObj } from '../../utils/log';
 export function typeCast(node: ts.Identifier): string {
   const trivia = node.getFullText().substr(0, node.getLeadingTriviaWidth());
   if (trivia.includes('@elephizeTypecast')) {
-    const matches = trivia.match(/@elephizeTypecast\s+(array|int|float|string|boolean)/i);
+    const matches = trivia.match(/@elephizeTypecast\s+(array|int|float|string|boolean|bool)/i);
     if (matches && matches[1]) {
       return `(${matches[1]})`;
     }

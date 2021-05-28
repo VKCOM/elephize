@@ -46,6 +46,7 @@ class TypecastModule extends CJSModule {
         \VK\Elephize\Builtins\Console::log(
             (array) $this->tca,
             (bool) $this->tcb,
+            (boolean) $this->tcb,
             (int) $this->tcc,
             (string) $this->tcd,
             (float) $this->tce
