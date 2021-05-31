@@ -44,6 +44,7 @@ test('ts2php.stdlibMethods', () => {
     ['mathMethods', 'constants.ts'],
     ['functionMethods', 'closures.ts'],
     ['misc', 'typeInference.ts'],
+    ['misc', 'complexTypeInference.ts'],
     ['misc', 'elephizeIgnore.tsx'],
     ['misc', 'exportedTypes.ts'],
     ['misc', 'importedTypes.tsx'],

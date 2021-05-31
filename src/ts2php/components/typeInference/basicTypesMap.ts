@@ -1,7 +1,8 @@
 export const typeMap: { [key: string]: string } = {
   'number': 'float',
   'string': 'string',
-  'boolean': 'boolean',
-  'true': 'boolean',
-  'false': 'boolean',
+  'boolean': 'bool',
+  'true': 'bool',
+  'false': 'bool',
+  'any': 'mixed',
 };

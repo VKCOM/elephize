@@ -17,7 +17,7 @@ class JoinModule extends CJSModule {
     }
 
     /**
-     * @var array $ajn
+     * @var string[] $ajn
      */
     public $ajn;
     /**

@@ -21,19 +21,19 @@ class SplitModule extends CJSModule {
      */
     public $aspl;
     /**
-     * @var array $bspl
+     * @var string[] $bspl
      */
     public $bspl;
     /**
-     * @var array $cspl
+     * @var string[] $cspl
      */
     public $cspl;
     /**
-     * @var array $dspl
+     * @var string[] $dspl
      */
     public $dspl;
     /**
-     * @var array $espl
+     * @var string[] $espl
      */
     public $espl;
 

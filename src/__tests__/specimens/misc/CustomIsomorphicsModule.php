@@ -17,7 +17,7 @@ class CustomIsomorphicsModule extends CJSModule {
     }
 
     /**
-     * @var array $obj4
+     * @var mixed[] $obj4
      */
     public $obj4;
 

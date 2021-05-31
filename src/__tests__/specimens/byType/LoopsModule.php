@@ -17,11 +17,11 @@ class LoopsModule extends CJSModule {
     }
 
     /**
-     * @var array $obj
+     * @var mixed[] $obj
      */
     public $obj;
     /**
-     * @var array $obj2
+     * @var float[] $obj2
      */
     public $obj2;
 

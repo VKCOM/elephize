@@ -57,15 +57,15 @@ class BasicOperatorsModule extends CJSModule {
      */
     public $op11;
     /**
-     * @var boolean $op12
+     * @var bool $op12
      */
     public $op12;
     /**
-     * @var boolean $op13
+     * @var bool $op13
      */
     public $op13;
     /**
-     * @var boolean $op14
+     * @var bool $op14
      */
     public $op14;
     /**
@@ -89,11 +89,11 @@ class BasicOperatorsModule extends CJSModule {
      */
     public $op23;
     /**
-     * @var boolean $op24
+     * @var bool $op24
      */
     public $op24;
     /**
-     * @var boolean $op25
+     * @var bool $op25
      */
     public $op25;
     /**
@@ -105,43 +105,43 @@ class BasicOperatorsModule extends CJSModule {
      */
     public $op27;
     /**
-     * @var array $op28
+     * @var mixed[] $op28
      */
     public $op28;
     /**
-     * @var float|boolean $op29
+     * @var float|bool $op29
      */
     public $op29;
     /**
-     * @var boolean $op31
+     * @var bool $op31
      */
     public $op31;
     /**
-     * @var boolean $op32
+     * @var bool $op32
      */
     public $op32;
     /**
-     * @var boolean $op33
+     * @var bool $op33
      */
     public $op33;
     /**
-     * @var boolean $op34
+     * @var bool $op34
      */
     public $op34;
     /**
-     * @var boolean $op35
+     * @var bool $op35
      */
     public $op35;
     /**
-     * @var boolean $op36
+     * @var bool $op36
      */
     public $op36;
     /**
-     * @var boolean $op37
+     * @var bool $op37
      */
     public $op37;
     /**
-     * @var boolean $op38
+     * @var bool $op38
      */
     public $op38;
 

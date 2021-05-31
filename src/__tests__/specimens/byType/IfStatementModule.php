@@ -25,7 +25,7 @@ class IfStatementModule extends CJSModule {
      */
     public $ba;
     /**
-     * @var array $obj1
+     * @var mixed[] $obj1
      */
     public $obj1;
 

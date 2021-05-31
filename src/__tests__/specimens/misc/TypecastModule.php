@@ -17,11 +17,11 @@ class TypecastModule extends CJSModule {
     }
 
     /**
-     * @var array $tca
+     * @var float[] $tca
      */
     public $tca;
     /**
-     * @var boolean $tcb
+     * @var bool $tcb
      */
     public $tcb;
     /**
@@ -46,6 +46,7 @@ class TypecastModule extends CJSModule {
         \VK\Elephize\Builtins\Console::log(
             (array) $this->tca,
             (bool) $this->tcb,
+            (boolean) $this->tcb,
             (int) $this->tcc,
             (string) $this->tcd,
             (float) $this->tce

@@ -17,15 +17,15 @@ class SomeModule extends CJSModule {
     }
 
     /**
-     * @var array $asm
+     * @var float[] $asm
      */
     public $asm;
     /**
-     * @var boolean $bsm
+     * @var bool $bsm
      */
     public $bsm;
     /**
-     * @var boolean $csm
+     * @var bool $csm
      */
     public $csm;
 

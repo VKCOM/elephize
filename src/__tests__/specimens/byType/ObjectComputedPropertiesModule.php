@@ -21,7 +21,7 @@ class ObjectComputedPropertiesModule extends CJSModule {
      */
     public $ocp_prop;
     /**
-     * @var array $ocp1
+     * @var mixed[] $ocp1
      */
     public $ocp1;
 

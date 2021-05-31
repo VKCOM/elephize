@@ -31,7 +31,7 @@ export function tJsxAttribute(node: ts.JsxAttribute, context: Context<Declaratio
     // validate intrinsic attributes: now we support only strings, with exception of 'object' for 'style' attr
     const attrInitializer = (node.initializer as any).expression || node.initializer; // 1st for attr={'test'}, 2nd for attr="test"
     const attrType = getPhpPrimitiveType(attrInitializer, context.checker, context.log);
-    if (attrType === 'array' || attrType === 'mixed') {
+    if (attrType.includes('[]') || attrType.includes('mixed')) {
       context.log.error(
         'Unsupported type of attribute %s: inferred type is %s, but only scalars are supported',
         [jsxel.tagName.getText() + '::' + node.getText(), attrType],

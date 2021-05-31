@@ -17,15 +17,15 @@ class DefaultOperatorModule extends CJSModule {
     }
 
     /**
-     * @var array $doa
+     * @var float[] $doa
      */
     public $doa;
     /**
-     * @var boolean $dob
+     * @var bool $dob
      */
     public $dob;
     /**
-     * @var array $doc
+     * @var mixed[] $doc
      */
     public $doc;
     /**
@@ -33,7 +33,7 @@ class DefaultOperatorModule extends CJSModule {
      */
     public $dod;
     /**
-     * @var float|array $doe
+     * @var float|mixed[] $doe
      */
     public $doe;
 

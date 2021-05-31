@@ -17,11 +17,11 @@ class HasOwnPropertyModule extends CJSModule {
     }
 
     /**
-     * @var array $hopobj
+     * @var mixed[] $hopobj
      */
     public $hopobj;
     /**
-     * @var boolean $hop
+     * @var bool $hop
      */
     public $hop;
 

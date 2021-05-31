@@ -69,10 +69,6 @@ export class ModuleRegistry {
     }
 
     const mod = this._targetFilenameToModule.get(targetFilename);
-    if (mod?.isExternal) {
-      mod.addProperty(identifier, '');
-    }
-
     forModule.registerRequiredFile(targetFilename, forModule.targetFileName, mod);
     return `${instance}->${rewriteCase ? snakify(identifier) : identifier}`;
   }

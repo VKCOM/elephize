@@ -17,7 +17,7 @@ class PropertyAccessExpressionModule extends CJSModule {
     }
 
     /**
-     * @var array $b1
+     * @var mixed[] $b1
      */
     public $b1;
     /**
@@ -29,7 +29,7 @@ class PropertyAccessExpressionModule extends CJSModule {
      */
     public $d2;
     /**
-     * @var array $d3
+     * @var mixed[] $d3
      */
     public $d3;
     /**
@@ -37,7 +37,7 @@ class PropertyAccessExpressionModule extends CJSModule {
      */
     public $d4;
     /**
-     * @var array $d5
+     * @var mixed[] $d5
      */
     public $d5;
     /**
