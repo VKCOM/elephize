@@ -204,13 +204,13 @@ const checkComplexLiteralType = (valueType: ts.Type | undefined, checker: ts.Typ
       });
     const uniq = new Set(apparentTypes);
     if (uniq.size === 1) { // all apparent types of union are the same
-      return `${typeMap[apparentTypes[0]]}[]`;
+      return `${typeMap[apparentTypes[0]] || 'mixed'}[]`;
     } else {
       return; // have more than one different apparent type.
     }
   }
   const typeStr = checker.typeToString(valueType);
-  return `${typeMap[typeStr]}[]`;
+  return `${typeMap[typeStr] || 'mixed'}[]`;
 };
 
 // Such kludge, much bugs, wow.
