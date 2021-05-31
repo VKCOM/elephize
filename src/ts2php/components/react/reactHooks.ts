@@ -27,8 +27,7 @@ const dropRender: HookRenderer = (node, context) => {
 };
 
 const hookRenderers: HookRenderers = {
-  'useState': (node, context, nodeIdent) => {
-    context.scope.addDeclaration(nodeIdent, [], { terminateGlobally: true, dryRun: context.dryRun });
+  'useState': (node, context) => {
     const val = renderNode(node.arguments[0], context); // recognize only 1st argument of call
     return `[${val}]`;
   },
@@ -38,8 +37,7 @@ const hookRenderers: HookRenderers = {
     return dropRender(node, context, nodeIdent);
   },
 
-  'useReducer': (node, context, nodeIdent) => {
-    context.scope.addDeclaration(nodeIdent, [], { terminateGlobally: true, dryRun: context.dryRun });
+  'useReducer': (node, context) => {
     const val = renderNode(node.arguments[1], context); // recognize only 2nd argument of call, it's initial state
     if (!val) {
       context.log.error('You must provide initial state to useReducer call', [], context.log.ctx(node));
