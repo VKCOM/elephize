@@ -5,6 +5,7 @@ interface Props extends React.InputHTMLAttributes<any> {
   type: 'text' | 'password' | 'date' | 'datetime-local' | 'time' | 'month' | 'email' | 'number' | 'tel' | 'url' | 'hidden';
   alignment: 'left' | 'center' | 'right';
   initialValue: string;
+  value?: string;
 }
 
 const defaultProps: Props = {

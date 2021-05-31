@@ -47,5 +47,5 @@ export function ReactSupport() {
 
   udv('ololo');
 
-  return <div></div>;
+  return <div ref={ref}>kek</div>;
 }
