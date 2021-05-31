@@ -22,6 +22,10 @@ export function tJsxAttribute(node: ts.JsxAttribute, context: Context<Declaratio
     return '';
   }
 
+  if (node.name.getText() === 'ref') { // We don't support react refs on server side
+    return '';
+  }
+
   if (!node.initializer) { // react boolean attribute
     return `"${node.name.getText()}" => true`;
   }
