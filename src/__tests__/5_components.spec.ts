@@ -9,18 +9,18 @@ const testSuiteConfig: Array<{file: string[]; failOnErrors: string[]}> = [
   { file: ['components', 'BasicComponent.tsx'], failOnErrors: [
     '384ae', // Identifier "props" was used but was never declared. This is compile error
   ] },
-  { file: ['components', 'BasicComponentWithProps.tsx'], failOnErrors: ['384ae'] },
-  { file: ['components', 'BasicComponentWithViewLogic.tsx'], failOnErrors: ['384ae'] },
-  { file: ['components', 'DummyComponent.tsx'], failOnErrors: ['384ae'] },
+  { file: ['components', 'BasicComponentWithProps.tsx'], failOnErrors: ['384ae', '6554c'] },
+  { file: ['components', 'BasicComponentWithViewLogic.tsx'], failOnErrors: ['384ae', '6554c'] },
+  { file: ['components', 'DummyComponent.tsx'], failOnErrors: ['384ae', '6554c'] },
   { file: ['components', 'NestedComponent.tsx'], failOnErrors: ['384ae'] },
-  { file: ['components', 'NestedConditionalComponent.tsx'], failOnErrors: ['384ae'] },
-  { file: ['components', 'TypedComponent.tsx'], failOnErrors: ['384ae'] },
-  { file: ['components', 'ComponentWithOuterFunction.tsx'], failOnErrors: ['384ae'] },
-  { file: ['components', 'ComponentBinaryOperators.tsx'], failOnErrors: ['384ae'] },
+  { file: ['components', 'NestedConditionalComponent.tsx'], failOnErrors: ['384ae', '6554c'] },
+  { file: ['components', 'TypedComponent.tsx'], failOnErrors: ['384ae', '6554c'] },
+  { file: ['components', 'ComponentWithOuterFunction.tsx'], failOnErrors: ['384ae', '6554c'] },
+  { file: ['components', 'ComponentBinaryOperators.tsx'], failOnErrors: ['384ae', '6554c'] },
   { file: ['components', 'TwoComponents.tsx'], failOnErrors: ['384ae'] },
-  { file: ['components', 'NestedComponentWithDummyInProps.tsx'], failOnErrors: ['384ae'] },
+  { file: ['components', 'NestedComponentWithDummyInProps.tsx'], failOnErrors: ['384ae', '6554c'] },
   { file: ['components', 'InnerHtmlComponent.tsx'], failOnErrors: ['384ae'] },
-  { file: ['components', 'NullReturnInComponent.tsx'], failOnErrors: ['384ae', 'a57e4'] },
+  { file: ['components', 'NullReturnInComponent.tsx'], failOnErrors: ['384ae', 'a57e4', '6554c'] },
 
   // Checks for reserved words in paths/namespaces
   { file: ['components/static', 'KeywordTestComponent.tsx'], failOnErrors: ['384ae', 'a57e4'] },

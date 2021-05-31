@@ -1,6 +1,6 @@
 import * as ts from 'typescript';
 import { Declaration } from '../../types';
-import { getClosestOrigParentOfType, getClosestParentOfAnyType } from '../../utils/ast';
+import { fetchAllBindingIdents, getClosestOrigParentOfType, getClosestParentOfAnyType } from '../../utils/ast';
 import { Context } from '../context';
 import { renderNode, renderNodes } from '../codegen/renderNodes';
 import { getTimeMarker } from '../../utils/hrtime';
@@ -53,10 +53,10 @@ export function handleComponent(context: Context<Declaration>, node: ts.Expressi
     context.pushScope(`component__${stackCtr}`, nodeName.getText());
     context.scope.ownerNode!.data.isComponent = true;
 
-    // Declare props
-    [...funcNode.parameters].forEach((ident) => context.scope.addDeclaration(
-      ident.getText(), [], { terminateLocally: true, dryRun: context.dryRun }
-    ));
+    // Declare all parameters
+    funcNode.parameters.map(fetchAllBindingIdents)
+      .reduce((acc, val) => acc.concat(val), []) // flatten;
+      .forEach((ident) => context.scope.addDeclaration(ident.getText(), [], { terminateLocally: true, dryRun: context.dryRun }));
 
     const args = renderNodes([...funcNode.parameters], context);
     let block = renderNode(funcNode.body, context);
