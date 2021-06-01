@@ -20,19 +20,20 @@ class BasicComponentWithProps extends RenderableComponent {
     }
 
     /**
-     * @param mixed[] $props
+     * @param mixed[] $anon_deref_1
      * @param mixed[] $children
      * @return ?string
      */
-    public function render(array $props, array $children) {
-        $anon_e8afc0c = [$props["count"]];
-        $count = (float) $anon_e8afc0c[0];
+    public function render(array $anon_deref_1, array $children) {
+        $cnt = (float) $anon_deref_1["count"];
+        $anon_2c03773 = [$cnt];
+        $count = (float) $anon_2c03773[0];
         return \VK\Elephize\Builtins\IntrinsicElement::get("div")->render(
             [],
             [
                 \VK\Elephize\Builtins\IntrinsicElement::get("p")->render(
                     [],
-                    ["You clicked ", $count, " times starting at ", $props["count"], "."]
+                    ["You clicked ", $count, " times starting at ", $cnt, "."]
                 ),
                 \VK\Elephize\Builtins\IntrinsicElement::get("button")->render([], [" Click me "]),
             ]
