@@ -56,7 +56,7 @@ export function handleComponent(context: Context<Declaration>, node: ts.Expressi
     // Declare all parameters
     funcNode.parameters.map(fetchAllBindingIdents)
       .reduce((acc, val) => acc.concat(val), []) // flatten;
-      .forEach((ident) => context.scope.addDeclaration(ident.getText(), [], { terminateLocally: true, dryRun: context.dryRun }));
+      .forEach((ident) => context.scope.addDeclaration(ident.getText(), [], { dryRun: context.dryRun }));
 
     const args = renderNodes([...funcNode.parameters], context);
     let block = renderNode(funcNode.body, context);
