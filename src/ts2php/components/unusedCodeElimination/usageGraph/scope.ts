@@ -248,6 +248,13 @@ export class Scope<NodeData extends { [key: string]: any }> {
 
     this._logAction('Add declaration', traceSourceIdent, dryRun, traceTargetIdents, terminateLocally, terminateGlobally);
     if (nodeDeclaredInCurrentScope && !isPending(nodeDeclaredInCurrentScope)) {
+      if (traceSourceIdent === 'children') {
+        // Ugly hack:
+        // We may declare intrinsic 'children' property both in object binding pattern and in parameters.
+        // It's ok to try it twice or more.
+        // TODO: get rid of 'children' identifier hardcode here and in objectBindingPattern::renderBindingElement
+        return null;
+      }
       this.log.error('Identifier %s already declared @ %s', [traceSourceIdent, nodeDeclaredInCurrentScope.homeScope.tNodeLocal], this.log.shortCtx(this.sourceFile));
       return null;
     }
