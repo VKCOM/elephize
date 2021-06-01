@@ -9,7 +9,7 @@ const testSuiteConfig: Array<{file: string[]; failOnErrors: string[]}> = [
   { file: ['components', 'BasicComponent.tsx'], failOnErrors: [
     '384ae', // Identifier "props" was used but was never declared. This is compile error
   ] },
-  { file: ['components', 'BasicComponentWithProps.tsx'], failOnErrors: ['384ae', '6554c'] },
+  { file: ['components', 'BasicComponentWithProps.tsx'], failOnErrors: ['384ae', '6554c', '3fea3'] },
   { file: ['components', 'BasicComponentWithViewLogic.tsx'], failOnErrors: ['384ae', '6554c'] },
   { file: ['components', 'DummyComponent.tsx'], failOnErrors: ['384ae', '6554c'] },
   { file: ['components', 'NestedComponent.tsx'], failOnErrors: ['384ae'] },
