@@ -9,6 +9,10 @@ export const GenericIcon: React.FunctionComponent = () => {
   return <span>ico!</span>;
 };
 
+const armenian = `"&#1345;&#1381;&#1408;"`;
+
+const injection = `<img src=x onerror=alert()>`;
+
 // @elephizeTarget
 export const App: React.FunctionComponent = () => {
   const { useState } = React;
@@ -55,5 +59,14 @@ export const App: React.FunctionComponent = () => {
         </Button>
       </span>
     </div>)}
+
+    {injection}
+    {armenian}
+    <br />
+    "&#1345;&#1381;&#1408;"
+    <br />
+    <input placeholder={'"&#1345;&#1381;&#1408;"'} />
+    <br />
+    <input placeholder={armenian} />
   </div>;
 };

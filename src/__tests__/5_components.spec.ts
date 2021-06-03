@@ -29,6 +29,7 @@ const testSuiteConfig: Array<{file: string[]; failOnErrors: string[]}> = [
   { file: ['components/static', 'KeywordTestModuleImport.ts'], failOnErrors: ['384ae', 'a57e4'] },
 
   { file: ['fixes', 'CheckBox.tsx'], failOnErrors: ['384ae', 'a57e4'] },
+  { file: ['fixes', 'EscapeHtmlChars.tsx'], failOnErrors: ['384ae', 'a57e4'] },
 ];
 
 const testSuite = testSuiteConfig.map((item) => item.file);

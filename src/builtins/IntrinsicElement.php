@@ -136,6 +136,15 @@ class IntrinsicElement extends RenderableComponent {
     }
 
     /**
+     * @param string $htmlString
+     * @return string
+     */
+    public function escape($htmlString): string
+    {
+        return htmlspecialchars($htmlString);
+    }
+
+    /**
      * @param array $props
      * @param array $children
      * @return ?string
@@ -178,7 +187,7 @@ class IntrinsicElement extends RenderableComponent {
                 }
                 $attrs[] = 'style="' . implode(';', $css) . '"';
             } else {
-                $attrs[] = $name . '="' . htmlspecialchars($value) . '"';
+                $attrs[] = $name . '="' . $value . '"';
             }
         }
 
