@@ -34,7 +34,7 @@ class ComponentWithOuterFunction extends RenderableComponent {
                     )
                 ),
             ],
-            [\VK\Elephize\Builtins\IntrinsicElement::escape($children)]
+            [$children]
         );
     }
 }

@@ -24,6 +24,10 @@ function shouldEscape(node: ts.Expression | undefined, context: Context<Declarat
     return false;
   }
 
+  if (node.getText() === 'children') { // Workaround for inserting children from props
+    return false;
+  }
+
   return true;
 }
 
@@ -31,5 +35,4 @@ function shouldEscape(node: ts.Expression | undefined, context: Context<Declarat
   TODO
   Текущие проблемы:
   - Двойное экранирование для вложенных конструкций типа <Outer>{...map(() => <Cmp>{smth}</Cmp>)}</Outer>
-  - Экранирование children - <Outer>{children}</Outer> - излишне.
    */
