@@ -20,7 +20,6 @@ class EscapeHtmlCharsModule extends CJSModule {
      * @var string $armenian
      */
     public $armenian;
-
     /**
      * @var string $injection
      */

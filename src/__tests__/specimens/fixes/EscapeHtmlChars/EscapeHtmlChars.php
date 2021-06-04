@@ -25,6 +25,7 @@ class EscapeHtmlChars extends RenderableComponent {
      * @return ?string
      */
     public function render(array $props, array $children) {
+        $arr = [1, 2, 3, 4];
         return \VK\Elephize\Builtins\IntrinsicElement::get("div")->render(
             ["className" => "App"],
             [
@@ -33,8 +34,26 @@ class EscapeHtmlChars extends RenderableComponent {
                     [],
                     ["Start editing to see some magic happen!"]
                 ),
-                \VK\Elephize\Builtins\IntrinsicElement::escape(\specimens\fixes\EscapeHtmlCharsModule::getInstance()->armenian),
-                \VK\Elephize\Builtins\IntrinsicElement::escape(\specimens\fixes\EscapeHtmlCharsModule::getInstance()->injection),
+                Stdlib::arrayMap1(
+                    $arr,
+                    /* anon_7c61e81 */ function ($v) {
+                        return \VK\Elephize\Builtins\IntrinsicElement::get("span")->render(
+                            [],
+                            [
+                                \VK\Elephize\Builtins\IntrinsicElement::escape(
+                                    \specimens\fixes\EscapeHtmlCharsModule::getInstance()->injection
+                                ),
+                                \VK\Elephize\Builtins\IntrinsicElement::escape($v),
+                            ]
+                        );
+                    }
+                ),
+                \VK\Elephize\Builtins\IntrinsicElement::escape(
+                    \specimens\fixes\EscapeHtmlCharsModule::getInstance()->armenian
+                ),
+                \VK\Elephize\Builtins\IntrinsicElement::escape(
+                    \specimens\fixes\EscapeHtmlCharsModule::getInstance()->injection
+                ),
                 \VK\Elephize\Builtins\IntrinsicElement::get("br")->render([], []),
                 "Ձեր",
                 \VK\Elephize\Builtins\IntrinsicElement::get("br")->render([], []),
@@ -44,10 +63,15 @@ class EscapeHtmlChars extends RenderableComponent {
                 ),
                 \VK\Elephize\Builtins\IntrinsicElement::get("br")->render([], []),
                 \VK\Elephize\Builtins\IntrinsicElement::get("input")->render(
-                    ["placeholder" => \VK\Elephize\Builtins\IntrinsicElement::escape(\specimens\fixes\EscapeHtmlCharsModule::getInstance()->armenian)],
+                    [
+                        "placeholder" => \VK\Elephize\Builtins\IntrinsicElement::escape(
+                            \specimens\fixes\EscapeHtmlCharsModule::getInstance()->armenian
+                        ),
+                    ],
                     []
                 ),
                 \VK\Elephize\Builtins\IntrinsicElement::get("br")->render([], []),
+                $children,
             ]
         );
     }
