@@ -5,6 +5,8 @@ import { intrinsicElements } from '../internalConfig/intrinsicElements';
 import * as callbackAttrs from '../../../data/domattrs.json';
 import { renderNode } from '../components/codegen/renderNodes';
 import { getPhpPrimitiveType } from '../components/typeInference/basicTypes';
+import { escapeHtml } from '../utils/escapeString';
+import { decode } from 'html-entities';
 
 export function tJsxAttribute(node: ts.JsxAttribute, context: Context<Declaration>) {
   if (node.name.getText() === 'dangerouslySetInnerHTML') {

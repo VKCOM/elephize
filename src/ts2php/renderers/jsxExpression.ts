@@ -32,5 +32,4 @@ function shouldEscape(node: ts.Expression | undefined, context: Context<Declarat
   Текущие проблемы:
   - Двойное экранирование для вложенных конструкций типа <Outer>{...map(() => <Cmp>{smth}</Cmp>)}</Outer>
   - Экранирование children - <Outer>{children}</Outer> - излишне.
-  - Внутри строго текстовых нод не раскукоживаются utf-символы
    */
