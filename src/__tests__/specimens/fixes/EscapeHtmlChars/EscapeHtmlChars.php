@@ -20,11 +20,11 @@ class EscapeHtmlChars extends RenderableComponent {
     }
 
     /**
-     * @param mixed[] $props
+     * @param mixed[] $anon_deref_1
      * @param mixed[] $children
      * @return ?string
      */
-    public function render(array $props, array $children) {
+    public function render(array $anon_deref_1, array $children) {
         $arr = [1, 2, 3, 4];
         return \VK\Elephize\Builtins\IntrinsicElement::get("div")->render(
             ["className" => "App"],

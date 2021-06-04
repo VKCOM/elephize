@@ -28,11 +28,13 @@ class ComponentWithOuterFunction extends RenderableComponent {
         $classes = (string) $props["classes"];
         return \VK\Elephize\Builtins\IntrinsicElement::get("div")->render(
             [
-                "className" => \specimens\components\ComponentWithOuterFunctionModule::getInstance()->prepareClasses(
-                    \specimens\components\ComponentWithOuterFunctionModule::getInstance()->morePrepare($classes)
+                "className" => \VK\Elephize\Builtins\IntrinsicElement::escape(
+                    \specimens\components\ComponentWithOuterFunctionModule::getInstance()->prepareClasses(
+                        \specimens\components\ComponentWithOuterFunctionModule::getInstance()->morePrepare($classes)
+                    )
                 ),
             ],
-            [$children]
+            [\VK\Elephize\Builtins\IntrinsicElement::escape($children)]
         );
     }
 }

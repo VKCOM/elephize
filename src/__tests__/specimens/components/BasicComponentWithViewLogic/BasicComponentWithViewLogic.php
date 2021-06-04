@@ -40,17 +40,26 @@ class BasicComponentWithViewLogic extends RenderableComponent {
             [
                 \VK\Elephize\Builtins\IntrinsicElement::get("p")->render(
                     [],
-                    ["You clicked ", $count, " times starting at ", $props["count"], "."]
+                    [
+                        "You clicked ",
+                        $count,
+                        " times starting at ",
+                        \VK\Elephize\Builtins\IntrinsicElement::escape($props["count"]),
+                        ".",
+                    ]
                 ),
                 \VK\Elephize\Builtins\IntrinsicElement::get("button")->render(
                     [],
                     [
-                        $time,
+                        \VK\Elephize\Builtins\IntrinsicElement::escape($time),
                         " Click me @ ",
                         Stdlib::arrayMap1(
                             $keys,
                             /* anon_1100a5a */ function ($c) {
-                                return \VK\Elephize\Builtins\IntrinsicElement::get("b")->render(["key" => "b"], [$c]);
+                                return \VK\Elephize\Builtins\IntrinsicElement::get("b")->render(
+                                    ["key" => "b"],
+                                    [\VK\Elephize\Builtins\IntrinsicElement::escape($c)]
+                                );
                             }
                         ),
                         \VK\Elephize\Builtins\IntrinsicElement::get("table")->render(
@@ -63,7 +72,11 @@ class BasicComponentWithViewLogic extends RenderableComponent {
                                             $props["children"],
                                             /* anon_28597c3 */ function ($row, $idx) {
                                                 return \VK\Elephize\Builtins\IntrinsicElement::get("tr")->render(
-                                                    ["key" => "tr" . (string) $idx],
+                                                    [
+                                                        "key" => \VK\Elephize\Builtins\IntrinsicElement::escape(
+                                                            "tr" . (string) $idx
+                                                        ),
+                                                    ],
                                                     ["test"]
                                                 );
                                             }

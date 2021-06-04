@@ -30,7 +30,7 @@ class DummyComponent extends RenderableComponent {
             [
                 \VK\Elephize\Builtins\IntrinsicElement::get("p")->render(
                     [],
-                    ["You clicked ", $props["count"], " times"]
+                    ["You clicked ", \VK\Elephize\Builtins\IntrinsicElement::escape($props["count"]), " times"]
                 ),
                 \VK\Elephize\Builtins\IntrinsicElement::get("button")->render([], [" Click me "]),
                 \VK\Elephize\Builtins\IntrinsicElement::get("button")->render(["disabled" => true], [" Click me "]),

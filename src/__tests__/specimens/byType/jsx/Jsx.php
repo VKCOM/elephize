@@ -32,14 +32,17 @@ class Jsx extends RenderableComponent {
             ),
             \VK\Elephize\Builtins\IntrinsicElement::get("i")->render([], ["test1"]),
         ]);
-        $jsxb = \VK\Elephize\Builtins\IntrinsicElement::get("b")->render([], [$jsxa]);
+        $jsxb = \VK\Elephize\Builtins\IntrinsicElement::get("b")->render(
+            [],
+            [\VK\Elephize\Builtins\IntrinsicElement::escape($jsxa)]
+        );
         $jsxprops = [
             "id" => "test",
             "className" => "test2",
         ];
         $jsxc = \VK\Elephize\Builtins\IntrinsicElement::get("div")->render(
             array_merge(["aria-atomic" => true, "title" => "testtitle"], $jsxprops, $jsxprops),
-            ["Oh my ", $jsxb, " my oh"]
+            ["Oh my ", \VK\Elephize\Builtins\IntrinsicElement::escape($jsxb), " my oh"]
         );
         return $jsxc;
     }

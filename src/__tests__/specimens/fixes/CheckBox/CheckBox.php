@@ -36,10 +36,10 @@ class CheckBox extends RenderableComponent {
                 \VK\Elephize\Builtins\IntrinsicElement::get("input")->render(
                     array_merge($native_props, [
                         "className" => "CheckBox__input",
-                        "id" => (string) $id,
+                        "id" => \VK\Elephize\Builtins\IntrinsicElement::escape((string) $id),
                         "type" => "checkbox",
                         "checked" => !!$checked,
-                        "name" => (string) $name,
+                        "name" => \VK\Elephize\Builtins\IntrinsicElement::escape((string) $name),
                         "disabled" => $disabled,
                     ]),
                     []
