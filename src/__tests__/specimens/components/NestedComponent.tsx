@@ -4,7 +4,7 @@ import { DummyComponent } from './DummyComponent';
 const {useState} = React;
 
 // @elephizeTarget
-export function NestedComponent() {
+export function NestedComponent(props: any) {
   const [count, setCount] = useState(0);
   const onclick = () => {
     setCount(count + 1);
