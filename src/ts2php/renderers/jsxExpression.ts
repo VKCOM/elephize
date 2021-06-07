@@ -34,9 +34,12 @@ function shouldEscape(node: ts.Expression | undefined, context: Context<Declarat
     }
   }
 
-  // TODO: check expressions
+  // Don't escape style attribute, it's safety should be checked by client
+  if (node.parent.parent.kind === ts.SyntaxKind.JsxAttribute && (node.parent.parent as ts.JsxAttribute).name.getText() === 'style') {
+    return false;
+  }
 
-  // Finally, check identifiers
+  // Finally, check expressions and identifiers
   const nodeType = context.checker.getTypeAtLocation(node);
   if (!checkExprType(nodeType, context.checker)) {
     return false;
