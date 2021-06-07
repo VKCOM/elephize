@@ -30,10 +30,7 @@ class BasicComponent extends RenderableComponent {
         return \VK\Elephize\Builtins\IntrinsicElement::get("div")->render(
             [],
             [
-                \VK\Elephize\Builtins\IntrinsicElement::get("p")->render(
-                    [],
-                    ["You clicked ", \VK\Elephize\Builtins\IntrinsicElement::escape($count), " times"]
-                ),
+                \VK\Elephize\Builtins\IntrinsicElement::get("p")->render([], ["You clicked ", $count, " times"]),
                 \VK\Elephize\Builtins\IntrinsicElement::get("button")->render([], [" Click me "]),
                 \VK\Elephize\Builtins\IntrinsicElement::get("button")->render(["disabled" => true], [" Click me "]),
             ]

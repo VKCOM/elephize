@@ -33,7 +33,7 @@ class NullReturnInComponent extends RenderableComponent {
             [
                 \VK\Elephize\Builtins\IntrinsicElement::get("p")->render(
                     [],
-                    ["You clicked ", \VK\Elephize\Builtins\IntrinsicElement::escape($props["count"]), " times"]
+                    ["You clicked ", $props["count"], " times"]
                 ),
                 \VK\Elephize\Builtins\IntrinsicElement::get("button")->render([], [" Click me "]),
             ]

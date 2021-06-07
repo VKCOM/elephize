@@ -40,13 +40,7 @@ class BasicComponentWithViewLogic extends RenderableComponent {
             [
                 \VK\Elephize\Builtins\IntrinsicElement::get("p")->render(
                     [],
-                    [
-                        "You clicked ",
-                        $count,
-                        " times starting at ",
-                        \VK\Elephize\Builtins\IntrinsicElement::escape($props["count"]),
-                        ".",
-                    ]
+                    ["You clicked ", $count, " times starting at ", $props["count"], "."]
                 ),
                 \VK\Elephize\Builtins\IntrinsicElement::get("button")->render(
                     [],

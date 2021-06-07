@@ -43,7 +43,7 @@ class EscapeHtmlChars extends RenderableComponent {
                                 \VK\Elephize\Builtins\IntrinsicElement::escape(
                                     \specimens\fixes\EscapeHtmlCharsModule::getInstance()->injection
                                 ),
-                                \VK\Elephize\Builtins\IntrinsicElement::escape($v),
+                                $v,
                             ]
                         );
                     }

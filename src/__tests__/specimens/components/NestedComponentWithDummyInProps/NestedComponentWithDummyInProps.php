@@ -32,18 +32,12 @@ class NestedComponentWithDummyInProps extends RenderableComponent {
             [],
             [
                 $props["componentToRender"],
-                \specimens\components\DummyComponent\DummyComponent::getInstance()->render(
-                    ["count" => $count],
-                    []
-                ),
+                \specimens\components\DummyComponent\DummyComponent::getInstance()->render(["count" => $count], []),
                 Stdlib::arrayMap1(
                     $arr,
                     /* anon_b4f3ee1 */ function ($val) use ($count) {
                         return \specimens\components\DummyComponent\DummyComponent::getInstance()->render(
-                            [
-                                "key" => \VK\Elephize\Builtins\IntrinsicElement::escape($val),
-                                "count" => $count,
-                            ],
+                            ["key" => $val, "count" => $count],
                             []
                         );
                     }

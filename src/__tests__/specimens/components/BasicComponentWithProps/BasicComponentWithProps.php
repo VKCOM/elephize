@@ -33,13 +33,7 @@ class BasicComponentWithProps extends RenderableComponent {
             [
                 \VK\Elephize\Builtins\IntrinsicElement::get("p")->render(
                     [],
-                    [
-                        "You clicked ",
-                        \VK\Elephize\Builtins\IntrinsicElement::escape($count),
-                        " times starting at ",
-                        \VK\Elephize\Builtins\IntrinsicElement::escape($cnt),
-                        ".",
-                    ]
+                    ["You clicked ", $count, " times starting at ", $cnt, "."]
                 ),
                 \VK\Elephize\Builtins\IntrinsicElement::get("button")->render([], [" Click me "]),
             ]
