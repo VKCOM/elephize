@@ -26,8 +26,6 @@ class ComponentWrapper extends RenderableComponent {
      */
     public function render(array $props, array $children) {
         $other = Stdlib::objectOmit($props, ["children"]);
-        return \specimens\components\DummyComponent\DummyComponent::getInstance()->render($other, [
-            $children,
-        ]);
+        return \specimens\components\DummyComponent\DummyComponent::getInstance()->render($other, [$children]);
     }
 }

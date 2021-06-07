@@ -48,9 +48,10 @@ function shouldEscape(node: ts.Expression | undefined, context: Context<Declarat
 function checkExprType(type: ts.Type | undefined, checker: ts.TypeChecker): boolean {
   let typeSymbol: ts.Symbol | undefined;
   if (type?.getSymbol()?.escapedName === 'Array') {
-    typeSymbol = checker.getTypeArguments(type as ts.TypeReference /* <- may be incorrect! */)[0].getSymbol();
+    const typeArg = checker.getTypeArguments(type as ts.TypeReference /* <- may be incorrect! */)[0];
+    typeSymbol = typeArg.getSymbol() || typeArg.aliasSymbol;
   } else {
-    typeSymbol = type?.getSymbol();
+    typeSymbol = type?.getSymbol() || type?.aliasSymbol;
     if (!typeSymbol && type) { // try getting apparent type
       typeSymbol = checker.getApparentType(type)?.getSymbol();
     }
@@ -64,6 +65,12 @@ function checkExprType(type: ts.Type | undefined, checker: ts.TypeChecker): bool
 
   if (parentSymbol?.escapedName === 'JSX' && typeSymbol?.escapedName === 'Element') {
     return false; // Do not escape components and intrinsic tags
+  }
+
+  if (parentSymbol?.escapedName === 'React' && (
+    typeSymbol?.escapedName === 'ReactNode' || typeSymbol?.escapedName === 'ReactElement'
+  )) {
+    return false;
   }
 
   return true;
