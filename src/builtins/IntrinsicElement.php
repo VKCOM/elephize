@@ -139,7 +139,7 @@ class IntrinsicElement extends RenderableComponent {
      * @param string $htmlString
      * @return string
      */
-    public function escape($htmlString): string
+    public static function escape($htmlString): string
     {
         return htmlspecialchars($htmlString);
     }
