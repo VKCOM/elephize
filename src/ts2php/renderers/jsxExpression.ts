@@ -2,6 +2,7 @@ import * as ts from 'typescript';
 import { Declaration } from '../types';
 import { Context } from '../components/context';
 import { renderNode } from '../components/codegen/renderNodes';
+import { tParameterDeclaration } from './parameterDeclaration';
 
 export const tJsxExpression = (node: ts.JsxExpression, context: Context<Declaration>) => {
   if (shouldEscape(node.expression, context)) {
@@ -26,6 +27,30 @@ function shouldEscape(node: ts.Expression | undefined, context: Context<Declarat
 
   if (node.getText() === 'children') { // Workaround for inserting children from props
     return false;
+  }
+
+  if (node.kind === ts.SyntaxKind.CallExpression) {
+    const sig = context.checker.getResolvedSignature(node as ts.CallExpression);
+    if (sig) {
+      const retType = context.checker.getReturnTypeOfSignature(sig);
+
+      let typeSymbol: ts.Symbol | undefined;
+      if (retType.getSymbol()?.escapedName === 'Array') {
+        typeSymbol = context.checker.getTypeArguments(retType as ts.TypeReference /* <- may be incorrect! */)[0].getSymbol();
+      } else {
+        typeSymbol = retType.getSymbol();
+      }
+
+      if (typeSymbol?.escapedName === 'number' || typeSymbol?.escapedName === 'boolean') {
+        return false; // Do not escape simple types
+      }
+
+      const parentSymbol: ts.Symbol | undefined = (typeSymbol as any)?.parent;
+
+      if (parentSymbol?.escapedName === 'JSX' && typeSymbol?.escapedName === 'Element') {
+        return false; // Do not escape components and intrinsic tags
+      }
+    }
   }
 
   return true;
