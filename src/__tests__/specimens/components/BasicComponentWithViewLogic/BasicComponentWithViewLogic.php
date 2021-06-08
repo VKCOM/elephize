@@ -51,7 +51,7 @@ class BasicComponentWithViewLogic extends RenderableComponent {
                             $keys,
                             /* anon_1100a5a */ function ($c) {
                                 return \VK\Elephize\Builtins\IntrinsicElement::get("b")->render(
-                                    ["key" => "b"],
+                                    ["key" => \VK\Elephize\Builtins\IntrinsicElement::escape("b")],
                                     [\VK\Elephize\Builtins\IntrinsicElement::escape($c)]
                                 );
                             }

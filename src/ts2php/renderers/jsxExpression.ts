@@ -2,8 +2,12 @@ import * as ts from 'typescript';
 import { Declaration } from '../types';
 import { Context } from '../components/context';
 import { renderNode } from '../components/codegen/renderNodes';
+import { escapeExprLiteral } from '../utils/escapeString';
 
 export const tJsxExpression = (node: ts.JsxExpression, context: Context<Declaration>) => {
+  if (node.parent.kind === ts.SyntaxKind.JsxAttribute && node.expression?.kind === ts.SyntaxKind.StringLiteral) {
+    return `\\${context.namespaces.builtins}\\IntrinsicElement::escape(` + escapeExprLiteral((node.expression as ts.StringLiteral).text) + ')';
+  }
   if (shouldEscape(node.expression, context)) {
     return `\\${context.namespaces.builtins}\\IntrinsicElement::escape(` + renderNode(node.expression, context) + ')';
   }
@@ -83,9 +87,3 @@ function checkExprType(type: ts.Type | undefined, checker: ts.TypeChecker): bool
 
   return true;
 }
-
-/*
-  TODO
-  Текущие проблемы:
-  - Излишнее экранирование при условном рендеринге
-   */

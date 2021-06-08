@@ -39,7 +39,7 @@ export const App: React.FunctionComponent = () => {
     {window._elephizeIsServer ? <div>It's PHP!</div> : <div>It's JS!</div>}
     {countClick % 2 === 0 ? null : <div>Azaza</div>}
 
-    {Object.keys(data).map((key, idx) => <div key={`id-${idx}`} className={'elephize-test-row'}>
+    {Object.keys(data).map((key: string, idx) => <div key={`id-${idx}`} className={'elephize-test-row'}>
       <span className={'elephize-test-title'}>Lol {key} kek</span>
       <span className={'elephize-test-number'}>
         <StatefulInput type={'number'} alignment={'left'} initialValue={data[key].toString()} />
@@ -66,6 +66,7 @@ export const App: React.FunctionComponent = () => {
     "&#1345;&#1381;&#1408;"
     <br />
     <input placeholder={'"&#1345;&#1381;&#1408;"'} />
+    <input placeholder='"&#1345;&#1381;&#1408;"' />
     <br />
     <input placeholder={armenian} />
   </div>;

@@ -136,12 +136,16 @@ class IntrinsicElement extends RenderableComponent {
     }
 
     /**
-     * @param string $htmlString
-     * @return string
+     * @param mixed $htmlString
+     * @return mixed
      */
-    public static function escape($htmlString): string
+    public static function escape($htmlString)
     {
-        return htmlspecialchars($htmlString);
+        if (is_string($htmlString)) {
+            return htmlspecialchars($htmlString);
+        } else {
+            return $htmlString; // TODO: return input type when it's supported
+        }
     }
 
     /**

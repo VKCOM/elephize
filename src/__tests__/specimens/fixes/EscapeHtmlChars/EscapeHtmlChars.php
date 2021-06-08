@@ -58,6 +58,11 @@ class EscapeHtmlChars extends RenderableComponent {
                 " Ձեր ",
                 \VK\Elephize\Builtins\IntrinsicElement::get("br")->render([], []),
                 \VK\Elephize\Builtins\IntrinsicElement::get("input")->render(["placeholder" => "Ձեր"], []),
+                \VK\Elephize\Builtins\IntrinsicElement::get("input")->render(["placeholder" => "&quot;Ձեր&quot;"], []),
+                \VK\Elephize\Builtins\IntrinsicElement::get("input")->render(
+                    ["placeholder" => \VK\Elephize\Builtins\IntrinsicElement::escape("\"&#1345;&#1381;&#1408;\"")],
+                    []
+                ),
                 \VK\Elephize\Builtins\IntrinsicElement::get("br")->render([], []),
                 \VK\Elephize\Builtins\IntrinsicElement::get("input")->render(
                     [

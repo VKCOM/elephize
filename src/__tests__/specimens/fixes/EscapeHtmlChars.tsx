@@ -17,6 +17,8 @@ export const EscapeHtmlChars = ({ children }: { children: React.ReactNode[] }) =
       &#1345;&#1381;&#1408;
       <br />
       <input placeholder="&#1345;&#1381;&#1408;" />
+      <input placeholder='"&#1345;&#1381;&#1408;"' />
+      <input placeholder={'"&#1345;&#1381;&#1408;"'} />
       <br />
       <input placeholder={armenian} />
       <br />
