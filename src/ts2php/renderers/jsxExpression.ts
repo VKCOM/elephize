@@ -39,6 +39,11 @@ function shouldEscape(node: ts.Expression | undefined, context: Context<Declarat
     return false;
   }
 
+  // Workaround. Don't escape 'children'. TODO: Add more precise check somehow
+  if (node.getText() === 'children') {
+    return false;
+  }
+
   // Finally, check expressions and identifiers
   const nodeType = context.checker.getTypeAtLocation(node);
   if (!checkExprType(nodeType, context.checker)) {
