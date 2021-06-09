@@ -136,6 +136,19 @@ class IntrinsicElement extends RenderableComponent {
     }
 
     /**
+     * @param mixed $htmlString
+     * @return mixed
+     */
+    public static function escape($htmlString)
+    {
+        if (is_string($htmlString)) {
+            return htmlspecialchars($htmlString);
+        } else {
+            return $htmlString; // TODO: return input type when it's supported
+        }
+    }
+
+    /**
      * @param array $props
      * @param array $children
      * @return ?string
@@ -178,7 +191,7 @@ class IntrinsicElement extends RenderableComponent {
                 }
                 $attrs[] = 'style="' . implode(';', $css) . '"';
             } else {
-                $attrs[] = $name . '="' . htmlspecialchars($value) . '"';
+                $attrs[] = $name . '="' . $value . '"';
             }
         }
 

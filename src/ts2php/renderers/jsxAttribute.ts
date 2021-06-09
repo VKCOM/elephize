@@ -5,6 +5,7 @@ import { intrinsicElements } from '../internalConfig/intrinsicElements';
 import * as callbackAttrs from '../../../data/domattrs.json';
 import { renderNode } from '../components/codegen/renderNodes';
 import { getPhpPrimitiveType } from '../components/typeInference/basicTypes';
+import { escapeTextLiteral } from '../utils/escapeString';
 
 export function tJsxAttribute(node: ts.JsxAttribute, context: Context<Declaration>) {
   if (node.name.getText() === 'dangerouslySetInnerHTML') {
@@ -42,6 +43,10 @@ export function tJsxAttribute(node: ts.JsxAttribute, context: Context<Declaratio
         context.log.ctx(node)
       );
     }
+  }
+
+  if (ts.isStringLiteral(node.initializer)) { // should print escaped text in this one
+    return `"${node.name.getText()}" => ${escapeTextLiteral(node.initializer.text)}`;
   }
 
   const expr = renderNode(node.initializer, context);

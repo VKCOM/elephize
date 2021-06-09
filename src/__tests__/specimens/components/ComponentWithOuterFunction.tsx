@@ -1,7 +1,5 @@
 import * as React from 'react';
 
-type CChildren = Array<Array<JSX.Element | undefined>>;
-
 const morePrepare = (classes: string) => classes.split(' ').join('-');
 
 /**
@@ -9,8 +7,7 @@ const morePrepare = (classes: string) => classes.split(' ').join('-');
  * @param props
  * @constructor
  */
-export function ComponentWithOuterFunction(props: { children: CChildren; classes: string }) {
-  /** @param string[] children */
+export function ComponentWithOuterFunction(props: { children: React.ReactNode[]; classes: string }) {
   const { children, classes } = props;
   return <div className={prepareClasses(morePrepare(classes))}>{children}</div>;
 }

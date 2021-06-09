@@ -27,7 +27,7 @@ class Jsx extends RenderableComponent {
     public function render(array $props, array $children) {
         $jsxa = $this->frg([
             \VK\Elephize\Builtins\IntrinsicElement::get("div")->render(
-                ["id" => "test"],
+                ["id" => \VK\Elephize\Builtins\IntrinsicElement::escape("test")],
                 [\VK\Elephize\Builtins\IntrinsicElement::get("b")->render([], ["ololo"]), "test"]
             ),
             \VK\Elephize\Builtins\IntrinsicElement::get("i")->render([], ["test1"]),
@@ -38,7 +38,11 @@ class Jsx extends RenderableComponent {
             "className" => "test2",
         ];
         $jsxc = \VK\Elephize\Builtins\IntrinsicElement::get("div")->render(
-            array_merge(["aria-atomic" => true, "title" => "testtitle"], $jsxprops, $jsxprops),
+            array_merge(
+                ["aria-atomic" => true, "title" => \VK\Elephize\Builtins\IntrinsicElement::escape("testtitle")],
+                $jsxprops,
+                $jsxprops
+            ),
             ["Oh my ", $jsxb, " my oh"]
         );
         return $jsxc;

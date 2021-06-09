@@ -26,6 +26,9 @@ class TypedComponent extends RenderableComponent {
      */
     public function render(array $props, array $children) {
         $classes = (string) $props["classes"];
-        return \VK\Elephize\Builtins\IntrinsicElement::get("div")->render(["className" => $classes], [$children]);
+        return \VK\Elephize\Builtins\IntrinsicElement::get("div")->render(
+            ["className" => \VK\Elephize\Builtins\IntrinsicElement::escape($classes)],
+            [$children]
+        );
     }
 }

@@ -57,6 +57,7 @@
     "chalk": "^4.1.0",
     "cli": "^1.0.1",
     "glob": "^7.1.6",
+    "html-entities": "^2.3.2",
     "iconv-lite": "^0.5.1",
     "ncp": "^2.0.0",
     "prettier": "^2.0.4",

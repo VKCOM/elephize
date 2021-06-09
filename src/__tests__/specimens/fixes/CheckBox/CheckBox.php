@@ -31,15 +31,19 @@ class CheckBox extends RenderableComponent {
         $id = $props["id"];
         $native_props = Stdlib::objectOmit($props, ["children", "checked", "disabled", "indeterminate", "name", "id"]);
         return \VK\Elephize\Builtins\IntrinsicElement::get("label")->render(
-            ["className" => "CheckBox--disabled", "data-type" => "scrolling-container", "aria-details" => "test"],
+            [
+                "className" => \VK\Elephize\Builtins\IntrinsicElement::escape("CheckBox--disabled"),
+                "data-type" => "scrolling-container",
+                "aria-details" => "test",
+            ],
             [
                 \VK\Elephize\Builtins\IntrinsicElement::get("input")->render(
                     array_merge($native_props, [
                         "className" => "CheckBox__input",
-                        "id" => (string) $id,
+                        "id" => \VK\Elephize\Builtins\IntrinsicElement::escape((string) $id),
                         "type" => "checkbox",
                         "checked" => !!$checked,
-                        "name" => (string) $name,
+                        "name" => \VK\Elephize\Builtins\IntrinsicElement::escape((string) $name),
                         "disabled" => $disabled,
                     ]),
                     []

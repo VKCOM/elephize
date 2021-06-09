@@ -38,7 +38,7 @@ class ComponentBinaryOperators extends RenderableComponent {
                 $input_value
                     ? \VK\Elephize\Builtins\IntrinsicElement::get("span")->render(
                         ["className" => "someSpan"],
-                        [$input_value]
+                        [\VK\Elephize\Builtins\IntrinsicElement::escape($input_value)]
                     )
                     : $input_value,
             ]
