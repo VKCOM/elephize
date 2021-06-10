@@ -23,6 +23,13 @@ export const EscapeHtmlChars = ({ children }: { children: React.ReactNode[] }) =
       <input placeholder={armenian} />
       <br />
       {children}
+      <NestedEscapeHtmlChars title={injection} />
+      <NestedEscapeHtmlChars title={armenian} />
     </div>
   );
+};
+
+// @elephizeTarget
+export const NestedEscapeHtmlChars = ({ title }: { title: string }) => {
+  return <span>{title}</span>;
 };

@@ -8,6 +8,7 @@ import { NsMap } from '../types';
 import { NodeFlagStore } from './codegen/nodeFlagStore';
 
 export class Context<T> {
+  protected _jsxTagStack: string[] = [];
   protected _uniqIdStack: string[] = [];
   public constructor(
     protected _scope: Scope<T>,
@@ -27,6 +28,21 @@ export class Context<T> {
 
   public get scope() {
     return this._scope;
+  }
+
+  public jsxPush(tag: string): void {
+    this._jsxTagStack.push(tag);
+  }
+
+  public jsxPop(tag: string): void {
+    const popped = this._jsxTagStack.pop();
+    if (popped !== tag) {
+      this.log.warn('Tried to pop %s out of jsx tag stack, but found %s. This is probably error in compiler.', [tag, popped || '""']);
+    }
+  }
+
+  public jsxPeak(): string | null {
+    return this._jsxTagStack[this._jsxTagStack.length - 1] || null;
   }
 
   public pushScope(uniqid: string, ownerIdent: string) { // should be called strictly after addDeclaration!
