@@ -74,6 +74,18 @@ class EscapeHtmlChars extends RenderableComponent {
                 ),
                 \VK\Elephize\Builtins\IntrinsicElement::get("br")->render([], []),
                 $children,
+                \specimens\fixes\EscapeHtmlChars\NestedEscapeHtmlChars::getInstance()->render(
+                    [
+                        "title" => \specimens\fixes\EscapeHtmlCharsModule::getInstance()->injection,
+                    ],
+                    []
+                ),
+                \specimens\fixes\EscapeHtmlChars\NestedEscapeHtmlChars::getInstance()->render(
+                    [
+                        "title" => \specimens\fixes\EscapeHtmlCharsModule::getInstance()->armenian,
+                    ],
+                    []
+                ),
             ]
         );
     }
