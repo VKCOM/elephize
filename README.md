@@ -26,6 +26,10 @@ This will set up demo files in demo/public folder and run two servers:
 
 To see help, use `bin/elephize --help` or `./node_modules/.bin/elephize --help` if you've installed elephize as a module. 
 
+You can use `debugger;` statement in your ts code to debug transpilation process and check context variables. When run with
+node debugger, this statement will pause the execution process when source file transpilation reaches the statement.
+It's useful to combine it with manual breakpoints to check particular cases.
+
 ### Documentation (ru)
 
 - [Использование CLI](doc/usage-cli.md)
