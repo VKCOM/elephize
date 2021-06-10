@@ -3,14 +3,23 @@ import { Declaration } from '../types';
 import { Context } from '../components/context';
 import { renderNode } from '../components/codegen/renderNodes';
 import { escapeExprLiteral } from '../utils/escapeString';
+import { getClosestParentOfAnyType } from '../utils/ast';
+import { intrinsicElements } from '../internalConfig/intrinsicElements';
 
 export const tJsxExpression = (node: ts.JsxExpression, context: Context<Declaration>) => {
-  if (node.parent.kind === ts.SyntaxKind.JsxAttribute && node.expression?.kind === ts.SyntaxKind.StringLiteral) {
-    return `\\${context.namespaces.builtins}\\IntrinsicElement::escape(` + escapeExprLiteral((node.expression as ts.StringLiteral).text) + ')';
+  // We should add forced escaping only in intrinsic elements attributes and direct children
+  const tag = getClosestParentOfAnyType(node, [ts.SyntaxKind.JsxSelfClosingElement, ts.SyntaxKind.JsxOpeningElement]) as ts.JsxOpeningElement | ts.JsxSelfClosingElement | null;
+  const tagName = tag?.tagName.getText().toLowerCase() || context.jsxPeak()?.toLowerCase();
+  if (tagName && intrinsicElements[tagName]) {
+    if (node.parent.kind === ts.SyntaxKind.JsxAttribute && node.expression?.kind === ts.SyntaxKind.StringLiteral) {
+      return `\\${context.namespaces.builtins}\\IntrinsicElement::escape(` + escapeExprLiteral((node.expression as ts.StringLiteral).text) + ')';
+    }
+    if (shouldEscape(node.expression, context)) {
+      return `\\${context.namespaces.builtins}\\IntrinsicElement::escape(` + renderNode(node.expression, context) + ')';
+    }
   }
-  if (shouldEscape(node.expression, context)) {
-    return `\\${context.namespaces.builtins}\\IntrinsicElement::escape(` + renderNode(node.expression, context) + ')';
-  }
+
+  // Just render nodes for all other components
   return renderNode(node.expression, context);
 };
 

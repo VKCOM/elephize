@@ -11,10 +11,12 @@ export function tJsxElement(node: ts.JsxElement, context: Context<Declaration>) 
   // support for dangerouslySetInnerHtml; don't render children if we have some prerendered data for node
   const innerhtml = context.nodeFlagsStore.get(node.openingElement)?.prerenderedData;
 
+  context.jsxPush(node.openingElement.tagName.getText());
   // child nodes
   const childrenRendered = innerhtml ?
     innerhtml :
     renderNodes([...node.children], context);
+  context.jsxPop(node.openingElement.tagName.getText());
 
   const children = childrenRendered && childrenRendered.length ?
     '[' + childrenRendered.join(', ') + ']' :
