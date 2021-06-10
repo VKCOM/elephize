@@ -101,6 +101,7 @@ function render(node: ts.Node | undefined, context: Context<Declaration>): strin
     return '';
   }
 
+  if (node.kind === ts.SyntaxKind.DebuggerStatement) { debugger; }
   if (node.kind === ts.SyntaxKind.InterfaceDeclaration) { return ''; }
   if (node.kind === ts.SyntaxKind.TypeAliasDeclaration) { return ''; }
 
