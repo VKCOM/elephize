@@ -9,7 +9,7 @@ import { intrinsicElements } from '../internalConfig/intrinsicElements';
 export const tJsxExpression = (node: ts.JsxExpression, context: Context<Declaration>) => {
   // We should add forced escaping only in intrinsic elements attributes and direct children
   const tag = getClosestParentOfAnyType(node, [ts.SyntaxKind.JsxSelfClosingElement, ts.SyntaxKind.JsxOpeningElement]) as ts.JsxOpeningElement | ts.JsxSelfClosingElement | null;
-  const tagName = tag?.tagName.getText().toLowerCase() || context.jsxPeak()?.toLowerCase();
+  const tagName = tag?.tagName.getText() || context.jsxPeak(); // Don't do toLowerCase here, or custom module names may interfere with intrinsic tag names.
   if (tagName && intrinsicElements[tagName]) {
     if (node.parent.kind === ts.SyntaxKind.JsxAttribute && node.expression?.kind === ts.SyntaxKind.StringLiteral) {
       return `\\${context.namespaces.builtins}\\IntrinsicElement::escape(` + escapeExprLiteral((node.expression as ts.StringLiteral).text) + ')';
