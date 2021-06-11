@@ -141,11 +141,10 @@ class IntrinsicElement extends RenderableComponent {
      */
     public static function escape($htmlString)
     {
-        if (is_string($htmlString)) {
-            return htmlspecialchars($htmlString);
-        } else {
-            return $htmlString; // TODO: return input type when it's supported
+        if (is_array($htmlString)) {
+            return array_map(['__ROOTNS__\Builtins\IntrinsicElement', 'escape'], $htmlString);
         }
+        return htmlspecialchars($htmlString);
     }
 
     /**

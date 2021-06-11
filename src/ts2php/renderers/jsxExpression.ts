@@ -5,6 +5,7 @@ import { renderNode } from '../components/codegen/renderNodes';
 import { escapeExprLiteral } from '../utils/escapeString';
 import { getClosestParentOfAnyType } from '../utils/ast';
 import { intrinsicElements } from '../internalConfig/intrinsicElements';
+import { hasType } from '../components/typeInference/basicTypes';
 
 export const tJsxExpression = (node: ts.JsxExpression, context: Context<Declaration>) => {
   // We should add forced escaping only in intrinsic elements attributes and direct children
@@ -50,6 +51,13 @@ function shouldEscape(node: ts.Expression | undefined, context: Context<Declarat
   // Don't escape style attribute, it's safety should be checked by client
   if (node.parent.parent.kind === ts.SyntaxKind.JsxAttribute && (node.parent.parent as ts.JsxAttribute).name.getText() === 'style') {
     return false;
+  }
+
+  // Workaround. Escape children only it's a string or a string array. TODO: Add more precise check somehow
+  if (node.getText() === 'children') {
+    if (hasType(node, context.checker, 'string') || hasType(node, context.checker, 'string[]')) {
+      return true;
+    }
   }
 
   // Finally, check expressions and identifiers
