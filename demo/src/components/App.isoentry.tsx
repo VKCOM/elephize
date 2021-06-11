@@ -14,6 +14,13 @@ const armenian = `"&#1345;&#1381;&#1408;"`;
 const injection = `<img src=x onerror=alert()>`;
 
 // @elephizeTarget
+export const CounterItemText = ({ children, ...rest }: React.PropsWithChildren<{ style?: React.CSSProperties}>) => {
+  return <div className="counter-item--text" {...rest}>{children}</div>;
+}
+
+const injection2 = `<script>alert()</script>🙃`;
+
+// @elephizeTarget
 export const App: React.FunctionComponent = () => {
   const { useState } = React;
   const [data/* , updateData */]: [{ [key: string]: number }, any] = useState({
@@ -69,5 +76,7 @@ export const App: React.FunctionComponent = () => {
     <input placeholder='"&#1345;&#1381;&#1408;"' />
     <br />
     <input placeholder={armenian} />
+    <br />
+    <CounterItemText>{injection2}</CounterItemText>
   </div>;
 };
