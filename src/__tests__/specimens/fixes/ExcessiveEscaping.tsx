@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 interface TextContainerProps {
-  children: any;
+  children: any; // Bug: explicit `any` had lead to excessive escape before the fix
   align?: string;
 }
 
