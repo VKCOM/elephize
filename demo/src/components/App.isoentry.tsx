@@ -18,6 +18,25 @@ export const CounterItemText = ({ children, ...rest }: React.PropsWithChildren<{
   return <div className="counter-item--text" {...rest}>{children}</div>;
 }
 
+interface TextContainerProps {
+  children: any;
+  align?: string;
+}
+
+// @elephizeTarget
+export const TextContainer = ({ children, align }: TextContainerProps) => {
+  let classNames = ['content-text--container'];
+  if (align) {
+    classNames.push(`content-text--container__align-${align}`);
+  }
+
+  return (
+    <div className={classNames.join(' ')}>
+      {children}
+    </div>
+  );
+};
+
 const injection2 = `<script>alert()</script>🙃`;
 
 // @elephizeTarget
@@ -77,6 +96,8 @@ export const App: React.FunctionComponent = () => {
     <br />
     <input placeholder={armenian} />
     <br />
-    <CounterItemText>{injection2}</CounterItemText>
+    <TextContainer>
+      <CounterItemText>{injection2}</CounterItemText>
+    </TextContainer>
   </div>;
 };
