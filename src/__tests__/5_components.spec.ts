@@ -31,6 +31,7 @@ const testSuiteConfig: Array<{file: string[]; failOnErrors: string[]}> = [
 
   { file: ['fixes', 'CheckBox.tsx'], failOnErrors: ['384ae', 'a57e4'] },
   { file: ['fixes', 'EscapeHtmlChars.tsx'], failOnErrors: ['384ae', 'a57e4'] },
+  { file: ['fixes', 'ExcessiveEscaping.tsx'], failOnErrors: ['384ae', 'a57e4'] },
 ];
 
 const testSuite = testSuiteConfig.map((item) => item.file);

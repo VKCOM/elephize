@@ -85,6 +85,10 @@ function checkExprType(type: ts.Type | undefined, checker: ts.TypeChecker): bool
     return false; // Do not escape simple types
   }
 
+  if (!typeSymbol && type && checker.typeToString(type) === 'any') {
+    return false; // Do not escape any type: component can pass here
+  }
+
   const parentSymbol: ts.Symbol | undefined = (typeSymbol as any)?.parent;
 
   if (parentSymbol?.escapedName === 'JSX' && typeSymbol?.escapedName === 'Element') {
