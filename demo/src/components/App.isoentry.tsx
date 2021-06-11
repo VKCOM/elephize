@@ -14,7 +14,7 @@ const armenian = `"&#1345;&#1381;&#1408;"`;
 const injection = `<img src=x onerror=alert()>`;
 
 // @elephizeTarget
-export const CounterItemText = ({ children, ...rest }: React.PropsWithChildren<{ style?: React.CSSProperties}>) => {
+export const CounterItemText = ({ children, ...rest }: React.PropsWithChildren<{ style?: React.CSSProperties, children: string }>) => {
   return <div className="counter-item--text" {...rest}>{children}</div>;
 }
 
