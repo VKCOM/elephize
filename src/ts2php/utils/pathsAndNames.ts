@@ -1,6 +1,6 @@
 import { Dict } from '../types';
 import { LogObj } from './log';
-import * as path from 'path';
+import * as nodePath from 'path';
 import * as fs from 'fs';
 
 const PHP_KEYWORDS = [
@@ -117,9 +117,25 @@ export function resolveAliasesAndPaths(
         const target = originalSourcePath.replace(pathToTry, name.replace(/\*$/g, ''));
         const tPath = target.startsWith('/') ?
           target : // absolute path, no need to resolve
-          path.resolve(baseDir, target);
+          nodePath.resolve(baseDir, target);
         log.info('Trying to locate file: %s', [tPath]);
+
         const fn = lookupFile(tPath);
+
+        if (fs.existsSync(tPath) && fs.lstatSync(tPath).isDirectory) {
+          const tIndexPath = nodePath.join(tPath, 'index');
+          log.info('Trying to locate index file: %s', [tIndexPath]);
+          const fnIndex = lookupFile(tIndexPath);
+
+          if (fnIndex) {
+            if (fn) {
+              log.warn('Found both directory and file with the same basename. It may cause problems: %s', [fnIndex]);
+            }
+
+            return fnIndex;
+          }
+        }
+
         if (fn) {
           return fn;
         }
@@ -128,8 +144,25 @@ export function resolveAliasesAndPaths(
     }
   }
 
-  log.info('Trying non-aliased path: %s', [path.resolve(currentDir, originalSourcePath).replace(baseDir, '[base]')]);
-  return applyOutputAliases(lookupFile(path.resolve(currentDir, originalSourcePath)), baseDir, outputAliases, skipOutputAliases);
+  const tPath = nodePath.resolve(currentDir, originalSourcePath);
+
+  log.info('Trying non-aliased path: %s', [tPath.replace(baseDir, '[base]')]);
+  const fn = lookupFile(tPath);
+  if (fs.existsSync(tPath) && fs.lstatSync(tPath).isDirectory) {
+    const tIndexPath = nodePath.join(tPath, 'index');
+    log.info('Trying non-aliased index path: %s', [tIndexPath]);
+    const fnIndex = lookupFile(tIndexPath);
+
+    if (fnIndex) {
+      if (fn) {
+        log.warn('Found both directory and file with the same basename. It may cause problems: %s', [fnIndex]);
+      }
+
+      return applyOutputAliases(fnIndex, baseDir, outputAliases, skipOutputAliases);
+    }
+  }
+
+  return applyOutputAliases(fn, baseDir, outputAliases, skipOutputAliases);
 }
 
 function applyOutputAliases(path = '', baseDir: string, outputAliases: { [key: string]: string }, skip?: boolean): string {
