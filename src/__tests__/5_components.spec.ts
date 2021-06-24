@@ -22,8 +22,6 @@ const testSuiteConfig: Array<{file: string[]; failOnErrors: string[]}> = [
   { file: ['components', 'InnerHtmlComponent.tsx'], failOnErrors: ['384ae'] },
   { file: ['components', 'NullReturnInComponent.tsx'], failOnErrors: ['384ae', 'a57e4', '6554c'] },
   { file: ['components', 'InheritedProps.tsx'], failOnErrors: ['384ae', 'a57e4', '6554c'] },
-  // { file: ['components', 'ImportResolve.tsx'], failOnErrors: ['384ae', 'a57e4', '6554c'] },
-  { file: ['components', 'ImportResolve2.tsx'], failOnErrors: ['384ae', 'a57e4', '6554c'] },
 
   // Checks for reserved words in paths/namespaces
   { file: ['components/static', 'KeywordTestComponent.tsx'], failOnErrors: ['384ae', 'a57e4'] },
