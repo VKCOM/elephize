@@ -156,6 +156,7 @@ export class ModuleRegistry {
   }
 
   protected _registerCommonModule(className: string, fullyQualifiedSourceFilename: string, newFilename: string, external = false, implPath?: string) {
+    process.stdout.write(`${className}\n`);
     let moduleDescriptor;
     if (external) {
       moduleDescriptor = new CommonjsExternalModule(
