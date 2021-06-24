@@ -16,6 +16,19 @@ class ImportResolve2Module extends CJSModule {
         return self::$_mod;
     }
 
+    /**
+     * @return string
+     */
+    public function getReact() {
+        return \specimens\components\PathResolveReact\PathResolveReactModule::getInstance()->render([], []);
+    }
+    /**
+     * @return string
+     */
+    public function getReact2() {
+        return \specimens\components\PathResolveReact\PathResolveReactModule::getInstance()->render([], []);
+    }
+
     private function __construct() {
         \specimens\components\PathResolve\PathResolveModule::getInstance()->getBar();
         \specimens\components\PathResolve\TsxModule::getInstance()->getTest();
