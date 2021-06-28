@@ -219,19 +219,19 @@ const checkArrMixedNode = (typeNode: ts.TypeNode) => {
   if (typeNode.kind === ts.SyntaxKind.TupleType) {
     // For [mixed, any]
     const types = (typeNode as any).elementTypes /* ts < 4 */ || (typeNode as any).elements;
-    if (types.some((t: any) => t.typeName?.symbol?.declarations[0].type?.types.some((t: any) => t.typeName?.escapedText === mixedTypehintId))) {
+    if (types && types.some((t: any) => t.typeName?.symbol?.declarations[0].type?.types?.some((t: any) => t.typeName?.escapedText === mixedTypehintId))) {
       return true;
     }
   }
 
   if (typeNode.kind === ts.SyntaxKind.ArrayType) {
     // for mixed[]
-    if ((typeNode as any)?.elementType?.typeName?.symbol?.declarations[0].type?.types.some((t: any) => t.typeName?.escapedText === mixedTypehintId)) {
+    if ((typeNode as any)?.elementType?.typeName?.symbol?.declarations[0].type?.types?.some((t: any) => t.typeName?.escapedText === mixedTypehintId)) {
       return true;
     }
 
     // for Array<mixed>
-    if ((typeNode as any)?.elementType?.type?.types.some((t: any) => t.typeName?.escapedText === mixedTypehintId)) {
+    if ((typeNode as any)?.elementType?.type?.types?.some((t: any) => t.typeName?.escapedText === mixedTypehintId)) {
       return true;
     }
   }
