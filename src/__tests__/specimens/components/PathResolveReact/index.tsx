@@ -1,11 +1,9 @@
-import * as React from 'react';
-import { PathResolveReactComponent2 } from './Component';
+import { ReactPathResolveComponent } from './Component';
 
-// @elephizeTarget
-export function PathResolveReactComponent1(_: { test: number }) {
-    return <div><PathResolveReactComponent2 /></div>
+export function ReactPathResolveModule() {
+  return <div>foo</div>;
 }
 
 export {
-    PathResolveReactComponent2
+  ReactPathResolveComponent
 }

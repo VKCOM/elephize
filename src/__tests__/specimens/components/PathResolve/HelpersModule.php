@@ -17,6 +17,10 @@ class HelpersModule extends CJSModule {
     }
 
     /**
+     * @var string $SOME_CONST
+     */
+    public $SOME_CONST;
+    /**
      * @return string
      */
     public function getFoo() {
@@ -24,5 +28,6 @@ class HelpersModule extends CJSModule {
     }
 
     private function __construct() {
+        $this->SOME_CONST = "buzz";
     }
 }

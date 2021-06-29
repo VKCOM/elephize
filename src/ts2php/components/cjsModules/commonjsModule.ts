@@ -9,6 +9,7 @@ export class CommonjsModule {
   public readonly isExternal: boolean = false;
   protected _hoistedContent: Set<string> = new Set();
   protected _methods: Set<string> = new Set();
+  public _imports: Map<string, string[]> = new Map();
   public _requiredFiles: Map<string, CommonjsModule> = new Map();
   protected _constructorStatements: string[] = [];
   public _specialVars: SpecialVars = {};
@@ -51,6 +52,10 @@ export class CommonjsModule {
     this._methods.add(identifier);
     this._hoistedContent.add(`${phpdoc}
     ${visibility} function ${identifier}(${args}) ${block}`);
+  }
+
+  public registerImport(from: string, method: string) {
+    this._imports.set(from, [...this._imports.get(from) || [], method]);
   }
 
   public hasMethod(name: string) {

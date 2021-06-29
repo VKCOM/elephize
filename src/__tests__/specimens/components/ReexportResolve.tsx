@@ -1,8 +1,9 @@
-import { getFoo } from "./PathResolve";
-import { PathResolveReactComponent2 } from "./PathResolveReact";
+import { getFoo, SOME_CONST } from "./PathResolve/index";
+import { ReactPathResolveComponent } from "./PathResolveReact/index";
 
 getFoo();
 
 function render() {
-  return <PathResolveReactComponent2 />;
+  console.log(SOME_CONST);
+  return <ReactPathResolveComponent></ReactPathResolveComponent>;
 }

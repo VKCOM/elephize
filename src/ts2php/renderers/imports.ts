@@ -6,6 +6,26 @@ import * as path from 'path';
 import { initReact } from '../components/react/reactHooks';
 import { resolveAliasesAndPaths } from '../utils/pathsAndNames';
 import { renderNodes } from '../components/codegen/renderNodes';
+import { CommonjsModule } from '../components/cjsModules/commonjsModule';
+
+function findImportModule(context: Context<Declaration>, method?: string, module?: CommonjsModule): CommonjsModule | undefined {
+  if (!module || !method) {
+    return module;
+  }
+
+  if (module.hasMethod(method)) {
+    return module;
+  } else {
+    let f: CommonjsModule | undefined;
+    module._imports.forEach((importedMethods, importedModuleSourceName) => {
+      if (importedMethods.includes(method)) {
+        f = context.registry._sourceFilenameToModule.get(importedModuleSourceName)?.[0];
+      }
+    });
+
+    return findImportModule(context, method, f);
+  }
+}
 
 export function tImportDeclaration(node: ts.ImportDeclaration, context: Context<Declaration>) {
   const moduleSpec = (node.moduleSpecifier as ts.StringLiteral).text;
@@ -60,21 +80,13 @@ export function tImportDeclaration(node: ts.ImportDeclaration, context: Context<
           imp.name.getText(), [],
           { terminateGlobally: isExportedVar(imp.name), dryRun: context.dryRun }
         );
-        process.stdout.write(`${sourceFilename} ${imp.getSourceFile().fileName} ${imp.getSourceFile().referencedFiles.map((f) => f.fileName).join(' ! ')}\n`);
-        let impSourcePath = sourceFilename;
-        let moduleToSearch = context.registry._sourceFilenameToModule.get(sourceFilename)?.[0];
-        while (moduleToSearch && !moduleToSearch.hasMethod(decl?.ident || '')) {
-          if (moduleToSearch) {
-            moduleToSearch = moduleToSearch._requiredFiles.values().next().value;
-            if (moduleToSearch?.hasMethod(decl?.ident || '')) {
-              impSourcePath = moduleToSearch.sourceFileName;
-            }
-          }
-        }
+        context.moduleDescriptor.registerImport(sourceFilename, imp.name.getText());
+        let originalModule = findImportModule(context, decl?.ident, context.moduleDescriptor);
+        let impSourceFileName: string = originalModule?.sourceFileName || sourceFilename;
 
         if (decl) {
           decl.data.flags = DeclFlag.DereferencedImport;
-          decl.data.targetModulePath = context.registry.toTargetPath(impSourcePath, searchForComponent);
+          decl.data.targetModulePath = context.registry.toTargetPath(impSourceFileName, searchForComponent);
           decl.data.propName = imp.propertyName?.getText() || imp.name.getText();
         }
       }

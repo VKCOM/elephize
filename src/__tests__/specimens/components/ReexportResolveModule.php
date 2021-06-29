@@ -17,6 +17,6 @@ class ReexportResolveModule extends CJSModule {
     }
 
     private function __construct() {
-        \specimens\components\PathResolve\PathResolveModule::getInstance()->getFoo();
+        \specimens\components\PathResolve\HelpersModule::getInstance()->getFoo();
     }
 }
