@@ -25,6 +25,7 @@ class Render extends RenderableComponent {
      * @return ?string
      */
     public function render(array $props, array $children) {
+        \specimens\components\PathResolve\HelpersModule::getInstance()->getFoo();
         \VK\Elephize\Builtins\Console::log(
             \specimens\components\PathResolve\PathResolveModule::getInstance()->SOME_CONST
         );
