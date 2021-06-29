@@ -23,6 +23,12 @@ class HelpersModule extends CJSModule {
     /**
      * @return string
      */
+    public function getFoo2() {
+        return "foo2";
+    }
+    /**
+     * @return string
+     */
     public function getFoo() {
         return "foo";
     }

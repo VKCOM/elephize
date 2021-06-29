@@ -1,4 +1,4 @@
-import { getFoo, SOME_CONST } from './helpers';
+import { getFoo, SOME_CONST, getFoo2 } from './helpers';
 
 export function getBar() {
     return 'bar';
@@ -12,6 +12,7 @@ const t3 = 't3';
 
 export {
     getFoo,
+    getFoo2,
     SOME_CONST,
     t1,
     t2,

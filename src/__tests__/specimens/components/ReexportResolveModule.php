@@ -18,6 +18,8 @@ class ReexportResolveModule extends CJSModule {
 
     private function __construct() {
         \specimens\components\PathResolve\HelpersModule::getInstance()->getFoo();
+        \specimens\components\PathResolve\HelpersModule::getInstance()->getFoo2();
+        \specimens\components\PathResolve\PathResolveModule::getInstance()->getBar();
         \VK\Elephize\Builtins\Console::log(
             \specimens\components\PathResolve\PathResolveModule::getInstance()->SOME_CONST
         );

@@ -80,8 +80,15 @@ export function tImportDeclaration(node: ts.ImportDeclaration, context: Context<
           imp.name.getText(), [],
           { terminateGlobally: isExportedVar(imp.name), dryRun: context.dryRun }
         );
-        context.moduleDescriptor.registerImport(sourceFilename, imp.name.getText());
-        let originalModule = findImportModule(context, decl?.ident, context.moduleDescriptor);
+        let originalMethodName = decl?.data.propName || imp.name.getText();
+        context.moduleDescriptor.registerImport(sourceFilename, originalMethodName);
+
+        if (imp.kind === ts.SyntaxKind.ImportSpecifier) {
+          // "import { foo as bar }" handle;
+          originalMethodName = imp.getChildren().find((child) => child.kind === ts.SyntaxKind.Identifier)?.getText() || originalMethodName;
+        }
+
+        let originalModule = findImportModule(context, originalMethodName, context.moduleDescriptor);
         let impSourceFileName: string = originalModule?.sourceFileName || sourceFilename;
 
         if (decl) {
