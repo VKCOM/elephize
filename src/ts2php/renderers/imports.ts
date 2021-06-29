@@ -60,9 +60,21 @@ export function tImportDeclaration(node: ts.ImportDeclaration, context: Context<
           imp.name.getText(), [],
           { terminateGlobally: isExportedVar(imp.name), dryRun: context.dryRun }
         );
+        process.stdout.write(`${sourceFilename} ${imp.getSourceFile().fileName} ${imp.getSourceFile().referencedFiles.map((f) => f.fileName).join(' ! ')}\n`);
+        let impSourcePath = sourceFilename;
+        let moduleToSearch = context.registry._sourceFilenameToModule.get(sourceFilename)?.[0];
+        while (moduleToSearch && !moduleToSearch.hasMethod(decl?.ident || '')) {
+          if (moduleToSearch) {
+            moduleToSearch = moduleToSearch._requiredFiles.values().next().value;
+            if (moduleToSearch?.hasMethod(decl?.ident || '')) {
+              impSourcePath = moduleToSearch.sourceFileName;
+            }
+          }
+        }
+
         if (decl) {
           decl.data.flags = DeclFlag.DereferencedImport;
-          decl.data.targetModulePath = context.registry.toTargetPath(sourceFilename, searchForComponent);
+          decl.data.targetModulePath = context.registry.toTargetPath(impSourcePath, searchForComponent);
           decl.data.propName = imp.propertyName?.getText() || imp.name.getText();
         }
       }

@@ -8,7 +8,8 @@ export class CommonjsModule {
   public readonly isDerived: boolean = false;
   public readonly isExternal: boolean = false;
   protected _hoistedContent: Set<string> = new Set();
-  protected _requiredFiles: Map<string, CommonjsModule> = new Map();
+  protected _methods: Set<string> = new Set();
+  public _requiredFiles: Map<string, CommonjsModule> = new Map();
   protected _constructorStatements: string[] = [];
   public _specialVars: SpecialVars = {};
 
@@ -47,8 +48,13 @@ export class CommonjsModule {
      * @return ${inferredTypes.return}
      */`;
     }
+    this._methods.add(identifier);
     this._hoistedContent.add(`${phpdoc}
     ${visibility} function ${identifier}(${args}) ${block}`);
+  }
+
+  public hasMethod(name: string) {
+    return this._methods.has(name);
   }
 
   public addStatement(statement: string) {

@@ -23,7 +23,7 @@ export class ModuleRegistry {
   /**
    * Mapping of source file name to all original and derived modules
    */
-  private readonly _sourceFilenameToModule: Map<string, CommonjsModule[]> = new Map();
+  public readonly _sourceFilenameToModule: Map<string, CommonjsModule[]> = new Map();
   /**
    * Mapping of target file name to module instance
    */

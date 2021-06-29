@@ -6,6 +6,13 @@ export function getBar() {
 
 getFoo();
 
+const t1 = 't1';
+const t2 = 't2';
+const t3 = 't3';
+
 export {
-    getFoo
+    getFoo,
+    t1,
+    t2,
+    t3
 }
