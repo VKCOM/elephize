@@ -155,6 +155,31 @@ export class ModuleRegistry {
     return `\\${fullyQualifiedNamespace}\\${enumModule.className}::${enumMember}`;
   }
 
+  public getSourceModules(sourceName: string) {
+    return this._sourceFilenameToModule.get(sourceName) || [];
+  }
+
+  public getModuleMethodSource(module: CommonjsModule | undefined, name: string | undefined): CommonjsModule | undefined {
+    if (!module || !name) {
+      return module;
+    }
+
+    if (module.hasMethod(name)) {
+      return module;
+    }
+
+    let resultModule: CommonjsModule | undefined;
+
+    module.imports.forEach((importedMethods, importedModuleSourceName) => {
+      if (importedMethods.includes(name)) {
+        const sourceModules = this.getSourceModules(importedModuleSourceName);
+        resultModule = sourceModules.find((module) => module.hasMethod(name) || this.getModuleMethodSource(module, name));
+      }
+    });
+
+    return this.getModuleMethodSource(resultModule, name);
+  }
+
   protected _registerCommonModule(className: string, fullyQualifiedSourceFilename: string, newFilename: string, external = false, implPath?: string) {
     let moduleDescriptor;
     if (external) {

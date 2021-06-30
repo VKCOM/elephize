@@ -6,26 +6,6 @@ import * as path from 'path';
 import { initReact } from '../components/react/reactHooks';
 import { resolveAliasesAndPaths } from '../utils/pathsAndNames';
 import { renderNodes } from '../components/codegen/renderNodes';
-import { CommonjsModule } from '../components/cjsModules/commonjsModule';
-
-function findImportModule(context: Context<Declaration>, method?: string, module?: CommonjsModule): CommonjsModule | undefined {
-  if (!module || !method) {
-    return module;
-  }
-
-  if (module.hasMethod(method)) {
-    return module;
-  } else {
-    let f: CommonjsModule | undefined;
-    module._imports.forEach((importedMethods, importedModuleSourceName) => {
-      if (importedMethods.includes(method)) {
-        f = context.registry._sourceFilenameToModule.get(importedModuleSourceName)?.[0];
-      }
-    });
-
-    return findImportModule(context, method, f);
-  }
-}
 
 export function tImportDeclaration(node: ts.ImportDeclaration, context: Context<Declaration>) {
   const moduleSpec = (node.moduleSpecifier as ts.StringLiteral).text;
@@ -88,7 +68,8 @@ export function tImportDeclaration(node: ts.ImportDeclaration, context: Context<
           originalMethodName = imp.getChildren().find((child) => child.kind === ts.SyntaxKind.Identifier)?.getText() || originalMethodName;
         }
 
-        let originalModule = findImportModule(context, originalMethodName, context.moduleDescriptor);
+        const originalModule = context.registry.getModuleMethodSource(context.moduleDescriptor, originalMethodName);
+
         let impSourceFileName: string = originalModule?.sourceFileName || sourceFilename;
 
         if (decl) {

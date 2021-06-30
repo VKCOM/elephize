@@ -9,8 +9,8 @@ export class CommonjsModule {
   public readonly isExternal: boolean = false;
   protected _hoistedContent: Set<string> = new Set();
   protected _methods: Set<string> = new Set();
-  public _imports: Map<string, string[]> = new Map();
-  public _requiredFiles: Map<string, CommonjsModule> = new Map();
+  protected _imports: Map<string, string[]> = new Map();
+  protected _requiredFiles: Map<string, CommonjsModule> = new Map();
   protected _constructorStatements: string[] = [];
   public _specialVars: SpecialVars = {};
 
@@ -25,6 +25,10 @@ export class CommonjsModule {
     public readonly originalIdentName?: string,
     public readonly ancestorModule?: CommonjsModule
   ) { }
+
+  public get imports(): CommonjsModule['_imports'] {
+    return this._imports;
+  }
 
   // For removing dupes during second pass of codegen
   public clearStatements() {
