@@ -17,8 +17,8 @@ class CyclicDepsEntryModule extends CJSModule {
     }
 
     private function __construct() {
-        null;
-        null;
-        null;
+        \specimens\components\CyclicDeps\Entry1Module::getInstance()->getCyclicEntry1();
+        \specimens\components\CyclicDeps\Entry2Module::getInstance()->getCyclicEntry2();
+        \specimens\components\CyclicDeps\Entry2Module::getInstance()->getCyclicEntry3();
     }
 }
