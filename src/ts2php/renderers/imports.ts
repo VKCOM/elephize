@@ -60,9 +60,21 @@ export function tImportDeclaration(node: ts.ImportDeclaration, context: Context<
           imp.name.getText(), [],
           { terminateGlobally: isExportedVar(imp.name), dryRun: context.dryRun }
         );
+        let originalMethodName = decl?.data.propName || imp.name.getText();
+        context.moduleDescriptor.registerImport(sourceFilename, originalMethodName);
+
+        if (imp.kind === ts.SyntaxKind.ImportSpecifier) {
+          // "import { foo as bar }" handle;
+          originalMethodName = imp.getChildren().find((child) => child.kind === ts.SyntaxKind.Identifier)?.getText() || originalMethodName;
+        }
+
+        const originalModule = context.registry.getModuleMethodSource(context.moduleDescriptor, originalMethodName);
+
+        let impSourceFileName: string = originalModule?.sourceFileName || sourceFilename;
+
         if (decl) {
           decl.data.flags = DeclFlag.DereferencedImport;
-          decl.data.targetModulePath = context.registry.toTargetPath(sourceFilename, searchForComponent);
+          decl.data.targetModulePath = context.registry.toTargetPath(impSourceFileName, searchForComponent);
           decl.data.propName = imp.propertyName?.getText() || imp.name.getText();
         }
       }

@@ -20,10 +20,7 @@ class ImportResolveModule extends CJSModule {
      * @return string
      */
     public function getReact() {
-        return \specimens\components\PathResolveReact\index\PathResolveReactComponent1::getInstance()->render(
-            ["test" => 1],
-            []
-        );
+        return \specimens\components\PathResolveReact\PathResolveReactModule::getInstance()->render(["test" => 1], []);
     }
     /**
      * @return string
@@ -34,7 +31,7 @@ class ImportResolveModule extends CJSModule {
 
     private function __construct() {
         \specimens\components\PathResolve\PathResolveModule::getInstance()->getBar();
-        \specimens\components\PathResolve\PathResolveModule::getInstance()->getFoo();
+        \specimens\components\PathResolve\HelpersModule::getInstance()->getFoo();
         \specimens\components\PathResolve\HelpersModule::getInstance()->getFoo();
         $this->getReact();
         $this->getReact2();

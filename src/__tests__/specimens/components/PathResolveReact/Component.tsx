@@ -1,6 +1,3 @@
-import * as React from 'react';
-
-// @elephizeTarget
-export function PathResolveReactComponent2() {
-    return <div></div>
+export function ReactPathResolveComponent() {
+  return <div>foo</div>;
 }

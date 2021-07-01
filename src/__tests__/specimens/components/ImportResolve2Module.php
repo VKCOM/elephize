@@ -20,10 +20,7 @@ class ImportResolve2Module extends CJSModule {
      * @return string
      */
     public function getReact() {
-        return \specimens\components\PathResolveReact\index\PathResolveReactComponent1::getInstance()->render(
-            ["test" => 2],
-            []
-        );
+        return \specimens\components\PathResolveReact\PathResolveReactModule::getInstance()->render(["test" => 2], []);
     }
     /**
      * @return string

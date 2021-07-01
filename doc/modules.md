@@ -4,17 +4,17 @@
 - `export function() {...}`
 - `export const = function() {...}`
 - `export const = () => {...}`
-- `export const = { ... }` - для объектов-данных. Не следует запихивать в объекты какие бы то ни было функции и колбэки, т.к. kphp с большой вероятностью не сможет вывести их тип.
+- `export const = { ... }` — для объектов-данных. Не следует запихивать в объекты какие бы то ни было функции и колбэки, т.к. kphp с большой вероятностью не сможет вывести их тип.
+- `export { getFoo, getBar }`
 - `import { Some } from '../modules/some'`
 - `import { Some as SomeOther } from '../modules/some'`
-- `import * as React from 'react'` - пока что это костыль именно для React. Для остальных модулей лучше использовать именованные импорты.
+- `import * as React from 'react'` — пока что это костыль именно для React. Для остальных модулей лучше использовать именованные импорты.
 
 НЕ поддерживаются:
 - Всё, что связано с CommonJS `require()`
 - `export default [что бы то ни было]`
 - `export Some from '../modules/some`
 - `import Some from '../modules/some`
-- `export = [что бы то ни было]`
 - `import Some = require(...)`
 
 ### Преобразование CommonJS-модулей

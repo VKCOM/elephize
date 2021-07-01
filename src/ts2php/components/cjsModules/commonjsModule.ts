@@ -8,6 +8,8 @@ export class CommonjsModule {
   public readonly isDerived: boolean = false;
   public readonly isExternal: boolean = false;
   protected _hoistedContent: Set<string> = new Set();
+  protected _methods: Set<string> = new Set();
+  protected _imports: Map<string, string[]> = new Map();
   protected _requiredFiles: Map<string, CommonjsModule> = new Map();
   protected _constructorStatements: string[] = [];
   public _specialVars: SpecialVars = {};
@@ -23,6 +25,10 @@ export class CommonjsModule {
     public readonly originalIdentName?: string,
     public readonly ancestorModule?: CommonjsModule
   ) { }
+
+  public get imports(): CommonjsModule['_imports'] {
+    return this._imports;
+  }
 
   // For removing dupes during second pass of codegen
   public clearStatements() {
@@ -47,8 +53,17 @@ export class CommonjsModule {
      * @return ${inferredTypes.return}
      */`;
     }
+    this._methods.add(identifier);
     this._hoistedContent.add(`${phpdoc}
     ${visibility} function ${identifier}(${args}) ${block}`);
+  }
+
+  public registerImport(from: string, method: string) {
+    this._imports.set(from, [...this._imports.get(from) || [], method]);
+  }
+
+  public hasMethod(name: string) {
+    return this._methods.has(name);
   }
 
   public addStatement(statement: string) {
