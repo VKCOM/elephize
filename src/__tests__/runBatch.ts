@@ -49,7 +49,7 @@ export function runBatch(basePath: string[], testSuite: string[][], log: LogObj,
     serverFilesRoot: baseDir,
     encoding: 'utf-8',
     options: compilerOptions,
-    jsxPreferences: options?.jsxPreferences,
+    jsxPreferences: options?.jsxPreferences || {},
     onData: (sourceFilename: string, targetFilename: string, content: string) => onData(basePath, promises, targetFilename, content),
   });
 
