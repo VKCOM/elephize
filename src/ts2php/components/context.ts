@@ -4,7 +4,7 @@ import { CommonjsModule } from './cjsModules/commonjsModule';
 import { Scope } from './unusedCodeElimination/usageGraph';
 import { BoundNode } from './unusedCodeElimination/usageGraph/node';
 import { LogObj } from '../utils/log';
-import { NsMap } from '../types';
+import { JSXPreferences, NsMap } from '../types';
 import { NodeFlagStore } from './codegen/nodeFlagStore';
 
 export class Context<T> {
@@ -24,6 +24,7 @@ export class Context<T> {
     public readonly log: LogObj,
     public readonly builtinsNs: string,
     public readonly preferTernary: boolean,
+    public readonly jsxPreferences?: JSXPreferences,
   ) { }
 
   public get scope() {

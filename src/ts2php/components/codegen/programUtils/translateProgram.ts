@@ -42,6 +42,7 @@ export function translateProgram(program: ts.Program, replacements: ImportReplac
   namespaces,
   encoding,
   options = defaultOptions,
+  jsxPreferences = {},
   onFinish = () => undefined,
 }: TranslateOptions) {
   if (typeof jest === 'undefined') {
@@ -71,7 +72,22 @@ export function translateProgram(program: ts.Program, replacements: ImportReplac
       }
 
       onBeforeRender(sourceFile.fileName, sourceFile, nodeFlagStore);
-      renderModule(checker, options, sourceFile, nodeFlagStore, baseDir, namespaces, encoding, registry, currentModule, log, preferTernary, disableCodeElimination);
+      renderModule(
+        checker,
+        options,
+        sourceFile,
+        nodeFlagStore,
+        baseDir,
+        namespaces,
+        encoding,
+        registry,
+        currentModule,
+        log,
+        preferTernary,
+        disableCodeElimination,
+        '',
+        jsxPreferences,
+      );
     }
   }
 

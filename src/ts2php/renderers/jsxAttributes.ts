@@ -17,8 +17,13 @@ export function tJsxAttributes(node: ts.JsxAttributes, context: Context<Declarat
     } else {
       // We suppose that indexes of children match strictly in original tree and render tree!
       const attr = node.properties[i];
-      if (attr.kind === ts.SyntaxKind.JsxAttribute && !attr.name.text.startsWith('on') /* remove event handlers */) {
-        toRender.push(node.properties[i]);
+      const value = attr.getChildAt(2);
+
+      if (attr.kind === ts.SyntaxKind.JsxAttribute) {
+        /* remove event handlers */
+        if (!attr.name.text.startsWith('on') || (context.jsxPreferences?.allowStringEvents && value.kind === ts.SyntaxKind.StringLiteral)) {
+          toRender.push(node.properties[i]);
+        }
       }
     }
   }
