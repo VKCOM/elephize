@@ -116,6 +116,10 @@ export type CliOptions = {
   preferTernary: boolean;
 };
 
+export type JSXPreferences = {
+  allowStringEvents?: boolean;
+};
+
 export type TranslateOptions = {
   aliases: CliOptions['aliases'];
   baseDir: CliOptions['baseDir'];
@@ -130,4 +134,5 @@ export type TranslateOptions = {
   onData: (sourceFilename: string, targetFilename: string, content: string, error?: number) => void;
   onFinish?: (registry: ModuleRegistry) => void;
   options?: ts.CompilerOptions;
+  jsxPreferences: JSXPreferences;
 };
