@@ -2,6 +2,7 @@ import * as ts from 'typescript';
 import { Declaration } from '../types';
 import { Context } from '../components/context';
 import { renderNode, renderNodes } from '../components/codegen/renderNodes';
+import { hasType } from '../components/typeInference/basicTypes';
 
 export function tJsxAttributes(node: ts.JsxAttributes, context: Context<Declaration>) {
   let synList: string[] = [];
@@ -17,11 +18,18 @@ export function tJsxAttributes(node: ts.JsxAttributes, context: Context<Declarat
     } else {
       // We suppose that indexes of children match strictly in original tree and render tree!
       const attr = node.properties[i];
-      const value = attr.getChildAt(2);
 
       if (attr.kind === ts.SyntaxKind.JsxAttribute) {
+        const value = attr.getChildAt(2);
+        const isStringValue = value.kind === ts.SyntaxKind.StringLiteral || hasType(value, context.checker, 'string', true);
+        const nd: ts.Node = (value as ts.PropertyAccessExpression).expression;
+        const type = context.checker.getTypeAtLocation(nd);
+        debugger;
+
         /* remove event handlers */
-        if (!attr.name.text.startsWith('on') || (context.jsxPreferences?.allowStringEvents && value.kind === ts.SyntaxKind.StringLiteral)) {
+        if (!attr.name.text.startsWith('on') || (
+          context.jsxPreferences?.allowStringEvents && (value.kind === ts.SyntaxKind.StringLiteral) || isStringValue)
+        ) {
           toRender.push(node.properties[i]);
         }
       }
