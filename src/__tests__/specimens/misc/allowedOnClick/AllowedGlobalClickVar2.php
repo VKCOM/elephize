@@ -29,9 +29,6 @@ class AllowedGlobalClickVar2 extends RenderableComponent {
             \VK\Elephize\Builtins\Date::now() % 2
                 ? \specimens\misc\AllowedOnClickModule::getInstance()->Listeners["foo"]
                 : \specimens\misc\AllowedOnClickModule::getInstance()->Listeners["bar"];
-        return \VK\Elephize\Builtins\IntrinsicElement::get("div")->render(
-            ["onClick" => \VK\Elephize\Builtins\IntrinsicElement::escape($variable)],
-            ["test"]
-        );
+        return \VK\Elephize\Builtins\IntrinsicElement::get("div")->render(["onClick" => $variable], ["test"]);
     }
 }

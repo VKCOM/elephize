@@ -20,12 +20,17 @@ export function tJsxAttributes(node: ts.JsxAttributes, context: Context<Declarat
       const attr = node.properties[i];
 
       if (attr.kind === ts.SyntaxKind.JsxAttribute) {
-        const value = attr.getChildAt(2);
-        const isStringValue = value.kind === ts.SyntaxKind.StringLiteral || hasType(value, context.checker, 'string', true);
+        const value = attr.initializer;
+
+        const isStringValue = value && (value.kind === ts.SyntaxKind.StringLiteral || hasType(value, context.checker, 'string'));
+        const isEventListener = attr.name.text.startsWith('on');
 
         /* remove event handlers */
-        if (!attr.name.text.startsWith('on') || (
-          context.jsxPreferences?.allowStringEvents && (value.kind === ts.SyntaxKind.StringLiteral) || isStringValue)
+        if (
+          !isEventListener ||
+          (
+            context.jsxPreferences?.allowStringEvents && isStringValue
+          )
         ) {
           toRender.push(node.properties[i]);
         }

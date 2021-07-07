@@ -26,9 +26,6 @@ class AllowedGlobalClickVar extends RenderableComponent {
      */
     public function render(array $props, array $children) {
         $variable = "SomeGlobalVar.test()";
-        return \VK\Elephize\Builtins\IntrinsicElement::get("div")->render(
-            ["onClick" => \VK\Elephize\Builtins\IntrinsicElement::escape($variable)],
-            ["test"]
-        );
+        return \VK\Elephize\Builtins\IntrinsicElement::get("div")->render(["onClick" => $variable], ["test"]);
     }
 }

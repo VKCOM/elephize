@@ -48,9 +48,17 @@ function shouldEscape(node: ts.Expression | undefined, context: Context<Declarat
     }
   }
 
-  // Don't escape style attribute, it's safety should be checked by client
-  if (node.parent.parent.kind === ts.SyntaxKind.JsxAttribute && (node.parent.parent as ts.JsxAttribute).name.getText() === 'style') {
-    return false;
+  // Don't escape style or allowed listeners attributes, it's safety should be checked by client
+  if (node.parent.parent.kind === ts.SyntaxKind.JsxAttribute) {
+    const jsxAttrName = (node.parent.parent as ts.JsxAttribute).name.getText();
+
+    if (jsxAttrName === 'style') {
+      return false;
+    }
+
+    if (jsxAttrName.startsWith('on')) {
+      return false;
+    }
   }
 
   // Workaround. Escape children only it's a string or a string array. TODO: Add more precise check somehow
