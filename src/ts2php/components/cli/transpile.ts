@@ -61,6 +61,7 @@ export function transpile(options: CliOptions, baseDir: string, outDir: string, 
         options: compilerOptions,
         onData: (sourceFilename: string, targetFilename: string, content: string) => onData(targetFilename, content),
         onFinish,
+        jsxPreferences: options.jsxPreferences || {},
       }
     );
   });

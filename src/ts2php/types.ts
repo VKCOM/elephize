@@ -90,6 +90,10 @@ export type ImportReplacementRule = {
   implementationClass: string;
 };
 
+export type JSXPreferences = {
+  allowStringEvents?: boolean;
+};
+
 export type CliOptions = {
   aliases: { [key: string]: string };
   bail: 'none' | 'warn' | 'error';
@@ -114,10 +118,7 @@ export type CliOptions = {
   verboseUsage: boolean;
   watch: boolean;
   preferTernary: boolean;
-};
-
-export type JSXPreferences = {
-  allowStringEvents?: boolean;
+  jsxPreferences?: JSXPreferences;
 };
 
 export type TranslateOptions = {

@@ -68,6 +68,7 @@ export function runWatcherTests(watcherTestConfig: WatcherTestQueueItem[], done:
           preferTernary: false,
           encoding: 'utf-8',
           options: compilerOptions,
+          jsxPreferences: {},
           getCloseHandle: (handle) => close = handle,
           onData: (sourceFilename: string, targetFilename: string, content: string, error?: number) => {
             if (allFilesCollected) {
