@@ -34,6 +34,7 @@ export const translateCode: TranslatorFunc = (
     onData,
     onFinish = () => undefined,
     options = defaultOptions,
+    jsxPreferences = {},
   }: TranslateOptions
 ): NodeFlagStore => {
   // Enable more logging using env var
@@ -68,6 +69,7 @@ export const translateCode: TranslatorFunc = (
       builtinsPath,
       encoding,
       options,
+      jsxPreferences,
       onFinish,
     });
   return nodeFlagStore;
@@ -93,6 +95,7 @@ export const translateCodeAndWatch: TranslatorFunc = (
     builtinsPath,
     onFinish = () => undefined,
     options = defaultOptions,
+    jsxPreferences,
   }: TranslateOptions
 ): NodeFlagStore => {
   const nodeFlagStore = new NodeFlagStore(); // TODO: check! this may lead to unforeseen consequences in sequential rebuilds
@@ -106,6 +109,7 @@ export const translateCodeAndWatch: TranslatorFunc = (
       serverFilesRoot,
       builtinsPath,
       encoding,
+      jsxPreferences,
       onBeforeRender,
       onData: (sourceFilename: string, targetFilename: string, content: string) => onData(sourceFilename, targetFilename, content, errcode),
       onFinish,

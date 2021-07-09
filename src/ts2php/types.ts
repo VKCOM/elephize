@@ -90,6 +90,10 @@ export type ImportReplacementRule = {
   implementationClass: string;
 };
 
+export type JSXPreferences = {
+  allowStringEvents?: boolean;
+};
+
 export type CliOptions = {
   aliases: { [key: string]: string };
   bail: 'none' | 'warn' | 'error';
@@ -114,6 +118,7 @@ export type CliOptions = {
   verboseUsage: boolean;
   watch: boolean;
   preferTernary: boolean;
+  jsxPreferences?: JSXPreferences;
 };
 
 export type TranslateOptions = {
@@ -130,4 +135,5 @@ export type TranslateOptions = {
   onData: (sourceFilename: string, targetFilename: string, content: string, error?: number) => void;
   onFinish?: (registry: ModuleRegistry) => void;
   options?: ts.CompilerOptions;
+  jsxPreferences: JSXPreferences;
 };

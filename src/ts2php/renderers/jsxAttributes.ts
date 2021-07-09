@@ -2,6 +2,7 @@ import * as ts from 'typescript';
 import { Declaration } from '../types';
 import { Context } from '../components/context';
 import { renderNode, renderNodes } from '../components/codegen/renderNodes';
+import { hasType } from '../components/typeInference/basicTypes';
 
 export function tJsxAttributes(node: ts.JsxAttributes, context: Context<Declaration>) {
   let synList: string[] = [];
@@ -17,8 +18,22 @@ export function tJsxAttributes(node: ts.JsxAttributes, context: Context<Declarat
     } else {
       // We suppose that indexes of children match strictly in original tree and render tree!
       const attr = node.properties[i];
-      if (attr.kind === ts.SyntaxKind.JsxAttribute && !attr.name.text.startsWith('on') /* remove event handlers */) {
-        toRender.push(node.properties[i]);
+
+      if (attr.kind === ts.SyntaxKind.JsxAttribute) {
+        const value = attr.initializer;
+
+        const isStringValue = value && (value.kind === ts.SyntaxKind.StringLiteral || hasType(value, context.checker, 'string'));
+        const isEventListener = attr.name.text.startsWith('on');
+
+        /* remove event handlers */
+        if (
+          !isEventListener ||
+          (
+            context.jsxPreferences?.allowStringEvents && isStringValue
+          )
+        ) {
+          toRender.push(node.properties[i]);
+        }
       }
     }
   }

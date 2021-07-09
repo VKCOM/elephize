@@ -1,5 +1,5 @@
 import * as ts from 'typescript';
-import { Declaration, NsMap } from '../../types';
+import { Declaration, JSXPreferences, NsMap } from '../../types';
 import { ModuleRegistry } from '../cjsModules/moduleRegistry';
 import { CommonjsModule } from '../cjsModules/commonjsModule';
 import { Scope } from '../unusedCodeElimination/usageGraph';
@@ -38,7 +38,8 @@ export function renderModule(
   log: LogObj,
   preferTernary: boolean,
   disableCodeElimination = false,
-  builtinsNs = ''
+  builtinsNs = '',
+  jsxPreferences: JSXPreferences
 ): void {
   Scope._forceDisableUnusedVarsElimination = disableCodeElimination;
   const moduleScope = Scope.newRootScope<Declaration>({ flags: 0 }, currentModule.sourceFileName, log, [
@@ -64,6 +65,7 @@ export function renderModule(
     log,
     builtinsNs,
     preferTernary,
+    jsxPreferences,
   );
 
   // First pass: build trees and collect var usage info
@@ -94,6 +96,7 @@ export function renderModule(
     log,
     builtinsNs,
     preferTernary,
+    jsxPreferences,
   );
 
   // Second pass: build code with cleaned unused vars

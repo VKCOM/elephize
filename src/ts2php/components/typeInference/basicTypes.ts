@@ -31,7 +31,12 @@ export function typeCast(node: ts.Identifier): string {
 export function hasType(node: ts.Node, checker: ts.TypeChecker, typeString: string): boolean {
   const nd: ts.Node = (node as ts.PropertyAccessExpression).expression;
   const type = checker.getTypeAtLocation(nd);
-  return typeString === checker.typeToString(type, nd, ts.TypeFormatFlags.None);
+  const baseType = checker.getBaseTypeOfLiteralType(type);
+
+  return (
+    checker.typeToString(type, nd, ts.TypeFormatFlags.None) === typeString ||
+    checker.typeToString(baseType, nd, ts.TypeFormatFlags.None) === typeString
+  );
 }
 
 /**
