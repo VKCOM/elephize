@@ -1,5 +1,6 @@
-import { getFoo, SOME_CONST, getBar as getBuzz, getFoo2 } from "./PathResolve/index";
-import { ReactPathResolveComponent } from "./PathResolveReact/index";
+import { getFoo, SOME_CONST, getBar as getBuzz, getFoo2 } from "./PathResolve";
+import { ReactPathResolveComponent, ReactPathResolveModule } from "./PathResolveReact";
+import { ReactPathResolveComponent as ReactPathResolveComponentDirect } from "./PathResolveReact/Component";
 
 getFoo();
 getFoo2();
@@ -11,5 +12,10 @@ function render() {
   getFoo();
   getBuzz();
   console.log(SOME_CONST);
-  return <ReactPathResolveComponent></ReactPathResolveComponent>;
+  
+  return <>
+    <ReactPathResolveModule />
+    <ReactPathResolveComponent />
+    <ReactPathResolveComponentDirect />
+  </>;
 }

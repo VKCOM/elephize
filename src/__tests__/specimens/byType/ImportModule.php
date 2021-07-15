@@ -23,7 +23,7 @@ class ImportModule extends CJSModule {
 
     private function __construct() {
         \specimens\byType\ExportModule::getInstance()->test();
-        null;
+        \specimens\byType\ExportModule::getInstance()->test();
         \specimens\byType\ExportModule::getInstance()->test();
         $this->a = \specimens\byType\ExportModule::getInstance()->test2;
         \VK\Elephize\Builtins\Console::log($this->a, $f);

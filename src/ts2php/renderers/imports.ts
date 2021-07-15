@@ -69,7 +69,6 @@ export function tImportDeclaration(node: ts.ImportDeclaration, context: Context<
         }
 
         const originalModule = context.registry.getModuleMethodSource(context.moduleDescriptor, originalMethodName);
-
         let impSourceFileName: string = originalModule?.sourceFileName || sourceFilename;
 
         if (decl) {

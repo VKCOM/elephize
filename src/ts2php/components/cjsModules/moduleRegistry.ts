@@ -168,13 +168,20 @@ export class ModuleRegistry {
       return module;
     }
 
+    if (module.isDerived && module.originalIdentName === name) {
+      return module;
+    }
+
     let resultModule: CommonjsModule | undefined;
 
     module.imports.forEach((importedMethods, importedModuleSourceName) => {
-      if (importedMethods.includes(name)) {
-        const sourceModules = this.getSourceModules(importedModuleSourceName);
-        resultModule = sourceModules.find((module) => module.hasMethod(name) || this.getModuleMethodSource(module, name));
+      if (resultModule) {
+        return;
       }
+
+      const sourceModules = this.getSourceModules(importedModuleSourceName);
+
+      resultModule = sourceModules.find((module) => module.hasMethod(name) || this.getModuleMethodSource(module, name));
     });
 
     return this.getModuleMethodSource(resultModule, name);
