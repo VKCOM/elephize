@@ -30,6 +30,11 @@ class Render extends RenderableComponent {
         \VK\Elephize\Builtins\Console::log(
             \specimens\components\PathResolve\PathResolveModule::getInstance()->SOME_CONST
         );
-        return \specimens\components\PathResolveReact\ComponentModule::getInstance()->render([], []);
+        return $this->frg([
+            \specimens\components\PathResolveReact\index\ReactPathResolveModule::getInstance()->render([], []),
+            \specimens\components\PathResolveReact\ComponentModule::getInstance()->render([], []),
+            \specimens\components\PathResolveReact\ComponentModule::getInstance()->render([], []),
+            \specimens\components\PathResolveReact\ComponentModule::getInstance()->render([], []),
+        ]);
     }
 }
