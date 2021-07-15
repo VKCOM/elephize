@@ -34,6 +34,7 @@ class Render extends RenderableComponent {
             \specimens\components\PathResolveReact\index\ReactPathResolveModule::getInstance()->render([], []),
             \specimens\components\PathResolveReact\ComponentModule::getInstance()->render([], []),
             \specimens\components\PathResolveReact\ComponentModule::getInstance()->render([], []),
+            \specimens\components\PathResolveReact\ComponentModule::getInstance()->render([], []),
         ]);
     }
 }
