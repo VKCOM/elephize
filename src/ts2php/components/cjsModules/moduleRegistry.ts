@@ -160,7 +160,6 @@ export class ModuleRegistry {
   }
 
   public getModuleMethodSource(module: CommonjsModule | undefined, name: string | undefined): CommonjsModule | undefined {
-    // debugger;
     if (!module || !name) {
       return module;
     }
