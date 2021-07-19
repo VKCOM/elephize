@@ -26,8 +26,8 @@ class ToReplaceSecondCjsWrapper extends CJSModule {
      * @param string $test
      * @return string
      */
-    public function getFoo($test) {
-        return $this->_impl->getFoo($test);
+    public function getFoo($test, $test2) {
+        return $this->_impl->getFoo($test, $test2);
     }
 
     /**
@@ -36,6 +36,50 @@ class ToReplaceSecondCjsWrapper extends CJSModule {
      */
     public function getBar($test) {
         return \specimens\ToReplaceSecond::getBar($test);
+    }
+
+    /**
+     * @param string $test
+     * @param string $test2
+     * @return string
+     */
+    public function getTest1($test, $test2 = "") {
+        return $this->_impl->getTest1($test, $test2);
+    }
+
+    /**
+     * @param string $test
+     * @param string $test2
+     * @return string
+     */
+    public function getTest2($test = "", $test2 = "") {
+        return $this->_impl->getTest2($test, $test2);
+    }
+
+    /**
+     * @param string $test
+     * @param string $test2
+     * @param mixed $args
+     * @return string
+     */
+    public function getTest3($test = "", $test2 = "", ...$args) {
+        return $this->_impl->getTest3($test, $test2, ...$args);
+    }
+
+    /**
+     * @param mixed $args
+     * @return string
+     */
+    public function getTest4($test = "", string $test2, ...$args) {
+        return $this->_impl->getTest4($test, $test2, ...$args);
+    }
+
+    /**
+     * @param mixed $args
+     * @return string
+     */
+    public function getTest5($test = "", string $test2 = "lol", ...$args) {
+        return $this->_impl->getTest5($test, $test2, ...$args);
     }
 
     private function __construct() {
