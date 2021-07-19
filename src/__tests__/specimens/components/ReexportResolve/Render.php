@@ -26,13 +26,20 @@ class Render extends RenderableComponent {
      */
     public function render(array $props, array $children) {
         \specimens\components\PathResolve\HelpersModule::getInstance()->getFoo();
+        \specimens\components\PathResolve\HelpersModule::getInstance()->getFoo2();
+        \specimens\components\PathResolve\HelpersModule::getInstance()->getFoo3();
         \specimens\components\PathResolve\PathResolveModule::getInstance()->getBar();
         \VK\Elephize\Builtins\Console::log(
             \specimens\components\PathResolve\PathResolveModule::getInstance()->SOME_CONST
         );
         return $this->frg([
             \specimens\components\PathResolveReact\index\ReactPathResolveModule::getInstance()->render([], []),
+            \specimens\components\PathResolveReact\index\ReactPathResolveAnonymousModule::getInstance()->render([], []),
             \specimens\components\PathResolveReact\ComponentModule::getInstance()->render([], []),
+            \specimens\components\PathResolveReact\Component\ReactPathResolveAnonymousComponent::getInstance()->render(
+                [],
+                []
+            ),
             \specimens\components\PathResolveReact\ComponentModule::getInstance()->render([], []),
             \specimens\components\PathResolveReact\ComponentModule::getInstance()->render([], []),
         ]);

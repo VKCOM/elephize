@@ -32,6 +32,12 @@ class HelpersModule extends CJSModule {
     public function getFoo() {
         return "foo";
     }
+    /**
+     * @return string
+     */
+    public function getFoo3() {
+        return "foo3";
+    }
 
     private function __construct() {
         $this->SOME_CONST = "buzz";

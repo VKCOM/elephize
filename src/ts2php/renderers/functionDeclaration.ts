@@ -54,6 +54,7 @@ export function tFunctionDeclaration(node: ts.FunctionDeclaration, context: Cont
 
         if (isExportedFun(node.name)) {
           context.scope.terminateCall(node.name.getText(), { traceSourceIdent: Scope.tNode, dryRun: context.dryRun });
+          context.moduleDescriptor.registerExport(context.moduleDescriptor.sourceFileName, node.name.getText());
           if (decl && decl.ownedScope) {
             decl.ownedScope.terminateToParentTerminalNode(context.dryRun);
           }

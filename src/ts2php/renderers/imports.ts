@@ -9,6 +9,7 @@ import { renderNodes } from '../components/codegen/renderNodes';
 
 export function tImportDeclaration(node: ts.ImportDeclaration, context: Context<Declaration>) {
   const moduleSpec = (node.moduleSpecifier as ts.StringLiteral).text;
+
   if (moduleSpec === 'react') {
     if (!initReact(node, context)) {
       context.log.error('Importing react with dereferencing is not supported. Use `import * as React from \'react\' instead.', [], context.log.ctx(node));

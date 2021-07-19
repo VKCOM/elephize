@@ -85,6 +85,9 @@ import {
   tImportDeclaration,
   tNamedImports,
 } from '../../renderers/imports';
+import {
+  tExportSpecifier,
+} from '../../renderers/exports';
 import { tJsxSelfClosingElement } from '../../renderers/jsxSelfClosingElement';
 import { tTypeofExpression } from '../../renderers/typeofExpression';
 import { tShorthandPropertyAssignment } from '../../renderers/shorthandPropertyAssignment';
@@ -152,6 +155,7 @@ function render(node: ts.Node | undefined, context: Context<Declaration>): strin
   if (ts.isJsxAttribute(node)) { return tJsxAttribute(node, context); }
   if (ts.isJsxExpression(node)) { return tJsxExpression(node, context); }
   if (ts.isJsxText(node)) { return tJsxText(node); }
+  if (ts.isExportSpecifier(node)) { return tExportSpecifier(node, context); }
   if (ts.isImportDeclaration(node)) { return tImportDeclaration(node, context); }
   if (ts.isImportClause(node)) { return tImportClause(node, context); }
   if (ts.isNamedImports(node)) { return tNamedImports(node, context); }

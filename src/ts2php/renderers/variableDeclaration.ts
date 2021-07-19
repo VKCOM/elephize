@@ -63,6 +63,9 @@ export function tVariableDeclaration(node: ts.VariableDeclaration, context: Cont
 
   let decl: BoundNode<Declaration> | null = null;
   if (!isFuncDeclaration) {
+    if (isExportedVar(node.name)) {
+      context.moduleDescriptor.registerExport(context.moduleDescriptor.sourceFileName, node.name.getText());
+    }
     decl = context.scope.addDeclaration(
       node.name.getText(), [],
       { terminateGlobally: isExportedVar(node.name), dryRun: context.dryRun }
