@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import { SyntaxWalker } from '../../../vendor/php-parser/language/syntax/SyntaxWalker';
 import {
   ClassDeclarationSyntaxNode,
-  MethodDeclarationSyntaxNode, NamespaceDeclarationSyntaxNode,
+  MethodDeclarationSyntaxNode, NamespaceDeclarationSyntaxNode, ParameterSyntaxNode,
 } from '../../../vendor/php-parser/language/syntax/SyntaxNode.Generated';
 import { ISyntaxNode } from '../../../vendor/php-parser/language/syntax/ISyntaxNode';
 import { ISyntaxToken } from '../../../vendor/php-parser/language/syntax/ISyntaxToken';
@@ -67,9 +67,26 @@ export class PhpParsedStruct extends SyntaxWalker {
       }
     }
     if (mods.includes('public')) {
-      const args = node.parameters?.allChildren().map((c: ISyntaxNode | ISyntaxToken) => this._get(c.span)).join(', ') || '';
+      const parameters = (node.parameters?.allChildren() || [])
+        .filter((c) => !c.isToken);
+
+      const args = parameters
+        .map((c: ISyntaxNode | ISyntaxToken) => this._get(c.span)).join(', ') || '';
+
+      const callableArgs = parameters
+        .map((c: ParameterSyntaxNode) => {
+          let r = '';
+          if (c.ellipsis) {
+            r += this._get(c.ellipsis.span);
+          }
+
+          r += this._get(c.variable.span);
+
+          return r;
+        });
+
       this._decls[name] = this._get(node.leadingTrivia?.span) + `public function ${name}(${args}) {
-        return ${mods.includes('static') ? `${'\\' + this._namespace + '\\' + this._className}::` : '$this->_impl->'}${name}(${args});
+        return ${mods.includes('static') ? `${'\\' + this._namespace + '\\' + this._className}::` : '$this->_impl->'}${name}(${callableArgs});
       }\n`;
     }
     super.visitMethodDeclaration(node);
