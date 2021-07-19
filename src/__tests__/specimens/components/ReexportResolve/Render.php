@@ -34,7 +34,12 @@ class Render extends RenderableComponent {
         );
         return $this->frg([
             \specimens\components\PathResolveReact\index\ReactPathResolveModule::getInstance()->render([], []),
+            \specimens\components\PathResolveReact\index\ReactPathResolveAnonymousModule::getInstance()->render([], []),
             \specimens\components\PathResolveReact\ComponentModule::getInstance()->render([], []),
+            \specimens\components\PathResolveReact\Component\ReactPathResolveAnonymousComponent::getInstance()->render(
+                [],
+                []
+            ),
             \specimens\components\PathResolveReact\ComponentModule::getInstance()->render([], []),
             \specimens\components\PathResolveReact\ComponentModule::getInstance()->render([], []),
         ]);

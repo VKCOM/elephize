@@ -1,6 +1,6 @@
 import { getFoo, SOME_CONST, getBar as getBuzz, getFoo2 } from "./PathResolve";
-import { ReactPathResolveComponent, ReactPathResolveModule } from "./PathResolveReact";
-import { ReactPathResolveComponent as ReactPathResolveComponentDirect } from "./PathResolveReact/Component";
+import { ReactPathResolveAnonymousModule, ReactPathResolveComponent, ReactPathResolveModule } from "./PathResolveReact";
+import { ReactPathResolveAnonymousComponent, ReactPathResolveComponent as ReactPathResolveComponentDirect } from "./PathResolveReact/Component";
 import { ReactPathResolveComponent as ReactPathResolveComponentAlias } from "#specimens/components/PathResolveReact";
 import { getFoo3 } from "./PathResolve/helpers";
 
@@ -20,7 +20,9 @@ function render() {
   
   return <>
     <ReactPathResolveModule />
+    <ReactPathResolveAnonymousModule />
     <ReactPathResolveComponent />
+    <ReactPathResolveAnonymousComponent />
     <ReactPathResolveComponentDirect />
     <ReactPathResolveComponentAlias />
   </>;
