@@ -8,8 +8,13 @@ export class CommonjsModule {
   public readonly isDerived: boolean = false;
   public readonly isExternal: boolean = false;
   protected _hoistedContent: Set<string> = new Set();
+  protected _properties: Set<string> = new Set();
   protected _methods: Set<string> = new Set();
   protected _imports: Map<string, string[]> = new Map();
+  /**
+   * Exports should strictly contain _final_ path
+   */
+  protected _exports: Map<string, string[]> = new Map();
   protected _requiredFiles: Map<string, CommonjsModule> = new Map();
   protected _constructorStatements: string[] = [];
   public _specialVars: SpecialVars = {};
@@ -30,6 +35,10 @@ export class CommonjsModule {
     return this._imports;
   }
 
+  public get exports(): CommonjsModule['_exports'] {
+    return this._exports;
+  }
+
   // For removing dupes during second pass of codegen
   public clearStatements() {
     this._constructorStatements = [];
@@ -41,6 +50,7 @@ export class CommonjsModule {
     const doc = `/**
      * @var ${inferredType} ${identifier}
      */`;
+    this._properties.add(identifier);
     this._hoistedContent.add(`${doc ? doc + '\n' : ''}${visibility} ${identifier};`);
   }
 
@@ -62,8 +72,35 @@ export class CommonjsModule {
     this._imports.set(from, [...this._imports.get(from) || [], method]);
   }
 
+  public registerExport(from: string, method: string) {
+    this._exports.set(from, [...this._exports.get(from) || [], method]);
+  }
+
   public hasMethod(name: string) {
     return this._methods.has(name);
+  }
+
+  public hasProperty(name: string) {
+    return this._properties.has(name);
+  }
+
+  public hasExport(name: string) {
+    return this.findExportSource(name) !== null;
+  }
+
+  public findExportSource(name: string): string | null {
+    let result: string | null = null;
+    this._exports.forEach((exportedKeys, sourceName) => {
+      if (result) {
+        return;
+      }
+
+      if (exportedKeys.includes(name)) {
+        result = sourceName;
+      }
+    });
+
+    return result;
   }
 
   public addStatement(statement: string) {

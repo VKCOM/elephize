@@ -160,11 +160,12 @@ export class ModuleRegistry {
   }
 
   public getModuleMethodSource(module: CommonjsModule | undefined, name: string | undefined): CommonjsModule | undefined {
+    // debugger;
     if (!module || !name) {
       return module;
     }
 
-    if (module.hasMethod(name)) {
+    if (module.hasMethod(name) || module.hasProperty(name)) {
       return module;
     }
 
@@ -173,15 +174,25 @@ export class ModuleRegistry {
     }
 
     let resultModule: CommonjsModule | undefined;
+    module.imports.forEach((importedKeys, importedModuleSourceName) => {
+      if (importedKeys.includes(name)) {
+        const sourceModules = this.getSourceModules(importedModuleSourceName);
+        const findSourceModule: (module: CommonjsModule) => CommonjsModule | undefined = (module: CommonjsModule | undefined) => {
+          if (!module) {
+            return;
+          }
 
-    module.imports.forEach((importedMethods, importedModuleSourceName) => {
-      if (resultModule) {
-        return;
+          const exportSourceName = module.findExportSource(name);
+          if (exportSourceName) {
+            const exportSourceModules = this.getSourceModules(exportSourceName);
+            return exportSourceModules.find((module) => this.getModuleMethodSource(module, name));
+          }
+
+          return this.getModuleMethodSource(module, name);
+        };
+
+        resultModule = sourceModules.find(findSourceModule);
       }
-
-      const sourceModules = this.getSourceModules(importedModuleSourceName);
-
-      resultModule = sourceModules.find((module) => module.hasMethod(name) || this.getModuleMethodSource(module, name));
     });
 
     return this.getModuleMethodSource(resultModule, name);

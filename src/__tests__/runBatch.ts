@@ -30,7 +30,7 @@ const replacedImports: CliOptions['replaceImports'] = {
 const compilerOptions = {
   baseUrl: baseDir,
   paths: {
-    '#aliasedTestFolder/*': ['src/__tests__/*'],
+    '#specimens/*': ['specimens/'],
   },
 };
 
