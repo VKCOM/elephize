@@ -61,7 +61,7 @@ export class PhpParsedStruct extends SyntaxWalker {
         continue;
       }
 
-      const matches = this._get(triv.span).match(/@return ([?a-z]+)/);
+      const matches = this._get(triv.span).match(/@return ([?a-z]+(\[\])?)/);
       if (matches) {
         this._retvals[name] = matches[1];
       }
