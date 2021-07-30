@@ -27,8 +27,8 @@ export function checkCustomTypehints(type: ts.Type, checker: ts.TypeChecker) {
     if (!sym) {
       return t;
     }
-    const decls = sym.getDeclarations() as ts.Declaration[];
-    const [ifaceDecl] = decls.filter((d) => d.kind === ts.SyntaxKind.InterfaceDeclaration);
+    const decls = sym.getDeclarations();
+    const [ifaceDecl] = decls?.filter((d) => d.kind === ts.SyntaxKind.InterfaceDeclaration) || [];
     if (!ifaceDecl) {
       return t;
     }
