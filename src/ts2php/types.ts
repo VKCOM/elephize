@@ -2,9 +2,21 @@ import * as ts from 'typescript';
 import { Context } from './components/context';
 import { ModuleRegistry } from './components/cjsModules/moduleRegistry';
 import { NodeFlagStore } from './components/codegen/nodeFlagStore';
+import { LogPrinter } from './utils/log';
 
 export type Dict<T> = { [key: string]: T };
 export type CallbackType = ts.FunctionExpression | ts.ArrowFunction | undefined;
+
+// Playground input args
+export type InputOptions = {
+  src: string;
+  baseDir: string;
+  outDir: string;
+  verbose: boolean;
+  verboseUsage: boolean;
+  verboseTypehints: boolean;
+  printer: LogPrinter;
+};
 
 // for misc purposes and intermediate data storage during code generation
 export type NodeFlags = {

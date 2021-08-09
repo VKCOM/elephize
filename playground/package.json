@@ -1,0 +1,28 @@
+{
+  "name": "playground",
+  "version": "1.0.0",
+  "description": "Elephize playground",
+  "main": "index.js",
+  "scripts": {
+    "linkelephize": "mkdir -p node_modules/@vkontakte && ln -sf ../../../dist ./node_modules/@vkontakte/elephize",
+    "start": "ts-node server.ts",
+    "build": "yarn linkelephize && webpack"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@types/codemirror": "^5.60.2",
+    "assert": "^2.0.0",
+    "buffer": "^6.0.3",
+    "codemirror": "^5.62.2",
+    "express": "^4.17.1",
+    "memfs": "^3.2.2",
+    "path-browserify": "^1.0.1",
+    "process": "^0.11.10",
+    "stream-browserify": "^3.0.0",
+    "ts-node": "^10.2.0",
+    "typescript": "^4.3.5",
+    "url": "^0.11.0",
+    "util": "^0.12.4",
+    "webpack": "^5.49.0"
+  }
+}
