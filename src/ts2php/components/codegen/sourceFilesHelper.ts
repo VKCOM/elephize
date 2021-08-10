@@ -1,44 +1,25 @@
 import { createSourceFile, ScriptTarget, SourceFile } from 'typescript';
 import { existsSync, readFileSync } from 'fs';
+import { getDtsSourceFile } from '##platform-dependent-parts';
 
 const sourceFiles: { [key: string]: SourceFile | null } = {};
 
-// Try find d.ts source in typescript folder
-function getDtsSourceFile(name: string, target?: ScriptTarget) {
-  if (sourceFiles[name] === undefined) {
-    let path;
-    try {
-      path = name.startsWith('/') ? name : require.resolve('typescript/lib/' + name);
-    } catch (e) {
-      path = require.resolve(name.replace(/^node_modules\//, ''));
-    }
+function getSourceFile(path: string, sourceFilesCache: { [key: string]: SourceFile | null }, target?: ScriptTarget) {
+  if (sourceFilesCache[path] === undefined) {
     if (existsSync(path)) {
       const input = readFileSync(path, { encoding: 'utf-8' });
-      sourceFiles[name] = createSourceFile(name, input, target!);
+      sourceFilesCache[path] = createSourceFile(path, input, target!);
     } else {
-      sourceFiles[name] = null;
+      sourceFilesCache[path] = null;
     }
   }
 
-  return sourceFiles[name];
-}
-
-function getSourceFile(path: string, target?: ScriptTarget) {
-  if (sourceFiles[path] === undefined) {
-    if (existsSync(path)) {
-      const input = readFileSync(path, { encoding: 'utf-8' });
-      sourceFiles[path] = createSourceFile(path, input, target!);
-    } else {
-      sourceFiles[path] = null;
-    }
-  }
-
-  return sourceFiles[path];
+  return sourceFilesCache[path];
 }
 
 export const compilerHostSourceGetter = (scriptTarget?: ScriptTarget) => (fileName: string) => {
   if (fileName.endsWith('.d.ts')) {
-    return getDtsSourceFile(fileName, scriptTarget) || undefined;
+    return getDtsSourceFile(fileName, sourceFiles, scriptTarget) || undefined;
   }
-  return getSourceFile(fileName, scriptTarget) || undefined;
+  return getSourceFile(fileName, sourceFiles, scriptTarget) || undefined;
 };

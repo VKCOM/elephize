@@ -14,9 +14,13 @@
       "./node_modules/@types"
     ],
     "baseUrl": ".",
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "paths": {
+      "##platform-dependent-parts": ["src/ts2php/cli.specific.ts"]
+    }
   },
   "exclude": [
+    "playground/**/*",
     "demo/**/*",
     "dist/**/*",
     "src/__tests__/watchSpecimens.~/**/*",

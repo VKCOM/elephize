@@ -1,4 +1,5 @@
 dist/
+playground/elephize
 
 node_modules/
 .idea/

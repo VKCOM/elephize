@@ -4,6 +4,7 @@ import * as path from 'path';
 import { LogObj } from '../../utils/log';
 import { resolveAliasesAndPaths } from '../../utils/pathsAndNames';
 import * as glob from 'glob';
+import { fileExists, readFile } from '##platform-dependent-parts';
 
 /*
   TODO:
@@ -13,14 +14,6 @@ import * as glob from 'glob';
    - Нужно где-то иметь список возможных php/kphp типов и соответствия их типам ts (по крайней мере примитивам).
 
  */
-
-function fileExists(fileName: string): boolean {
-  return ts.sys.fileExists(fileName);
-}
-
-function readFile(fileName: string): string | undefined {
-  return ts.sys.readFile(fileName);
-}
 
 function resolveModulePath(name: string, containingFile: string, baseDir: string, tsPaths: { [key: string]: string[] }, log: LogObj): string {
   const localPath = resolveAliasesAndPaths(log, name, path.dirname(containingFile), baseDir, tsPaths, {}, true);

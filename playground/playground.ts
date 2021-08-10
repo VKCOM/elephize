@@ -1,7 +1,14 @@
 import * as fs from 'fs';
 import * as codemirror from 'codemirror';
-const { startPlayground } = require('@vkontakte/elephize/playground');
-import { LogSeverity } from '../src/ts2php/utils/log';
+import { startPlayground } from '##playground';
+
+enum LogSeverity {
+  INFO,
+  WARN,
+  ERROR,
+  SPECIAL,
+  TYPEHINT
+}
 
 const severityMap: { [key: number]: string } = {
   [LogSeverity.INFO]: 'I',

@@ -4,12 +4,8 @@ import * as ts from 'typescript';
 import { LogObj } from '../../../utils/log';
 import { CliOptions, ImportReplacementRule } from '../../../types';
 import { resolveModules } from '../../cjsModules/resolveModules';
+import { formatHost } from '##platform-dependent-parts';
 
-const formatHost: ts.FormatDiagnosticsHost = {
-  getCanonicalFileName: (path) => path,
-  getCurrentDirectory: ts.sys.getCurrentDirectory,
-  getNewLine: () => ts.sys.newLine,
-};
 let lastDiagCode: number | undefined;
 
 /**

@@ -5,7 +5,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 import * as iconv from 'iconv-lite';
 import { ModuleRegistry } from '../cjsModules/moduleRegistry';
-import ncp = require('ncp');
+const ncp = require('ncp');
 import { CliOptions } from '../../types';
 import { sync as mkdirpSync } from 'mkdirp';
 const replace = require('stream-replace');
@@ -94,10 +94,10 @@ export function transpile(options: CliOptions, baseDir: string, outDir: string, 
     log.special('To: %s', [bTgt]);
 
     ncp(builtinsPath, bTgt, {
-      transform: function(read, write) {
+      transform: function(read: any, write: any) {
         read.pipe(replace(/__ROOTNS__\\Builtins/g, namespaces.builtins)).pipe(write);
       },
-    }, (err) => {
+    }, (err: any) => {
       if (!err) {
         log.special('Builtins base files successfully copied', []);
       }
