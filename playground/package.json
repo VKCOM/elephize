@@ -6,11 +6,12 @@
   "scripts": {
     "linkelephize": "rm elephize && ln -sf ../ ./elephize",
     "start": "ts-node server.ts",
-    "build": "webpack --progress"
+    "build": "webpack --progress && mv dist/playground.js www/playground.js"
   },
   "license": "MIT",
   "dependencies": {
     "@types/codemirror": "^5.60.2",
+    "@types/node": "^16.4.13",
     "assert": "^2.0.0",
     "buffer": "^6.0.3",
     "codemirror": "^5.62.2",

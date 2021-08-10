@@ -6,7 +6,6 @@
     "experimentalDecorators": true,
     "jsx": "react",
     "noImplicitAny": true,
-    "resolveJsonModule": true,
     "strictNullChecks": true,
     "downlevelIteration": true,
     "typeRoots": [

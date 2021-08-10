@@ -1,6 +1,7 @@
+window.process = require('process/browser');
 import * as fs from 'fs';
 import * as codemirror from 'codemirror';
-import { startPlayground } from '##playground';
+const { startPlayground } = require('##playground');
 
 enum LogSeverity {
   INFO,
@@ -18,13 +19,13 @@ const severityMap: { [key: number]: string } = {
 };
 
 function printer(message: string, msgid: string, params: string[], severity: LogSeverity, context?: string) {
-  console.log(`[${severityMap[severity]} ${msgid}] ${message}`);
+  console.log(`[${severityMap[severity]} ${msgid}] ${message}`, ...params);
   if (context) {
     console.log(context);
   }
 }
 
-document.addEventListener('load', () => {
+document.addEventListener('DOMContentLoaded', () => {
   const input = document.getElementById('tsInput')!;
   const cm = codemirror(input, {
     value: '',

@@ -3,7 +3,7 @@ import { Declaration } from '../types';
 import { getClosestParentOfTypeWithFlag } from '../utils/ast';
 import { Context } from '../components/context';
 import { normalizeVarName } from '../utils/pathsAndNames';
-import * as attrs from '../../../data/domattrs.json';
+import { domattrs as attrs } from '../../../data/domattrs';
 import { intrinsicElements } from '../internalConfig/intrinsicElements';
 import { renderNodes } from '../components/codegen/renderNodes';
 

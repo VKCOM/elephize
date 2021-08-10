@@ -2,14 +2,17 @@ const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 const { DefinePlugin } = require('webpack');
 
 module.exports = {
-  devtool: false,
+  devtool: 'inline-source-map',
   entry: './playground.ts',
   mode: 'development',
+  node: {
+    global: true,
+  },
   output: {
     filename: 'playground.js',
   },
   resolve: {
-    extensions: ['.js'],
+    extensions: ['.js', '.ts', '.tsx'],
     alias: {
       '##platform-dependent-parts': __dirname + '/../src/ts2php/browser.specific.ts',
       '##playground': __dirname + '/../src/playground.ts',
@@ -30,9 +33,7 @@ module.exports = {
   plugins: [
     new ProgressBarPlugin(),
     new DefinePlugin({
-      'process.env.NODE_DEBUG': false,
-      'process.version': '"1"',
-      'process.platform': '"linux"',
+      'process.env.NODE_DEBUG': false
     }),
   ],
   module: {

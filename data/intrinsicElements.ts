@@ -1,4 +1,4 @@
-[
+export const intrinsicElements = [
     {
         "tagName": "a",
         "props": [
@@ -21738,4 +21738,4 @@
             "toString"
         ]
     }
-]
+];

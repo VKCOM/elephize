@@ -2,7 +2,7 @@ import * as ts from 'typescript';
 import { Declaration } from '../types';
 import { Context } from '../components/context';
 import { intrinsicElements } from '../internalConfig/intrinsicElements';
-import * as callbackAttrs from '../../../data/domattrs.json';
+import { domattrs as callbackAttrs } from '../../../data/domattrs';
 import { renderNode } from '../components/codegen/renderNodes';
 import { getPhpPrimitiveType } from '../components/typeInference/basicTypes';
 import { escapeTextLiteral } from '../utils/escapeString';

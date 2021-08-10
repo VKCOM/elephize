@@ -1,5 +1,6 @@
 dist/
 playground/elephize
+playground/www/playground.js
 
 node_modules/
 .idea/

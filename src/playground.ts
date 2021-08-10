@@ -18,6 +18,7 @@ export function startPlayground(opts: InputOptions) {
     verboseTypehints: options.verboseTypehints,
     verboseUsage: options.verboseUsage,
     quiet: false,
+    printer: opts.printer,
   });
 
   log.info('Running with configuration: %s', [JSON.stringify(options, null, '  ')]);

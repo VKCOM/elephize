@@ -1,7 +1,7 @@
 import * as ts from 'typescript';
 import { Declaration, DeclFlag } from '../types';
 import { Context } from '../components/context';
-import * as attrs from '../../../data/domattrs.json';
+import { domattrs as attrs } from '../../../data/domattrs';
 import { getClosestParentOfTypeWithFlag } from '../utils/ast';
 import { intrinsicElements } from '../internalConfig/intrinsicElements';
 import { normalizeVarName, snakify } from '../utils/pathsAndNames';

@@ -25,8 +25,14 @@ function generateDocumentation(
   }
 
   // print out the doc
-  fs.writeFileSync(path.resolve(__dirname, '..', '..', '..', 'data', 'intrinsicElements.json'), JSON.stringify(result.tags, undefined, 4));
-  fs.writeFileSync(path.resolve(__dirname, '..', '..', '..', 'data', 'domattrs.json'), JSON.stringify(result.attrs, undefined, 4));
+  fs.writeFileSync(
+    path.resolve(__dirname, '..', '..', '..', 'data', 'intrinsicElements.ts'),
+    'export const intrinsicElements = ' + JSON.stringify(result.tags, undefined, 4) + ';'
+  );
+  fs.writeFileSync(
+    path.resolve(__dirname, '..', '..', '..', 'data', 'domattrs.ts'),
+    'export const domattrs = ' + JSON.stringify(result.attrs, undefined, 4) + ';'
+  );
 
   return;
 

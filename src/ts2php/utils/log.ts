@@ -133,7 +133,7 @@ export class Logger implements LogObj {
   }
 
   protected _msgid(message: string): string {
-    const hash = createHash('md4');
+    const hash = createHash('md5');
     hash.update(message);
     return hash.digest('hex').substr(0, 5);
   }

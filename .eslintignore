@@ -3,6 +3,7 @@ node_modules/
 vendor/
 dist/
 demo/
+data/
 
 src/__tests__/watchSpecimens.~/
 src/__tests__/watchSpecimens___/

@@ -1,4 +1,4 @@
-[
+export const domattrs = [
     "onCopy",
     "onCopyCapture",
     "onCut",
@@ -159,4 +159,4 @@
     "onAnimationIterationCapture",
     "onTransitionEnd",
     "onTransitionEndCapture"
-]
+];
