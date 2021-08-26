@@ -27,8 +27,8 @@ class IsoComponent extends RenderableComponent {
     public function render(array $props, array $children) {
         return \VK\Elephize\Builtins\IntrinsicElement::get("div")->render(
             [
-                "className" => \specimens\misc\toReplaceIndex\ToReplaceSecondCjsWrapper::getInstance()->classNames(
-                    "Test"
+                "className" => \VK\Elephize\Builtins\IntrinsicElement::escape(
+                    \specimens\misc\toReplaceIndex\ToReplaceSecondCjsWrapper::getInstance()->classNames("Test")
                 ),
             ],
             [

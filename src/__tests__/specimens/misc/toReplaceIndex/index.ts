@@ -5,3 +5,4 @@ export const getTest3 = (test: string = '', test2: string = '', ...args) => 'foo
 export const getTest4 = (test: string = '', test2: string, ...args) => 'foo' + test + test2 + args[0];
 export const getTest5 = (test: string = '', test2: string = '', ...args) => 'foo' + test + test2 + args[0];
 export const getBar = (test: string) => 'bar' + test;
+export const classNames: (...args) => string = (..._args) => 'classNames';

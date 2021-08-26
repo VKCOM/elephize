@@ -65,7 +65,9 @@ export function translateProgram(program: ts.Program, replacements: ImportReplac
   );
   const checker = program.getTypeChecker();
   for (const sourceFile of program.getSourceFiles()) {
-    if (!sourceFile.isDeclarationFile) { // skip .d.ts if any
+    const isReplaced = replacements.find((rule) => rule.modulePath === sourceFile.fileName);
+
+    if (!isReplaced && !sourceFile.isDeclarationFile) { // skip .d.ts if any
       const currentModule = registry.registerClass(sourceFile.fileName);
       if (!currentModule) {
         continue;
