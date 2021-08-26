@@ -100,15 +100,15 @@ export const resolveModules = (
   for (const moduleName of moduleNames) {
     const mPath = resolveModulePath(moduleName, containingFile, baseDir, tsPaths, log);
     const rule = findImportRule(ignoredImports, replacedImports, baseDir, log, mPath);
-    if (rule) {
+    if (rule && rule.ignore) {
       resolvedModules.push(emptyModule);
-      if (!rule.ignore) {
+      log.info('Module %s was ignored according to library settings', [moduleName]);
+    } else {
+      if (rule) {
         log.info('Module %s was replaced with implementation %s according to library settings', [moduleName, rule.implementationClass]);
         replacements.push({ modulePath: mPath, ...rule });
-      } else {
-        log.info('Module %s was ignored according to library settings', [moduleName]);
       }
-    } else {
+
       // try to use standard resolution
       const result = ts.resolveModuleName(moduleName, containingFile, options, {
         fileExists,
