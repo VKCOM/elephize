@@ -63,7 +63,7 @@ class BasicComponentWithViewLogic extends RenderableComponent {
                                     [],
                                     [
                                         Stdlib::arrayMap2(
-                                            $props["children"],
+                                            $children,
                                             /* anon_28597c3 */ function ($row, $idx) {
                                                 return \VK\Elephize\Builtins\IntrinsicElement::get("tr")->render(
                                                     [

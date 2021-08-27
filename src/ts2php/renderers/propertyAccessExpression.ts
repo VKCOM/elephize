@@ -69,8 +69,7 @@ export function tPropertyAccessExpression(node: ts.PropertyAccessExpression, con
   }
 
   if (accessor === 'children' && insideComponent(context.scope)) {
-    context.log.warn('Accessing %s.children inside react component function: note that accessing props.children' +
-      ' won\'t work on server! Use object dereferencing instead.', [ident], context.log.ctx(node));
+    return '$children';
   }
 
   const isDirectPropAccess = node.parent.kind !== ts.SyntaxKind.PropertyAccessExpression;
