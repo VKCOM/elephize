@@ -22,7 +22,6 @@ import { NodeFlagStore } from './nodeFlagStore';
  * @param currentModule
  * @param log
  * @param disableCodeElimination
- * @param preferTernary
  * @param builtinsNs
  */
 export function renderModule(
@@ -36,7 +35,6 @@ export function renderModule(
   registry: ModuleRegistry,
   currentModule: CommonjsModule,
   log: LogObj,
-  preferTernary: boolean,
   disableCodeElimination = false,
   builtinsNs = '',
   jsxPreferences: JSXPreferences
@@ -64,7 +62,6 @@ export function renderModule(
     registry,
     log,
     builtinsNs,
-    preferTernary,
     jsxPreferences,
   );
 
@@ -95,7 +92,6 @@ export function renderModule(
     registry,
     log,
     builtinsNs,
-    preferTernary,
     jsxPreferences,
   );
 
