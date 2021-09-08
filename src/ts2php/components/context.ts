@@ -23,7 +23,6 @@ export class Context<T> {
     public readonly registry: ModuleRegistry,
     public readonly log: LogObj,
     public readonly builtinsNs: string,
-    public readonly preferTernary: boolean,
     public readonly jsxPreferences?: JSXPreferences,
   ) { }
 

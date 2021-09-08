@@ -20,5 +20,4 @@ export const defaultOptions: CliOptions = {
   verboseTypehints: false,
   verboseUsage: false,
   watch: false,
-  preferTernary: false,
 };

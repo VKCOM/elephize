@@ -84,9 +84,7 @@ export function tBinaryExpression(node: ts.BinaryExpression, context: Context<De
         if (parentIsBinaryExpression || parentIsOtherSupportedExpressions) {
           const leftExpr = renderLeftExpr(node, context);
           const rightExpr = renderRightExpr(node, context);
-          return context.preferTernary
-            ? `${leftExpr} ? ${leftExpr} : ${rightExpr}`
-            : `${leftExpr} ?: ${rightExpr}`;
+          return `${leftExpr} ?: ${rightExpr}`;
         }
       }
     }

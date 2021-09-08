@@ -22,7 +22,6 @@ import * as path from 'path';
  * @param onBeforeRender
  * @param baseDir
  * @param disableCodeElimination
- * @param preferTernary
  * @param aliases
  * @param serverFilesRoot
  * @param namespaces
@@ -35,7 +34,6 @@ export function translateProgram(program: ts.Program, replacements: ImportReplac
   onBeforeRender = () => undefined,
   baseDir,
   disableCodeElimination = false,
-  preferTernary,
   aliases = {},
   serverFilesRoot,
   builtinsPath,
@@ -85,7 +83,6 @@ export function translateProgram(program: ts.Program, replacements: ImportReplac
         registry,
         currentModule,
         log,
-        preferTernary,
         disableCodeElimination,
         '',
         jsxPreferences,
