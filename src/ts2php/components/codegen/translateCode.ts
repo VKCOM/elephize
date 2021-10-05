@@ -1,10 +1,9 @@
-import { CliOptions, TranslateOptions } from '../../types';
+import { CliOptions, TranslateOptions, LogObj } from '../../types';
 import { getBuildProgram } from './programUtils/buildProgramFactory';
 import { NodeFlagStore } from './nodeFlagStore';
 import { translateProgram } from './programUtils/translateProgram';
 import { defaultOptions } from './defaultCompilerOptions';
 import { getWatchProgram } from './programUtils/watchProgramFactory';
-import { LogObj } from '../../utils/log';
 
 type TranslatorFunc = (
   filenames: string[],

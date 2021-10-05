@@ -4,8 +4,7 @@ import { readFileSync, writeFileSync, unlinkSync } from 'fs';
 import { normalizeFileExt } from '../ts2php/utils/pathsAndNames';
 import * as prettier from 'prettier/standalone';
 import { phpPrettierOptions } from '../ts2php/internalConfig/phpPrettierOptions';
-import { CliOptions, JSXPreferences } from '../ts2php/types';
-import { LogObj } from '../ts2php/utils/log';
+import { CliOptions, JSXPreferences, LogObj } from '../ts2php/types';
 import { sync as mkdirpSync } from 'mkdirp';
 
 const baseDir = pResolve(__dirname);

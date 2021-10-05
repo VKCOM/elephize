@@ -16,7 +16,7 @@
     "_compile": "tsc -p .",
     "_copy-base": "cp -R src/builtins dist/src/",
     "_copy-ext": "cp -R external dist/",
-    "_copy-types": "cp -R types dist/",
+    "_copy-types": "cp -R types dist/ && cp src/ts2php/types.ts dist/src/ts2php/types.ts",
     "_clear": "rm -rf dist",
     "build": "yon _clear && yon _reactgen && yon _compile && yon _copy-base && yon _copy-ext && yon _copy-types",
     "demo_start": "yon demo_build && yon demo_serve",

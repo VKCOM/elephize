@@ -1,5 +1,5 @@
 import { Context } from 'src/ts2php/components/context';
-import { Declaration, DeclFlag } from '../types';
+import { Declaration } from '../types';
 import * as ts from 'typescript';
 import { fetchAllBindingIdents, getClosestOrigParentOfType } from '../utils/ast';
 import { handleComponent } from './react/reactComponents';
@@ -43,13 +43,13 @@ export function getRenderedBlock(
   const block = renderNode(bodyBlock, context);
   const idMap = new Map<string, boolean>();
   context.scope.getClosure().forEach((decl, ident) => {
-    if ((decl.flags & DeclFlag.External) && decl.propName === '*') {
+    if ((decl.flags.External) && decl.propName === '*') {
       return; // imported vars should not get into closure
     }
-    if (!!(decl.flags & DeclFlag.HoistedToModule)) {
+    if (!!(decl.flags.HoistedToModule)) {
       return; // module scope vars also should not get into closure
     }
-    idMap.set(ident, !!(decl.flags & DeclFlag.ModifiedInLowerScope));
+    idMap.set(ident, !!(decl.flags.ModifiedInLowerScope));
   });
 
   context.popScope(`function__${stackCtr}`, bodyBlock?.getLastToken());
@@ -100,7 +100,7 @@ export function genClosure(idMap: Map<string, boolean>, context: Context<Declara
     // Reset closure modification flag for all closure vars: they can be used in next closures without modification, and it's ok
     const [decl] = context.scope.findByIdent(varName) || [];
     if (decl) {
-      decl.flags = decl.flags & ~DeclFlag.ModifiedInLowerScope;
+      decl.flags = { ...decl.flags, ModifiedInLowerScope: false };
     }
   });
 
@@ -169,7 +169,7 @@ export function checkModificationInNestedScope(node: ts.Identifier | null, conte
   if (decl && declScope) {
     const modifiedInLowerScope = usedInNestedScope(decl, declScope, context.scope);
     if (modifiedInLowerScope && decl) {
-      decl.flags = decl.flags | DeclFlag.ModifiedInLowerScope;
+      decl.flags = { ...decl.flags, ModifiedInLowerScope: true };
     }
     return decl;
   }

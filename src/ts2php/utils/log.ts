@@ -3,6 +3,7 @@ import * as chalk from 'chalk';
 import { writeSync } from 'fs';
 import { createHash } from 'crypto';
 import { format } from 'util';
+import { LogObj } from '../types';
 
 export enum LogSeverity {
   INFO,
@@ -36,19 +37,6 @@ export interface LogOptions {
 }
 
 export type LogPrinter = (message: string, msgid: string, params: string[], severity: LogSeverity, context?: string) => void;
-
-export interface LogObj {
-  errCount: number;
-  warnCount: number;
-  verbosity: number;
-  info: (message: string, params: string[], context?: string) => void;
-  warn: (message: string, params: string[], context?: string) => void;
-  error: (message: string, params: string[], context?: string) => void;
-  special: (message: string, params: string[], context?: string) => void;
-  typehint: (message: string, params: string[], context?: string) => void;
-  ctx: (node?: ts.Node) => string;
-  shortCtx: (fn: string) => string;
-}
 
 export class Logger implements LogObj {
   protected noOutput: boolean;

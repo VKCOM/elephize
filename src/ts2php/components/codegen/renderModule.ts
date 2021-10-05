@@ -1,10 +1,10 @@
 import * as ts from 'typescript';
-import { Declaration, JSXPreferences, NodeHooks, NsMap } from '../../types';
+import { Declaration, JSXPreferences, NodeHooks, NsMap, LogObj } from '../../types';
 import { ModuleRegistry } from '../cjsModules/moduleRegistry';
 import { CommonjsModule } from '../cjsModules/commonjsModule';
 import { Scope } from '../unusedCodeElimination/usageGraph';
 import { Context } from '../context';
-import { LogObj, LogVerbosity } from '../../utils/log';
+import { LogVerbosity } from '../../utils/log';
 import { renderNode } from './renderNodes';
 import { NodeFlagStore } from './nodeFlagStore';
 
@@ -43,7 +43,7 @@ export function renderModule(
   hooks: NodeHooks
 ): void {
   Scope._forceDisableUnusedVarsElimination = disableCodeElimination;
-  const moduleScope = Scope.newRootScope<Declaration>({ flags: 0 }, currentModule.sourceFileName, log, [
+  const moduleScope = Scope.newRootScope<Declaration>({ flags: {} }, currentModule.sourceFileName, log, [
     'console',
     'document',
     'window',

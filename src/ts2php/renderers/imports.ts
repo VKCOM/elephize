@@ -1,5 +1,5 @@
 import * as ts from 'typescript';
-import { Declaration, DeclFlag } from '../types';
+import { Declaration } from '../types';
 import { Context } from '../components/context';
 import { isExportedVar } from '../utils/ast';
 import * as path from 'path';
@@ -48,7 +48,7 @@ export function tImportDeclaration(node: ts.ImportDeclaration, context: Context<
         { terminateGlobally: isExportedVar(importBindings.name), dryRun: context.dryRun }
       );
       if (decl) {
-        decl.data.flags = DeclFlag.External;
+        decl.data.flags = { External: true };
         decl.data.targetModulePath = context.registry.toTargetPath(sourceFilename);
         decl.data.propName = '*';
       }
@@ -73,7 +73,7 @@ export function tImportDeclaration(node: ts.ImportDeclaration, context: Context<
         let impSourceFileName: string = originalModule?.sourceFileName || sourceFilename;
 
         if (decl) {
-          decl.data.flags = DeclFlag.DereferencedImport;
+          decl.data.flags = { DereferencedImport: true };
           decl.data.targetModulePath = context.registry.toTargetPath(impSourceFileName, searchForComponent);
           decl.data.propName = imp.propertyName?.getText() || imp.name.getText();
         }

@@ -1,7 +1,8 @@
 import { BindPendingNode, BoundNode, isPending, ScopeNode } from './node';
-import { LogObj, LogVerbosity } from '../../../utils/log';
+import { LogVerbosity } from '../../../utils/log';
+import { IScope, LogObj } from '../../../types';
 
-export class Scope<NodeData extends { [key: string]: any }> {
+export class Scope<NodeData extends { [key: string]: any }> implements IScope<NodeData> {
   public static _forceDisableUnusedVarsElimination = false;
   public static readonly EV_USAGE = 'usage';
   public static readonly EV_DECL = 'declaration';
@@ -17,9 +18,11 @@ export class Scope<NodeData extends { [key: string]: any }> {
    * Local terminal node is created in each scope independently and used for handling return statements.
    */
   protected _termNodeLocalName: string;
+
   public get tNodeLocal() {
     return this._termNodeLocalName;
   }
+
   /**
    * Declarations map containing all identifiers declared in current scope.
    * Identifier -> Node
@@ -197,6 +200,7 @@ export class Scope<NodeData extends { [key: string]: any }> {
 
   protected collectPendingNodes(scope: Scope<NodeData>, ident: string) {
     const collectedNodes: Array<BindPendingNode<NodeData>> = [];
+
     function collect(scopeC: Scope<NodeData>) {
       const pendingNode = scopeC.declarations.get(ident);
       if (pendingNode && isPending(pendingNode)) {
@@ -204,6 +208,7 @@ export class Scope<NodeData extends { [key: string]: any }> {
       }
       scopeC.childScopes.forEach(collect);
     }
+
     collect(scope);
     return collectedNodes;
   }
@@ -300,7 +305,11 @@ export class Scope<NodeData extends { [key: string]: any }> {
    * @param terminateLocally  Set this to true if variable or result of function call is returned as result.
    * @param dryRun  First pass of codegen?
    */
-  public addUsage(traceSourceIdent: string, traceTargetIdents: string[], { terminateGlobally = false, terminateLocally = false, dryRun = false } = {}): void {
+  public addUsage(traceSourceIdent: string, traceTargetIdents: string[], {
+    terminateGlobally = false,
+    terminateLocally = false,
+    dryRun = false,
+  } = {}): void {
     if (!dryRun) {
       // We don't add usages on non-dry run, it's pointless
       return;
@@ -328,7 +337,10 @@ export class Scope<NodeData extends { [key: string]: any }> {
       });
   }
 
-  public terminateCall(traceTargetIdent: string, { traceSourceIdent, dryRun = false }: { traceSourceIdent?: string; dryRun?: boolean } = {}) {
+  public terminateCall(traceTargetIdent: string, {
+    traceSourceIdent,
+    dryRun = false,
+  }: { traceSourceIdent?: string; dryRun?: boolean } = {}) {
     if (!dryRun) {
       // We don't add usages on non-dry run, it's pointless
       return;

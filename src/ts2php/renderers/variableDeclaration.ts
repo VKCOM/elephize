@@ -1,5 +1,5 @@
 import * as ts from 'typescript';
-import { Declaration, DeclFlag } from '../types';
+import { Declaration } from '../types';
 import { checkReactAssignment } from '../components/react/reactHooks';
 import { Context } from '../components/context';
 import { getClosestParentOfType, isExportedVar } from '../utils/ast';
@@ -79,7 +79,7 @@ export function tVariableDeclaration(node: ts.VariableDeclaration, context: Cont
 
   if (decl) {
     if (isFuncDeclaration) {
-      decl.data.flags |= DeclFlag.Callable;
+      decl.data.flags = { ...decl.data.flags, Callable: true };
     }
     decl.data.targetModulePath = context.moduleDescriptor.targetFileName;
   }
@@ -165,25 +165,25 @@ function topStatements(
     return flags?.dropReplacement || '';
   }
 
-  let decl: BoundNode<Declaration> | null = null;
+  let boundNode: BoundNode<Declaration> | null = null;
   if (!isFuncDeclaration) {
-    decl = context.scope.addDeclaration(
+    boundNode = context.scope.addDeclaration(
       node.name.getText(), [],
       { terminateGlobally: isExportedVar(node.name as ts.Identifier), dryRun: context.dryRun }
     );
   } else {
     const [, declScope] = context.scope.findByIdent(node.name.getText()) || [];
     if (declScope) {
-      decl = declScope.declarations.get(node.name.getText()) as BoundNode<Declaration>;
+      boundNode = declScope.declarations.get(node.name.getText()) as BoundNode<Declaration>;
     }
   }
 
-  if (decl) {
+  if (boundNode) {
     if (isFuncDeclaration) {
-      decl.data.flags |= DeclFlag.Callable;
+      boundNode.data.flags = { ...boundNode.data.flags, Callable: true };
     }
-    decl.data.flags |= DeclFlag.HoistedToModule;
-    decl.data.targetModulePath = context.moduleDescriptor.targetFileName;
+    boundNode.data.flags = { ...boundNode.data.flags, HoistedToModule: true };
+    boundNode.data.targetModulePath = context.moduleDescriptor.targetFileName;
     if (isExportedVar(node.name)) {
       context.scope.terminateCall(node.name.getText(), { dryRun: context.dryRun });
     }

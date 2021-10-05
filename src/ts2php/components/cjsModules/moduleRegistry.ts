@@ -1,5 +1,4 @@
 import { CommonjsModule } from './commonjsModule';
-import { LogObj } from '../../utils/log';
 import { ReactModule } from './reactModule';
 import {
   camelize,
@@ -7,15 +6,16 @@ import {
   classNameFromPath,
   escapeKeyword,
   normalizeBasePath,
-  normalizeFileExt, resolveAliasesAndPaths,
+  normalizeFileExt,
+  resolveAliasesAndPaths,
   snakify,
 } from '../../utils/pathsAndNames';
-import { ImportReplacementRule, NsMap } from '../../types';
+import { IModuleRegistry, ImportReplacementRule, NsMap, LogObj } from '../../types';
 import { CommonjsExternalModule } from './commonjsExternalModule';
 import { EnumModule } from './enumModule';
 import * as path from 'path';
 
-export class ModuleRegistry {
+export class ModuleRegistry implements IModuleRegistry {
   /**
    * Set for making unique class names for derived components
    */

@@ -1,10 +1,9 @@
 import * as ts from 'typescript';
 import { NodeFlagStore } from '../nodeFlagStore';
-import { ImportReplacementRule, TranslateOptions } from '../../../types';
+import { ImportReplacementRule, TranslateOptions, LogObj } from '../../../types';
 import { ModuleRegistry } from '../../cjsModules/moduleRegistry';
 import { renderModule } from '../renderModule';
 import { CommonjsModule } from '../../cjsModules/commonjsModule';
-import { LogObj } from '../../../utils/log';
 import * as prettier from 'prettier/standalone';
 import { phpPrettierOptions } from '../../../internalConfig/phpPrettierOptions';
 import { defaultOptions } from '../defaultCompilerOptions';

@@ -1,5 +1,5 @@
 import * as ts from 'typescript';
-import { Declaration, DeclFlag } from '../types';
+import { Declaration } from '../types';
 import { Context } from '../components/context';
 import { isExportedVar } from '../utils/ast';
 import { isTopLevel } from '../utils/isTopLevel';
@@ -49,20 +49,20 @@ export function tArrayBindingPattern(node: ts.ArrayBindingPattern, context: Cont
       let init = varDecl.initializer?.getText();
       if (init) {
         const [decl] = context.scope.findByIdent(init) || [];
-        if (decl && decl.flags & DeclFlag.HoistedToModule) {
+        if (decl && decl.flags.HoistedToModule) {
           init = 'this->' + init;
         }
       }
 
       const { renderedString, identList } = renderElements(node, init || '[compilation error!]', context);
       identList.forEach((ident) => {
-        const decl = context.scope.addDeclaration(
+        const boundNode = context.scope.addDeclaration(
           ident.getText(),
           [varDecl.initializer?.getText()],
           { terminateGlobally: isExportedVar(ident), dryRun: context.dryRun }
         );
-        if (decl) {
-          decl.data.flags = isTopLevel(ident, context) ? DeclFlag.HoistedToModule : 0;
+        if (boundNode) {
+          boundNode.data.flags = isTopLevel(ident, context) ? { HoistedToModule: true } : {};
         }
       });
       return renderedString;
@@ -86,13 +86,13 @@ export function tArrayBindingPattern(node: ts.ArrayBindingPattern, context: Cont
       const { renderedString, identList } = renderElements(node, derefIdent, context);
 
       identList.forEach((ident) => {
-        const decl = context.scope.addDeclaration(
+        const boundNode = context.scope.addDeclaration(
           ident.getText(),
           [derefIdent],
           { terminateGlobally: isExportedVar(ident), dryRun: context.dryRun }
         );
-        if (decl) {
-          decl.data.flags = isTopLevel(ident, context) ? DeclFlag.HoistedToModule : 0;
+        if (boundNode) {
+          boundNode.data.flags = isTopLevel(ident, context) ? { HoistedToModule: true } : {};
         }
       });
 

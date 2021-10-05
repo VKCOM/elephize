@@ -1,8 +1,21 @@
 import * as ts from 'typescript';
-import { Declaration, Dict, hooksNames, SpecialVars } from '../../types';
+import { Declaration, Dict, SpecialVars } from '../../types';
 import { Context } from '../context';
 import { flagParentOfType } from '../../utils/ast';
 import { renderNode } from '../codegen/renderNodes';
+
+const hooksNames = [
+  'useState',
+  'useEffect',
+  'useContext',
+  'useReducer',
+  'useCallback',
+  'useMemo',
+  'useRef',
+  'useImperativeHandle',
+  'useLayoutEffect',
+  'useDebugValue',
+];
 
 // Initialize react module name in current scope
 export function initReact(node: ts.ImportDeclaration, context: Context<Declaration>) {

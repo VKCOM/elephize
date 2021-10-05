@@ -1,4 +1,4 @@
-import { LogObj } from './log';
+import { LogObj } from '../types';
 import { Node } from 'typescript';
 
 export const extractRegexFlags = (regex: string, log: LogObj, ctx: Node) => {

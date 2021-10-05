@@ -1,5 +1,5 @@
 import * as ts from 'typescript';
-import { Declaration, DeclFlag } from '../types';
+import { Declaration } from '../types';
 import { Context } from '../components/context';
 import { intrinsicElements } from '../internalConfig/intrinsicElements';
 import { renderNode } from '../components/codegen/renderNodes';
@@ -25,7 +25,7 @@ export function tJsxSelfClosingElement(node: ts.JsxSelfClosingElement, context: 
     const [declaration] = decl;
 
     let component;
-    if (declaration.flags & DeclFlag.External || declaration.flags & DeclFlag.DereferencedImport) {
+    if (declaration.flags.External || declaration.flags.DereferencedImport) {
       component = context.registry.getExportedComponent(context.moduleDescriptor, declaration.targetModulePath, node.tagName.getText());
     } else {
       component = context.registry.getLocalComponent(context.moduleDescriptor, node.tagName.getText());

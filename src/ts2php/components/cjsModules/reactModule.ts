@@ -2,8 +2,9 @@ import { CommonjsModule } from './commonjsModule';
 import { ModuleRegistry } from './moduleRegistry';
 import { PhpParsedStruct } from './phpParser';
 import * as path from 'path';
+import { IReactModule } from '../../types';
 
-export class ReactModule extends CommonjsModule {
+export class ReactModule extends CommonjsModule implements IReactModule {
   public readonly isDerived: boolean = true;
   private _phpdoc: string[] = [];
   protected args: string;

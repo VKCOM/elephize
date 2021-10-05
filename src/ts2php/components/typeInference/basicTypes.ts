@@ -1,9 +1,8 @@
 import * as ts from 'typescript';
-import { MethodsTypes } from '../../types';
+import { MethodsTypes, LogObj } from '../../types';
 import { checkCustomTypehints } from './customTypehints';
 import { typeMap } from './basicTypesMap';
 import { mixedTypehintId } from './customTypehintsList';
-import { LogObj } from '../../utils/log';
 
 /**
  * Return custom forced type cast clause based on used-defined commentsconst type = getPhpPrimitiveType(el.name, context.checker, context.log);

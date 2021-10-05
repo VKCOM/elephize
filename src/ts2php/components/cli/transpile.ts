@@ -1,12 +1,11 @@
 import * as glob from 'glob';
-import { LogObj } from '../../utils/log';
 import { translateCode, translateCodeAndWatch } from '../codegen/translateCode';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as iconv from 'iconv-lite';
 import { ModuleRegistry } from '../cjsModules/moduleRegistry';
 import ncp = require('ncp');
-import { CliOptions, NodeHooks } from '../../types';
+import { CliOptions, NodeHooks, LogObj } from '../../types';
 import { sync as mkdirpSync } from 'mkdirp';
 const replace = require('stream-replace');
 

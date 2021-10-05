@@ -3,11 +3,10 @@ import { ModuleRegistry } from './cjsModules/moduleRegistry';
 import { CommonjsModule } from './cjsModules/commonjsModule';
 import { Scope } from './unusedCodeElimination/usageGraph';
 import { BoundNode } from './unusedCodeElimination/usageGraph/node';
-import { LogObj } from '../utils/log';
-import { JSXPreferences, NodeHooks, NsMap } from '../types';
+import { IContext, JSXPreferences, NodeHooks, NsMap, LogObj } from '../types';
 import { NodeFlagStore } from './codegen/nodeFlagStore';
 
-export class Context<T> {
+export class Context<T> implements IContext<T> {
   protected _jsxTagStack: string[] = [];
   protected _uniqIdStack: string[] = [];
   public constructor(
