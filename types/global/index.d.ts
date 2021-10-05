@@ -43,3 +43,15 @@ interface String {
   // eslint-disable-next-line @typescript-eslint/unified-signatures
   replaceAll(searchValue: string | RegExp, replacer: (substring: string, ...args: any[]) => string): string;
 }
+
+declare interface ElephizeNodeHook {
+  run: (
+    node: import('typescript').Node,
+    context: import('../../src/ts2php/components/context').Context<import('../../src/ts2php/types').Declaration>
+  ) => { preventDefault: true; content: string } | { preventDefault: false };
+}
+
+declare interface ElephizeNodeHookEntry {
+  nodeKind: import('typescript').SyntaxKind;
+  hook: ElephizeNodeHook;
+}

@@ -45,6 +45,8 @@ export type Declaration = {
   isComponent?: boolean;
 };
 
+export type NodeHooks = { [k in ts.SyntaxKind]?: ElephizeNodeHook };
+
 export type ExpressionHook = (node: ts.CallExpression, context: Context<Declaration>) => string | undefined;
 
 export type NsMap = {
@@ -118,6 +120,7 @@ export type CliOptions = {
   verboseUsage: boolean;
   watch: boolean;
   jsxPreferences?: JSXPreferences;
+  hooksIncludePath?: string;
 };
 
 export type TranslateOptions = {
@@ -134,4 +137,5 @@ export type TranslateOptions = {
   onFinish?: (registry: ModuleRegistry) => void;
   options?: ts.CompilerOptions;
   jsxPreferences: JSXPreferences;
+  hooks: NodeHooks;
 };

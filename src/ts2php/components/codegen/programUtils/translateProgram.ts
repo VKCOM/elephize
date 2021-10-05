@@ -41,6 +41,7 @@ export function translateProgram(program: ts.Program, replacements: ImportReplac
   encoding,
   options = defaultOptions,
   jsxPreferences = {},
+  hooks = {},
   onFinish = () => undefined,
 }: TranslateOptions) {
   if (typeof jest === 'undefined') {
@@ -86,6 +87,7 @@ export function translateProgram(program: ts.Program, replacements: ImportReplac
         disableCodeElimination,
         '',
         jsxPreferences,
+        hooks
       );
     }
   }

@@ -104,6 +104,19 @@ function render(node: ts.Node | undefined, context: Context<Declaration>): strin
     return '';
   }
 
+  // Custom external hooks
+  const hook = context.nodeHooks[node.kind];
+  if (hook) {
+    try {
+      const result = hook.run(node, context);
+      if (result.preventDefault) {
+        return result.content;
+      }
+    } catch (e) {
+      context.log.error('Custom hook for node kind %s failed: %s', [node.kind, e.toString()]);
+    }
+  }
+
   if (node.kind === ts.SyntaxKind.DebuggerStatement) { debugger; }
   if (node.kind === ts.SyntaxKind.InterfaceDeclaration) { return ''; }
   if (node.kind === ts.SyntaxKind.TypeAliasDeclaration) { return ''; }

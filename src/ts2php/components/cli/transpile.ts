@@ -6,7 +6,7 @@ import * as fs from 'fs';
 import * as iconv from 'iconv-lite';
 import { ModuleRegistry } from '../cjsModules/moduleRegistry';
 import ncp = require('ncp');
-import { CliOptions } from '../../types';
+import { CliOptions, NodeHooks } from '../../types';
 import { sync as mkdirpSync } from 'mkdirp';
 const replace = require('stream-replace');
 
@@ -30,6 +30,15 @@ export function transpile(options: CliOptions, baseDir: string, outDir: string, 
   }
 
   const serverFilesRoot = options.serverBaseDir ?? options.baseDir;
+
+  let hooks: NodeHooks = {};
+  if (options.hooksIncludePath) {
+    const data: ElephizeNodeHookEntry[] = require(options.hooksIncludePath);
+    hooks = { ...(data.reduce<NodeHooks>((acc, entry) => {
+      acc[entry.nodeKind] = entry.hook;
+      return acc;
+    }, {})) };
+  }
 
   glob(options.src, (e: Error, matches: string[]) => {
     if (e) {
@@ -61,6 +70,7 @@ export function transpile(options: CliOptions, baseDir: string, outDir: string, 
         onData: (sourceFilename: string, targetFilename: string, content: string) => onData(targetFilename, content),
         onFinish,
         jsxPreferences: options.jsxPreferences || {},
+        hooks,
       }
     );
   });

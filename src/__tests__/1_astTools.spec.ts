@@ -59,6 +59,7 @@ function recompile(fileNames: string[], onData: (filename: string, rootNode: ts.
     serverFilesRoot: '',
     encoding: 'utf-8',
     jsxPreferences: {},
+    hooks: {},
     onBeforeRender: onData,
     onData: () => undefined,
   });
