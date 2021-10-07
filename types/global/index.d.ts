@@ -10,5 +10,5 @@ declare interface ElephizeNodeHook {
 
 declare interface ElephizeNodeHookEntry {
   nodeKind: import('../../src/ts2php/types').SyntaxKind;
-  hook: ElephizeNodeHook;
+  hook: ElephizeNodeHook['run'];
 }
