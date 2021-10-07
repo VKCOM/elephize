@@ -1,13 +1,13 @@
 import * as glob from 'glob';
-import { LogObj } from '../../utils/log';
 import { translateCode, translateCodeAndWatch } from '../codegen/translateCode';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as iconv from 'iconv-lite';
 import { ModuleRegistry } from '../cjsModules/moduleRegistry';
 import ncp = require('ncp');
-import { CliOptions } from '../../types';
+import { CliOptions, NodeHooks, LogObj } from '../../types';
 import { sync as mkdirpSync } from 'mkdirp';
+import { transpileModule, ModuleKind } from 'typescript';
 const replace = require('stream-replace');
 
 export function transpile(options: CliOptions, baseDir: string, outDir: string, log: LogObj) {
@@ -30,6 +30,27 @@ export function transpile(options: CliOptions, baseDir: string, outDir: string, 
   }
 
   const serverFilesRoot = options.serverBaseDir ?? options.baseDir;
+
+  let hooks: NodeHooks = {};
+  if (options.hooksIncludePath) {
+    try {
+      let result = transpileModule(
+        fs.readFileSync(options.hooksIncludePath, { encoding: 'utf-8' }),
+        { compilerOptions: { module: ModuleKind.CommonJS } }
+      );
+      // eslint-disable-next-line no-eval
+      const data: ElephizeNodeHookEntry[] = eval(result.outputText);
+      hooks = {
+        ...(data.reduce<NodeHooks>((acc, entry) => {
+          acc[entry.nodeKind] = { run: entry.hook };
+          return acc;
+        }, {})),
+      };
+    } catch (e) {
+      log.error('Failed to load AST hooks: %s', [e.toString()]);
+      hooks = {};
+    }
+  }
 
   glob(options.src, (e: Error, matches: string[]) => {
     if (e) {
@@ -61,6 +82,7 @@ export function transpile(options: CliOptions, baseDir: string, outDir: string, 
         onData: (sourceFilename: string, targetFilename: string, content: string) => onData(targetFilename, content),
         onFinish,
         jsxPreferences: options.jsxPreferences || {},
+        hooks,
       }
     );
   });

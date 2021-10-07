@@ -1,5 +1,5 @@
 import * as ts from 'typescript';
-import { Declaration, DeclFlag } from '../types';
+import { Declaration } from '../types';
 import { hookStdlib } from './stdlib';
 import { getLeftExpr } from '../utils/ast';
 import { Context } from '../components/context';
@@ -73,12 +73,12 @@ export function tCallExpression(node: ts.CallExpression, context: Context<Declar
   markUsedVars(node, lExp, usedVars, context);
 
   // Similar logic for similar cases, but with slight differences >_<
-  if (decl && decl.flags & DeclFlag.External) {
+  if (decl && decl.flags.External) {
     const prop = (node.expression as ts.PropertyAccessExpression).name.getText();
     return context.registry.callExportedCallable(context.moduleDescriptor, decl.targetModulePath, prop, args);
   } else if (
-    (decl && decl.flags & DeclFlag.DereferencedImport) ||
-    (decl && (decl.flags & DeclFlag.Local && (insideComponent(context.scope) || declScope?.isRoot() )))
+    (decl && decl.flags.DereferencedImport) ||
+    (decl && (decl.flags.Local && (insideComponent(context.scope) || declScope?.isRoot() )))
   ) {
     return context.registry.callExportedCallable(context.moduleDescriptor, decl.targetModulePath, decl.propName!, args);
   }

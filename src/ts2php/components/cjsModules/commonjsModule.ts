@@ -1,10 +1,9 @@
 import * as ts from 'typescript';
-import { LogObj } from '../../utils/log';
-import { MethodsTypes, NsMap, SpecialVars } from '../../types';
+import { ICommonjsModule, LogObj, MethodsTypes, NsMap, SpecialVars } from '../../types';
 import { ModuleRegistry } from './moduleRegistry';
 import { escapeKeyword } from '../../utils/pathsAndNames';
 
-export class CommonjsModule {
+export class CommonjsModule implements ICommonjsModule {
   public readonly isDerived: boolean = false;
   public readonly isExternal: boolean = false;
   protected _hoistedContent: Set<string> = new Set();
@@ -15,7 +14,7 @@ export class CommonjsModule {
    * Exports should strictly contain _final_ path
    */
   protected _exports: Map<string, string[]> = new Map();
-  protected _requiredFiles: Map<string, CommonjsModule> = new Map();
+  protected _requiredFiles: Map<string, ICommonjsModule> = new Map();
   protected _constructorStatements: string[] = [];
   public _specialVars: SpecialVars = {};
 
@@ -114,7 +113,7 @@ export class CommonjsModule {
     this._specialVars[kind] = name;
   }
 
-  public registerRequiredFile(path: string, currentModulePath: string, originalModule?: CommonjsModule) {
+  public registerRequiredFile(path: string, currentModulePath: string, originalModule?: ICommonjsModule) {
     if (path === currentModulePath || !originalModule) {
       return;
     }

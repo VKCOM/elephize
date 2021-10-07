@@ -1,5 +1,5 @@
 import * as ts from 'typescript';
-import { LogObj } from './log';
+import { LogObj } from '../types';
 
 export function hasExport(node: ts.Node, log: LogObj) {
   if (node.modifiers) {

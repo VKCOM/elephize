@@ -1,5 +1,5 @@
 import * as ts from 'typescript';
-import { Declaration, DeclFlag } from '../types';
+import { Declaration } from '../types';
 import { Context } from '../components/context';
 import * as attrs from '../../../data/domattrs.json';
 import { getClosestParentOfTypeWithFlag } from '../utils/ast';
@@ -26,7 +26,7 @@ export function tShorthandPropertyAssignment(node: ts.ShorthandPropertyAssignmen
   name = normalizeVarName(name);
   const decl = checkModificationInNestedScope(node.name, context);
 
-  if ((decl?.flags || 0) & DeclFlag.HoistedToModule) {
+  if ((decl?.flags || {}).HoistedToModule) {
     return `"${name}" => $this->${snakify(name)}`;
   }
   return `"${name}" => $${snakify(name)}`;

@@ -1,5 +1,5 @@
 import * as ts from 'typescript';
-import { Declaration, DeclFlag } from '../types';
+import { Declaration } from '../types';
 import { handleComponent } from '../components/react/reactComponents';
 import { Context } from '../components/context';
 import { snakify } from '../utils/pathsAndNames';
@@ -34,9 +34,9 @@ export function tFunctionDeclaration(node: ts.FunctionDeclaration, context: Cont
     }
 
     if (node.name) {
-      const decl = context.scope.addDeclaration(node.name.getText(), [], { dryRun: context.dryRun });
-      if (decl) {
-        decl.data.flags = DeclFlag.HoistedToModule | DeclFlag.Callable;
+      const boundNode = context.scope.addDeclaration(node.name.getText(), [], { dryRun: context.dryRun });
+      if (boundNode) {
+        boundNode.data.flags = { HoistedToModule: true, Callable: true };
       }
 
       const els = generateFunctionElements({
@@ -55,8 +55,8 @@ export function tFunctionDeclaration(node: ts.FunctionDeclaration, context: Cont
         if (isExportedFun(node.name)) {
           context.scope.terminateCall(node.name.getText(), { traceSourceIdent: Scope.tNode, dryRun: context.dryRun });
           context.moduleDescriptor.registerExport(context.moduleDescriptor.sourceFileName, node.name.getText());
-          if (decl && decl.ownedScope) {
-            decl.ownedScope.terminateToParentTerminalNode(context.dryRun);
+          if (boundNode && boundNode.ownedScope) {
+            boundNode.ownedScope.terminateToParentTerminalNode(context.dryRun);
           }
         }
       }

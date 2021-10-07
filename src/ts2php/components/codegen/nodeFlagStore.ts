@@ -1,7 +1,7 @@
 import * as ts from 'typescript';
-import { NodeFlags } from '../../types';
+import { INodeFlagStore, NodeFlags } from '../../types';
 
-export class NodeFlagStore {
+export class NodeFlagStore implements INodeFlagStore {
   private _store: WeakMap<ts.Node, NodeFlags>;
   public constructor() {
     this._store = new WeakMap<ts.Node, NodeFlags>();

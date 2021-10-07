@@ -1,10 +1,10 @@
 import * as ts from 'typescript';
-import { Declaration, JSXPreferences, NsMap } from '../../types';
+import { Declaration, JSXPreferences, NodeHooks, NsMap, LogObj } from '../../types';
 import { ModuleRegistry } from '../cjsModules/moduleRegistry';
 import { CommonjsModule } from '../cjsModules/commonjsModule';
 import { Scope } from '../unusedCodeElimination/usageGraph';
 import { Context } from '../context';
-import { LogObj, LogVerbosity } from '../../utils/log';
+import { LogVerbosity } from '../../utils/log';
 import { renderNode } from './renderNodes';
 import { NodeFlagStore } from './nodeFlagStore';
 
@@ -23,6 +23,8 @@ import { NodeFlagStore } from './nodeFlagStore';
  * @param log
  * @param disableCodeElimination
  * @param builtinsNs
+ * @param jsxPreferences
+ * @param hooks
  */
 export function renderModule(
   checker: ts.TypeChecker,
@@ -37,10 +39,11 @@ export function renderModule(
   log: LogObj,
   disableCodeElimination = false,
   builtinsNs = '',
-  jsxPreferences: JSXPreferences
+  jsxPreferences: JSXPreferences,
+  hooks: NodeHooks
 ): void {
   Scope._forceDisableUnusedVarsElimination = disableCodeElimination;
-  const moduleScope = Scope.newRootScope<Declaration>({ flags: 0 }, currentModule.sourceFileName, log, [
+  const moduleScope = Scope.newRootScope<Declaration>({ flags: {} }, currentModule.sourceFileName, log, [
     'console',
     'document',
     'window',
@@ -63,6 +66,7 @@ export function renderModule(
     log,
     builtinsNs,
     jsxPreferences,
+    hooks,
   );
 
   // First pass: build trees and collect var usage info
@@ -93,6 +97,7 @@ export function renderModule(
     log,
     builtinsNs,
     jsxPreferences,
+    hooks,
   );
 
   // Second pass: build code with cleaned unused vars

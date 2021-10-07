@@ -4,8 +4,7 @@ import { readFileSync, writeFileSync, unlinkSync } from 'fs';
 import { normalizeFileExt } from '../ts2php/utils/pathsAndNames';
 import * as prettier from 'prettier/standalone';
 import { phpPrettierOptions } from '../ts2php/internalConfig/phpPrettierOptions';
-import { CliOptions, JSXPreferences } from '../ts2php/types';
-import { LogObj } from '../ts2php/utils/log';
+import { CliOptions, JSXPreferences, LogObj, NodeHooks } from '../ts2php/types';
 import { sync as mkdirpSync } from 'mkdirp';
 
 const baseDir = pResolve(__dirname);
@@ -36,6 +35,7 @@ const compilerOptions = {
 
 interface RunBatchOptions {
   jsxPreferences?: JSXPreferences;
+  hooks?: NodeHooks;
 }
 
 export function runBatch(basePath: string[], testSuite: string[][], log: LogObj, options?: RunBatchOptions) {
@@ -49,6 +49,7 @@ export function runBatch(basePath: string[], testSuite: string[][], log: LogObj,
     encoding: 'utf-8',
     options: compilerOptions,
     jsxPreferences: options?.jsxPreferences || {},
+    hooks: options?.hooks || {},
     onData: (sourceFilename: string, targetFilename: string, content: string) => onData(basePath, promises, targetFilename, content),
   });
 

@@ -1,5 +1,5 @@
 import * as ts from 'typescript';
-import { Declaration, DeclFlag } from '../types';
+import { Declaration } from '../types';
 import { builtins } from '../internalConfig/jsBuiltins';
 import { flagParentOfType } from '../utils/ast';
 import { Context } from '../components/context';
@@ -30,7 +30,7 @@ export function tIdentifier(node: ts.Identifier, context: Context<Declaration>) 
 
   const [decl] = context.scope.findByIdent(node.escapedText.toString()) || [];
 
-  if (decl && decl.flags & DeclFlag.DereferencedImport) {
+  if (decl && decl.flags.DereferencedImport) {
     if (!decl.targetModulePath) {
       // This condition is to prevent errors while importing types from external modules.
       // It's fine to import type/interface identifiers without any checks, if they're used only in type expressions.
@@ -63,7 +63,7 @@ export function tIdentifier(node: ts.Identifier, context: Context<Declaration>) 
     return node.escapedText.toString();
   }
 
-  if (decl && decl.flags & DeclFlag.HoistedToModule) {
+  if (decl && decl.flags.HoistedToModule) {
     if (insideComponent(context.scope)) {
       context.scope.addUsage(decl.propName || node.escapedText.toString(), [], { dryRun: context.dryRun });
       return context.registry.getExportedIdentifier(

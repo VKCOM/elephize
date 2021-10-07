@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 
 import * as ts from 'typescript';
-import { LogObj } from '../../../utils/log';
-import { CliOptions, ImportReplacementRule } from '../../../types';
+import { CliOptions, ImportReplacementRule, LogObj } from '../../../types';
 import { resolveModules } from '../../cjsModules/resolveModules';
 
 const formatHost: ts.FormatDiagnosticsHost = {

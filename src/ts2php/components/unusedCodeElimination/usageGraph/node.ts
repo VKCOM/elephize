@@ -1,10 +1,11 @@
 import { Scope } from './scope';
-import { LogObj, LogVerbosity } from '../../../utils/log';
+import { LogVerbosity } from '../../../utils/log';
+import { IBoundNode, IScopeNode, LogObj } from '../../../types';
 
 export const isBound = <T>(node: ScopeNode<T>): node is BoundNode<T> => node._type === 'early_bound';
 export const isPending = <T>(node: ScopeNode<T>): node is BindPendingNode<T> => node._type === 'late_bound';
 
-export class ScopeNode<T extends { [key: string]: any }> {
+export class ScopeNode<T extends { [key: string]: any }> implements IScopeNode<T> {
   public readonly _type: 'abstract' | 'early_bound' | 'late_bound' = 'abstract';
   /**
    * Edges list: contains nodes connected to current node. Directed.
@@ -137,13 +138,18 @@ export class ScopeNode<T extends { [key: string]: any }> {
    * True if current identifier is used by some other identifier or by terminal node
    */
   protected _usageMark = false;
-  public get used() { return this._usageMark; }
+
+  public get used() {
+    return this._usageMark;
+  }
+
   protected _markUsed() {
     if (this.log.verbosity & LogVerbosity.WITH_USAGE_GRAPH_DUMP) {
       this.log.info('Marking node as used: %s', [this.ident]);
     }
     this._usageMark = true;
   }
+
   public reset() {
     if (this.log.verbosity & LogVerbosity.WITH_USAGE_GRAPH_DUMP) {
       this.log.info('Resetting node usage: %s', [this.ident]);
@@ -178,7 +184,7 @@ export class ScopeNode<T extends { [key: string]: any }> {
   }
 }
 
-export class BoundNode<T extends { [key: string]: any }> extends ScopeNode<T> {
+export class BoundNode<T extends { [key: string]: any }> extends ScopeNode<T> implements IBoundNode<T> {
   public readonly _type = 'early_bound';
 
   public constructor(ident: string, homeScope: Scope<T>, data: T, log: LogObj, traceTargetNodes: Array<ScopeNode<T>> = [], tmpSourceTargets?: Map<string, ScopeNode<T>>) {

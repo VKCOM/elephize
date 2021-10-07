@@ -1,7 +1,6 @@
 import { CommonjsModule } from './commonjsModule';
-import { NsMap } from '../../types';
+import { NsMap, LogObj } from '../../types';
 import { PhpParsedStruct } from './phpParser';
-import { LogObj } from '../../utils/log';
 import { ModuleRegistry } from './moduleRegistry';
 
 export class CommonjsExternalModule extends CommonjsModule {

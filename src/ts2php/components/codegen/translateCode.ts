@@ -1,10 +1,9 @@
-import { CliOptions, TranslateOptions } from '../../types';
+import { CliOptions, TranslateOptions, LogObj } from '../../types';
 import { getBuildProgram } from './programUtils/buildProgramFactory';
 import { NodeFlagStore } from './nodeFlagStore';
 import { translateProgram } from './programUtils/translateProgram';
 import { defaultOptions } from './defaultCompilerOptions';
 import { getWatchProgram } from './programUtils/watchProgramFactory';
-import { LogObj } from '../../utils/log';
 
 type TranslatorFunc = (
   filenames: string[],
@@ -34,6 +33,7 @@ export const translateCode: TranslatorFunc = (
     onFinish = () => undefined,
     options = defaultOptions,
     jsxPreferences = {},
+    hooks = {},
   }: TranslateOptions
 ): NodeFlagStore => {
   // Enable more logging using env var
@@ -68,6 +68,7 @@ export const translateCode: TranslatorFunc = (
       encoding,
       options,
       jsxPreferences,
+      hooks,
       onFinish,
     });
   return nodeFlagStore;
@@ -93,6 +94,7 @@ export const translateCodeAndWatch: TranslatorFunc = (
     onFinish = () => undefined,
     options = defaultOptions,
     jsxPreferences,
+    hooks,
   }: TranslateOptions
 ): NodeFlagStore => {
   const nodeFlagStore = new NodeFlagStore(); // TODO: check! this may lead to unforeseen consequences in sequential rebuilds
@@ -106,6 +108,7 @@ export const translateCodeAndWatch: TranslatorFunc = (
       builtinsPath,
       encoding,
       jsxPreferences,
+      hooks,
       onBeforeRender,
       onData: (sourceFilename: string, targetFilename: string, content: string) => onData(sourceFilename, targetFilename, content, errcode),
       onFinish,

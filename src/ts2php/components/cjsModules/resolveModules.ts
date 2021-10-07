@@ -1,7 +1,6 @@
 import * as ts from 'typescript';
-import { CliOptions, ImportReplacementRule } from '../../types';
+import { CliOptions, ImportReplacementRule, LogObj } from '../../types';
 import * as path from 'path';
-import { LogObj } from '../../utils/log';
 import { resolveAliasesAndPaths } from '../../utils/pathsAndNames';
 import * as glob from 'glob';
 

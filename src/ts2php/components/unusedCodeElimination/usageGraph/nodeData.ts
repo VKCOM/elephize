@@ -1,7 +1,7 @@
 import * as ts from 'typescript';
 import { Scope } from './index';
 import { sha1 } from '../../../utils/sha1';
-import { Declaration, DeclFlag } from '../../../types';
+import { Declaration } from '../../../types';
 
 export function insideComponent(scope: Scope<Declaration>) {
   while (scope) {
@@ -15,8 +15,8 @@ export function insideComponent(scope: Scope<Declaration>) {
 }
 
 export function usedInNestedScope(decl: Declaration | undefined, declScope: Scope<Declaration>, currentScope: Scope<Declaration>): boolean {
-  const flags = decl?.flags || 0;
-  const noOtherFlags = !(flags & DeclFlag.External) && !(flags & DeclFlag.Local) && !(flags & DeclFlag.DereferencedImport) && !(flags & DeclFlag.HoistedToModule);
+  const flags = decl?.flags || {};
+  const noOtherFlags = !(flags.External) && !(flags.Local) && !(flags.DereferencedImport) && !(flags.HoistedToModule);
   return !!decl && !currentScope.isRoot() && declScope !== currentScope && noOtherFlags;
 }
 

@@ -1,9 +1,8 @@
 import * as ts from 'typescript';
 import { existsSync } from 'fs';
-import { CliOptions, ImportReplacementRule } from '../../../types';
+import { CliOptions, ImportReplacementRule, LogObj } from '../../../types';
 import { resolveModules } from '../../cjsModules/resolveModules';
 import { compilerHostSourceGetter } from '../sourceFilesHelper';
-import { LogObj } from '../../../utils/log';
 
 // internals. Not good thing to import them this way, but it's hard to customize transpileModule the way we want.
 const { addRange } = require('typescript');

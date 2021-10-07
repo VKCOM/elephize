@@ -1,5 +1,5 @@
 import * as ts from 'typescript';
-import { Declaration, DeclFlag } from '../types';
+import { Declaration } from '../types';
 import { getLeftExpr } from '../utils/ast';
 import { Context } from '../components/context';
 import { insideComponent } from '../components/unusedCodeElimination/usageGraph/nodeData';
@@ -27,7 +27,7 @@ export function tPropertyAccessExpression(node: ts.PropertyAccessExpression, con
   const lExp = getLeftExpr(node.expression);
   if (lExp) {
     const [decl] = context.scope.findByIdent(lExp.getText()) || [];
-    if (decl && decl.flags & DeclFlag.External) {
+    if (decl && decl.flags.External) {
       return context.registry.getExportedIdentifier(context.moduleDescriptor, decl.targetModulePath, node.name.text);
     }
   }

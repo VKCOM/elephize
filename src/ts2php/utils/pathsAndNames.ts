@@ -1,5 +1,4 @@
-import { Dict } from '../types';
-import { LogObj } from './log';
+import { Dict, LogObj } from '../types';
 import * as nodePath from 'path';
 import * as fs from 'fs';
 
