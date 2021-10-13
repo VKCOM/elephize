@@ -3,6 +3,7 @@
 namespace specimens\components\NestedComponent;
 use VK\Elephize\Builtins\RenderableComponent;
 use VK\Elephize\Builtins\Stdlib;
+use VK\Elephize\Builtins\ReactContext;
 
 class NestedComponent extends RenderableComponent {
     /**

@@ -3,6 +3,7 @@
 namespace specimens\components\BasicComponentWithProps;
 use VK\Elephize\Builtins\RenderableComponent;
 use VK\Elephize\Builtins\Stdlib;
+use VK\Elephize\Builtins\ReactContext;
 
 class BasicComponentWithProps extends RenderableComponent {
     /**

@@ -3,6 +3,7 @@
 namespace specimens\components\PathResolveReact;
 use VK\Elephize\Builtins\Stdlib;
 use VK\Elephize\Builtins\CJSModule;
+use VK\Elephize\Builtins\ReactContext;
 
 class PathResolveReactModule extends CJSModule {
     /**

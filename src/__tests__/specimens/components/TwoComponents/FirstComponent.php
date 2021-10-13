@@ -3,6 +3,7 @@
 namespace specimens\components\TwoComponents;
 use VK\Elephize\Builtins\RenderableComponent;
 use VK\Elephize\Builtins\Stdlib;
+use VK\Elephize\Builtins\ReactContext;
 
 class FirstComponent extends RenderableComponent {
     /**

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { classNames as cx } from '#utils/classnames';
+import { ctx } from '#iso_palette/Context';
 
 const defaultProps: React.InputHTMLAttributes<any> = {
   className: '',
@@ -15,6 +16,8 @@ const defaultProps: React.InputHTMLAttributes<any> = {
 // @elephizeTarget
 export const Radio: React.FunctionComponent<React.InputHTMLAttributes<any>> = (inputProps) => {
   const props = { ...defaultProps, ...inputProps };
+  const { useContext } = React;
+  const context = useContext(ctx);
 
   const {
     className,
@@ -32,6 +35,7 @@ export const Radio: React.FunctionComponent<React.InputHTMLAttributes<any>> = (i
     <label className={classNames}>
       <input type="radio" className='Radio__input Radio__visuallyHidden' {...nativeProps} />
       <span className='Radio__control' />
+      {context.label}
       {children && <span className='Radio__text'>{children}</span>}
     </label>
   );

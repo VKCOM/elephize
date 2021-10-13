@@ -3,6 +3,7 @@
 namespace specimens\byType\jsx;
 use VK\Elephize\Builtins\RenderableComponent;
 use VK\Elephize\Builtins\Stdlib;
+use VK\Elephize\Builtins\ReactContext;
 
 class Jsx extends RenderableComponent {
     /**

@@ -3,6 +3,7 @@
 namespace specimens\misc\importedTypes;
 use VK\Elephize\Builtins\RenderableComponent;
 use VK\Elephize\Builtins\Stdlib;
+use VK\Elephize\Builtins\ReactContext;
 
 class ImportedTypesComponent extends RenderableComponent {
     /**

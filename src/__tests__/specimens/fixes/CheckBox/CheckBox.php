@@ -3,6 +3,7 @@
 namespace specimens\fixes\CheckBox;
 use VK\Elephize\Builtins\RenderableComponent;
 use VK\Elephize\Builtins\Stdlib;
+use VK\Elephize\Builtins\ReactContext;
 
 class CheckBox extends RenderableComponent {
     /**

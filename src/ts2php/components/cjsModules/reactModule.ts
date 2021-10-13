@@ -55,6 +55,7 @@ export class ReactModule extends CommonjsModule implements IReactModule {
 namespace ${fullyQualifiedNamespace};
 use ${this._namespaces.builtins}\\RenderableComponent;
 use ${this._namespaces.builtins}\\Stdlib;
+use ${this._namespaces.builtins}\\ReactContext;
 
 class ${this.className} extends RenderableComponent {
     /**

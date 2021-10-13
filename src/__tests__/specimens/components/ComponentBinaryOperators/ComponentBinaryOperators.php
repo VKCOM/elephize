@@ -3,6 +3,7 @@
 namespace specimens\components\ComponentBinaryOperators;
 use VK\Elephize\Builtins\RenderableComponent;
 use VK\Elephize\Builtins\Stdlib;
+use VK\Elephize\Builtins\ReactContext;
 
 class ComponentBinaryOperators extends RenderableComponent {
     /**

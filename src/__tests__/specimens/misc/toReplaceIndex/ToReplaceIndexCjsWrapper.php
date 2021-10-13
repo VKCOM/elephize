@@ -3,6 +3,7 @@
 namespace specimens\misc\toReplaceIndex;
 use VK\Elephize\Builtins\Stdlib;
 use VK\Elephize\Builtins\CJSModule;
+use VK\Elephize\Builtins\ReactContext;
 
 class ToReplaceSecondCjsWrapper extends CJSModule {
     /**

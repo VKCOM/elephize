@@ -7,7 +7,6 @@ import { renderNode } from '../codegen/renderNodes';
 const hooksNames = [
   'useState',
   'useEffect',
-  'useContext',
   'useReducer',
   'useCallback',
   'useMemo',
@@ -15,6 +14,9 @@ const hooksNames = [
   'useImperativeHandle',
   'useLayoutEffect',
   'useDebugValue',
+
+  'useContext',
+  'createContext', // process it here too because why not
 ];
 
 // Initialize react module name in current scope
@@ -28,7 +30,7 @@ export function initReact(node: ts.ImportDeclaration, context: Context<Declarati
   return false;
 }
 
-type HookRenderer = (node: ts.CallExpression, context: Context<Declaration>, nodeIdent: string) => string | null;
+type HookRenderer = (node: ts.CallExpression, context: Context<Declaration>) => string | null;
 type HookRenderers = Dict<HookRenderer>;
 
 const dropRender: HookRenderer = (node, context) => {
@@ -43,11 +45,6 @@ const hookRenderers: HookRenderers = {
   'useState': (node, context) => {
     const val = renderNode(node.arguments[0], context); // recognize only 1st argument of call
     return `[${val}]`;
-  },
-
-  'useContext': (node, context, nodeIdent) => {
-    context.log.error('React contexts are not supported in isomorphic components', [], context.log.ctx(node));
-    return dropRender(node, context, nodeIdent);
   },
 
   'useReducer': (node, context) => {
@@ -66,6 +63,16 @@ const hookRenderers: HookRenderers = {
   'useImperativeHandle': () => '!null',
   'useLayoutEffect': () => '!null',
   'useDebugValue': () => '!null',
+
+  // React contexts processing
+  'createContext': (node, context) => {
+    const contextValue = renderNode(node.arguments[0], context);
+    return `\\${context.namespaces.builtins}\\ReactContext::createWithDefault(${contextValue})`;
+  },
+  'useContext': (node, context) => {
+    const contextNode = renderNode(node.arguments[0], context);
+    return `\\${context.namespaces.builtins}\\ReactContext::getValue(${contextNode})`;
+  },
 };
 
 export function reactHooksSupport(context: Context<Declaration>, node: ts.CallExpression): string | false {
@@ -77,7 +84,7 @@ export function reactHooksSupport(context: Context<Declaration>, node: ts.CallEx
     }
 
     if (hooksNames.includes(ex.name.getText())) {
-      return hookRenderers[ex.name.getText()](node, context, ex.name.getText()) || false;
+      return hookRenderers[ex.name.getText()](node, context) || false;
     }
     return false;
   }
@@ -88,7 +95,7 @@ export function reactHooksSupport(context: Context<Declaration>, node: ts.CallEx
     }
 
     if (context.moduleDescriptor.checkSpecialVarIdentifier(node.expression, hook)) {
-      return hookRenderers[hook](node, context, node.expression.getText()) || false;
+      return hookRenderers[hook](node, context) || false;
     }
 
     return false;

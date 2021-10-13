@@ -149,6 +149,11 @@ function parseArrayType(node: ts.Type, baseNode: ts.Node, checker: ts.TypeChecke
       return false;
     }
 
+    // @ts-ignore TODO: find more convenient way to detect parent name
+    if (sym.escapedName === 'Context' && sym.parent.escapedName === 'React') {
+      return false; // context types will be handled separately
+    }
+
     let isObjectType = false;
     if (!excludeObjects) {
       isObjectType = (ifaceDecl as ts.InterfaceDeclaration).members.length > 0;
@@ -250,6 +255,9 @@ const transformTypeName = (type: ts.Type, node: ts.Node, checker: ts.TypeChecker
   }
   if (t === 'Element' && (type.symbol as any)?.parent?.escapedName === 'JSX') { // Workaround; jsx elements are rendered to strings
     return 'string';
+  }
+  if (t.startsWith('React.Context')) {
+    return 'ReactContext';
   }
   return typeMap[t] || 'mixed';
 };

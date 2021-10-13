@@ -3,6 +3,7 @@
 namespace specimens\components\TypedComponent;
 use VK\Elephize\Builtins\RenderableComponent;
 use VK\Elephize\Builtins\Stdlib;
+use VK\Elephize\Builtins\ReactContext;
 
 class TypedComponent extends RenderableComponent {
     /**

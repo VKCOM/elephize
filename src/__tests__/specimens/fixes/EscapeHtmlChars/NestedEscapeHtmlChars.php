@@ -3,6 +3,7 @@
 namespace specimens\fixes\EscapeHtmlChars;
 use VK\Elephize\Builtins\RenderableComponent;
 use VK\Elephize\Builtins\Stdlib;
+use VK\Elephize\Builtins\ReactContext;
 
 class NestedEscapeHtmlChars extends RenderableComponent {
     /**

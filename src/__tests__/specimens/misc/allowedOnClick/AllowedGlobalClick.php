@@ -3,6 +3,7 @@
 namespace specimens\misc\allowedOnClick;
 use VK\Elephize\Builtins\RenderableComponent;
 use VK\Elephize\Builtins\Stdlib;
+use VK\Elephize\Builtins\ReactContext;
 
 class AllowedGlobalClick extends RenderableComponent {
     /**

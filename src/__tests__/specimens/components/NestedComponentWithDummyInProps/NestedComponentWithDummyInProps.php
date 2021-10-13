@@ -3,6 +3,7 @@
 namespace specimens\components\NestedComponentWithDummyInProps;
 use VK\Elephize\Builtins\RenderableComponent;
 use VK\Elephize\Builtins\Stdlib;
+use VK\Elephize\Builtins\ReactContext;
 
 class NestedComponentWithDummyInProps extends RenderableComponent {
     /**

@@ -3,6 +3,7 @@
 namespace specimens\components\PathResolveReact\index;
 use VK\Elephize\Builtins\RenderableComponent;
 use VK\Elephize\Builtins\Stdlib;
+use VK\Elephize\Builtins\ReactContext;
 
 class ReactPathResolveAnonymousModule extends RenderableComponent {
     /**

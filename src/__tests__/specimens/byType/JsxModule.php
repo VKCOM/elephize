@@ -1,6 +1,7 @@
 <?php
 use VK\Elephize\Builtins\Stdlib;
 use VK\Elephize\Builtins\CJSModule;
+use VK\Elephize\Builtins\ReactContext;
 
 class JsxModule extends CJSModule {
     /**

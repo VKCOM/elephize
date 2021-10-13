@@ -58,6 +58,7 @@ export class CommonjsExternalModule extends CommonjsModule {
 namespace ${fullyQualifiedNamespace};
 use ${this._namespaces.builtins}\\Stdlib;
 use ${this._namespaces.builtins}\\CJSModule;
+use ${this._namespaces.builtins}\\ReactContext;
 
 class ${this.className} extends CJSModule {
   /**

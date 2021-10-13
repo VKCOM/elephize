@@ -3,6 +3,7 @@
 namespace specimens\byType;
 use VK\Elephize\Builtins\Stdlib;
 use VK\Elephize\Builtins\CJSModule;
+use VK\Elephize\Builtins\ReactContext;
 
 class RestOperatorModule extends CJSModule {
     /**

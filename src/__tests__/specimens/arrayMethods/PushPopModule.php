@@ -3,6 +3,7 @@
 namespace specimens\arrayMethods;
 use VK\Elephize\Builtins\Stdlib;
 use VK\Elephize\Builtins\CJSModule;
+use VK\Elephize\Builtins\ReactContext;
 
 class PushPopModule extends CJSModule {
     /**

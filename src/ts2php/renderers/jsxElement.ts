@@ -22,6 +22,27 @@ export function tJsxElement(node: ts.JsxElement, context: Context<Declaration>) 
     '[' + childrenRendered.join(', ') + ']' :
     '[]';
 
+  if (node.openingElement.tagName.kind === ts.SyntaxKind.PropertyAccessExpression) {
+    // Probably react context provider?
+    if (
+      node.openingElement.tagName.name.getText() === 'Provider' &&
+      context.checker.getTypeAtLocation(node.openingElement.tagName.expression)?.symbol.escapedName === 'Context'
+    ) {
+      const contextValue = renderNode(
+        node.openingElement.attributes.properties
+          .find<ts.JsxAttribute>((prop): prop is ts.JsxAttribute => {
+          return prop.kind === ts.SyntaxKind.JsxAttribute && prop.name?.getText() === 'value';
+        })?.initializer,
+        context
+      );
+      const contextNode = renderNode(node.openingElement.tagName.expression, context);
+      const ctxChildren = renderNodes(Array.from(node.children), context, true).join(', ');
+      const pushContext = `\\${context.namespaces.builtins}\\ReactContext::pushContext(${contextNode}, ${contextValue})`;
+      const popContext = `\\${context.namespaces.builtins}\\ReactContext::popContext(${contextNode})`;
+      return `\\${context.namespaces.builtins}\\ReactContext::render([${pushContext}, ${ctxChildren}, ${popContext}])`;
+    }
+  }
+
   if (node.openingElement.tagName.kind !== ts.SyntaxKind.Identifier) {
     context.log.error('Non-identifiers are not supported as jsx elements', [], context.log.ctx(node));
     return 'null';
