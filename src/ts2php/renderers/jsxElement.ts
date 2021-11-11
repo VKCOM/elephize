@@ -37,9 +37,10 @@ export function tJsxElement(node: ts.JsxElement, context: Context<Declaration>) 
       );
       const contextNode = renderNode(node.openingElement.tagName.expression, context);
       const ctxChildren = renderNodes(Array.from(node.children), context, true).join(', ');
-      const pushContext = `\\${context.namespaces.builtins}\\ReactContext::pushContext(${contextNode}, ${contextValue})`;
-      const popContext = `\\${context.namespaces.builtins}\\ReactContext::popContext(${contextNode})`;
-      return `\\${context.namespaces.builtins}\\ReactContext::render([${pushContext}, ${ctxChildren}, ${popContext}])`;
+      return `\\${context.namespaces.builtins}\\ReactContextSynthetic::spawn()
+        ->pushContext(${contextNode}, ${contextValue})
+        ->render([${ctxChildren}])
+        ->popContext(${contextNode})`;
     }
   }
 

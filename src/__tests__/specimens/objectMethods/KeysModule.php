@@ -4,6 +4,7 @@ namespace specimens\objectMethods;
 use VK\Elephize\Builtins\Stdlib;
 use VK\Elephize\Builtins\CJSModule;
 use VK\Elephize\Builtins\ReactContext;
+use VK\Elephize\Builtins\ReactContextSynthetic;
 
 class KeysModule extends CJSModule {
     /**

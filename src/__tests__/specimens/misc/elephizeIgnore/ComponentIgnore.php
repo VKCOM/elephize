@@ -4,6 +4,7 @@ namespace specimens\misc\elephizeIgnore;
 use VK\Elephize\Builtins\RenderableComponent;
 use VK\Elephize\Builtins\Stdlib;
 use VK\Elephize\Builtins\ReactContext;
+use VK\Elephize\Builtins\ReactContextSynthetic;
 
 class ComponentIgnore extends RenderableComponent {
     /**

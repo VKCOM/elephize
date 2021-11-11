@@ -67,7 +67,7 @@ const hookRenderers: HookRenderers = {
   // React contexts processing
   'createContext': (node, context) => {
     const contextValue = renderNode(node.arguments[0], context);
-    return `\\${context.namespaces.builtins}\\ReactContext::createWithDefault(${contextValue})`;
+    return `new \\${context.namespaces.builtins}\\ReactContext(${contextValue})`;
   },
   'useContext': (node, context) => {
     const contextNode = renderNode(node.arguments[0], context);

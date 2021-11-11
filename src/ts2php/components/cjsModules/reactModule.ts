@@ -56,6 +56,7 @@ namespace ${fullyQualifiedNamespace};
 use ${this._namespaces.builtins}\\RenderableComponent;
 use ${this._namespaces.builtins}\\Stdlib;
 use ${this._namespaces.builtins}\\ReactContext;
+use ${this._namespaces.builtins}\\ReactContextSynthetic;
 
 class ${this.className} extends RenderableComponent {
     /**

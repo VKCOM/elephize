@@ -4,6 +4,7 @@ namespace specimens\components\ReactContextProvider;
 use VK\Elephize\Builtins\RenderableComponent;
 use VK\Elephize\Builtins\Stdlib;
 use VK\Elephize\Builtins\ReactContext;
+use VK\Elephize\Builtins\ReactContextSynthetic;
 
 class ReactContextProvider extends RenderableComponent {
     /**
@@ -26,29 +27,26 @@ class ReactContextProvider extends RenderableComponent {
      * @return ?string
      */
     public function render(array $props, array $children) {
-        $Ctx2 = \VK\Elephize\Builtins\ReactContext::createWithDefault([
+        $Ctx2 = new \VK\Elephize\Builtins\ReactContext([
             "testInnerVal" => 2,
         ]);
-        return \VK\Elephize\Builtins\ReactContext::render([
-            \VK\Elephize\Builtins\ReactContext::pushContext($Ctx2, [
+        return \VK\Elephize\Builtins\ReactContextSynthetic::spawn()
+            ->pushContext($Ctx2, [
                 "testInnerVal" => 3,
-            ]),
-            \VK\Elephize\Builtins\ReactContext::render([
-                \VK\Elephize\Builtins\ReactContext::pushContext(
-                    \specimens\components\ReactContextSourceModule::getInstance()->Ctx1,
-                    [
+            ])
+            ->render([
+                \VK\Elephize\Builtins\ReactContextSynthetic::spawn()
+                    ->pushContext(\specimens\components\ReactContextSourceModule::getInstance()->Ctx1, [
                         "testVal" => 4,
-                    ]
-                ),
-                \specimens\components\ReactContextConsumer\ReactContextConsumer::getInstance()->render(
-                    ["someprop" => 123, "innerctx" => $Ctx2],
-                    []
-                ),
-                \VK\Elephize\Builtins\ReactContext::popContext(
-                    \specimens\components\ReactContextSourceModule::getInstance()->Ctx1
-                ),
-            ]),
-            \VK\Elephize\Builtins\ReactContext::popContext($Ctx2),
-        ]);
+                    ])
+                    ->render([
+                        \specimens\components\ReactContextConsumer\ReactContextConsumer::getInstance()->render(
+                            ["someprop" => 123, "innerctx" => $Ctx2],
+                            []
+                        ),
+                    ])
+                    ->popContext(\specimens\components\ReactContextSourceModule::getInstance()->Ctx1),
+            ])
+            ->popContext($Ctx2);
     }
 }

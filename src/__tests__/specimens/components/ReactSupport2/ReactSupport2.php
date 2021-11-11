@@ -4,6 +4,7 @@ namespace specimens\components\ReactSupport2;
 use VK\Elephize\Builtins\RenderableComponent;
 use VK\Elephize\Builtins\Stdlib;
 use VK\Elephize\Builtins\ReactContext;
+use VK\Elephize\Builtins\ReactContextSynthetic;
 
 class ReactSupport2 extends RenderableComponent {
     /**
@@ -29,9 +30,7 @@ class ReactSupport2 extends RenderableComponent {
         $anon_18b93da = [1];
         $cnt = (float) $anon_18b93da[0];
         \VK\Elephize\Builtins\Console::log($cnt);
-        $theme = \VK\Elephize\Builtins\ReactContext::getValue(
-            \VK\Elephize\Builtins\ReactContext::createWithDefault("123")
-        );
+        $theme = \VK\Elephize\Builtins\ReactContext::getValue(new \VK\Elephize\Builtins\ReactContext("123"));
         \VK\Elephize\Builtins\Console::log($theme);
         $anon_2e8ff8c = [[1, 2, 3, 4]];
         $state = (array) $anon_2e8ff8c[0];

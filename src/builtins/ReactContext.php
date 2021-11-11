@@ -21,50 +21,32 @@ class ReactContext {
     }
 
     /**
-     * @param mixed $initialValue
-     * @return ReactContext
-     */
-    public static function createWithDefault($initialValue) {
-        return new self($initialValue);
-    }
-
-    /**
-     * @param ReactContext $ctx
      * @param ?mixed $providerValue
      * @return null
      */
-    public static function pushContext(ReactContext &$ctx, $providerValue = null) {
-        $ctx->_valuesStack []= $providerValue;
+    public function pushContext($providerValue = null) {
+        $this->_valuesStack []= $providerValue;
         if ($providerValue !== null) {
-            $ctx->_lastNotNullValue = $providerValue;
+            $this->_lastNotNullValue = $providerValue;
         }
         return null;
     }
 
     /**
-     * @param ReactContext $ctx
      * @return null
      */
-    public static function popContext(ReactContext &$ctx) {
-        $val = array_pop($ctx->_valuesStack);
+    public function popContext() {
+        $val = array_pop($this->_valuesStack);
         if ($val !== null) {
-            $ctx->_lastNotNullValue = null;
-            for ($i = count($ctx->_valuesStack) - 1; $i >= 0; $i--) {
-                if ($ctx->_valuesStack[$i] !== null) {
-                    $ctx->_lastNotNullValue = $ctx->_valuesStack[$i];
+            $this->_lastNotNullValue = null;
+            for ($i = count($this->_valuesStack) - 1; $i >= 0; $i--) {
+                if ($this->_valuesStack[$i] !== null) {
+                    $this->_lastNotNullValue = $this->_valuesStack[$i];
                     return null;
                 }
             }
         }
         return null;
-    }
-
-    /**
-     * @param mixed[] $children
-     * @return string
-     */
-    public static function render($children) {
-        return implode('', array_filter($children));
     }
 
     /**

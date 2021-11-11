@@ -4,6 +4,7 @@ namespace specimens\components\elephize_static\KeywordTestComponent;
 use VK\Elephize\Builtins\RenderableComponent;
 use VK\Elephize\Builtins\Stdlib;
 use VK\Elephize\Builtins\ReactContext;
+use VK\Elephize\Builtins\ReactContextSynthetic;
 
 class KeywordTestComponent extends RenderableComponent {
     /**

@@ -4,6 +4,7 @@ namespace specimens\components;
 use VK\Elephize\Builtins\Stdlib;
 use VK\Elephize\Builtins\CJSModule;
 use VK\Elephize\Builtins\ReactContext;
+use VK\Elephize\Builtins\ReactContextSynthetic;
 
 class ReactContextSourceModule extends CJSModule {
     /**
@@ -23,7 +24,7 @@ class ReactContextSourceModule extends CJSModule {
     public $Ctx1;
 
     private function __construct() {
-        $this->Ctx1 = \VK\Elephize\Builtins\ReactContext::createWithDefault([
+        $this->Ctx1 = new \VK\Elephize\Builtins\ReactContext([
             "testVal" => 1,
         ]);
     }
