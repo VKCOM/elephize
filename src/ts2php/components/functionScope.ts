@@ -34,7 +34,13 @@ export function getRenderedBlock(
   // Declare all parameters
   argSynList.map(fetchAllBindingIdents)
     .reduce((acc, val) => acc.concat(val), []) // flatten;
-    .forEach((ident) => context.scope.addDeclaration(ident.getText(), [], { terminateLocally: true, dryRun: context.dryRun }));
+    .forEach((ident) => {
+      context.scope.addDeclaration(
+        ident.getText(),
+        [],
+        { terminateLocally: true, dryRun: context.dryRun }
+      );
+    });
 
   if (realParent) {
     context.nodeFlagsStore.upsert(realParent, { destructuringInfo: { vars: '' } });
