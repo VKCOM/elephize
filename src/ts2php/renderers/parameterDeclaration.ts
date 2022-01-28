@@ -1,7 +1,7 @@
 import * as ts from 'typescript';
 import { Declaration } from '../types';
 import { Context } from '../components/context';
-import { getClosestOrigParentOfType, getClosestParentOfAnyType } from '../utils/ast';
+import { getClosestParentOfAnyType } from '../utils/ast';
 import { renderElements as renderObjectBinding } from './objectBindingPattern';
 import { renderElements as renderArrayBinding } from './arrayBindingPattern';
 import { snakify } from '../utils/pathsAndNames';
@@ -21,27 +21,13 @@ export function tParameterDeclaration(node: ts.ParameterDeclaration, context: Co
       return '';
     }
 
-    // Check if we're in elephized component declarations.
-    // We shouldn't add parameter declarations for UCE in this case: it's already done earlier.
-    const triviaContainer = parentFunc.kind === ts.SyntaxKind.FunctionDeclaration ?
-      parentFunc :
-      getClosestOrigParentOfType(parentFunc, ts.SyntaxKind.VariableStatement);
-    const trivia = triviaContainer?.getFullText().substr(0, triviaContainer?.getLeadingTriviaWidth());
-    const isElephizedComponent = trivia?.includes('@elephizeTarget');
-
     const index = context.nodeFlagsStore.get(parentFunc)?.elIndex || 1;
     const varName = `anon_deref_${index}`;
     context.nodeFlagsStore.upsert(parentFunc, { elIndex: index + 1 });
 
-    const { renderedString, identList } = node.name.kind === ts.SyntaxKind.ObjectBindingPattern ?
+    const { renderedString } = node.name.kind === ts.SyntaxKind.ObjectBindingPattern ?
       renderObjectBinding(node.name, varName, context) :
       renderArrayBinding(node.name, varName, context);
-
-    if (!isElephizedComponent) {
-      identList.forEach((ident) => context.scope.addDeclaration(ident.getText(), [], {
-        dryRun: context.dryRun,
-      }));
-    }
 
     const vars = context.nodeFlagsStore.get(parentFunc)?.destructuringInfo?.vars || '';
     context.nodeFlagsStore.upsert(parentFunc, {
