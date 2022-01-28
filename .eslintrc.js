@@ -12,6 +12,7 @@ module.exports = {
     }
   },
   "rules": {
+    "spaced-comment": ["error", "always", { "markers": ["/"] }],
     // Disabled because: no configurable options for .length > 0, arr[0] and similar constructions.
     "no-magic-numbers": "off",
     "@typescript-eslint/no-magic-numbers": "off",

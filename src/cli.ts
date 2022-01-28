@@ -1,3 +1,4 @@
+/// <reference path="../types/global/index.d.ts" />
 import * as cli from 'cli';
 import * as path from 'path';
 import * as fs from 'fs';
