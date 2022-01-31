@@ -63,8 +63,12 @@ const hookRenderers: HookRenderers = {
     return renderNode(node.arguments[0], context);
   },
 
+  'useRef': (node, context) => {
+    const val = renderNode(node.arguments[0], context); // recognize only 1st argument of call
+    return `["current" => ${val}]`;
+  },
+
   'useCallback': dropRender,
-  'useRef': dropRender,
 
   'useEffect': () => '!null',
   'useImperativeHandle': () => '!null',
