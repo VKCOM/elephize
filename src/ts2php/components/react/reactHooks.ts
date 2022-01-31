@@ -58,8 +58,12 @@ const hookRenderers: HookRenderers = {
     return `[${val}]`;
   },
 
+  'useMemo': (node, context) => {
+    context.nodeFlagsStore.upsert(node, { name: 'useMemo' });
+    return renderNode(node.arguments[0], context);
+  },
+
   'useCallback': dropRender,
-  'useMemo': dropRender,
   'useRef': dropRender,
 
   'useEffect': () => '!null',
