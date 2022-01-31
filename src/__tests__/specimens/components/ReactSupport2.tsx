@@ -32,7 +32,7 @@ export function ReactSupport2() {
   memoizedCallback();
 
   const memoized = umem(() => () => 'kek', []);
-  console.log(memoized);
+  console.log(memoized());
 
   const ref = uref(null);
   console.log(ref);

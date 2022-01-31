@@ -33,7 +33,7 @@ export function ReactSupport() {
   const memoizedCallback = ucb(() => 'kek', []);
   memoizedCallback();
 
-  const memoized = umem(() => () => 'kek', []);
+  const memoized = umem(() => 'kek', []);
   console.log(memoized);
 
   const ref = uref(null);

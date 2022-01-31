@@ -33,7 +33,13 @@ class ReactSupport2 extends RenderableComponent {
         $state = (array) $anon_2e8ff8c[0];
         \VK\Elephize\Builtins\Console::log($state);
         $memoized_callback();
-        \VK\Elephize\Builtins\Console::log($memoized);
+        $anon_3378e8a = /* anon_963ad35 */ function () {
+            return /* anon_1593e1b */ function () {
+                    return "kek";
+                };
+        };
+        $memoized = $anon_3378e8a();
+        \VK\Elephize\Builtins\Console::log($memoized());
         \VK\Elephize\Builtins\Console::log($ref);
         return \VK\Elephize\Builtins\IntrinsicElement::get("div")->render([], []);
     }
