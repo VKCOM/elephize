@@ -35,7 +35,7 @@ export function ReactSupport2() {
   console.log(memoized());
 
   const ref = uref(null);
-  console.log(ref);
+  console.log(ref.current);
 
   uih(ref, () => null);
 

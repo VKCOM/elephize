@@ -40,7 +40,8 @@ class ReactSupport2 extends RenderableComponent {
         };
         $memoized = $anon_3378e8a();
         \VK\Elephize\Builtins\Console::log($memoized());
-        \VK\Elephize\Builtins\Console::log($ref);
+        $ref = ["current" => null];
+        \VK\Elephize\Builtins\Console::log($ref["current"]);
         return \VK\Elephize\Builtins\IntrinsicElement::get("div")->render([], []);
     }
 }

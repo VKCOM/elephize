@@ -38,7 +38,8 @@ class ReactSupport extends RenderableComponent {
         };
         $memoized = $anon_0816e31();
         \VK\Elephize\Builtins\Console::log($memoized);
-        \VK\Elephize\Builtins\Console::log($ref);
+        $ref = ["current" => null];
+        \VK\Elephize\Builtins\Console::log($ref["current"]);
         return \VK\Elephize\Builtins\IntrinsicElement::get("div")->render([], ['kek']);
     }
 }
