@@ -30,7 +30,7 @@
     "demo_watchphp": "cd demo && ../bin/elephize -c .elephizerc --watch",
     "demo_outreact": "cd demo && ts-node -r tsconfig-paths/register src/render.tsx | sed 's/ data-reactroot=\"\"//' | ../external/htmlformat",
     "demo_outphp": "cd demo/public && php index.php | ../../external/htmlformat",
-    "demo_outkphp": "cd demo/public && ./compiled_demo --once | ../../external/htmlformat",
+    "demo_outkphp": "bash external/run_compiled_kphp.sh && cat demo/public/compiled_formatted.txt",
     "prepack": "bash external/prepack.sh",
     "postpack": "bash external/postpack.sh",
     "testcheck": "bash external/check_specimens.sh",
