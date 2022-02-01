@@ -24,7 +24,8 @@ test('ts2php.SSR', async () => {
   }
   const reactData = await getFromProcess('yon', ['--silent', 'demo_outreact']);
   const phpData = await getFromProcess('yon', ['--silent', 'demo_outphp']);
-  const kphpData = await getFromProcess('yon', ['--silent', 'demo_outkphp']);
+  await getFromProcess('yon', ['--silent', 'demo_outkphp']);
+  const kphpData = await fs.promises.readFile('demo/public/compiled_formatted.txt', { encoding: 'utf-8' });
   expect(reactData).toBeTruthy();
   expect(phpData).toBeTruthy();
   expect(reactData).toEqual(phpData);
