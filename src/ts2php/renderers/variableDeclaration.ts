@@ -94,13 +94,22 @@ export function tVariableDeclaration(node: ts.VariableDeclaration, context: Cont
   }
 
   if (
-    identifierNode.kind === ts.SyntaxKind.Identifier
+    node.parent.parent.kind === ts.SyntaxKind.VariableStatement
+      && identifierNode.kind === ts.SyntaxKind.Identifier
       && initializerNode?.kind === ts.SyntaxKind.CallExpression
       && context.nodeFlagsStore.get(initializerNode)?.name === 'useMemo'
   ) {
     const anonIdent = identifyAnonymousNode(initializerNode);
 
-    return `$${anonIdent} = ${initializer};\n${identifier} = $${anonIdent}();`;
+    const parentFlags = context.nodeFlagsStore.get(node.parent.parent);
+    context.nodeFlagsStore.upsert(node.parent.parent, {
+      addExpressions: [
+        ...(parentFlags?.addExpressions || []),
+        `$${anonIdent} = ${initializer};`,
+      ],
+    });
+
+    return `${identifier} = $${anonIdent}()`;
   }
 
   return `${identifier} = ${initializer}`;
