@@ -3,6 +3,8 @@
 namespace specimens\components\elephize_static;
 use VK\Elephize\Builtins\Stdlib;
 use VK\Elephize\Builtins\CJSModule;
+use VK\Elephize\Builtins\ReactContext;
+use VK\Elephize\Builtins\ReactContextSynthetic;
 
 class KeywordTestModuleModule extends CJSModule {
     /**

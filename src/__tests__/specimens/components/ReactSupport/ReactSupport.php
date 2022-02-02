@@ -3,6 +3,8 @@
 namespace specimens\components\ReactSupport;
 use VK\Elephize\Builtins\RenderableComponent;
 use VK\Elephize\Builtins\Stdlib;
+use VK\Elephize\Builtins\ReactContext;
+use VK\Elephize\Builtins\ReactContextSynthetic;
 
 class ReactSupport extends RenderableComponent {
     /**
@@ -28,6 +30,7 @@ class ReactSupport extends RenderableComponent {
         $anon_9911d2a = [0];
         $count = (float) $anon_9911d2a[0];
         \VK\Elephize\Builtins\Console::log($count);
+        $theme = \VK\Elephize\Builtins\ReactContext::getValue(new \VK\Elephize\Builtins\ReactContext("123"));
         \VK\Elephize\Builtins\Console::log($theme);
         $anon_2e8ff8c = [[1, 2, 3, 4]];
         $state = (array) $anon_2e8ff8c[0];
@@ -35,6 +38,6 @@ class ReactSupport extends RenderableComponent {
         $memoized_callback();
         \VK\Elephize\Builtins\Console::log($memoized);
         \VK\Elephize\Builtins\Console::log($ref);
-        return \VK\Elephize\Builtins\IntrinsicElement::get("div")->render([], ['kek']);
+        return \VK\Elephize\Builtins\IntrinsicElement::get("div")->render([], ["kek"]);
     }
 }

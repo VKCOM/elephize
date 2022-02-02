@@ -4,6 +4,7 @@ node_modules/
 .idea/
 demo/node_modules
 demo/public/build
+demo/public/kphp_out
 demo/public/dist
 demo/public/compiled_demo
 demo/public/compiled_output.txt

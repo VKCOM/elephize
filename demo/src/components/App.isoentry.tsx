@@ -3,6 +3,7 @@ import { Button } from '#iso_palette/Button/Button.iso';
 import { StatefulInput } from '#iso_palette/Input/Input.iso';
 import { Radio } from '#iso_palette/Radio/Radio.iso';
 import { CheckBox } from '#iso_palette/CheckBox/CheckBox.iso';
+import { ctx } from '#iso_palette/Context';
 
 // @elephizeTarget
 export const GenericIcon: React.FunctionComponent = () => {
@@ -71,7 +72,9 @@ export const App: React.FunctionComponent = () => {
         <StatefulInput type={'number'} alignment={'left'} initialValue={data[key].toString()} />
       </span>
       <span className={'elephize-test-coeff'}>
-        <Radio name={'el-test'} value={'1'}>1x</Radio>
+        <ctx.Provider value={{ 'label': 'context! overridden' }}>
+          <Radio name={'el-test'} value={'1'}>1x</Radio>
+        </ctx.Provider>
         <Radio name={'el-test'} value={'2'}>2x</Radio>
         <Radio name={'el-test'} value={'3'}>3x</Radio>
         <CheckBox name={'test2'} />

@@ -163,6 +163,8 @@ export class CommonjsModule implements ICommonjsModule {
 namespace ${fullyQualifiedNamespace};
 use ${this._namespaces.builtins}\\Stdlib;
 use ${this._namespaces.builtins}\\CJSModule;
+use ${this._namespaces.builtins}\\ReactContext;
+use ${this._namespaces.builtins}\\ReactContextSynthetic;
 
 class ${this.className} extends CJSModule {
     /**

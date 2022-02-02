@@ -3,6 +3,8 @@
 namespace specimens\fixes\ExcessiveEscaping;
 use VK\Elephize\Builtins\RenderableComponent;
 use VK\Elephize\Builtins\Stdlib;
+use VK\Elephize\Builtins\ReactContext;
+use VK\Elephize\Builtins\ReactContextSynthetic;
 
 class TextContainer extends RenderableComponent {
     /**

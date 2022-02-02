@@ -3,6 +3,8 @@
 namespace specimens\components\BasicComponentWithViewLogic;
 use VK\Elephize\Builtins\RenderableComponent;
 use VK\Elephize\Builtins\Stdlib;
+use VK\Elephize\Builtins\ReactContext;
+use VK\Elephize\Builtins\ReactContextSynthetic;
 
 class BasicComponentWithViewLogic extends RenderableComponent {
     /**
