@@ -59,8 +59,7 @@ const hookRenderers: HookRenderers = {
   },
 
   'useMemo': (node, context) => {
-    context.nodeFlagsStore.upsert(node, { name: 'useMemo' });
-    return renderNode(node.arguments[0], context);
+    return `(${renderNode(node.arguments[0], context)})()`;
   },
 
   'useRef': (node, context) => {

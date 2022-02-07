@@ -10,7 +10,6 @@ import { BoundNode } from '../components/unusedCodeElimination/usageGraph/node';
 import { snakify } from '../utils/pathsAndNames';
 import { renderNodes, renderNode } from '../components/codegen/renderNodes';
 import { getPhpPrimitiveType, getPhpPrimitiveTypeForFunc } from '../components/typeInference/basicTypes';
-import { identifyAnonymousNode } from '../components/unusedCodeElimination/usageGraph/nodeData';
 
 export function tVariableDeclaration(node: ts.VariableDeclaration, context: Context<Declaration>) {
   const identifierNode = node.name;
@@ -91,25 +90,6 @@ export function tVariableDeclaration(node: ts.VariableDeclaration, context: Cont
 
   if (!isFuncDeclaration) {
     context.scope.addUsage(node.name.getText(), Array.from(usedIdents), { dryRun: context.dryRun });
-  }
-
-  if (
-    node.parent.parent.kind === ts.SyntaxKind.VariableStatement
-      && identifierNode.kind === ts.SyntaxKind.Identifier
-      && initializerNode?.kind === ts.SyntaxKind.CallExpression
-      && context.nodeFlagsStore.get(initializerNode)?.name === 'useMemo'
-  ) {
-    const anonIdent = identifyAnonymousNode(initializerNode);
-
-    const parentFlags = context.nodeFlagsStore.get(node.parent.parent);
-    context.nodeFlagsStore.upsert(node.parent.parent, {
-      addExpressions: [
-        ...(parentFlags?.addExpressions || []),
-        `$${anonIdent} = ${initializer};`,
-      ],
-    });
-
-    return `${identifier} = $${anonIdent}()`;
   }
 
   return `${identifier} = ${initializer}`;

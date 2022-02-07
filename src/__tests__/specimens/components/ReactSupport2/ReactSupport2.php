@@ -33,13 +33,27 @@ class ReactSupport2 extends RenderableComponent {
         $state = (array) $anon_2e8ff8c[0];
         \VK\Elephize\Builtins\Console::log($state);
         $memoized_callback();
-        $anon_3378e8a = /* anon_963ad35 */ function () {
+        $memoized = /* anon_963ad35 */ (function () {
             return /* anon_1593e1b */ function () {
                     return "kek";
                 };
-        };
-        $memoized = $anon_3378e8a();
+        })();
         \VK\Elephize\Builtins\Console::log($memoized());
+        $anon_4d3cd82 = [
+            /* anon_0b7384f */ (function () {
+                return /* anon_296ab44 */ function () {
+                        return "kek2";
+                    };
+            })(),
+            /* anon_f2bcb47 */ (function () {
+                return /* anon_ae0fa52 */ function () {
+                        return "kek3";
+                    };
+            })(),
+        ];
+        $memoized2 = $anon_4d3cd82[0];
+        $memoized3 = $anon_4d3cd82[1];
+        \VK\Elephize\Builtins\Console::log($memoized2(), $memoized3());
         $ref = ["current" => null];
         \VK\Elephize\Builtins\Console::log($ref["current"]);
         return \VK\Elephize\Builtins\IntrinsicElement::get("div")->render([], []);

@@ -33,10 +33,9 @@ class ReactSupport extends RenderableComponent {
         $state = (array) $anon_2e8ff8c[0];
         \VK\Elephize\Builtins\Console::log($state);
         $memoized_callback();
-        $anon_0816e31 = /* anon_1593e1b */ function () {
+        $memoized = /* anon_1593e1b */ (function () {
             return "kek";
-        };
-        $memoized = $anon_0816e31();
+        })();
         \VK\Elephize\Builtins\Console::log($memoized);
         $ref = ["current" => null];
         \VK\Elephize\Builtins\Console::log($ref["current"]);
