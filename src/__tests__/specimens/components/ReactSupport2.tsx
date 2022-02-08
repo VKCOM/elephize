@@ -32,10 +32,16 @@ export function ReactSupport2() {
   memoizedCallback();
 
   const memoized = umem(() => () => 'kek', []);
-  console.log(memoized);
+  console.log(memoized());
+
+  const [memoized2, memoized3] = [
+    umem(() => () => 'kek2', []),
+    umem(() => () => 'kek3', [])
+  ];
+  console.log(memoized2(), memoized3());
 
   const ref = uref(null);
-  console.log(ref);
+  console.log(ref.current);
 
   uih(ref, () => null);
 

@@ -41,7 +41,7 @@ const injection2 = `<script>alert()</script>🙃`;
 
 // @elephizeTarget
 export const App: React.FunctionComponent = () => {
-  const { useState } = React;
+  const { useState, useMemo, useRef } = React;
   const [data/* , updateData */]: [{ [key: string]: number }, any] = useState({
     'Иванов И.И.': 25000,
     'Петров П.П.': 31000,
@@ -49,6 +49,16 @@ export const App: React.FunctionComponent = () => {
   });
 
   let [countClick, updateCountClick] = useState(0);
+
+  const divRef = useRef<HTMLDivElement>(null);
+
+  const memoCountClick = useMemo(() => {
+    if (divRef.current === null) {
+      return countClick + 10;
+    }
+
+    return countClick + 100;
+  }, [countClick]);
 
   function saveData() {
     console.log('Lol!');
@@ -64,6 +74,7 @@ export const App: React.FunctionComponent = () => {
     </div>
     {window._elephizeIsServer ? <div>It's PHP!</div> : <div>It's JS!</div>}
     {countClick % 2 === 0 ? null : <div>Azaza</div>}
+    <div ref={divRef}>{memoCountClick}</div>
 
     {Object.keys(data).map((key: string, idx) => <div key={`id-${idx}`} className={'elephize-test-row'}>
       <span className={'elephize-test-title'}>Lol {key} kek</span>
