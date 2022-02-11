@@ -18,6 +18,7 @@ import { arrayStringSlice } from './arrayStringSlice';
 import { math } from './math';
 import { toString } from './toString';
 import { objectKeys } from './objectKeys';
+import { objectValues } from './objectValues';
 import { typecastConstructors } from './typecastConstructors';
 import { stringSplit } from './stringSplit';
 import { stringStartsWith } from './stringStartsWith';
@@ -36,7 +37,7 @@ const stdlibHooks: ExpressionHook[] = [
   arrayFilter, arrayFind, arrayForeach, arrayJoin, arrayMap,
   arrayPop, arrayPush, arrayReduce, arraySome, arraySplice,
   arrayStringIncludes, arrayStringLastIndexOf, arrayStringIndexOf, arrayStringSlice,
-  math, objectKeys, toString, stringSplit, stringStartsWith, stringSubstr, stringTrim,
+  math, objectKeys, objectValues, toString, stringSplit, stringStartsWith, stringSubstr, stringTrim,
   stringReplace, stringMatch, arrayIsArray, typecastConstructors, parse, hasOwnProperty,
 ];
 
