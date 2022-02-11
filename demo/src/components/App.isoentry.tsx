@@ -50,6 +50,9 @@ export const App: React.FunctionComponent = () => {
 
   let [countClick, updateCountClick] = useState(0);
 
+  let keys: string[] = Object.keys(data);
+  let vals: number[] = Object.values(data);
+
   const divRef = useRef<HTMLDivElement>(null);
 
   const memoCountClick = useMemo(() => {
@@ -75,8 +78,9 @@ export const App: React.FunctionComponent = () => {
     {window._elephizeIsServer ? <div>It's PHP!</div> : <div>It's JS!</div>}
     {countClick % 2 === 0 ? null : <div>Azaza</div>}
     <div ref={divRef}>{memoCountClick}</div>
+    <div>{vals.join('.')}</div>
 
-    {Object.keys(data).map((key: string, idx) => <div key={`id-${idx}`} className={'elephize-test-row'}>
+    {keys.map((key: string, idx) => <div key={`id-${idx}`} className={'elephize-test-row'}>
       <span className={'elephize-test-title'}>Lol {key} kek</span>
       <span className={'elephize-test-number'}>
         <StatefulInput type={'number'} alignment={'left'} initialValue={data[key].toString()} />
