@@ -1,7 +1,7 @@
 import * as ts from 'typescript';
 import { MethodsTypes, LogObj } from '../../types';
 import { checkCustomTypehints } from './customTypehints';
-import { typeMap } from './basicTypesMap';
+import { typeCastFuncForType, typeMap } from './basicTypesMap';
 import { mixedTypehintId } from './customTypehintsList';
 
 /**
@@ -83,8 +83,9 @@ export function getPhpPrimitiveType(node: ts.Node, checker: ts.TypeChecker, log:
  */
 export function getPossibleCastingType(node: ts.Node, checker: ts.TypeChecker, log: LogObj): string {
   const type = getPhpPrimitiveType(node, checker, log);
-  if (['string', 'bool', 'float'].includes(type)) {
-    return `(${type})`;
+  let typeCastFunc = typeCastFuncForType(type);
+  if (typeCastFunc) {
+    return `(${typeCastFunc})`;
   }
   if (type.includes('[]')) {
     return '(array)';

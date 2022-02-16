@@ -17,7 +17,7 @@ class ComplexObjectFuncsModule extends CJSModule {
     }
 
     /**
-     * @param bool[] $names
+     * @param boolean[] $names
      * @return string
      */
     public function cls($names) {

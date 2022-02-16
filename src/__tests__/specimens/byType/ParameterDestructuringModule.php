@@ -19,7 +19,7 @@ class ParameterDestructuringModule extends CJSModule {
     /**
      * @param mixed $anon_deref_1
      * @param mixed $anon_deref_2
-     * @param bool $param3
+     * @param boolean $param3
      * @return string
      */
     public function pdf1($anon_deref_1, $anon_deref_2, $param3) {
@@ -39,7 +39,7 @@ class ParameterDestructuringModule extends CJSModule {
     /**
      * @param mixed $anon_deref_1
      * @param mixed $anon_deref_2
-     * @param bool $param3
+     * @param boolean $param3
      * @return string
      */
     public function pdf2($anon_deref_1, $anon_deref_2, $param3) {

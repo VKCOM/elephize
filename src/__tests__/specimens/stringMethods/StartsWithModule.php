@@ -21,11 +21,11 @@ class StartsWithModule extends CJSModule {
      */
     public $astw;
     /**
-     * @var bool $bstw
+     * @var boolean $bstw
      */
     public $bstw;
     /**
-     * @var bool $cstw
+     * @var boolean $cstw
      */
     public $cstw;
 

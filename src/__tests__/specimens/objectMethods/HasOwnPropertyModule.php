@@ -21,7 +21,7 @@ class HasOwnPropertyModule extends CJSModule {
      */
     public $hopobj;
     /**
-     * @var bool $hop
+     * @var boolean $hop
      */
     public $hop;
 
