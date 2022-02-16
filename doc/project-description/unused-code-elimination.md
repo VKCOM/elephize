@@ -89,19 +89,19 @@ console.log(external());
 ```
 Допустим у нас есть такой код. Какой граф мы получим на первом этапе?
 
-![./graph-initial.png](./graph-initial.png)
+![./graph-initial.png](graph-initial.png)
 
 Теперь запускаем обход направленного графа начиная с корневого узла…
 
-![./graph-travers.png](./graph-traverse.png)
+![./graph-travers.png](graph-traverse.png)
 
 Получаем следующую картину из используемых узлов
 
-![./graph-reachable.png](./graph-reachable.png)
+![./graph-reachable.png](graph-reachable.png)
 
 И наконец отбрасываем лишнее:
 
-![./graph-result.png](./graph-result.png)
+![./graph-result.png](graph-result.png)
 
 Граф значительно упростился, и код на выходе из-за этого получится также гораздо
 короче, и что самое главное - в нем не будет ничего лишнего.

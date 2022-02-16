@@ -40,6 +40,14 @@ It's useful to combine it with manual breakpoints to check particular cases.
 - [Руководство разработчика elephize: архитектура](doc/contributor-guide/basic-architecture.md)
 - [Руководство разработчика elephize: UCE](doc/contributor-guide/unused-code-elimination.md)
 
+#### Описание проекта
+- [Мотивация и ответы на вопросы](doc/project-description/motivation.md)
+- [Ограничения и возможности](doc/project-description/restrictions-and-opportunities.md)
+- [Базовые сведения о транспиляции](doc/project-description/transpilation-basics.md)
+- [Транспиляция базового синтаксиса](doc/project-description/basic-syntax.md)
+- [Функции и области видимости](doc/project-description/functions-and-visibility.md)
+- [Уничтожение неиспользуемого кода](doc/project-description/unused-code-elimination.md)
+
 ### Documentation (en)
 
 Help wanted! If you have time to translate docs to english, please feel free to send us your PRs.
