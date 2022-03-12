@@ -25,6 +25,7 @@ import * as path from 'path';
  * @param serverFilesRoot
  * @param namespaces
  * @param encoding
+ * @param printImportTree
  * @param options
  * @param onFinish
  */
@@ -38,6 +39,7 @@ export function translateProgram(program: ts.Program, replacements: ImportReplac
   builtinsPath,
   namespaces,
   encoding,
+  printImportTree,
   options = defaultOptions,
   jsxPreferences = {},
   hooks = {},
@@ -89,6 +91,54 @@ export function translateProgram(program: ts.Program, replacements: ImportReplac
         hooks
       );
     }
+  }
+
+  // Print imports tree if requested
+  type ModuleWithImports = { name: string; imports: ModuleWithImports[] };
+  function print(name: string, list: any, depth: string, modulesInStack: string[]) {
+    if (modulesInStack.includes(name) && modulesInStack[modulesInStack.length - 1] !== name) {
+      console.log(depth + '├─ ' + name.replace(baseDir, '[base]') + ' [RECURSION!]');
+    } else {
+      console.log(depth + '├─ ' + name.replace(baseDir, '[base]'));
+      Object.keys(list).forEach((mod) => {
+        if (list.hasOwnProperty(mod)) {
+          print(
+            list[mod].name,
+            list[mod].imports,
+            depth + '│ ',
+            [...modulesInStack, list[mod].name]
+          );
+        }
+      });
+    }
+  }
+  if (printImportTree) {
+    let importsList: { [key: string]: ModuleWithImports } = {};
+
+    // init list
+    registry.forEachModule((mod: CommonjsModule) => {
+      importsList[mod.sourceFileName] = { name: mod.sourceFileName, imports: [] };
+    });
+
+    // assign import modules from list
+    registry.forEachModule((mod: CommonjsModule) => {
+      let entries: ModuleWithImports[] = [];
+      mod.imports.forEach((idents, imp) => {
+        let mod = importsList[imp];
+        if (mod) {
+          entries.push(mod);
+        }
+      });
+
+      const modImport = importsList[mod.sourceFileName];
+      importsList[mod.sourceFileName] = {
+        name: mod.sourceFileName,
+        imports: modImport ? [...modImport.imports, ...entries] : entries,
+      };
+    });
+
+    // Print nicely
+    print('Imports tree in all entrypoints:', importsList, '', []);
   }
 
   registry.forEachModule((mod: CommonjsModule) => {

@@ -66,6 +66,7 @@ export function runWatcherTests(watcherTestConfig: WatcherTestQueueItem[], done:
           namespaces,
           serverFilesRoot,
           encoding: 'utf-8',
+          printImportTree: false,
           options: compilerOptions,
           jsxPreferences: {},
           hooks: {},
