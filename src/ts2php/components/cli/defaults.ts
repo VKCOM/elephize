@@ -6,6 +6,7 @@ export const defaultOptions: CliOptions = {
   baseDir: '.',
   config: '.elephizerc',
   encoding: 'utf-8',
+  printImportTree: false,
   replaceImports: {},
   ignoreImports: new Set(),
   help: false,

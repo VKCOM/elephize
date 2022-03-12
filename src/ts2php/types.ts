@@ -332,6 +332,7 @@ export type CliOptions = {
   baseDir: string;
   config: string;
   encoding: string;
+  printImportTree: boolean;
   help: boolean;
   noZap: boolean;
   outDir: string;
@@ -360,6 +361,7 @@ export type TranslateOptions = {
   serverFilesRoot: string;
   builtinsPath?: string;
   encoding: string;
+  printImportTree: boolean;
   onBeforeRender?: (filename: string, rootNode: Node, nodeFlagStore: INodeFlagStore) => void; // mainly for testing purposes...
   onData: (sourceFilename: string, targetFilename: string, content: string, error?: number) => void;
   onFinish?: (registry: IModuleRegistry) => void;

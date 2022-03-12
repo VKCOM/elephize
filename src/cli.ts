@@ -21,6 +21,7 @@ const _options = cli.parse({
   serverBaseDir: ['r', 'Server base folder path', 'string', undefined],
   baseDir: ['b', 'Base src directory for transpiled code', 'string', undefined],
   encoding: ['l', 'Set output encoding for non-ascii symbols', 'string', undefined],
+  printImportTree: ['p', 'Print tree of imports in all modules', 'bool', undefined],
   rootNs: ['n', 'Root namespace name for generated classes', 'string', undefined],
   watch: ['w', 'Start elephize in watcher mode', 'bool', undefined],
   help: ['h', 'Show some help', 'bool', undefined],
