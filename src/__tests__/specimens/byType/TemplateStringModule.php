@@ -37,7 +37,7 @@ class TemplateStringModule extends CJSModule {
      */
     public $tse;
     /**
-     * @param bool $param
+     * @param boolean $param
      * @return string
      */
     public function tsf($param) {

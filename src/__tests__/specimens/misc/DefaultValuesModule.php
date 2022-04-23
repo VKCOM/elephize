@@ -19,7 +19,7 @@ class DefaultValuesModule extends CJSModule {
     /**
      * @param float $a
      * @param ?float $b
-     * @param ?bool $c
+     * @param ?boolean $c
      * @return mixed
      */
     public function dvf($a, $b, $c) {

@@ -17,15 +17,15 @@ class IsArrayModule extends CJSModule {
     }
 
     /**
-     * @var bool $iaa
+     * @var boolean $iaa
      */
     public $iaa;
     /**
-     * @var bool $iab
+     * @var boolean $iab
      */
     public $iab;
     /**
-     * @var bool $iac
+     * @var boolean $iac
      */
     public $iac;
 

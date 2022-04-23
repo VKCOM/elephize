@@ -46,7 +46,7 @@ If you want more verbosity in transpiler output you may also use next `.elephize
 Next sequence is required to create a pull request:
 - Create a branch in your local repo
 - Commit all your changes. Please use commit messages that clearly describe what changes have been made and why.
-- Run `yarn sniff` command to run all checks.
+- Run `yarn sniff` command to run all checks. If necessary, update test specimens by running `yarn run _update_test_specimens`.
 - If all checks are passed, use `git push` to publish your changes.
 - Create a pull-request and wait for CI checks to pass.
 - When all checks are passed and code is good enough, it will be merged and published to npm by the repo administrators.

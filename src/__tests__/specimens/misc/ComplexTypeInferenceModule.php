@@ -31,14 +31,14 @@ class ComplexTypeInferenceModule extends CJSModule {
         return count(array_keys($dict));
     }
     /**
-     * @param bool[] $dict
+     * @param boolean[] $dict
      * @return float
      */
     public function ctyiaBoolDictFun($dict) {
         return count(array_keys($dict));
     }
     /**
-     * @param bool[] $dict
+     * @param boolean[] $dict
      * @return float
      */
     public function ctyiaBoolDictFun2($dict) {
@@ -87,14 +87,14 @@ class ComplexTypeInferenceModule extends CJSModule {
         return count(array_keys($dict));
     }
     /**
-     * @param bool[] $dict
+     * @param boolean[] $dict
      * @return float
      */
     public function ctyiaBoolArrFun($dict) {
         return count(array_keys($dict));
     }
     /**
-     * @param bool[] $dict
+     * @param boolean[] $dict
      * @return float
      */
     public function ctyiaBoolArrFun2($dict) {
@@ -143,14 +143,14 @@ class ComplexTypeInferenceModule extends CJSModule {
         return count(array_keys($dict));
     }
     /**
-     * @param bool[] $dict
+     * @param boolean[] $dict
      * @return float
      */
     public function ctyiaBoolTupleFun($dict) {
         return count(array_keys($dict));
     }
     /**
-     * @param bool[] $dict
+     * @param boolean[] $dict
      * @return float
      */
     public function ctyiaBoolTupleFun2($dict) {

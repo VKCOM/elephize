@@ -18,7 +18,7 @@ class BrokenTsTypingModule extends CJSModule {
 
     /**
      * @param float $b
-     * @return bool
+     * @return boolean
      */
     public function btttest2($b) {
         $a = 1 + $b;

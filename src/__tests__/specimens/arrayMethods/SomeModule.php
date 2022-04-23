@@ -21,11 +21,11 @@ class SomeModule extends CJSModule {
      */
     public $asm;
     /**
-     * @var bool $bsm
+     * @var boolean $bsm
      */
     public $bsm;
     /**
-     * @var bool $csm
+     * @var boolean $csm
      */
     public $csm;
 
