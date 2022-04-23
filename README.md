@@ -35,10 +35,6 @@ It's useful to combine it with manual breakpoints to check particular cases.
 - [Использование CLI](doc/usage-cli.md)
 - [Модульная структура транспилируемого кода](doc/modules.md)
 - [Поддержка синтаксиса и стандартной библиотеки](doc/support.md)
-- [Unused code elimination](doc/code-elimination.md)
-- [Руководство разработчика elephize: рабочий процесс](doc/contributor-guide/basic-workflow.md)
-- [Руководство разработчика elephize: архитектура](doc/contributor-guide/basic-architecture.md)
-- [Руководство разработчика elephize: UCE](doc/contributor-guide/unused-code-elimination.md)
 
 #### Описание проекта
 - [Мотивация и ответы на вопросы](doc/project-description/motivation.md)
@@ -47,6 +43,8 @@ It's useful to combine it with manual breakpoints to check particular cases.
 - [Транспиляция базового синтаксиса](doc/project-description/basic-syntax.md)
 - [Функции и области видимости](doc/project-description/functions-and-visibility.md)
 - [Уничтожение неиспользуемого кода](doc/project-description/unused-code-elimination.md)
+- [Обзор архитектуры библиотеки](doc/project-description/basic-architecture.md)
+- [Обзор рабочего процесса разработки](doc/project-description/basic-workflow.md)
 
 ### Documentation (en)
 
