@@ -33,6 +33,13 @@ export function tPropertyAccessExpression(node: ts.PropertyAccessExpression, con
   }
 
   if (accessor === 'length' && node.parent.kind !== ts.SyntaxKind.PropertyAccessExpression) {
+    const type = context.checker.getTypeAtLocation(node.expression);
+    if (
+      type.isStringLiteral() ||
+      context.checker.typeToString(type, node.expression, ts.TypeFormatFlags.None) === 'string'
+    ) {
+      return `mb_strlen(${ident}, 'UTF-8')`;
+    }
     return `count(${ident})`;
   }
 
