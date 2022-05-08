@@ -14,6 +14,7 @@ import { IModuleRegistry, ImportReplacementRule, NsMap, LogObj } from '../../typ
 import { CommonjsExternalModule } from './commonjsExternalModule';
 import { EnumModule } from './enumModule';
 import * as path from 'path';
+import { ClassModule } from './classModule';
 
 export class ModuleRegistry implements IModuleRegistry {
   /**
@@ -300,6 +301,31 @@ export class ModuleRegistry implements IModuleRegistry {
     this._registeredModuleClasses.add(className);
     this._derivedComponentsPathMap.set(originalModule.sourceFileName, newFilename);
     const moduleDescriptor = new EnumModule(
+      className,
+      originalModule.sourceFileName,
+      newFilename,
+      this._namespaces,
+      this._serverFilesRoot,
+      this._builtinsPath,
+      this.log,
+      originalIdent,
+      originalModule
+    );
+
+    const mods = (this._sourceFilenameToModule.get(originalModule.sourceFileName) || []).concat(moduleDescriptor);
+    this._sourceFilenameToModule.set(originalModule.sourceFileName, mods);
+    this._targetFilenameToModule.set(newFilename, moduleDescriptor);
+    return moduleDescriptor;
+  }
+
+  public derivePlainClass(className: string, originalModule: CommonjsModule): ClassModule | null {
+    const originalIdent = className;
+    this._registeredComponents.add(`${originalModule.sourceFileName}__${originalIdent}`);
+    className = this._makeUniqueClassName(className);
+    const newFilename = this._makeNewFileName(originalModule.sourceFileName, className, true);
+    this._registeredModuleClasses.add(className);
+    this._derivedComponentsPathMap.set(originalModule.sourceFileName, newFilename);
+    const moduleDescriptor = new ClassModule(
       className,
       originalModule.sourceFileName,
       newFilename,

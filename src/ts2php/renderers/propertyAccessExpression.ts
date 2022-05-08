@@ -99,5 +99,14 @@ export function tPropertyAccessExpression(node: ts.PropertyAccessExpression, con
     }
   }
 
+  if (ident === '$this') {
+    return `${ident}->${accessor}`;
+  }
+
+  // Special case for static constants access
+  if (node.expression.getText() + 'Class' === context.moduleDescriptor.className) {
+    return `${context.moduleDescriptor.className}::${accessor}`;
+  }
+
   return `${ident}["${accessor}"]`;
 }

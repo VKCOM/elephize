@@ -102,7 +102,7 @@ export function getPossibleCastingType(node: ts.Node, checker: ts.TypeChecker, l
  * @param log
  */
 export function getPhpPrimitiveTypeForFunc(
-  node: ts.FunctionExpression | ts.ArrowFunction | ts.FunctionDeclaration,
+  node: ts.FunctionExpression | ts.ArrowFunction | ts.FunctionDeclaration | ts.MethodDeclaration,
   argList: string[],
   checker: ts.TypeChecker,
   log: LogObj

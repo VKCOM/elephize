@@ -9,6 +9,25 @@ export const GenericIcon: React.FunctionComponent = () => {
   return <span>ico!</span>;
 };
 
+export class Classes {
+  public prop = 1;
+  protected prop2 = 2;
+  private prop3 = 3;
+  public getter1() {
+    return this.prop;
+  }
+  protected getter2() {
+    return this.prop2;
+  }
+  private getter3() {
+    return this.prop3;
+  }
+  public setter1(val: number) {
+    this.prop3 = val;
+    return this;
+  }
+}
+
 const armenian = `"&#1345;&#1381;&#1408;"`;
 
 const injection = `<img src=x onerror=alert()>`;
