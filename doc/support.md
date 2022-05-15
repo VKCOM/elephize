@@ -86,7 +86,7 @@
 - String: includes, indexOf, join, slice, split (в т.ч. по регулярке), startsWith, substr, trim, replace (в т.ч. по регулярке, но поддерживаем только флаги /i и /g).
 - Array: filter, find, forEach, includes, indexOf, map, push, pop, reduce, slice, some, splice.
 - Object: hasOwnProperty.  
-- Прочее: Object.keys, Object.values, Array.isArray.
+- Прочее: Object.keys, Object.values, Array.isArray, JSON.stringify, JSON.parse.
 
 ### React
 
