@@ -16,4 +16,11 @@ export class Classes {
         this.prop3 = val;
         return this;
     }
+    public serialize() {
+        return JSON.stringify([this.prop, this.prop2, this.prop3]);
+    }
+    public deserialize(input: string) {
+        [this.prop, this.prop2, this.prop3] = JSON.parse(input);
+        return this;
+    }
 }

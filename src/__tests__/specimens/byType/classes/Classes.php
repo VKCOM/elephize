@@ -46,4 +46,18 @@ class ClassesClass extends CJSModule {
         $this->prop3 = $val;
         return $this;
     }
+    /**
+     * @return string
+     */
+    public function serialize() {
+        return json_encode([$this->prop, $this->prop2, $this->prop3]);
+    }
+    /**
+     * @param string $input
+     * @return mixed
+     */
+    public function deserialize($input) {
+        [$this->prop, $this->prop2, $this->prop3] = json_decode($input, true);
+        return $this;
+    }
 }
