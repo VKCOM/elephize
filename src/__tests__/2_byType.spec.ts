@@ -30,6 +30,7 @@ const testSuiteConfig: Array<{file: string[]; failOnErrors: string[]; expectedEr
   { file: ['byType', 'templateString.ts'], failOnErrors: [], expectedErrors: ['7cebf'] },
   { file: ['byType', 'tsInternals.ts'], failOnErrors: [], expectedErrors: [] },
   { file: ['byType', 'classes.tsx'], failOnErrors: [], expectedErrors: [] },
+  { file: ['byType', 'classesUseInExternal.tsx'], failOnErrors: [], expectedErrors: [] },
 
   { file: ['fixes', 'excessiveElimination.ts'], failOnErrors: [], expectedErrors: ['7cebf'] },
 ];

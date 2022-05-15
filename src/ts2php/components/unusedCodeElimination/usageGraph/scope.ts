@@ -40,6 +40,10 @@ export class Scope<NodeData extends { [key: string]: any }> implements IScope<No
    * User hooks to collect more precise usage data in upper scopes
    */
   protected listeners: Map<string, Set<(ident: string) => void>> = new Map();
+  /**
+   * List of variables containing class instances
+   */
+  protected readonly classInstances: Set<string> = new Set();
 
   protected constructor(
     /**
@@ -211,6 +215,14 @@ export class Scope<NodeData extends { [key: string]: any }> implements IScope<No
 
     collect(scope);
     return collectedNodes;
+  }
+
+  public addClassInstance(ident: string) {
+    this.classInstances.add(ident);
+  }
+
+  public isClassInstance(ident: string): boolean {
+    return this.classInstances.has(ident) || (this.parentScope?.isClassInstance(ident) || false);
   }
 
   /**

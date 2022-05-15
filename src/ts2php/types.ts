@@ -260,6 +260,7 @@ export type NodeFlags = {
   destructuringInfo?: { // Used in array/object destructuring to pass rendered params through context
     vars: string;
   };
+  boundClassInstance?: string;
   optionalParamsWithDefaults?: string[]; // Used in function declarations to prepend default values assignments to function body
   addExpressions?: string[]; // use this to add some expressions before rendering statement.
   optionalGuard?: string; // extra condition check to be appended to call expressions enclosing optional chaining operators

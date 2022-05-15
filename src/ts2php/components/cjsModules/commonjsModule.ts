@@ -71,6 +71,16 @@ export class CommonjsModule implements ICommonjsModule {
     this._imports.set(from, [...this._imports.get(from) || [], method]);
   }
 
+  public findImportedIdentifier(ident: string): [string, string] | false {
+    for (let [file, idents] of this._imports.entries()) {
+      if (idents.includes(ident)) {
+        return [file, ident];
+      }
+    }
+
+    return false;
+  }
+
   public registerExport(from: string, method: string) {
     this._exports.set(from, [...this._exports.get(from) || [], method]);
   }

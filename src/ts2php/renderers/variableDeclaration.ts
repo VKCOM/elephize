@@ -92,6 +92,10 @@ export function tVariableDeclaration(node: ts.VariableDeclaration, context: Cont
     context.scope.addUsage(node.name.getText(), Array.from(usedIdents), { dryRun: context.dryRun });
   }
 
+  if (context.nodeFlagsStore.get(node)?.boundClassInstance) {
+    context.scope.addClassInstance(node.name.getText());
+  }
+
   return `${identifier} = ${initializer}`;
 }
 
@@ -154,8 +158,13 @@ function topStatements(
     const ident = snakify(nameIdent.getText());
     const flags = context.nodeFlagsStore.get(node);
     if (!context.dryRun && context.scope.checkUsage(nameIdent.getText()) && !flags?.drop) {
-      context.moduleDescriptor.addProperty('$' + ident, getPhpPrimitiveType(nameIdent, context.checker, context.log), 'public');
       context.moduleDescriptor.addStatement(`$this->${ident} = ${initializer};`);
+      if (context.nodeFlagsStore.get(node)?.boundClassInstance) {
+        context.moduleDescriptor.addProperty('$' + ident, context.nodeFlagsStore.get(node)?.boundClassInstance || 'mixed', 'public');
+        context.scope.addClassInstance(nameIdent.getText());
+      } else {
+        context.moduleDescriptor.addProperty('$' + ident, getPhpPrimitiveType(nameIdent, context.checker, context.log), 'public');
+      }
     }
   }
 

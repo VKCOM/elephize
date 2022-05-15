@@ -99,6 +99,7 @@ import { Declaration } from '../../types';
 import { Context } from '../context';
 import { tEnumDeclaration } from '../../renderers/enumDeclaration';
 import { tClassDeclaration } from '../../renderers/classDeclaration';
+import { tNewExpression } from '../../renderers/newExpression';
 
 function render(node: ts.Node | undefined, context: Context<Declaration>): string {
   if (!node) {
@@ -177,6 +178,7 @@ function render(node: ts.Node | undefined, context: Context<Declaration>): strin
   if (ts.isAsExpression(node)) { return tAsExpression(node, context); }
   if (ts.isComputedPropertyName(node)) { return tComputedPropertyName(node, context); }
   if (ts.isEnumDeclaration(node)) { return tEnumDeclaration(node, context); }
+  if (ts.isNewExpression(node)) { return tNewExpression(node, context); }
 
   if (node.kind === ts.SyntaxKind.AsteriskToken) { return tAsteriskToken(); }
   if (node.kind === ts.SyntaxKind.GreaterThanEqualsToken) { return tEqualsGreaterThanToken(); }

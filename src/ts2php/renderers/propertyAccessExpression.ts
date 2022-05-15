@@ -99,13 +99,17 @@ export function tPropertyAccessExpression(node: ts.PropertyAccessExpression, con
     }
   }
 
-  if (ident === '$this') {
+  if (ident === '$this' || context.scope.isClassInstance(node.expression.getText())) {
     return `${ident}->${accessor}`;
   }
 
   // Special case for static constants access
   if (node.expression.getText() + 'Class' === context.moduleDescriptor.className) {
     return `${context.moduleDescriptor.className}::${accessor}`;
+  }
+  const [file, classIdent] = context.moduleDescriptor.findImportedIdentifier(node.expression.getText()) || [];
+  if (file && classIdent && context.registry.isPlainClass(file, classIdent)) {
+    return `${context.registry.getPlainClassName(file, classIdent)}::${accessor}`;
   }
 
   return `${ident}["${accessor}"]`;

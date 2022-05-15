@@ -10,7 +10,7 @@ import {
   resolveAliasesAndPaths,
   snakify,
 } from '../../utils/pathsAndNames';
-import { IModuleRegistry, ImportReplacementRule, NsMap, LogObj } from '../../types';
+import { IModuleRegistry, ImportReplacementRule, LogObj, NsMap } from '../../types';
 import { CommonjsExternalModule } from './commonjsExternalModule';
 import { EnumModule } from './enumModule';
 import * as path from 'path';
@@ -30,6 +30,7 @@ export class ModuleRegistry implements IModuleRegistry {
    */
   private readonly _targetFilenameToModule: Map<string, CommonjsModule> = new Map();
   private readonly _derivedComponentsPathMap: Map<string, string> = new Map();
+  private readonly _plainClasses: Map<string, ClassModule> = new Map();
   /**
    * Set for determining if a variable in module is a derived component or not;
    * We place here entries like FilePath__varName which identify the component function.
@@ -340,7 +341,21 @@ export class ModuleRegistry implements IModuleRegistry {
     const mods = (this._sourceFilenameToModule.get(originalModule.sourceFileName) || []).concat(moduleDescriptor);
     this._sourceFilenameToModule.set(originalModule.sourceFileName, mods);
     this._targetFilenameToModule.set(newFilename, moduleDescriptor);
+    this._plainClasses.set(`${originalModule.sourceFileName}__${originalIdent}`, moduleDescriptor);
     return moduleDescriptor;
+  }
+
+  public isPlainClass(importPath: string, identifier: string) {
+    return this._plainClasses.has(`${importPath}__${identifier}`);
+  }
+
+  public getPlainClassName(importPath: string, identifier: string) {
+    const mod = this._plainClasses.get(`${importPath}__${identifier}`);
+    if (!mod) {
+      return '';
+    }
+    const fullyQualifiedNamespace = ModuleRegistry.pathToNamespace(mod.targetFileName);
+    return `\\${fullyQualifiedNamespace}\\${(mod.className)}`;
   }
 
   private _makeNewFileName(fullyQualifiedFilename: string, className: string, addDir = false) {

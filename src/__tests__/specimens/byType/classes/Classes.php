@@ -46,7 +46,4 @@ class ClassesClass extends CJSModule {
         $this->prop3 = $val;
         return $this;
     }
-
-    private function __construct() {
-    }
 }

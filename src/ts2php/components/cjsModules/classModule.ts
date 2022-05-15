@@ -49,8 +49,6 @@ use ${this._namespaces.builtins}\\CJSModule;
 
 class ${this.className} extends CJSModule {
   ${Array.from(this._hoistedContent.values()).join('\n')}
-
-  private function __construct() {}
 }
 `;
   }

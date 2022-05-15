@@ -62,7 +62,6 @@ function onData(basePath: string[], promises: Array<Promise<any>>, filename: str
   process.stdout.write('[data received] ' + filename + '\n');
   promises.push(new Promise((resolve) => {
     const resultFileName = join(baseDir, normalizeFileExt(filename));
-    console.log(content);
     const cont = prettier.format(content, phpPrettierOptions);
 
     mkdirpSync(dirname(resultFileName));
