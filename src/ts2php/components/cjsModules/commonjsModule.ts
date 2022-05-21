@@ -45,7 +45,7 @@ export class CommonjsModule implements ICommonjsModule {
     this._specialVars = {};
   }
 
-  public addProperty(identifier: string, inferredType: string, visibility: 'public' | 'private' = 'public') {
+  public addProperty(identifier: string, inferredType: string, visibility: 'public' | 'protected' | 'private' = 'public') {
     const doc = `/**
      * @var ${inferredType} ${identifier}
      */`;
@@ -53,7 +53,7 @@ export class CommonjsModule implements ICommonjsModule {
     this._hoistedContent.add(`${doc ? doc + '\n' : ''}${visibility} ${identifier};`);
   }
 
-  public addMethod(identifier: string, block: string, args: string, inferredTypes: MethodsTypes | undefined, visibility: 'public' | 'private' = 'public') {
+  public addMethod(identifier: string, block: string, args: string, inferredTypes: MethodsTypes | undefined, visibility: 'public' | 'protected' | 'private' = 'public') {
     let phpdoc = '';
     if (inferredTypes) {
       const params = Object.keys(inferredTypes.args)
@@ -69,6 +69,16 @@ export class CommonjsModule implements ICommonjsModule {
 
   public registerImport(from: string, method: string) {
     this._imports.set(from, [...this._imports.get(from) || [], method]);
+  }
+
+  public findImportedIdentifier(ident: string): [string, string] | false {
+    for (let [file, idents] of this._imports.entries()) {
+      if (idents.includes(ident)) {
+        return [file, ident];
+      }
+    }
+
+    return false;
   }
 
   public registerExport(from: string, method: string) {
