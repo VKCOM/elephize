@@ -51,7 +51,7 @@ class TemplateStringModule extends CJSModule {
     private function __construct() {
         $this->tsa = "Hello world";
         $this->tsb = "Wow " . $this->tsa;
-        $this->tsc = "Lol " . strlen($this->tsb) . " kek " . strlen($this->tsa) . " wow";
+        $this->tsc = "Lol " . mb_strlen($this->tsb, "UTF-8") . " kek " . mb_strlen($this->tsa, "UTF-8") . " wow";
         $this->tsd = "Kek " . ($this->tsc . substr($this->tsb, 1)) . " lol";
         $this->tse = $this->tsa . " wow";
         \VK\Elephize\Builtins\Console::log($this->tsd, $this->tse, $this->tsf(true));

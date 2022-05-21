@@ -38,7 +38,11 @@ export function tPropertyAccessExpression(node: ts.PropertyAccessExpression, con
       type.isStringLiteral() ||
       context.checker.typeToString(type, node.expression, ts.TypeFormatFlags.None) === 'string'
     ) {
-      return `mb_strlen(${ident}, 'UTF-8')`;
+      if (context.encoding === 'utf-8' || context.encoding === 'UTF-8') {
+        return `mb_strlen(${ident}, 'UTF-8')`;
+      } else {
+        return `strlen(${ident})`;
+      }
     }
     return `count(${ident})`;
   }
