@@ -38,8 +38,11 @@ export function tPropertyAccessExpression(node: ts.PropertyAccessExpression, con
       type.isStringLiteral() ||
       context.checker.typeToString(type, node.expression, ts.TypeFormatFlags.None) === 'string'
     ) {
-      context.log.warn('Converting .length to strlen(): check your encodings!', []);
-      return `strlen(${ident})`;
+      if (context.encoding === 'utf-8' || context.encoding === 'UTF-8') {
+        return `mb_strlen(${ident}, 'UTF-8')`;
+      } else {
+        return `strlen(${ident})`;
+      }
     }
     return `count(${ident})`;
   }
