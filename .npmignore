@@ -16,6 +16,7 @@ elephizerc.example.json
 demo/
 doc/
 dist/src/__tests__
+dist/**/*.js.map
 
 # misc
 .DS_Store
