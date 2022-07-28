@@ -12,6 +12,7 @@ elephizerc.example.json
 .eslintrc.js
 .gitattributes
 
+.github/
 .idea/
 demo/
 doc/
