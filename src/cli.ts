@@ -40,7 +40,7 @@ const log = configureLogging({
 });
 
 log.info('Running with configuration: %s', [JSON.stringify(options, null, '  ')]);
-log.info('Running transpilation in glob: %s', [options.src]);
+log.info('Running transpilation in glob: %s', [options.src.toString()]);
 
 // Create output dir if absent
 fs.mkdirSync(outDir, { recursive: true });
