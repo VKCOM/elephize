@@ -343,7 +343,7 @@ export type CliOptions = {
   replaceImports: { [moduleIdentifier: string]: Omit<ImportReplacementRule, 'modulePath'> };
   rootNs: string;
   builtinsNs?: string;
-  src: string;
+  src: string | string[];
   tsPaths: { [key: string]: string[] };
   verbose: boolean;
   verboseTypehints: boolean;

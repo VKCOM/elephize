@@ -10,6 +10,8 @@ import { sync as mkdirpSync } from 'mkdirp';
 import { transpileModule, ModuleKind } from 'typescript';
 const replace = require('stream-replace');
 
+const joinGlobs = (globs: string[]) => globs.length > 1 ? `{${globs.join(',')}}` : globs[0];
+
 export function transpile(options: CliOptions, baseDir: string, outDir: string, log: LogObj) {
   const namespaces = {
     root: options.rootNs,
@@ -52,7 +54,7 @@ export function transpile(options: CliOptions, baseDir: string, outDir: string, 
     }
   }
 
-  glob(options.src, (e: Error, matches: string[]) => {
+  glob(Array.isArray(options.src) ? joinGlobs(options.src) : options.src, (e: Error, matches: string[]) => {
     if (e) {
       log.error('%s', [e.toString()]);
       process.exit(1);
