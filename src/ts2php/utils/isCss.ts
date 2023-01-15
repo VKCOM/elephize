@@ -1,0 +1,1 @@
+export const isCss = (fileNameWithExtension: string) => fileNameWithExtension.endsWith('.css')

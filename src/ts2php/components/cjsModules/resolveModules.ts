@@ -1,8 +1,10 @@
-import * as ts from 'typescript';
-import { CliOptions, ImportReplacementRule, LogObj } from '../../types';
-import * as path from 'path';
-import { resolveAliasesAndPaths } from '../../utils/pathsAndNames';
 import * as glob from 'glob';
+import * as path from 'path';
+import * as ts from 'typescript';
+
+import { CliOptions, ImportReplacementRule, LogObj } from '../../types';
+import { isCss } from '../../utils/isCss';
+import { resolveAliasesAndPaths } from '../../utils/pathsAndNames';
 
 /*
   TODO:
@@ -116,7 +118,7 @@ export const resolveModules = (
       if (result.resolvedModule) {
         resolvedModules.push(result.resolvedModule);
       } else {
-        if (!containingFile.endsWith('.d.ts')) {
+        if (!containingFile.endsWith('.d.ts') && !isCss(moduleName)) {
           // there may be false-positive errors in .d.ts files belonging to node typings
           log.error('Module %s was not found while parsing imports of %s', [moduleName, containingFile]);
         }

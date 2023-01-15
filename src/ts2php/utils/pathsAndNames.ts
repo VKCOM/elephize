@@ -1,6 +1,8 @@
-import { Dict, LogObj } from '../types';
 import * as nodePath from 'path';
 import * as fs from 'fs';
+
+import { Dict, LogObj } from '../types';
+import { isCss } from './isCss';
 
 const PHP_KEYWORDS = [
   '__halt_compiler', 'abstract', 'and', 'array', 'as', 'break', 'callable', 'case', 'catch', 'class',
@@ -95,6 +97,10 @@ export function resolveAliasesAndPaths(
   outputAliases: { [key: string]: string },
   skipOutputAliases?: boolean
 ): string | null {
+  if (isCss(originalSourcePath)) {
+    return null;
+  }
+
   originalSourcePath = originalSourcePath.replace(/\.[jt]sx?$/, '');
   for (const pathOrig in tsPaths) {
     if (!tsPaths.hasOwnProperty(pathOrig)) {

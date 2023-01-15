@@ -1,14 +1,21 @@
 import * as ts from 'typescript';
-import { Declaration } from '../types';
-import { Context } from '../components/context';
-import { isExportedVar } from '../utils/ast';
 import * as path from 'path';
+
+import { Context } from '../components/context';
 import { initReact } from '../components/react/reactHooks';
-import { resolveAliasesAndPaths } from '../utils/pathsAndNames';
 import { renderNodes } from '../components/codegen/renderNodes';
+import { Declaration } from '../types';
+import { isExportedVar } from '../utils/ast';
+import { isCss } from '../utils/isCss';
+import { resolveAliasesAndPaths } from '../utils/pathsAndNames';
 
 export function tImportDeclaration(node: ts.ImportDeclaration, context: Context<Declaration>) {
   const moduleSpec = (node.moduleSpecifier as ts.StringLiteral).text;
+
+  if (isCss(moduleSpec)) {
+    context.log.warn('Module is not skipped: tried to transpile %s', [moduleSpec], context.log.ctx(node));
+    return '';
+  }
 
   if (moduleSpec === 'react') {
     if (!initReact(node, context)) {
