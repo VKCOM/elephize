@@ -152,22 +152,25 @@ export function resolveAliasesAndPaths(
   const tPath = nodePath.resolve(currentDir, originalSourcePath);
 
   log.info('Trying non-aliased path: %s', [tPath.replace(baseDir, '[base]')]);
-  const fn = lookupFile(tPath);
+
+  const fullPath = lookupFile(tPath);
+
   if (fs.existsSync(tPath) && fs.lstatSync(tPath).isDirectory()) {
     const tIndexPath = nodePath.join(tPath, 'index');
     log.info('Trying non-aliased index path: %s', [tIndexPath]);
-    const fnIndex = lookupFile(tIndexPath);
 
-    if (fnIndex) {
-      if (fn) {
-        log.warn('Found both directory and file with the same basename. It may cause problems: %s', [fnIndex]);
+    const fullPathIndex = lookupFile(tIndexPath);
+
+    if (fullPathIndex) {
+      if (fullPath) {
+        log.warn('Found both directory and file with the same basename. It may cause problems: %s', [fullPathIndex]);
       }
 
-      return applyOutputAliases(fnIndex, baseDir, outputAliases, skipOutputAliases);
+      return applyOutputAliases(fullPathIndex, baseDir, outputAliases, skipOutputAliases);
     }
   }
 
-  return applyOutputAliases(fn, baseDir, outputAliases, skipOutputAliases);
+  return applyOutputAliases(fullPath, baseDir, outputAliases, skipOutputAliases);
 }
 
 function applyOutputAliases(path = '', baseDir: string, outputAliases: { [key: string]: string }, skip?: boolean): string {
