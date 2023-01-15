@@ -153,7 +153,7 @@ export function resolveAliasesAndPaths(
 
   log.info('Trying non-aliased path: %s', [tPath.replace(baseDir, '[base]')]);
   const fn = lookupFile(tPath);
-  if (fs.existsSync(tPath) && fs.lstatSync(tPath).isDirectory) {
+  if (fs.existsSync(tPath) && fs.lstatSync(tPath).isDirectory()) {
     const tIndexPath = nodePath.join(tPath, 'index');
     log.info('Trying non-aliased index path: %s', [tIndexPath]);
     const fnIndex = lookupFile(tIndexPath);
