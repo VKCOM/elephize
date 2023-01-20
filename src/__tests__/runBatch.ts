@@ -62,13 +62,15 @@ function onData(basePath: string[], promises: Array<Promise<any>>, filename: str
   process.stdout.write('[data received] ' + filename + '\n');
   promises.push(new Promise((resolve) => {
     const resultFileName = join(baseDir, normalizeFileExt(filename));
-    const cont = prettier.format(content, phpPrettierOptions);
+    const prettifiedContent = prettier.format(content, phpPrettierOptions);
 
     mkdirpSync(dirname(resultFileName));
 
-    writeFileSync(resultFileName + '.result', cont, 'utf-8');
-    expect(cont).toBeTruthy();
-    expect(cont, 'Failed in file: ' + filename)
+    // If test fails, unlinkSync (see below) will not execute
+    // So, it will be possible to check output in file-name.php.result.
+    writeFileSync(resultFileName + '.result', prettifiedContent, 'utf-8');
+    expect(prettifiedContent).toBeTruthy();
+    expect(prettifiedContent, 'Failed in file: ' + filename)
       .toEqual(prettier.format(readFileSync(resultFileName, 'utf-8'), phpPrettierOptions));
     process.stdout.write('[test ok] ' + filename.replace(pResolve(...basePath), '') + '\n');
     unlinkSync(resultFileName + '.result');
