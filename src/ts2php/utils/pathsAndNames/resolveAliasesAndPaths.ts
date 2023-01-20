@@ -3,6 +3,12 @@ import * as fs from 'fs';
 
 import { LogObj } from '../../types';
 
+/*
+  I think, this function should not add outputAliases.
+  The main aim of this function is resolving
+  absolute paths to files from import expressions.
+  Like webpack or TS compiler does.
+ */
 export function resolveAliasesAndPaths({
   originalSourcePath,
   currentDir,
@@ -21,72 +27,109 @@ export function resolveAliasesAndPaths({
   skipOutputAliases?: boolean;
 }): string {
   originalSourcePath = originalSourcePath.replace(/\.[jt]sx?$/, '');
-  for (const pathOrig in tsPaths) {
-    if (!tsPaths.hasOwnProperty(pathOrig)) {
-      continue;
-    }
+  checkTsPath(tsPaths);
+  return applyOutputAliases({
+    path: resolvePath({
+      originalSourcePath,
+      currentDir,
+      baseDir,
+      tsPaths,
+      logger,
+    }),
+    baseDir,
+    outputAliases,
+    skip: skipOutputAliases,
+  });
+}
 
-    if (pathOrig === '*') {
+function checkTsPath(tsPaths: Record<string, string[]>) {
+  Object.keys(tsPaths).forEach((prefix) => {
+    if (prefix === '*') {
       throw new Error('Asterisk-only aliases are not supported');
     }
+  });
+}
 
-    const pathToTry = pathOrig.replace(/\*$/g, '');
-
-    if (originalSourcePath.startsWith(pathToTry)) {
-      logger.info('Trying paths for location: %s', [pathToTry]);
-      return applyOutputAliases({ path: tsPaths[pathOrig].reduce((acc, name) => {
-        if (acc) {
-          return acc;
-        }
-        const target = originalSourcePath.replace(pathToTry, name.replace(/\*$/g, ''));
-        const tPath = target.startsWith('/') ?
-          target : // absolute path, no need to resolve
-          nodePath.resolve(baseDir, target);
-        logger.info('Trying to locate file: %s', [tPath]);
-
-        const fn = lookupSourceFile(tPath);
-
-        if (fs.existsSync(tPath) && fs.lstatSync(tPath).isDirectory) {
-          const tIndexPath = nodePath.join(tPath, 'index');
-          logger.info('Trying to locate index file: %s', [tIndexPath]);
-          const fnIndex = lookupSourceFile(tIndexPath);
-
-          if (fnIndex) {
-            if (fn) {
-              logger.warn('Found both directory and file with the same basename. It may cause problems: %s', [fnIndex]);
-            }
-
-            return fnIndex;
-          }
-        }
-
-        if (fn) {
-          return fn;
-        }
-        return undefined;
-      }, undefined), baseDir, outputAliases, skip: skipOutputAliases });
+export function resolvePath({
+  originalSourcePath,
+  currentDir,
+  baseDir,
+  tsPaths,
+  logger,
+}: {
+  originalSourcePath: string;
+  logger: LogObj;
+  currentDir: string;
+  baseDir: string;
+  tsPaths: Record<string, string[]>;
+}): string | undefined {
+  for (const possibleTsPath of makePossibleTsPaths({ originalSourcePath, tsPaths })) {
+    const path = tryToFindFile({
+      path: possibleTsPath,
+      root: possibleTsPath.startsWith('/') ? '' : baseDir,
+      logger,
+    });
+    if (path !== undefined) {
+      return path;
     }
   }
 
-  const tPath = nodePath.resolve(currentDir, originalSourcePath);
+  return tryToFindFile({ path: originalSourcePath, root: currentDir, logger });
+}
 
-  logger.info('Trying non-aliased path: %s', [tPath.replace(baseDir, '[base]')]);
-  const fn = lookupSourceFile(tPath);
-  if (fs.existsSync(tPath) && fs.lstatSync(tPath).isDirectory) {
-    const tIndexPath = nodePath.join(tPath, 'index');
-    logger.info('Trying non-aliased index path: %s', [tIndexPath]);
-    const fnIndex = lookupSourceFile(tIndexPath);
+function makePossibleTsPaths({
+  originalSourcePath,
+  tsPaths,
+}: {
+  originalSourcePath: string;
+  tsPaths: Record<string, string[]>;
+}) {
+  return Object.keys(tsPaths)
+    .reduce<string[]>(
+    (acc, key) => {
+      const prefix = removeAsterisk(key);
+      if (originalSourcePath.startsWith(prefix)) {
+        return acc.concat(
+          tsPaths[key]
+            .map(removeAsterisk)
+            .map((path) => originalSourcePath.replace(prefix, path))
+        );
+      }
+      return acc;
+    }, []);
+}
 
-    if (fnIndex) {
-      if (fn) {
-        logger.warn('Found both directory and file with the same basename. It may cause problems: %s', [fnIndex]);
+function removeAsterisk(path: string) {
+  return path.replace(/\*$/g, '');
+}
+
+function tryToFindFile({
+  path,
+  root,
+  logger,
+}: {
+  path: string;
+  root: string;
+  logger: LogObj;
+}): string | undefined {
+  const preFullPath = nodePath.resolve(root, path);
+  const fullPath = lookupSourceFile(preFullPath);
+
+  if (fs.existsSync(preFullPath) && fs.lstatSync(preFullPath).isDirectory()) {
+    const indexPath = nodePath.join(preFullPath, 'index');
+    logger.info('Trying non-aliased index path: %s', [indexPath]);
+    const fullPathIndex = lookupSourceFile(indexPath);
+
+    if (fullPathIndex) {
+      if (fullPath) {
+        logger.warn('Found both directory and file with the same basename. It may cause problems: %s', [fullPathIndex]);
       }
 
-      return applyOutputAliases({ path: fnIndex, baseDir, outputAliases, skip: skipOutputAliases });
+      return fullPathIndex;
     }
   }
 
-  return applyOutputAliases({ path: fn, baseDir, outputAliases, skip: skipOutputAliases } );
+  return fullPath;
 }
 
 function lookupSourceFile(path: string) {
@@ -114,7 +157,7 @@ function applyOutputAliases({
 }: {
   path?: string;
   baseDir: string;
-  outputAliases: Record<string, string>;
+  outputAliases: { [key: string]: string };
   skip?: boolean;
 }): string {
   if (!path) {
