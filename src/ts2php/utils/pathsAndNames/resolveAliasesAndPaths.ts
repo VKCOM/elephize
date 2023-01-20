@@ -26,7 +26,6 @@ export function resolveAliasesAndPaths({
   outputAliases: Record<string, string>;
   skipOutputAliases?: boolean;
 }): string {
-  originalSourcePath = originalSourcePath.replace(/\.[jt]sx?$/, '');
   checkTsPath(tsPaths);
   return applyOutputAliases({
     path: resolvePath({
@@ -138,6 +137,7 @@ function lookupSourceFile(path: string) {
     path + '.jsx',
     path + '.ts',
     path + '.tsx',
+    path,
   ].reduce((acc, name) => {
     if (acc) {
       return acc;
@@ -157,7 +157,7 @@ function applyOutputAliases({
 }: {
   path?: string;
   baseDir: string;
-  outputAliases: { [key: string]: string };
+  outputAliases: Record<string, string>;
   skip?: boolean;
 }): string {
   if (!path) {

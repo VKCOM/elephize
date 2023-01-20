@@ -45,6 +45,13 @@ describe('resolveAliasesAndPaths', () => {
         originalSourcePath: './fileInSameFolder',
       })).toEqual(path.resolve(currentDir, 'fileInSameFolder.ts'));
     });
+
+    test('Not a JavaScript file. Styles or pictures can be imported.', () => {
+      expect(resolveAliasesAndPaths({
+        ...baseParams,
+        originalSourcePath: './fileInSameFolder.css',
+      })).toEqual(path.resolve(currentDir, 'fileInSameFolder.css'));
+    });
   });
 
   describe('file in a subfolder', () => {
@@ -61,6 +68,13 @@ describe('resolveAliasesAndPaths', () => {
         originalSourcePath: './subfolder/fileInSubfolder',
       })).toEqual(path.resolve(currentDir, 'subfolder', 'fileInSubfolder.ts'));
     });
+
+    test('Not a JavaScript file. Styles or pictures can be imported.', () => {
+      expect(resolveAliasesAndPaths({
+        ...baseParams,
+        originalSourcePath: './subfolder/fileInSubfolder.css',
+      })).toEqual(path.resolve(currentDir, 'subfolder', 'fileInSubfolder.css'));
+    });
   });
 
   describe('file in a root folder', () => {
@@ -76,6 +90,13 @@ describe('resolveAliasesAndPaths', () => {
         ...baseParams,
         originalSourcePath: './../fileInRootFolder',
       })).toEqual(path.resolve(currentDir, '..', 'fileInRootFolder.ts'));
+    });
+
+    test('Not a JavaScript file. Styles or pictures can be imported.', () => {
+      expect(resolveAliasesAndPaths({
+        ...baseParams,
+        originalSourcePath: './../fileInRootFolder.css',
+      })).toEqual(path.resolve(currentDir, '..', 'fileInRootFolder.css'));
     });
   });
 
