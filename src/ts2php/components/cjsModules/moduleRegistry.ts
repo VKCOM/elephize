@@ -236,7 +236,14 @@ export class ModuleRegistry implements IModuleRegistry {
   }
 
   protected _registerExternalClass(rule: ImportReplacementRule): CommonjsModule | null {
-    const fullyQualifiedSourceFilename = resolveAliasesAndPaths(this.log, rule.modulePath, '', this._baseDir, this._tsPaths, this._aliases);
+    const fullyQualifiedSourceFilename = resolveAliasesAndPaths({
+      originalSourcePath: rule.modulePath,
+      currentDir: '',
+      baseDir: this._baseDir,
+      tsPaths: this._tsPaths,
+      logger: this.log,
+      outputAliases: this._aliases,
+    });
     if (!fullyQualifiedSourceFilename) {
       this.log.error('Failed to lookup file %s [#1]', [rule.modulePath]);
       return null;
@@ -250,7 +257,14 @@ export class ModuleRegistry implements IModuleRegistry {
   }
 
   public registerClass(filepath: string): CommonjsModule | null {
-    const fullyQualifiedSourceFilename = resolveAliasesAndPaths(this.log, filepath, '', this._baseDir, this._tsPaths, this._aliases);
+    const fullyQualifiedSourceFilename = resolveAliasesAndPaths({
+      originalSourcePath: filepath,
+      currentDir: '',
+      baseDir: this._baseDir,
+      tsPaths: this._tsPaths,
+      logger: this.log,
+      outputAliases: this._aliases,
+    });
     if (!fullyQualifiedSourceFilename) {
       this.log.error('Failed to lookup file %s [#1]', [filepath]);
       return null;

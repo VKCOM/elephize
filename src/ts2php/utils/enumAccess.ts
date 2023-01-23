@@ -22,13 +22,14 @@ export function handleEnumMemberAccess(node: ts.PropertyAccessExpression, contex
 
       const currentFilePath = node.getSourceFile().fileName;
       const moduleSpec = (importDecl.moduleSpecifier as ts.StringLiteral).text;
-      const sourceFilename = resolveAliasesAndPaths(
-        context.log, moduleSpec,
-        path.dirname(currentFilePath),
-        context.baseDir,
-        context.compilerOptions.paths || {},
-        context.registry._aliases
-      );
+      const sourceFilename = resolveAliasesAndPaths({
+        originalSourcePath: moduleSpec,
+        currentDir: path.dirname(currentFilePath),
+        baseDir: context.baseDir,
+        tsPaths: context.compilerOptions.paths || {},
+        logger: context.log,
+        outputAliases: context.registry._aliases,
+      });
 
       if (sourceFilename === null) {
         if (moduleSpec.includes('/')) {

@@ -22,7 +22,15 @@ function readFile(fileName: string): string | undefined {
 }
 
 function resolveModulePath(name: string, containingFile: string, baseDir: string, tsPaths: { [key: string]: string[] }, log: LogObj): string {
-  const localPath = resolveAliasesAndPaths(log, name, path.dirname(containingFile), baseDir, tsPaths, {}, true);
+  const localPath = resolveAliasesAndPaths({
+    originalSourcePath: name,
+    currentDir: path.dirname(containingFile),
+    baseDir: baseDir,
+    tsPaths: tsPaths,
+    logger: log,
+    outputAliases: {},
+    skipOutputAliases: true,
+  });
   if (localPath) { // relative or aliased path found
     return localPath;
   }
