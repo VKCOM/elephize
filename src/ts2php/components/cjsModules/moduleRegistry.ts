@@ -40,7 +40,8 @@ export class ModuleRegistry implements IModuleRegistry {
   public constructor(
     private readonly _baseDir: string,
     public readonly _aliases: { [key: string]: string },
-    private readonly _tsPaths: { [key: string]: string[] },
+    private readonly _tsPaths: Record<string, string[]>,
+    private readonly _sourceExtensions: string[],
     private readonly _namespaces: NsMap,
     private readonly _serverFilesRoot: string,
     private readonly _builtinsPath: string,
@@ -241,6 +242,7 @@ export class ModuleRegistry implements IModuleRegistry {
       currentDir: '',
       baseDir: this._baseDir,
       tsPaths: this._tsPaths,
+      sourceExtensions: this._sourceExtensions,
       logger: this.log,
       outputAliases: this._aliases,
     });
@@ -262,6 +264,7 @@ export class ModuleRegistry implements IModuleRegistry {
       currentDir: '',
       baseDir: this._baseDir,
       tsPaths: this._tsPaths,
+      sourceExtensions: this._sourceExtensions,
       logger: this.log,
       outputAliases: this._aliases,
     });
@@ -373,7 +376,7 @@ export class ModuleRegistry implements IModuleRegistry {
   }
 
   private _makeNewFileName(fullyQualifiedFilename: string, className: string, addDir = false) {
-    const name = normalizeFileExt(normalizeBasePath(fullyQualifiedFilename, this._baseDir, this._aliases));
+    const name = normalizeFileExt(normalizeBasePath(fullyQualifiedFilename, this._baseDir, this._aliases), this._sourceExtensions);
 
     const rootPath = ModuleRegistry.namespaceToPath(this._namespaces.root);
 

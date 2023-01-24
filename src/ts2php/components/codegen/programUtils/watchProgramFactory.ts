@@ -19,6 +19,7 @@ let lastDiagCode: number | undefined;
  * @param replacedImports
  * @param baseDir
  * @param tsPaths
+ * @param sourceExtensions
  * @param compilerOptions
  * @param onProgramReady
  * @param log
@@ -29,7 +30,8 @@ export function getWatchProgram(
   ignoredImports: CliOptions['ignoreImports'],
   replacedImports: CliOptions['replaceImports'],
   baseDir: string,
-  tsPaths: { [key: string]: string[] },
+  tsPaths: Record<string, string[]>,
+  sourceExtensions: string[],
   compilerOptions: ts.CompilerOptions,
   onProgramReady: (p: ts.Program, replacements: ImportReplacementRule[], errcode?: number) => void,
   log: LogObj,
@@ -73,7 +75,7 @@ export function getWatchProgram(
     return origCreateProgram(rootNames, options, host, oldProgram);
   };
   const origPostProgramCreate = host.afterProgramCreate;
-  const resolutionFun = resolveModules(options, ignoredImports, replacedImports, baseDir, tsPaths, log);
+  const resolutionFun = resolveModules(options, ignoredImports, replacedImports, baseDir, tsPaths, sourceExtensions, log);
   let replacements: ImportReplacementRule[] = [];
   host.resolveModuleNames = (moduleNames: string[], containingFile: string) => {
     const [resolvedModules, importReplacements] = resolutionFun(moduleNames, containingFile);

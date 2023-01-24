@@ -24,6 +24,7 @@ beforeEach(() => {
     currentDir,
     baseDir,
     tsPaths: {},
+    sourceExtensions: ['.ts', '.tsx', '.js', '.jsx'],
     logger,
     outputAliases: {},
     skipOutputAliases: true,
@@ -188,5 +189,5 @@ describe('resolveAliasesAndPaths', () => {
       })).toEqual(path.resolve(baseDir, 'fromTsPaths_second', 'moduleInTsSecondPath.ts'));
     });
   });
-  // Add test for tsPaths and outputAliases
+  // Add test for outputAliases
 });

@@ -2,14 +2,14 @@ import { CliOptions, TranslateOptions, LogObj } from '../../types';
 import { getBuildProgram } from './programUtils/buildProgramFactory';
 import { NodeFlagStore } from './nodeFlagStore';
 import { translateProgram } from './programUtils/translateProgram';
-import { defaultOptions } from './defaultCompilerOptions';
+import { defaultCompilerOptions } from './defaultCompilerOptions';
 import { getWatchProgram } from './programUtils/watchProgramFactory';
 
 type TranslatorFunc = (
   filenames: string[],
   ignoredImports: CliOptions['ignoreImports'],
   replacedImports: CliOptions['replaceImports'],
-  tsPaths: { [key: string]: string[] },
+  tsPaths: Record<string, string[]>,
   log: LogObj,
   opts: TranslateOptions
 ) => NodeFlagStore;
@@ -22,6 +22,7 @@ export const translateCode: TranslatorFunc = (
   log,
   {
     aliases = {},
+    sourceExtensions,
     baseDir,
     disableCodeElimination = false,
     namespaces,
@@ -32,7 +33,7 @@ export const translateCode: TranslatorFunc = (
     onBeforeRender = () => undefined,
     onData,
     onFinish = () => undefined,
-    options = defaultOptions,
+    compilerOptions,
     jsxPreferences = {},
     hooks = {},
   }: TranslateOptions
@@ -45,8 +46,9 @@ export const translateCode: TranslatorFunc = (
     replacedImports,
     baseDir,
     tsPaths,
+    sourceExtensions,
     {
-      compilerOptions: { ...defaultOptions, ...options },
+      compilerOptions: { ...defaultCompilerOptions, ...compilerOptions },
     },
     () => null,
     log
@@ -63,12 +65,13 @@ export const translateCode: TranslatorFunc = (
       baseDir,
       disableCodeElimination,
       aliases,
+      sourceExtensions,
       namespaces,
       printImportTree,
       serverFilesRoot,
       builtinsPath,
       encoding,
-      options,
+      compilerOptions: { ...defaultCompilerOptions, ...compilerOptions },
       jsxPreferences,
       hooks,
       onFinish,
@@ -84,6 +87,7 @@ export const translateCodeAndWatch: TranslatorFunc = (
   log,
   {
     aliases = {},
+    sourceExtensions,
     baseDir,
     disableCodeElimination = false,
     getCloseHandle,
@@ -95,29 +99,38 @@ export const translateCodeAndWatch: TranslatorFunc = (
     serverFilesRoot,
     builtinsPath,
     onFinish = () => undefined,
-    options = defaultOptions,
+    compilerOptions,
     jsxPreferences,
     hooks,
   }: TranslateOptions
 ): NodeFlagStore => {
   const nodeFlagStore = new NodeFlagStore(); // TODO: check! this may lead to unforeseen consequences in sequential rebuilds
-  getWatchProgram(fileNames, ignoredImports, replacedImports, baseDir, tsPaths, { ...defaultOptions, ...options }, (program, replacements, errcode) => {
-    translateProgram(program, replacements, nodeFlagStore, log, {
-      aliases,
-      baseDir,
-      disableCodeElimination,
-      namespaces,
-      serverFilesRoot,
-      builtinsPath,
-      encoding,
-      printImportTree,
-      jsxPreferences,
-      hooks,
-      onBeforeRender,
-      onData: (sourceFilename: string, targetFilename: string, content: string) => onData(sourceFilename, targetFilename, content, errcode),
-      onFinish,
-      options: { ...defaultOptions, ...options },
-    });
-  }, log, getCloseHandle);
+  getWatchProgram(
+    fileNames,
+    ignoredImports,
+    replacedImports,
+    baseDir,
+    tsPaths,
+    sourceExtensions,
+    { ...defaultCompilerOptions, ...compilerOptions },
+    (program, replacements, errcode) => {
+      translateProgram(program, replacements, nodeFlagStore, log, {
+        aliases,
+        sourceExtensions,
+        baseDir,
+        disableCodeElimination,
+        namespaces,
+        serverFilesRoot,
+        builtinsPath,
+        encoding,
+        printImportTree,
+        jsxPreferences,
+        hooks,
+        onBeforeRender,
+        onData: (sourceFilename: string, targetFilename: string, content: string) => onData(sourceFilename, targetFilename, content, errcode),
+        onFinish,
+        compilerOptions: { ...defaultCompilerOptions, ...compilerOptions },
+      });
+    }, log, getCloseHandle);
   return nodeFlagStore;
 };

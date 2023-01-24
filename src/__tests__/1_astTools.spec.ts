@@ -10,7 +10,7 @@ import {
   getLeftExpr,
 } from '../ts2php/utils/ast';
 import { NodeFlagStore } from '../ts2php/components/codegen/nodeFlagStore';
-import { defaultOptions } from '../ts2php/components/codegen/defaultCompilerOptions';
+import { defaultCompilerOptions } from '../ts2php/components/codegen/defaultCompilerOptions';
 import { configureLogging } from '../ts2php/components/cli/configureLogging';
 
 const log = configureLogging({
@@ -19,8 +19,9 @@ const log = configureLogging({
 
 function compile(files: string[]): ts.SourceFile | undefined {
   const [program] = getBuildProgram(files, new Set(), {}, '', {},
+    ['.ts', '.tsx', '.js', '.jsx'],
     {
-      compilerOptions: defaultOptions,
+      compilerOptions: defaultCompilerOptions,
     },
     () => null,
     log
@@ -55,6 +56,7 @@ function recompile(fileNames: string[], onData: (filename: string, rootNode: ts.
   return translateCode(fileNames, new Set(), {}, {}, log, {
     baseDir: '',
     aliases: {},
+    sourceExtensions: ['.ts', '.tsx', '.js', '.jsx'],
     namespaces: { root: '', builtins: '' },
     serverFilesRoot: '',
     encoding: 'utf-8',

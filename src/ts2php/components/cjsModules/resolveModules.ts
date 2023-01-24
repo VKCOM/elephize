@@ -21,12 +21,20 @@ function readFile(fileName: string): string | undefined {
   return ts.sys.readFile(fileName);
 }
 
-function resolveModulePath(name: string, containingFile: string, baseDir: string, tsPaths: { [key: string]: string[] }, log: LogObj): string {
+function resolveModulePath(
+  name: string,
+  containingFile: string,
+  baseDir: string,
+  tsPaths: Record<string, string[]>,
+  sourceExtensions: string[],
+  log: LogObj,
+): string {
   const localPath = resolveAliasesAndPaths({
     originalSourcePath: name,
     currentDir: path.dirname(containingFile),
     baseDir: baseDir,
     tsPaths: tsPaths,
+    sourceExtensions,
     logger: log,
     outputAliases: {},
     skipOutputAliases: true,
@@ -53,6 +61,7 @@ const resolvedReplaceRules: { [key: string]: ReplacedImportRule } = {};
 const resolvedIgnoreRules: { [key: string]: IgnoredImportRule } = {};
 let lastIgnoredRulesRef: CliOptions['ignoreImports'];
 let lastReplacedRulesRef: CliOptions['replaceImports'];
+
 function getRules(ignoredImportRules: CliOptions['ignoreImports'], replacedImportRules: CliOptions['replaceImports'], baseDir: string) {
   if (lastReplacedRulesRef !== replacedImportRules) {
     Object.keys(replacedImportRules).forEach((key) => {
@@ -78,7 +87,7 @@ function findImportRule(
   replacedImportRules: CliOptions['replaceImports'],
   baseDir: string,
   log: LogObj,
-  filepath?: string
+  filepath?: string,
 ): ImportRule | undefined {
   if (!filepath) {
     return undefined;
@@ -94,18 +103,19 @@ export const resolveModules = (
   ignoredImports: CliOptions['ignoreImports'],
   replacedImports: CliOptions['replaceImports'],
   baseDir: string,
-  tsPaths: { [key: string]: string[] },
-  log: LogObj
+  tsPaths: Record<string, string[]>,
+  sourceExtensions: string[],
+  log: LogObj,
 ) => (
   moduleNames: string[],
-  containingFile: string
+  containingFile: string,
 ): [ts.ResolvedModule[], ImportReplacementRule[]] => {
   log.info('Trying to resolve module names [%s] found in %s', [moduleNames.join(', '), containingFile]);
   const resolvedModules: ts.ResolvedModule[] = [];
   const replacements: ImportReplacementRule[] = [];
 
   for (const moduleName of moduleNames) {
-    const mPath = resolveModulePath(moduleName, containingFile, baseDir, tsPaths, log);
+    const mPath = resolveModulePath(moduleName, containingFile, baseDir, tsPaths, sourceExtensions, log);
     const rule = findImportRule(ignoredImports, replacedImports, baseDir, log, mPath);
     if (rule && rule.ignore) {
       resolvedModules.push(emptyModule);
