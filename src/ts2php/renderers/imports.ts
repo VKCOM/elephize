@@ -22,8 +22,9 @@ export function tImportDeclaration(node: ts.ImportDeclaration, context: Context<
       currentDir: path.dirname(currentFilePath),
       baseDir: context.baseDir,
       tsPaths: context.compilerOptions.paths || {},
-      logger: context.log,
+      sourceExtensions: tsSupportExtensions(context.compilerOptions),
       outputAliases: context.registry._aliases,
+      logger: context.log,
     });
 
     if (sourceFilename === null) {
@@ -86,3 +87,8 @@ export function tImportDeclaration(node: ts.ImportDeclaration, context: Context<
 
 export const tImportClause = (node: ts.ImportClause, context: Context<Declaration>) => renderNodes([node.name, node.namedBindings], context).join('');
 export const tNamedImports = (node: ts.NamedImports, context: Context<Declaration>) => renderNodes([...node.elements], context).join('');
+
+// see https://www.typescriptlang.org/tsconfig#include
+function tsSupportExtensions(compilerOptions: ts.CompilerOptions) {
+  return compilerOptions.allowJs ? ['.js', '.jsx', '.ts', '.tsx'] : ['.ts', '.tsx'];
+}

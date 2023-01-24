@@ -17,6 +17,7 @@ export const defaultOptions: CliOptions = {
   rootNs: '\\VK\\Elephize',
   src: '**/*.tsx',
   tsPaths: {},
+  sourceExtensions: ['.ts', '.tsx', '.js', '.jsx'],
   verbose: false,
   verboseTypehints: false,
   verboseUsage: false,

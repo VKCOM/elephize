@@ -12,7 +12,7 @@ import { NodeFlagStore } from './nodeFlagStore';
  * Module-level codegen. May emit one or more modules (in case of extracted component)
  *
  * @param checker
- * @param options
+ * @param compilerOptions
  * @param root
  * @param nodeFlagsStore
  * @param baseDir - Note! This should be the SAME baseDir as passed into typescript as compilerOptions.baseUrl!
@@ -28,7 +28,7 @@ import { NodeFlagStore } from './nodeFlagStore';
  */
 export function renderModule(
   checker: ts.TypeChecker,
-  options: ts.CompilerOptions,
+  compilerOptions: ts.CompilerOptions,
   root: ts.Node,
   nodeFlagsStore: NodeFlagStore,
   baseDir: string,
@@ -56,7 +56,7 @@ export function renderModule(
     moduleScope,
     checker,
     nodeFlagsStore,
-    options,
+    compilerOptions,
     currentModule,
     true,
     baseDir,
@@ -87,7 +87,7 @@ export function renderModule(
     moduleScope,
     checker,
     nodeFlagsStore,
-    options,
+    compilerOptions,
     currentModule,
     false,
     baseDir,

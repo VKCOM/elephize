@@ -28,8 +28,8 @@ export function normalizeVarName(ident: string) {
   return ident.startsWith('$') ? camelize(ident.substr(1)) : ident;
 }
 
-export function normalizeFileExt(filename: string, replaceWith = '.php') {
-  return filename.replace(/(\.php)?\.(ts|tsx|js|jsx)$/g, replaceWith);
+export function normalizeFileExt(filename: string, sourceExtensions: string[], replaceWith = '.php') {
+  return filename.replace(new RegExp(`(\.php)?(${sourceExtensions.join('|')})$`, 'g'), replaceWith);
 }
 
 export function escapeKeyword(s: string) {

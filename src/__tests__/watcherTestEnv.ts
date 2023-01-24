@@ -63,11 +63,12 @@ export function runWatcherTests(watcherTestConfig: WatcherTestQueueItem[], done:
         translateCodeAndWatch(files.map((f) => pResolve(__dirname, 'watchSpecimens' + testResultPostfix, f)), ignoreImportRules, replaceImportRules, compilerOptions.paths, log, {
           baseDir,
           aliases: {},
+          sourceExtensions: ['.ts', '.tsx', '.js', '.jsx'],
           namespaces,
           serverFilesRoot,
           encoding: 'utf-8',
           printImportTree: false,
-          options: compilerOptions,
+          compilerOptions,
           jsxPreferences: {},
           hooks: {},
           getCloseHandle: (handle) => close = handle,

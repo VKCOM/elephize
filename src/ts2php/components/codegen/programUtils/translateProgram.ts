@@ -6,7 +6,7 @@ import { renderModule } from '../renderModule';
 import { CommonjsModule } from '../../cjsModules/commonjsModule';
 import * as prettier from 'prettier/standalone';
 import { phpPrettierOptions } from '../../../internalConfig/phpPrettierOptions';
-import { defaultOptions } from '../defaultCompilerOptions';
+import { defaultCompilerOptions } from '../defaultCompilerOptions';
 import { CommonjsExternalModule } from '../../cjsModules/commonjsExternalModule';
 import * as path from 'path';
 
@@ -35,12 +35,13 @@ export function translateProgram(program: ts.Program, replacements: ImportReplac
   baseDir,
   disableCodeElimination = false,
   aliases = {},
+  sourceExtensions,
   serverFilesRoot,
   builtinsPath,
   namespaces,
   encoding,
   printImportTree,
-  options = defaultOptions,
+  compilerOptions = defaultCompilerOptions,
   jsxPreferences = {},
   hooks = {},
   onFinish = () => undefined,
@@ -56,7 +57,8 @@ export function translateProgram(program: ts.Program, replacements: ImportReplac
   const registry = new ModuleRegistry(
     baseDir,
     aliases,
-    options.paths || {},
+    compilerOptions.paths || {},
+    sourceExtensions,
     namespaces,
     serverFilesRoot,
     builtinsPath,
@@ -76,7 +78,7 @@ export function translateProgram(program: ts.Program, replacements: ImportReplac
       onBeforeRender(sourceFile.fileName, sourceFile, nodeFlagStore);
       renderModule(
         checker,
-        options,
+        compilerOptions,
         sourceFile,
         nodeFlagStore,
         baseDir,

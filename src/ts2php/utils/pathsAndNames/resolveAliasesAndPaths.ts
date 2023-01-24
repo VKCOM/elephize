@@ -14,6 +14,7 @@ export function resolveAliasesAndPaths({
   currentDir,
   baseDir,
   tsPaths,
+  sourceExtensions,
   logger,
   outputAliases,
   skipOutputAliases,
@@ -23,6 +24,7 @@ export function resolveAliasesAndPaths({
   currentDir: string;
   baseDir: string;
   tsPaths: Record<string, string[]>;
+  sourceExtensions: string[];
   outputAliases: Record<string, string>;
   skipOutputAliases?: boolean;
 }): string {
@@ -33,6 +35,7 @@ export function resolveAliasesAndPaths({
       currentDir,
       baseDir,
       tsPaths,
+      sourceExtensions,
       logger,
     }),
     baseDir,
@@ -54,18 +57,21 @@ export function resolvePath({
   currentDir,
   baseDir,
   tsPaths,
+  sourceExtensions,
   logger,
 }: {
   originalSourcePath: string;
-  logger: LogObj;
   currentDir: string;
   baseDir: string;
   tsPaths: Record<string, string[]>;
+  sourceExtensions: string[];
+  logger: LogObj;
 }): string | undefined {
   for (const possibleTsPath of makePossibleTsPaths({ originalSourcePath, tsPaths })) {
     const path = tryToFindFile({
       path: possibleTsPath,
       root: possibleTsPath.startsWith('/') ? '' : baseDir,
+      sourceExtensions,
       logger,
     });
     if (path !== undefined) {
@@ -73,7 +79,12 @@ export function resolvePath({
     }
   }
 
-  return tryToFindFile({ path: originalSourcePath, root: currentDir, logger });
+  return tryToFindFile({
+    path: originalSourcePath,
+    root: currentDir,
+    sourceExtensions,
+    logger,
+  });
 }
 
 function makePossibleTsPaths({
@@ -105,19 +116,21 @@ function removeAsterisk(path: string) {
 function tryToFindFile({
   path,
   root,
+  sourceExtensions,
   logger,
 }: {
   path: string;
   root: string;
+  sourceExtensions: string[];
   logger: LogObj;
 }): string | undefined {
   const preFullPath = nodePath.resolve(root, path);
-  const fullPath = lookupSourceFile(preFullPath);
+  const fullPath = lookupSourceFile(preFullPath, sourceExtensions);
 
   if (fs.existsSync(preFullPath) && fs.lstatSync(preFullPath).isDirectory()) {
     const indexPath = nodePath.join(preFullPath, 'index');
     logger.info('Trying non-aliased index path: %s', [indexPath]);
-    const fullPathIndex = lookupSourceFile(indexPath);
+    const fullPathIndex = lookupSourceFile(indexPath, sourceExtensions);
 
     if (fullPathIndex) {
       if (fullPath) {
@@ -131,22 +144,19 @@ function tryToFindFile({
   return fullPath;
 }
 
-function lookupSourceFile(path: string) {
-  return [
-    path + '.js',
-    path + '.jsx',
-    path + '.ts',
-    path + '.tsx',
-    path,
-  ].reduce((acc, name) => {
-    if (acc) {
-      return acc;
-    }
-    if (fs.existsSync(name)) {
-      return name;
-    }
-    return undefined;
-  }, undefined);
+function lookupSourceFile(path: string, sourceExtensions: string[]) {
+  return sourceExtensions
+    .map((extension) => `${path}${extension}`)
+    .concat(path)
+    .reduce((acc, name) => {
+      if (acc) {
+        return acc;
+      }
+      if (fs.existsSync(name)) {
+        return name;
+      }
+      return undefined;
+    }, undefined);
 }
 
 function applyOutputAliases({

@@ -27,6 +27,7 @@ export function handleEnumMemberAccess(node: ts.PropertyAccessExpression, contex
         currentDir: path.dirname(currentFilePath),
         baseDir: context.baseDir,
         tsPaths: context.compilerOptions.paths || {},
+        sourceExtensions: tsSupportExtensions(context.compilerOptions),
         logger: context.log,
         outputAliases: context.registry._aliases,
       });
@@ -50,4 +51,9 @@ export function handleEnumMemberAccess(node: ts.PropertyAccessExpression, contex
   }
 
   return false; // no error
+}
+
+// see https://www.typescriptlang.org/tsconfig#include
+function tsSupportExtensions(compilerOptions: ts.CompilerOptions) {
+  return compilerOptions.allowJs ? ['.js', '.jsx', '.ts', '.tsx'] : ['.ts', '.tsx'];
 }
