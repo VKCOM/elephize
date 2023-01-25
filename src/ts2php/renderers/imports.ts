@@ -40,6 +40,11 @@ export function tImportDeclaration(node: ts.ImportDeclaration, context: Context<
       return '';
     }
 
+    if (!tsSupportExtensions(context.compilerOptions).some((ext) => sourceFilename.endsWith(ext))) {
+      context.log.info('Module %s was ignored: not a source file', [moduleSpec], context.log.ctx(node));
+      return '';
+    }
+
     renderNodes([node.importClause, node.moduleSpecifier], context);
 
     const importBindings = node.importClause?.namedBindings;

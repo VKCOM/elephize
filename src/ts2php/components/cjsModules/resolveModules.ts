@@ -1,8 +1,9 @@
-import * as ts from 'typescript';
-import { CliOptions, ImportReplacementRule, LogObj } from '../../types';
 import * as path from 'path';
-import { resolveAliasesAndPaths } from '../../utils/pathsAndNames';
 import * as glob from 'glob';
+import * as ts from 'typescript';
+
+import { CliOptions, ImportReplacementRule, LogObj } from '../../types';
+import { resolveAliasesAndPaths } from '../../utils/pathsAndNames';
 
 /*
   TODO:
@@ -120,6 +121,9 @@ export const resolveModules = (
     if (rule && rule.ignore) {
       resolvedModules.push(emptyModule);
       log.info('Module %s was ignored according to library settings', [moduleName]);
+    } else if (hasExtension(mPath) && !sourceExtensions.some((ext) => mPath.endsWith(ext))) {
+      resolvedModules.push(emptyModule);
+      log.info('Module %s was ignored: not a source file', [moduleName]);
     } else {
       if (rule) {
         log.info('Module %s was replaced with implementation %s according to library settings', [moduleName, rule.implementationClass]);
@@ -145,3 +149,7 @@ export const resolveModules = (
 
   return [resolvedModules, replacements];
 };
+
+function hasExtension(fileName: string) {
+  return path.extname(fileName) !== '';
+}
