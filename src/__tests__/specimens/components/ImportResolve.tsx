@@ -5,6 +5,8 @@ import { getFoo as getFoo2 } from "./PathResolve/helpers";
 import { PathResolveReactComponent1 } from "./PathResolveReact/index";
 import { PathResolveReactComponent2 as LolKek } from "./PathResolveReact/Component";
 
+import './ImportResolve.css';
+
 getBar();
 getFoo();
 getFoo2();
