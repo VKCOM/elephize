@@ -6,7 +6,7 @@ import { BoundNode } from './unusedCodeElimination/usageGraph/node';
 import { IContext, JSXPreferences, NodeHooks, NsMap, LogObj } from '../types';
 import { NodeFlagStore } from './codegen/nodeFlagStore';
 
-export class Context<T> implements IContext<T> {
+export class Context<T extends { [key: string]: any }> implements IContext<T> {
   protected _jsxTagStack: string[] = [];
   protected _uniqIdStack: string[] = [];
   public constructor(

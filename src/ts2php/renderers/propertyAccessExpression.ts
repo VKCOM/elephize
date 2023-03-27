@@ -21,7 +21,7 @@ export function tPropertyAccessExpression(node: ts.PropertyAccessExpression, con
     if (enumAccess === true) { // error: message logged inside access func
       return '';
     }
-    return enumAccess; // output handled by access func
+    return String(enumAccess); // output handled by access func
   }
 
   const lExp = getLeftExpr(node.expression);

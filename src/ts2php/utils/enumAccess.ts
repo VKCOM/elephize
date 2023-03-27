@@ -13,7 +13,7 @@ export function handleEnumMemberAccess(node: ts.PropertyAccessExpression, contex
     if (symIdent && symIdent.valueDeclaration?.kind === ts.SyntaxKind.EnumDeclaration) { // local enum
       return context.registry.getEnumConst(context.moduleDescriptor.sourceFileName, node.expression.getText(), node.name.getText().toUpperCase());
     }
-    if (symIdent && symIdent.declarations[0]?.kind === ts.SyntaxKind.ImportSpecifier) { // imported enum
+    if (symIdent && symIdent.declarations && symIdent.declarations.length > 0 && symIdent.declarations[0]?.kind === ts.SyntaxKind.ImportSpecifier) { // imported enum
       const importDecl = getClosestParentOfType(symIdent.declarations[0], ts.SyntaxKind.ImportDeclaration) as ts.ImportDeclaration | null;
       if (!importDecl) {
         context.log.error('Import not found: tried to find specification of %s', [node.expression.getText()], context.log.ctx(node));

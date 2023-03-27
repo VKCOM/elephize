@@ -2,8 +2,8 @@ import { Scope } from './scope';
 import { LogVerbosity } from '../../../utils/log';
 import { IBoundNode, IScopeNode, LogObj } from '../../../types';
 
-export const isBound = <T>(node: ScopeNode<T>): node is BoundNode<T> => node._type === 'early_bound';
-export const isPending = <T>(node: ScopeNode<T>): node is BindPendingNode<T> => node._type === 'late_bound';
+export const isBound = <T extends { [key: string]: any }>(node: ScopeNode<T>): node is BoundNode<T> => node._type === 'early_bound';
+export const isPending = <T extends { [key: string]: any }>(node: ScopeNode<T>): node is BindPendingNode<T> => node._type === 'late_bound';
 
 export class ScopeNode<T extends { [key: string]: any }> implements IScopeNode<T> {
   public readonly _type: 'abstract' | 'early_bound' | 'late_bound' = 'abstract';
