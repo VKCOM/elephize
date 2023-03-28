@@ -123,7 +123,7 @@ export const resolveModules = (
       log.info('Module %s was ignored according to library settings', [moduleName]);
     } else if (hasExtension(mPath) && !sourceExtensions.some((ext) => mPath.endsWith(ext))) {
       resolvedModules.push(emptyModule);
-      log.info('Module %s was ignored: not a source file', [moduleName]);
+      log.info(`Module %s was found but ignored: not a source file, expected one of following extensions: ${sourceExtensions.join(',')}`, [moduleName]);
     } else {
       if (rule) {
         log.info('Module %s was replaced with implementation %s according to library settings', [moduleName, rule.implementationClass]);
