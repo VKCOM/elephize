@@ -36,10 +36,10 @@ const log = configureLogging({
 });
 
 let lastDiffApplied = 0;
-export function runWatcherTests(watcherTestConfig: WatcherTestQueueItem[], done: DoneCallback) {
+export async function runWatcherTests(watcherTestConfig: WatcherTestQueueItem[], done: DoneCallback) {
   jest.setTimeout(200000);
 
-  return new Promise((resolve) => {
+  await new Promise((resolve) => {
     const bSrc = pResolve(__dirname, 'watchSpecimens');
     const bTgt = pResolve(__dirname, 'watchSpecimens' + testResultPostfix);
     rimraf(bTgt, (err) => {

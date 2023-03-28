@@ -1,7 +1,8 @@
 import { runWatcherTests } from './watcherTestEnv';
+import DoneCallback = jest.DoneCallback;
 
-test('ts2php.watcher', (done) => {
-  return runWatcherTests([
+test('ts2php.watcher', (done: DoneCallback) => {
+  void runWatcherTests([
     {
       entry: 'modifyFile.entry.ts',
       diff: 'modifyFile.1.patch',

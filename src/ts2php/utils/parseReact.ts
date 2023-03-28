@@ -63,6 +63,10 @@ function getCallbackAttrs(interfaceType: ts.Type) {
 function getElements(interfaceType: ts.Type, checker: ts.TypeChecker) {
   const intrinsicTags = interfaceType.getApparentProperties();
   return intrinsicTags.map((symbol) => {
+    if (!symbol.valueDeclaration) {
+      return;
+    }
+
     const symType = checker.getTypeOfSymbolAtLocation(symbol, symbol.valueDeclaration);
 
     const memberProps: ts.Symbol[] = [];
@@ -84,7 +88,7 @@ function getElements(interfaceType: ts.Type, checker: ts.TypeChecker) {
         ...symType.getApparentProperties(),
       ].map((s: ts.Symbol) => s.escapedName).sort(),
     };
-  });
+  }).filter((item) => item);
 }
 
 generateDocumentation(['./node_modules/@types/react/index.d.ts'], {

@@ -76,7 +76,7 @@ export function translateProgram(program: ts.Program, replacements: ImportReplac
       onBeforeRender(sourceFile.fileName, sourceFile, nodeFlagStore);
       renderModule(
         checker,
-        options,
+        options ?? {},
         sourceFile,
         nodeFlagStore,
         baseDir,

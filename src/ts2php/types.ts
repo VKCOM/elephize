@@ -49,7 +49,7 @@ export interface IModuleRegistry {
   toTargetPath(sourcePath: string, searchForComponent?: string): string | undefined;
 }
 
-export interface IContext<T> {
+export interface IContext<T extends { [key: string]: any }> {
   checker: TypeChecker;
   nodeFlagsStore: INodeFlagStore;
   readonly compilerOptions: CompilerOptions;
@@ -187,7 +187,7 @@ export interface IScopeNode<T extends { [key: string]: any }> {
   markUsage(): void;
 }
 
-export interface IBoundNode<T> extends IScopeNode<T>{
+export interface IBoundNode<T extends { [key: string]: any }> extends IScopeNode<T>{
   readonly ownedScope: IScope<T> | undefined;
 
   /**

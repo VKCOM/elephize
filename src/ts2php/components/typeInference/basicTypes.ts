@@ -143,7 +143,7 @@ function parseArrayType(node: ts.Type, baseNode: ts.Node, checker: ts.TypeChecke
   // e.g. type GridChildren = Array<Array<JSX.Element | undefined>>;
   if (typeNode.kind === ts.SyntaxKind.TypeReference) {
     const sym = node.symbol || node.aliasSymbol;
-    const decls = sym.getDeclarations() as ts.Declaration[];
+    const decls = sym.getDeclarations() || [];
     const [ifaceDecl] = decls.filter((d) => d.kind === ts.SyntaxKind.InterfaceDeclaration);
     if (!ifaceDecl) {
       log.typehint('No interface declaration found for symbol: %s', [nodeIdentForLog || '']);
