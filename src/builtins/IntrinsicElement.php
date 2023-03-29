@@ -183,7 +183,8 @@ class IntrinsicElement extends RenderableComponent {
                     if ($this->_vendor_prefixes[explode('-', $kebab_name)[0]]) {
                         $kebab_name = '-' . $kebab_name;
                     }
-                    $attr_value = (is_numeric($css_value) && !$this->_unitless_css_properties[$css_name])
+                    $is_custom_property = strpos($css_name, '--', 0) === 0;
+                    $attr_value = (is_numeric($css_value) && !$this->_unitless_css_properties[$css_name] && !$is_custom_property)
                         ? $css_value . 'px'
                         : htmlspecialchars($css_value);
                     $css []= $kebab_name . ':' . $attr_value;
