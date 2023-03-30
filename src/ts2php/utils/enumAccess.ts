@@ -1,9 +1,10 @@
 import * as ts from 'typescript';
 import * as path from 'path';
-import { getClosestParentOfType } from './ast';
-import { resolveAliasesAndPaths } from './pathsAndNames';
 import { Context } from '../components/context';
 import { Declaration } from '../types';
+import { resolveAliasesAndPaths } from './pathsAndNames';
+import { getClosestParentOfType } from './ast';
+import { tsSupportExtensions } from './tsSupportExtensions';
 
 export function handleEnumMemberAccess(node: ts.PropertyAccessExpression, context: Context<Declaration>): string | boolean {
   const symAccessor = context.checker.getSymbolAtLocation(node.name);
@@ -51,9 +52,4 @@ export function handleEnumMemberAccess(node: ts.PropertyAccessExpression, contex
   }
 
   return false; // no error
-}
-
-// see https://www.typescriptlang.org/tsconfig#include
-function tsSupportExtensions(compilerOptions: ts.CompilerOptions) {
-  return compilerOptions.allowJs ? ['.js', '.jsx', '.ts', '.tsx'] : ['.ts', '.tsx'];
 }

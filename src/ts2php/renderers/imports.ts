@@ -1,11 +1,12 @@
 import * as ts from 'typescript';
-import { Declaration } from '../types';
-import { Context } from '../components/context';
-import { isExportedVar } from '../utils/ast';
 import * as path from 'path';
-import { initReact } from '../components/react/reactHooks';
-import { resolveAliasesAndPaths } from '../utils/pathsAndNames';
 import { renderNodes } from '../components/codegen/renderNodes';
+import { Context } from '../components/context';
+import { initReact } from '../components/react/reactHooks';
+import { Declaration } from '../types';
+import { isExportedVar } from '../utils/ast';
+import { resolveAliasesAndPaths } from '../utils/pathsAndNames';
+import { tsSupportExtensions } from '../utils/tsSupportExtensions';
 
 export function tImportDeclaration(node: ts.ImportDeclaration, context: Context<Declaration>) {
   const moduleSpec = (node.moduleSpecifier as ts.StringLiteral).text;
@@ -92,8 +93,3 @@ export function tImportDeclaration(node: ts.ImportDeclaration, context: Context<
 
 export const tImportClause = (node: ts.ImportClause, context: Context<Declaration>) => renderNodes([node.name, node.namedBindings], context).join('');
 export const tNamedImports = (node: ts.NamedImports, context: Context<Declaration>) => renderNodes([...node.elements], context).join('');
-
-// see https://www.typescriptlang.org/tsconfig#include
-function tsSupportExtensions(compilerOptions: ts.CompilerOptions) {
-  return compilerOptions.allowJs ? ['.js', '.jsx', '.ts', '.tsx'] : ['.ts', '.tsx'];
-}
