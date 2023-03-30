@@ -1,8 +1,9 @@
-import * as ts from 'typescript';
-import { CliOptions, ImportReplacementRule, LogObj } from '../../types';
 import * as path from 'path';
-import { resolveAliasesAndPaths } from '../../utils/pathsAndNames';
 import * as glob from 'glob';
+import * as ts from 'typescript';
+
+import { CliOptions, ImportReplacementRule, LogObj } from '../../types';
+import { resolveAliasesAndPaths } from '../../utils/pathsAndNames';
 
 /*
   TODO:
@@ -21,8 +22,24 @@ function readFile(fileName: string): string | undefined {
   return ts.sys.readFile(fileName);
 }
 
-function resolveModulePath(name: string, containingFile: string, baseDir: string, tsPaths: { [key: string]: string[] }, log: LogObj): string {
-  const localPath = resolveAliasesAndPaths(log, name, path.dirname(containingFile), baseDir, tsPaths, {}, true);
+function resolveModulePath(
+  name: string,
+  containingFile: string,
+  baseDir: string,
+  tsPaths: Record<string, string[]>,
+  sourceExtensions: string[],
+  log: LogObj,
+): string {
+  const localPath = resolveAliasesAndPaths({
+    originalSourcePath: name,
+    currentDir: path.dirname(containingFile),
+    baseDir: baseDir,
+    tsPaths: tsPaths,
+    sourceExtensions,
+    logger: log,
+    outputAliases: {},
+    skipOutputAliases: true,
+  });
   if (localPath) { // relative or aliased path found
     return localPath;
   }
@@ -45,6 +62,7 @@ const resolvedReplaceRules: { [key: string]: ReplacedImportRule } = {};
 const resolvedIgnoreRules: { [key: string]: IgnoredImportRule } = {};
 let lastIgnoredRulesRef: CliOptions['ignoreImports'];
 let lastReplacedRulesRef: CliOptions['replaceImports'];
+
 function getRules(ignoredImportRules: CliOptions['ignoreImports'], replacedImportRules: CliOptions['replaceImports'], baseDir: string) {
   if (lastReplacedRulesRef !== replacedImportRules) {
     Object.keys(replacedImportRules).forEach((key) => {
@@ -70,7 +88,7 @@ function findImportRule(
   replacedImportRules: CliOptions['replaceImports'],
   baseDir: string,
   log: LogObj,
-  filepath?: string
+  filepath?: string,
 ): ImportRule | undefined {
   if (!filepath) {
     return undefined;
@@ -86,22 +104,27 @@ export const resolveModules = (
   ignoredImports: CliOptions['ignoreImports'],
   replacedImports: CliOptions['replaceImports'],
   baseDir: string,
-  tsPaths: { [key: string]: string[] },
-  log: LogObj
+  tsPaths: Record<string, string[]>,
+  sourceExtensions: string[],
+  log: LogObj,
 ) => (
   moduleNames: string[],
-  containingFile: string
+  containingFile: string,
 ): [ts.ResolvedModule[], ImportReplacementRule[]] => {
   log.info('Trying to resolve module names [%s] found in %s', [moduleNames.join(', '), containingFile]);
   const resolvedModules: ts.ResolvedModule[] = [];
   const replacements: ImportReplacementRule[] = [];
 
   for (const moduleName of moduleNames) {
-    const mPath = resolveModulePath(moduleName, containingFile, baseDir, tsPaths, log);
+    const mPath = resolveModulePath(moduleName, containingFile, baseDir, tsPaths, sourceExtensions, log);
     const rule = findImportRule(ignoredImports, replacedImports, baseDir, log, mPath);
+
     if (rule && rule.ignore) {
       resolvedModules.push(emptyModule);
       log.info('Module %s was ignored according to library settings', [moduleName]);
+    } else if (hasExtension(mPath) && !sourceExtensions.some((ext) => mPath.endsWith(ext))) {
+      resolvedModules.push(emptyModule);
+      log.warn('Module %s was found but ignored: not a source file, expected one of following extensions: %s', [moduleName, sourceExtensions.join(',')]);
     } else {
       if (rule) {
         log.info('Module %s was replaced with implementation %s according to library settings', [moduleName, rule.implementationClass]);
@@ -127,3 +150,7 @@ export const resolveModules = (
 
   return [resolvedModules, replacements];
 };
+
+function hasExtension(fileName: string) {
+  return path.extname(fileName) !== '';
+}

@@ -1,9 +1,10 @@
 import * as ts from 'typescript';
 import * as path from 'path';
-import { getClosestParentOfType } from './ast';
-import { resolveAliasesAndPaths } from './pathsAndNames';
 import { Context } from '../components/context';
 import { Declaration } from '../types';
+import { resolveAliasesAndPaths } from './pathsAndNames';
+import { getClosestParentOfType } from './ast';
+import { tsSupportExtensions } from './tsSupportExtensions';
 
 export function handleEnumMemberAccess(node: ts.PropertyAccessExpression, context: Context<Declaration>): string | boolean {
   const symAccessor = context.checker.getSymbolAtLocation(node.name);
@@ -22,13 +23,15 @@ export function handleEnumMemberAccess(node: ts.PropertyAccessExpression, contex
 
       const currentFilePath = node.getSourceFile().fileName;
       const moduleSpec = (importDecl.moduleSpecifier as ts.StringLiteral).text;
-      const sourceFilename = resolveAliasesAndPaths(
-        context.log, moduleSpec,
-        path.dirname(currentFilePath),
-        context.baseDir,
-        context.compilerOptions.paths || {},
-        context.registry._aliases
-      );
+      const sourceFilename = resolveAliasesAndPaths({
+        originalSourcePath: moduleSpec,
+        currentDir: path.dirname(currentFilePath),
+        baseDir: context.baseDir,
+        tsPaths: context.compilerOptions.paths || {},
+        sourceExtensions: tsSupportExtensions(context.compilerOptions),
+        logger: context.log,
+        outputAliases: context.registry._aliases,
+      });
 
       if (sourceFilename === null) {
         if (moduleSpec.includes('/')) {

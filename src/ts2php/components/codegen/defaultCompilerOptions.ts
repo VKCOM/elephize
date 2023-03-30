@@ -1,7 +1,7 @@
 import * as ts from 'typescript';
 import * as path from 'path';
 
-export const defaultOptions: ts.CompilerOptions = {
+export const defaultCompilerOptions: ts.CompilerOptions = {
   target: ts.ScriptTarget.ES5,
   lib: [
     'lib.d.ts',

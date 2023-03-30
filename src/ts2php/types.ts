@@ -344,7 +344,8 @@ export type CliOptions = {
   rootNs: string;
   builtinsNs?: string;
   src: string | string[];
-  tsPaths: { [key: string]: string[] };
+  tsPaths: Record<string, string[]>;
+  sourceExtensions: string[];
   verbose: boolean;
   verboseTypehints: boolean;
   verboseUsage: boolean;
@@ -356,6 +357,7 @@ export type CliOptions = {
 export type TranslateOptions = {
   aliases: CliOptions['aliases'];
   baseDir: CliOptions['baseDir'];
+  sourceExtensions: string[];
   disableCodeElimination?: boolean;
   getCloseHandle?: (handle: () => void) => void; // get function which closes watcher when called
   namespaces: NsMap;
@@ -366,7 +368,7 @@ export type TranslateOptions = {
   onBeforeRender?: (filename: string, rootNode: Node, nodeFlagStore: INodeFlagStore) => void; // mainly for testing purposes...
   onData: (sourceFilename: string, targetFilename: string, content: string, error?: number) => void;
   onFinish?: (registry: IModuleRegistry) => void;
-  options?: CompilerOptions;
+  compilerOptions?: CompilerOptions;
   jsxPreferences: JSXPreferences;
   hooks: NodeHooks;
 };

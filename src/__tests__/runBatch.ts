@@ -40,38 +40,43 @@ interface RunBatchOptions {
 
 export function runBatch(basePath: string[], testSuite: string[][], log: LogObj, options?: RunBatchOptions) {
   const promises: Array<Promise<any>> = [];
+  const sourceExtensions = ['.ts', '.tsx', '.js', '.jsx'];
 
   translateCode(testSuite.map((path) => pResolve(...basePath, ...path)), ignoredImports, replacedImports, compilerOptions.paths, log, {
     baseDir,
     aliases: {},
+    sourceExtensions,
     namespaces,
     serverFilesRoot: baseDir,
     encoding: 'utf-8',
     printImportTree: false,
-    options: compilerOptions,
+    compilerOptions,
     jsxPreferences: options?.jsxPreferences || {},
     hooks: options?.hooks || {},
-    onData: (sourceFilename: string, targetFilename: string, content: string) => onData(basePath, promises, targetFilename, content),
+    onData: (sourceFilename: string, targetFilename: string, content: string) => onData(basePath, sourceExtensions, promises, targetFilename, content),
   });
 
   return Promise.all(promises)
     .then(() => new Promise((resolve) => setTimeout(resolve, 500)));
 }
 
-function onData(basePath: string[], promises: Array<Promise<any>>, filename: string, content: string) {
+function onData(basePath: string[], sourceExtensions: string[], promises: Array<Promise<any>>, filename: string, content: string) {
   process.stdout.write('[data received] ' + filename + '\n');
   promises.push(new Promise((resolve) => {
-    const resultFileName = join(baseDir, normalizeFileExt(filename));
-    const cont = prettier.format(content, phpPrettierOptions);
+    const resultFileName = join(baseDir, normalizeFileExt(filename, sourceExtensions));
+    const prettifiedContent = prettier.format(content, phpPrettierOptions);
 
     mkdirpSync(dirname(resultFileName));
 
-    writeFileSync(resultFileName + '.result', cont, 'utf-8');
-    expect(cont).toBeTruthy();
-    expect(cont, 'Failed in file: ' + filename)
+    // If test fails, unlinkSync (see below) will not execute
+    // So, it will be possible to check output in file-name.php.result.
+    writeFileSync(resultFileName + '.result', prettifiedContent, 'utf-8');
+    expect(prettifiedContent).toBeTruthy();
+    expect(prettifiedContent, 'Failed in file: ' + filename)
       .toEqual(prettier.format(readFileSync(resultFileName, 'utf-8'), phpPrettierOptions));
     process.stdout.write('[test ok] ' + filename.replace(pResolve(...basePath), '') + '\n');
     unlinkSync(resultFileName + '.result');
     resolve(null);
   }));
 }
+

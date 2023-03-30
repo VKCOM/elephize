@@ -15,6 +15,7 @@ const { addRange } = require('typescript');
  * @param replacedImports
  * @param baseDir
  * @param tsPaths
+ * @param sourceExtensions
  * @param transpileOptions
  * @param writeFile
  * @param log
@@ -24,7 +25,8 @@ export function getBuildProgram(
   ignoredImports: CliOptions['ignoreImports'],
   replacedImports: CliOptions['replaceImports'],
   baseDir: string,
-  tsPaths: { [key: string]: string[] },
+  tsPaths: Record<string, string[]>,
+  sourceExtensions: string[],
   transpileOptions: ts.TranspileOptions,
   writeFile: ts.WriteFileCallback,
   log: LogObj
@@ -47,7 +49,7 @@ export function getBuildProgram(
   options.allowNonTsExtensions = true;
 
   // Create a compilerHost object to allow the compiler to read and write files
-  const resolutionFun = resolveModules(options, ignoredImports, replacedImports, baseDir, tsPaths, log);
+  const resolutionFun = resolveModules(options, ignoredImports, replacedImports, baseDir, tsPaths, sourceExtensions, log);
   let replacements: ImportReplacementRule[] = [];
   const compilerHost: ts.CompilerHost = {
     resolveModuleNames: (moduleNames: string[], containingFile: string) => {

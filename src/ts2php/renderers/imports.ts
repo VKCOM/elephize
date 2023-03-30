@@ -1,11 +1,12 @@
 import * as ts from 'typescript';
-import { Declaration } from '../types';
-import { Context } from '../components/context';
-import { isExportedVar } from '../utils/ast';
 import * as path from 'path';
-import { initReact } from '../components/react/reactHooks';
-import { resolveAliasesAndPaths } from '../utils/pathsAndNames';
 import { renderNodes } from '../components/codegen/renderNodes';
+import { Context } from '../components/context';
+import { initReact } from '../components/react/reactHooks';
+import { Declaration } from '../types';
+import { isExportedVar } from '../utils/ast';
+import { resolveAliasesAndPaths } from '../utils/pathsAndNames';
+import { tsSupportExtensions } from '../utils/tsSupportExtensions';
 
 export function tImportDeclaration(node: ts.ImportDeclaration, context: Context<Declaration>) {
   const moduleSpec = (node.moduleSpecifier as ts.StringLiteral).text;
@@ -17,25 +18,37 @@ export function tImportDeclaration(node: ts.ImportDeclaration, context: Context<
     }
   } else if (moduleSpec) {
     const currentFilePath = node.getSourceFile().fileName;
-    const sourceFilename = resolveAliasesAndPaths(
-      context.log,
-      moduleSpec,
-      path.dirname(currentFilePath),
-      context.baseDir,
-      context.compilerOptions.paths || {},
-      context.registry._aliases
-    );
+    const sourceFilename = resolveAliasesAndPaths({
+      originalSourcePath: moduleSpec,
+      currentDir: path.dirname(currentFilePath),
+      baseDir: context.baseDir,
+      tsPaths: context.compilerOptions.paths || {},
+      sourceExtensions: tsSupportExtensions(context.compilerOptions),
+      outputAliases: context.registry._aliases,
+      logger: context.log,
+    });
 
     if (sourceFilename === null) {
       if (moduleSpec.includes('/')) {
         context.log.error('Module not found: tried to find %s', [moduleSpec], context.log.ctx(node));
       } else {
-        context.log.error(
+        context.log.warn(
           'Importing arbitrary node modules is not supported. Only "react" module is allowed at the moment.' +
           ' Also you may want to import specific file from module - this is supported.',
           [], context.log.ctx(node)
         );
       }
+      return '';
+    }
+
+    const supportedExtensions = tsSupportExtensions(context.compilerOptions);
+
+    if (!supportedExtensions.some((ext) => sourceFilename.endsWith(ext))) {
+      context.log.info(
+        'Module %s was found but ignored: not a source file, expected one of following extensions: %s',
+        [moduleSpec, supportedExtensions.join(',')],
+        context.log.ctx(node),
+      );
       return '';
     }
 
