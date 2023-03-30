@@ -7,5 +7,5 @@ export {
   normalizeFileExt,
   snakify,
   normalizeVarName,
-} from './pathsAndNames';
+} from './utils';
 export { resolveAliasesAndPaths } from './resolveAliasesAndPaths';

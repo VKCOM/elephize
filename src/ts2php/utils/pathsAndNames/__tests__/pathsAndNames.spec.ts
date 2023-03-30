@@ -1,4 +1,4 @@
-import { normalizeFileExt } from '../pathsAndNames';
+import { normalizeFileExt } from '../utils';
 
 describe('normalizeFileExt', () => {
   test('replace source extension to .php', () => {
