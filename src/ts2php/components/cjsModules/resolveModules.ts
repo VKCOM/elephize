@@ -118,12 +118,13 @@ export const resolveModules = (
   for (const moduleName of moduleNames) {
     const mPath = resolveModulePath(moduleName, containingFile, baseDir, tsPaths, sourceExtensions, log);
     const rule = findImportRule(ignoredImports, replacedImports, baseDir, log, mPath);
+
     if (rule && rule.ignore) {
       resolvedModules.push(emptyModule);
       log.info('Module %s was ignored according to library settings', [moduleName]);
     } else if (hasExtension(mPath) && !sourceExtensions.some((ext) => mPath.endsWith(ext))) {
       resolvedModules.push(emptyModule);
-      log.info(`Module %s was found but ignored: not a source file, expected one of following extensions: ${sourceExtensions.join(',')}`, [moduleName]);
+      log.info('Module %s was found but ignored: not a source file, expected one of following extensions: %s', [moduleName, sourceExtensions.join(',')]);
     } else {
       if (rule) {
         log.info('Module %s was replaced with implementation %s according to library settings', [moduleName, rule.implementationClass]);
