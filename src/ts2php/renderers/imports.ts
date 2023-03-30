@@ -32,7 +32,7 @@ export function tImportDeclaration(node: ts.ImportDeclaration, context: Context<
       if (moduleSpec.includes('/')) {
         context.log.error('Module not found: tried to find %s', [moduleSpec], context.log.ctx(node));
       } else {
-        context.log.error(
+        context.log.warn(
           'Importing arbitrary node modules is not supported. Only "react" module is allowed at the moment.' +
           ' Also you may want to import specific file from module - this is supported.',
           [], context.log.ctx(node)
@@ -41,8 +41,14 @@ export function tImportDeclaration(node: ts.ImportDeclaration, context: Context<
       return '';
     }
 
-    if (!tsSupportExtensions(context.compilerOptions).some((ext) => sourceFilename.endsWith(ext))) {
-      context.log.info('Module %s was ignored: not a source file', [moduleSpec], context.log.ctx(node));
+    const supportedExtensions = tsSupportExtensions(context.compilerOptions);
+
+    if (!supportedExtensions.some((ext) => sourceFilename.endsWith(ext))) {
+      context.log.info(
+        'Module %s was found but ignored: not a source file, expected one of following extensions: %s',
+        [moduleSpec, supportedExtensions.join(',')],
+        context.log.ctx(node),
+      );
       return '';
     }
 
