@@ -26,6 +26,7 @@ class BasicComponentWithProps extends RenderableComponent {
      */
     public function render(array $anon_deref_1, array $children) {
         $cnt = (float) $anon_deref_1["count"];
+        $action_text = $anon_deref_1["actionText"];
         $anon_2c03773 = [$cnt];
         $count = (float) $anon_2c03773[0];
         return \VK\Elephize\Builtins\IntrinsicElement::get("div")->render(
@@ -35,7 +36,10 @@ class BasicComponentWithProps extends RenderableComponent {
                     [],
                     ["You clicked ", $count, " times starting at ", $cnt, "."]
                 ),
-                \VK\Elephize\Builtins\IntrinsicElement::get("button")->render([], [" Click me "]),
+                \VK\Elephize\Builtins\IntrinsicElement::get("button")->render(
+                    [],
+                    [\VK\Elephize\Builtins\IntrinsicElement::escape($action_text ?: "Click me")]
+                ),
             ]
         );
     }

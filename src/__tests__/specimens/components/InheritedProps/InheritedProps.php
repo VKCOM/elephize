@@ -44,12 +44,14 @@ class InheritedProps extends RenderableComponent {
                     []
                 ),
                 \VK\Elephize\Builtins\IntrinsicElement::get("span")->render(["className" => "Radio__control"], []),
-                $children
-                    ? \VK\Elephize\Builtins\IntrinsicElement::get("span")->render(
-                        ["className" => "Radio__text"],
-                        [\VK\Elephize\Builtins\IntrinsicElement::escape($children)]
-                    )
-                    : $children,
+                \VK\Elephize\Builtins\IntrinsicElement::escape(
+                    $children
+                        ? \VK\Elephize\Builtins\IntrinsicElement::get("span")->render(
+                            ["className" => "Radio__text"],
+                            [\VK\Elephize\Builtins\IntrinsicElement::escape($children)]
+                        )
+                        : $children
+                ),
             ]
         );
     }
