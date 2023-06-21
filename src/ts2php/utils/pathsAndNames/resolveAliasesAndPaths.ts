@@ -134,7 +134,7 @@ function tryToFindFile({
 
     if (fullPathIndex) {
       if (fullPath) {
-        logger.warn('Found both directory and file with the same basename. It may cause problems: %s', [fullPathIndex]);
+        logger.warn('Found both directory and file with the same basename. It may cause problems: %s, %s', [fullPath, fullPathIndex]);
       }
 
       return fullPathIndex;
@@ -152,7 +152,7 @@ function lookupSourceFile(path: string, sourceExtensions: string[]) {
       if (acc) {
         return acc;
       }
-      if (fs.existsSync(name)) {
+      if (fs.existsSync(name) && fs.lstatSync(name).isFile()) {
         return name;
       }
       return undefined;
