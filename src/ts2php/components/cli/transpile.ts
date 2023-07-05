@@ -64,6 +64,7 @@ export function transpile(options: CliOptions, baseDir: string, outDir: string, 
     const compilerOptions = {
       baseUrl: baseDir,
       paths: options.tsPaths || {},
+      strictNullChecks: true,
     };
 
     (options.watch ? translateCodeAndWatch : translateCode)(

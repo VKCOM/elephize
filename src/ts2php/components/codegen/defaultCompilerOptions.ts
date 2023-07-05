@@ -18,4 +18,5 @@ export const defaultCompilerOptions: ts.CompilerOptions = {
   allowUnreachableCode: true,
   allowJs: true,
   resolveJsonModule: true,
+  strictNullChecks: true,
 };

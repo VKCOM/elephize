@@ -28,6 +28,7 @@ const replacedImports: CliOptions['replaceImports'] = {
 };
 const compilerOptions = {
   baseUrl: baseDir,
+  strictNullChecks: true,
   paths: {
     '#specimens/*': ['specimens/'],
   },

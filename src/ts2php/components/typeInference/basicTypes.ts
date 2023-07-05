@@ -257,7 +257,7 @@ const transformTypeName = (type: ts.Type, node: ts.Node, checker: ts.TypeChecker
 
 function describeNodeType(node: ts.Node | undefined, type: ts.Type, checker: ts.TypeChecker, log: LogObj) {
   const nodeIdentForLog = node?.getText();
-  const optionalMark = (node?.parent.kind === ts.SyntaxKind.Parameter && (
+  let optionalMark = (node?.parent.kind === ts.SyntaxKind.Parameter && (
     (node.parent as ts.ParameterDeclaration).initializer ||
     (node.parent as ts.ParameterDeclaration).questionToken
   )) ? '?' : '';
@@ -274,16 +274,32 @@ function describeNodeType(node: ts.Node | undefined, type: ts.Type, checker: ts.
 
   const customTypehints = checkCustomTypehints(type, checker);
   if (customTypehints) {
-    const types = customTypehints.foundTypes.map((t) => {
-      if (typeof t === 'string') {
-        return optionalMark + t;
-      }
-      // Some of union members may be literal types
-      return optionalMark + describeAsApparentType(t, node!, checker, log, nodeIdentForLog);
-    }).filter((t) => !customTypehints.typesToDrop.includes(t));
-    const typehint = Array.from(new Set((<string[]>[])
-      .concat(types)))
-      .join('|');
+    if (!optionalMark) {
+      optionalMark = customTypehints.foundTypes.find(
+        (t) => typeof t !== 'string' && t.getFlags() & ts.TypeFlags.Undefined
+      )
+        ? '?'
+        : '';
+    }
+
+    const types = customTypehints.foundTypes
+      .filter(
+        (t) => typeof t === 'string' || !(t.getFlags() & ts.TypeFlags.Undefined)
+      )
+      .map((t) => {
+        if (typeof t === 'string') {
+          return optionalMark + t;
+        }
+        // Some of union members may be literal types
+        return (
+          optionalMark +
+          describeAsApparentType(t, node!, checker, log, nodeIdentForLog)
+        );
+      })
+      .filter((t) => !customTypehints.typesToDrop.includes(t));
+    const typehint = Array.from(new Set((<string[]>[]).concat(types))).join(
+      '|'
+    );
     log.typehint('Inferred type of node: %s -> %s [1]', [nodeIdentForLog || '', typehint]);
     return typehint;
   }

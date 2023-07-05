@@ -4,6 +4,7 @@ const {useState} = React;
 
 interface Props {
   count: number;
+  actionText?: string;
   handleScroll: () => void;
 }
 
@@ -12,14 +13,14 @@ interface Props {
  * @param props
  * @constructor
  */
-export function BasicComponentWithProps({count: cnt, handleScroll}: Props) {
+export function BasicComponentWithProps({count: cnt, actionText, handleScroll}: Props) {
   const [count, setCount] = useState(cnt);
 
   return (
     <div onScroll={handleScroll}>
       <p>You clicked {count} times starting at {cnt}.</p>
       <button onClick={() => setCount(count + 1)}>
-        Click me
+        {actionText || 'Click me'}
       </button>
     </div>
   );
