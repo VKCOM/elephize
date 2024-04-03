@@ -53,7 +53,7 @@ export class Logger implements LogObj {
     this.noOutput = options.noOutput;
     this.baseDir = options.baseDir;
     this.outDir = options.outDir;
-    this._verbosity = options.verbosity || (LogVerbosity.ERROR | LogVerbosity.WARN | LogVerbosity.WITH_CONTEXT); // Default for non-testing env
+    this._verbosity = options.verbosity ?? (LogVerbosity.ERROR | LogVerbosity.WARN | LogVerbosity.WITH_CONTEXT); // Default for non-testing env
     this.forceStderr = options.forceStderr;
     this._printer = printer || this._printLog.bind(this);
   }

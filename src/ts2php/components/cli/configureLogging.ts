@@ -20,7 +20,7 @@ export function configureLogging(options: ConfigureLoggingParams): Logger {
   };
 
   if (options.quiet) {
-    opts.verbosity = undefined;
+    opts.verbosity = 0;
   } else {
     if (options.verbose) {
       opts.verbosity = opts.verbosity! | LogVerbosity.INFO;
