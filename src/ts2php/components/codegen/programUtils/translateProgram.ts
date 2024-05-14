@@ -143,7 +143,7 @@ export function translateProgram(program: ts.Program, replacements: ImportReplac
     print('Imports tree in all entrypoints:', importsList, '', []);
   }
 
-  registry.forEachModule((mod: CommonjsModule) => {
+  registry.forEachModule(async (mod: CommonjsModule) => {
     if (mod.isEmpty()) {
       if (mod instanceof CommonjsExternalModule) {
         // Do not emit external modules
@@ -156,7 +156,7 @@ export function translateProgram(program: ts.Program, replacements: ImportReplac
     }
     let content = mod.generateContent();
     try {
-      content = prettier.format(content, phpPrettierOptions);
+      content = await prettier.format(content, phpPrettierOptions);
     } catch (e) {
       console.error('Prettier failed to parse & prettify generated code. Here is raw code:');
       console.log(content);
