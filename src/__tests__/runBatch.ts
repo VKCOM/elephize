@@ -62,9 +62,9 @@ export function runBatch(basePath: string[], testSuite: string[][], log: LogObj,
 
 function onData(basePath: string[], sourceExtensions: string[], promises: Array<Promise<any>>, filename: string, content: string) {
   process.stdout.write('[data received] ' + filename + '\n');
-  promises.push(new Promise((resolve) => {
+  promises.push(new Promise(async (resolve) => {
     const resultFileName = join(baseDir, normalizeFileExt(filename, sourceExtensions));
-    const prettifiedContent = prettier.format(content, phpPrettierOptions);
+    const prettifiedContent = await prettier.format(content, phpPrettierOptions);
 
     mkdirpSync(dirname(resultFileName));
 
