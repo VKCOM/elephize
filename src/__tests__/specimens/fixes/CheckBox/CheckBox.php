@@ -26,7 +26,7 @@ class CheckBox extends RenderableComponent {
      */
     public function render(array $props, array $children) {
         $checked = $props["checked"];
-        $disabled = (bool) $props["disabled"];
+        $disabled = $props["disabled"];
         $name = $props["name"];
         $id = $props["id"];
         $native_props = Stdlib::objectOmit($props, ["children", "checked", "disabled", "indeterminate", "name", "id"]);
@@ -44,7 +44,7 @@ class CheckBox extends RenderableComponent {
                         "type" => "checkbox",
                         "checked" => !!$checked,
                         "name" => \VK\Elephize\Builtins\IntrinsicElement::escape((string) $name),
-                        "disabled" => $disabled,
+                        "disabled" => \VK\Elephize\Builtins\IntrinsicElement::escape($disabled),
                     ]),
                     []
                 ),

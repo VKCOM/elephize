@@ -35,12 +35,14 @@ class ComponentBinaryOperators extends RenderableComponent {
                     ["You clicked ", $props["count"], " times"]
                 ),
                 \VK\Elephize\Builtins\IntrinsicElement::get("button")->render([], [" Click me "]),
-                $input_value
-                    ? \VK\Elephize\Builtins\IntrinsicElement::get("span")->render(
-                        ["className" => "someSpan"],
-                        [\VK\Elephize\Builtins\IntrinsicElement::escape($input_value)]
-                    )
-                    : $input_value,
+                \VK\Elephize\Builtins\IntrinsicElement::escape(
+                    $input_value
+                        ? \VK\Elephize\Builtins\IntrinsicElement::get("span")->render(
+                            ["className" => "someSpan"],
+                            [\VK\Elephize\Builtins\IntrinsicElement::escape($input_value)]
+                        )
+                        : $input_value
+                ),
             ]
         );
     }

@@ -25,7 +25,7 @@ class TextContainer extends RenderableComponent {
      * @return ?string
      */
     public function render(array $anon_deref_1, array $children) {
-        $align = (string) $anon_deref_1["align"];
+        $align = $anon_deref_1["align"];
         $class_names = ["content-text--container"];
         if ($align) {
             array_push($class_names, "content-text--container__align-" . $align);

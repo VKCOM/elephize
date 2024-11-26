@@ -26,6 +26,7 @@ const ignoreImportRules: Set<string> = new Set();
 const replaceImportRules = { };
 const compilerOptions = {
   baseUrl: baseDir,
+  strictNullChecks: true,
   paths: {
     '#specimens/*': ['specimens'],
   },
