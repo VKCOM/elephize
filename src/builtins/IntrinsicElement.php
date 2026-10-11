@@ -166,8 +166,21 @@ class IntrinsicElement extends RenderableComponent {
                 // also we don't render empty attrs
                 continue;
             }
-            if ($name === 'className') {
-                $name = 'class';
+            // React DOM attribute names that differ from their HTML equivalents.
+            $attribute_names = [
+                'className' => 'class',
+                'htmlFor' => 'for',
+                'acceptCharset' => 'accept-charset',
+                'httpEquiv' => 'http-equiv',
+                'charSet' => 'charset',
+                'crossOrigin' => 'crossorigin',
+                'srcSet' => 'srcset',
+                'tabIndex' => 'tabindex',
+                'readOnly' => 'readonly',
+                'autoFocus' => 'autofocus',
+            ];
+            if (isset($attribute_names[$name])) {
+                $name = $attribute_names[$name];
             }
             if ($value === true) {
                 $value = 'true';
